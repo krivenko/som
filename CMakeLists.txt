@@ -3,7 +3,7 @@ list(APPEND CMAKE_MODULE_PATH ${TRIQS_PATH}/share/triqs/cmake)
 
 # start configuration 
 cmake_minimum_required(VERSION 2.8)
-project(my_project CXX)
+project(som CXX)
 set(CMAKE_BUILD_TYPE Release)
 enable_testing()
 

@@ -6,17 +6,17 @@
 FILE(GLOB cpp_sources RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
 
 # Set up the compilation of those files into a shared library
-add_library(my_project_c ${cpp_sources})
+add_library(som_c ${cpp_sources})
 
 # This library should be linked to all libraries against which TRIQS is linked
-target_link_libraries(my_project_c ${TRIQS_LIBRARY_ALL})
+target_link_libraries(som_c ${TRIQS_LIBRARY_ALL})
 
 # To compile this library, we need all the include path required by TRIQS
 include_directories(${TRIQS_INCLUDE_ALL})
 
 # This macro sets up the rpath, to avoid any LD_LIBRARY_PATH issue ...
-triqs_set_rpath_for_target(my_project_c)
+triqs_set_rpath_for_target(som_c)
 
 # Installation path
-install(TARGETS my_project_c DESTINATION lib)
+install(TARGETS som_c DESTINATION lib)
 

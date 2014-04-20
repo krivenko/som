@@ -6,7 +6,7 @@ from pytriqs.gf.local import *
 import pytriqs.utility.mpi as mpi
 from pytriqs.parameters.parameters cimport *
 
-cdef extern from "c++/my_code.hpp" :
+cdef extern from "c++/som.hpp" :
 
     # Declare the C++ class
     cdef cppclass my_class_c "my_class":
