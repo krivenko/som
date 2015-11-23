@@ -1,4 +1,4 @@
-#include "./som.hpp"
+#include "./som_core.hpp"
 
 // my_class::my_class(triqs::utility::parameters p) {
 //  Beta = p["beta"];
