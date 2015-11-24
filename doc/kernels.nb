@@ -1,0 +1,229 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      7338,        220]
+NotebookOptionsPosition[      6837,        198]
+NotebookOutlinePosition[      7177,        213]
+CellTagsIndexPosition[      7134,        210]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{"GF", ",", " ", "Fermion", ",", " ", 
+    RowBox[{"imaginary", " ", "time"}]}], " ", "*)"}], "\[IndentingNewLine]", 
+  
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{"\[Epsilon]1", ":=", 
+     RowBox[{"c", "-", 
+      RowBox[{"w", "/", "2"}]}]}], ",", " ", 
+    RowBox[{"\[Epsilon]2", ":=", 
+     RowBox[{"c", "+", 
+      RowBox[{"w", "/", "2"}]}]}]}], " ", "*)"}], "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"K", "[", 
+      RowBox[{"\[Tau]_", ",", "\[Epsilon]_"}], "]"}], ":=", 
+     RowBox[{"-", 
+      FractionBox[
+       RowBox[{"Exp", "[", 
+        RowBox[{
+         RowBox[{"-", "\[Tau]"}], " ", "\[Epsilon]"}], "]"}], 
+       RowBox[{"1", "+", 
+        RowBox[{"Exp", "[", 
+         RowBox[{
+          RowBox[{"-", "\[Beta]"}], " ", "\[Epsilon]"}], "]"}]}]]}]}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"R", "[", "\[Epsilon]", "]"}], ":=", 
+    RowBox[{"h", "*", 
+     RowBox[{"UnitStep", "[", 
+      RowBox[{"\[Epsilon]", "-", "\[Epsilon]1"}], "]"}], 
+     RowBox[{"UnitStep", "[", 
+      RowBox[{"\[Epsilon]2", "-", "\[Epsilon]"}], "]"}]}]}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"ass", "=", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"h", ">", "0"}], ",", 
+       RowBox[{"\[Tau]", ">", "0"}], ",", 
+       RowBox[{"\[Tau]", "<", "\[Beta]"}], ",", 
+       RowBox[{"\[Epsilon]1", "<", "\[Epsilon]2"}]}], "}"}]}], ";"}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"Rn0", "=", 
+    RowBox[{"FullSimplify", "[", 
+     RowBox[{
+      RowBox[{"Integrate", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"K", "[", 
+          RowBox[{"\[Tau]", ",", "\[Epsilon]"}], "]"}], 
+         RowBox[{"R", "[", "\[Epsilon]", "]"}]}], ",", 
+        RowBox[{"{", 
+         RowBox[{"\[Epsilon]", ",", 
+          RowBox[{"-", "\[Infinity]"}], ",", "\[Infinity]"}], "}"}], ",", 
+        RowBox[{"Assumptions", "\[Rule]", "ass"}]}], "]"}], ",", 
+      RowBox[{"Assumptions", "\[Rule]", "ass"}]}], "]"}]}], 
+   "\[IndentingNewLine]", 
+   RowBox[{"R0", "=", 
+    RowBox[{"FullSimplify", "[", 
+     RowBox[{
+      RowBox[{"Integrate", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"K", "[", 
+          RowBox[{"0", ",", "\[Epsilon]"}], "]"}], 
+         RowBox[{"R", "[", "\[Epsilon]", "]"}]}], ",", 
+        RowBox[{"{", 
+         RowBox[{"\[Epsilon]", ",", 
+          RowBox[{"-", "\[Infinity]"}], ",", "\[Infinity]"}], "}"}], ",", 
+        RowBox[{"Assumptions", "\[Rule]", "ass"}]}], "]"}], ",", 
+      RowBox[{"Assumptions", "\[Rule]", "ass"}]}], "]"}]}], 
+   "\[IndentingNewLine]"}]}]], "Input",
+ CellChangeTimes->{{3.657360322425684*^9, 3.6573603455245447`*^9}, {
+  3.657360484094781*^9, 3.657360538171309*^9}, {3.6573621087385807`*^9, 
+  3.6573621162937193`*^9}, {3.657367993872703*^9, 3.657368088803349*^9}, {
+  3.657368124943316*^9, 3.6573681385509243`*^9}, {3.6573686322729692`*^9, 
+  3.657368666023347*^9}, {3.657368703957839*^9, 3.657368717428746*^9}, {
+  3.657368806969657*^9, 3.657368853122205*^9}}],
+
+Cell[BoxData[
+ FractionBox[
+  RowBox[{"h", " ", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"-", 
+       SuperscriptBox["\[ExponentialE]", 
+        RowBox[{
+         RowBox[{"-", "\[Epsilon]1"}], " ", "\[Tau]"}]]}], " ", 
+      RowBox[{"Hypergeometric2F1", "[", 
+       RowBox[{"1", ",", 
+        FractionBox["\[Tau]", "\[Beta]"], ",", 
+        FractionBox[
+         RowBox[{"\[Beta]", "+", "\[Tau]"}], "\[Beta]"], ",", 
+        RowBox[{"-", 
+         SuperscriptBox["\[ExponentialE]", 
+          RowBox[{
+           RowBox[{"-", "\[Beta]"}], " ", "\[Epsilon]1"}]]}]}], "]"}]}], "+", 
+     
+     RowBox[{
+      SuperscriptBox["\[ExponentialE]", 
+       RowBox[{
+        RowBox[{"-", "\[Epsilon]2"}], " ", "\[Tau]"}]], " ", 
+      RowBox[{"Hypergeometric2F1", "[", 
+       RowBox[{"1", ",", 
+        FractionBox["\[Tau]", "\[Beta]"], ",", 
+        FractionBox[
+         RowBox[{"\[Beta]", "+", "\[Tau]"}], "\[Beta]"], ",", 
+        RowBox[{"-", 
+         SuperscriptBox["\[ExponentialE]", 
+          RowBox[{
+           RowBox[{"-", "\[Beta]"}], " ", "\[Epsilon]2"}]]}]}], "]"}]}]}], 
+    ")"}]}], "\[Tau]"]], "Output",
+ CellChangeTimes->{3.6573687155812397`*^9, 3.65736886681503*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"-", "h"}], " ", 
+  RowBox[{"(", 
+   RowBox[{"\[Epsilon]2", "+", 
+    FractionBox[
+     RowBox[{"Log", "[", 
+      FractionBox[
+       RowBox[{"1", "+", 
+        SuperscriptBox["\[ExponentialE]", 
+         RowBox[{
+          RowBox[{"-", "\[Beta]"}], " ", "\[Epsilon]2"}]]}], 
+       RowBox[{"1", "+", 
+        SuperscriptBox["\[ExponentialE]", 
+         RowBox[{"\[Beta]", " ", "\[Epsilon]1"}]]}]], "]"}], "\[Beta]"]}], 
+   ")"}]}]], "Output",
+ CellChangeTimes->{3.6573687155812397`*^9, 3.657368871134346*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"FullSimplify", "[", 
+  RowBox[{
+   RowBox[{"R0", "\[Equal]", 
+    RowBox[{
+     RowBox[{"-", 
+      FractionBox[
+       RowBox[{"h", " "}], "\[Beta]"]}], 
+     RowBox[{"Log", "[", 
+      FractionBox[
+       RowBox[{"1", "+", 
+        RowBox[{"Exp", "[", 
+         RowBox[{"\[Epsilon]2", " ", "\[Beta]"}], "]"}]}], 
+       RowBox[{"1", "+", 
+        RowBox[{"Exp", "[", 
+         RowBox[{"\[Epsilon]1", " ", "\[Beta]"}], "]"}]}]], "]"}]}]}], ",", 
+   RowBox[{"Assumptions", "\[Rule]", "ass"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.6573687286724777`*^9, 3.657368743366149*^9}, {
+  3.657368774732278*^9, 3.6573687988521767`*^9}, {3.6573689049956427`*^9, 
+  3.657368905363305*^9}}],
+
+Cell[BoxData["True"], "Output",
+ CellChangeTimes->{
+  3.657368104792822*^9, 3.65736815308582*^9, 3.657368681012082*^9, {
+   3.6573687191907454`*^9, 3.6573687441350307`*^9}, 3.6573687751705923`*^9, 
+   3.657368922215323*^9}]
+}, Open  ]],
+
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{{3.657360541149885*^9, 3.6573605587539043`*^9}, {
+   3.657361489350293*^9, 3.657361511827002*^9}, {3.657361729922015*^9, 
+   3.6573617425034437`*^9}, {3.657362161657195*^9, 3.657362182210712*^9}, {
+   3.657362476472766*^9, 3.657362476870883*^9}, {3.657362806277276*^9, 
+   3.657362812027998*^9}, {3.657362933122984*^9, 3.657362942958631*^9}, {
+   3.657364780398423*^9, 3.657364789610911*^9}, 3.657367992782301*^9}]
+},
+WindowSize->{1196, 879},
+WindowMargins->{{191, Automatic}, {-35, Automatic}},
+FrontEndVersion->"10.0 for Linux x86 (64-bit) (December 4, 2014)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 3062, 81, 238, "Input"],
+Cell[3645, 105, 1198, 34, 63, "Output"],
+Cell[4846, 141, 544, 16, 78, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[5427, 162, 705, 19, 59, "Input"],
+Cell[6135, 183, 223, 4, 32, "Output"]
+}, Open  ]],
+Cell[6373, 190, 460, 6, 32, "Input"]
+}
+]
+*)
+
+(* End of internal cache information *)

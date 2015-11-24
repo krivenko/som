@@ -17,7 +17,7 @@ struct rectangle {
 
 struct configuration {
  std::vector<rectangle> rects;
- 
+
 };
 
 }

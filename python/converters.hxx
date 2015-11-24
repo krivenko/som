@@ -10,6 +10,7 @@ namespace triqs { namespace py_tools {
 template <> struct py_converter<run_parameters_t> {
  static PyObject *c2py(run_parameters_t const & x) {
   PyObject * d = PyDict_New();
+  PyDict_SetItemString( d, "test", convert_to_python(x.test));
   return d;
  }
 
@@ -22,6 +23,7 @@ template <> struct py_converter<run_parameters_t> {
 
  static run_parameters_t py2c(PyObject *dic) {
   run_parameters_t res;
+  _get_optional(dic, "test", res.test  , 0);
   return res;
  }
 
@@ -52,7 +54,7 @@ template <> struct py_converter<run_parameters_t> {
   std::stringstream fs, fs2; int err=0;
 
 #ifndef TRIQS_ALLOW_UNUSED_PARAMETERS
-  std::vector<std::string> ks, all_keys = {};
+  std::vector<std::string> ks, all_keys = {"test"};
   pyref keys = PyDict_Keys(dic);
   if (!convertible_from_python<std::vector<std::string>>(keys, true)) {
    fs << "\nThe dict keys are not strings";
@@ -64,6 +66,7 @@ template <> struct py_converter<run_parameters_t> {
     fs << "\n"<< ++err << " The parameter '" << k << "' is not recognized.";
 #endif
 
+  _check_optional <int>(dic, fs, err, "test", "int");
   if (err) goto _error;
   return true;
 
