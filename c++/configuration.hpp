@@ -31,14 +31,38 @@ class configuration {
 
  std::vector<rectangle> rects;
 
+ static const std::size_t default_max_rects = 70;
+
 public:
 
- configuration() = default;
+ configuration(std::size_t reserved_rects = default_max_rects) {
+  rects.reserve(reserved_rects);
+ }
  configuration(configuration const&) = default;
- configuration(std::initializer_list<rectangle> const& l) : rects(l) {}
+ configuration(std::initializer_list<rectangle> const& l) : rects(l) {
+  rects.reserve(default_max_rects);
+ }
 
+ // Number of rectangles
  std::size_t size() const { return rects.size(); }
- rectangle const& operator[](std::size_t i) { return rects[i]; }
+ // Maximum number of rectangles
+ std::size_t max_size() const { return rects.capacity(); }
+
+ // Access a rectangle by index
+ rectangle const& operator[](std::size_t i) const { return rects[i]; }
+ rectangle & operator[](std::size_t i) { return rects[i]; }
+
+ // Insert a new rectangle
+ rectangle& insert(rectangle const& r) {
+  rects.push_back(r);
+  return rects.back();
+ }
+
+ // Remove a rectangle by index
+ void remove(std::size_t i) {
+  std::swap(rects[i],rects.back());
+  rects.pop_back();
+ }
 
  // Sum of configurations: all rectangles from both of them
  configuration& operator+=(configuration const& c) {

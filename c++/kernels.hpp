@@ -30,7 +30,7 @@ template<> class kernel<FermionicGf,imtime> {
  vector<double> Lambda_0;
  // Integrated kernel \Lambda(\tau!=0,+\infty)
  vector<double> Lambda_inf;
- // Integrated kernel \Lambda(\tau=0,\Omega)
+ // Integrated kernel \Lambda(\tau=0,\Omegavector)
  double Lambda_tau_0(double Omega) const {
   return (Omega < 0) ? -std::log(1.0 + std::exp(beta*Omega))/beta :
                        -std::log(1.0 + std::exp(-beta*Omega))/beta -Omega;
@@ -67,6 +67,9 @@ template<> class kernel<FermionicGf,imtime> {
 
 public:
 
+ using result_type = array<double,1>;
+ using mesh_type = gf_mesh<imtime>;
+
  kernel(gf_mesh<imtime> const& mesh) :
   mesh(mesh), beta(mesh.x_max()),
   Lambda_0(mesh.size()), Lambda_inf(mesh.size()) {
@@ -87,24 +90,24 @@ public:
   }
  }
 
- vector<double> operator()(rectangle const& rect) const {
+ result_type operator()(rectangle const& rect) const {
   double e1 = rect.center - rect.width/2;
   double e2 = rect.center + rect.width/2;
-  vector<double> res(mesh.size());
+  result_type res(mesh.size());
 
   // (kernel * rect)(\tau = 0)
-  res[0] = rect.height * (Lambda_tau_0(e2) - Lambda_tau_0(e1));
+  res(0) = rect.height * (Lambda_tau_0(e2) - Lambda_tau_0(e1));
   // (kernel * rect)(0 < \tau < \beta)
   for(int itau = 1; itau < mesh.size()-1; ++itau) {
-   res[itau] = rect.height * (Lambda_tau_not0(itau,e2) - Lambda_tau_not0(itau,e1));
+   res(itau) = rect.height * (Lambda_tau_not0(itau,e2) - Lambda_tau_not0(itau,e1));
   }
-  res[mesh.size()-1] = rect.height * (Lambda_tau_beta(e1) - Lambda_tau_beta(e2));
+  res(mesh.size()-1) = rect.height * (Lambda_tau_beta(e1) - Lambda_tau_beta(e2));
 
   return res;
  }
 
- vector<double> operator()(configuration const& c) {
-  vector<double> res(mesh.size());
+ result_type operator()(configuration const& c) {
+  result_type res(mesh.size());
   for(auto const& r : c) res += operator()(r);
   return res;
  }
