@@ -105,7 +105,7 @@ public:
 
  vector<double> operator()(configuration const& c) {
   vector<double> res(mesh.size());
-  for(auto const& r : c.rects) res += operator()(r);
+  for(auto const& r : c) res += operator()(r);
   return res;
  }
 
