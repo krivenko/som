@@ -1,4 +1,3 @@
-#include <sstream>
 #include <test_tools.hpp>
 
 #include "configuration.hpp"
@@ -37,6 +36,11 @@ TEST(configuration,Arithmetics) {
  EXPECT_PRINT(conf1_str + "," + conf2_str, conf1);
  conf2 *= 3.0;
  EXPECT_PRINT("(c:-3, w:2.6, h:0.9),(c:-1.6, w:2.4, h:0.3),(c:2.8, w:2.8, h:1.65)", conf2);
+}
+
+TEST(configuration,normalize) {
+  conf2.normalize(2.56);
+  ASSERT_PRINT(conf2_str,conf2);
 }
 
 MAKE_MAIN;

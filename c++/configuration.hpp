@@ -56,7 +56,7 @@ public:
  configuration& operator*=(double alpha) {
   if(alpha < 0) TRIQS_RUNTIME_ERROR <<
                 "Cannot multiply a configuration by a negative number " << alpha;
-  for(auto& r : rects) r.height *= alpha;
+  for(auto & r : rects) r.height *= alpha;
   return *this;
  }
  friend configuration operator*(configuration const& c, double alpha) {
@@ -66,6 +66,16 @@ public:
  }
  friend configuration operator*(double alpha, configuration const& c) {
   return c*alpha;
+ }
+
+ // Normalize configuration to have a total area of norm
+ void normalize(double norm = 1.0) {
+  if(norm <= 0) TRIQS_RUNTIME_ERROR <<
+                "Configuration must have a positive norm; norm = "
+                << norm << " is requested";
+  double old_norm = 0;
+  for(auto const& r : rects) old_norm += r.norm();
+  for(auto & r : rects) r.height *= norm / old_norm;
  }
 
  // constant iterator
