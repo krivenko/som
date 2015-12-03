@@ -8,6 +8,8 @@
 
 #include "configuration.hpp"
 
+//#define CHECK_OBJECTIVE_FUNCTION_OPERATIONS
+
 namespace som {
 
 template<typename KernelType>
@@ -70,13 +72,29 @@ public:
  }
 
  void try_change_rectangle(int i, rectangle const& r) {
+#ifdef CHECK_OBJECTIVE_FUNCTION_OPERATIONS
+  if(changed_partial_lhs.size() >= 2) TRIQS_RUNTIME_ERROR <<
+  "objective_function::try_change_rectangle(): only 2 operations in a row are allowed";
+  if(i >= partial_lhs.size() || i < 0) TRIQS_RUNTIME_ERROR <<
+  "objective_function::try_change_rectangle(): index out of range, i = " << i;
+#endif
   changed_partial_lhs.emplace_back(i,kern(r));
  }
  void try_add_rectangle(rectangle const& r) {
+#ifdef CHECK_OBJECTIVE_FUNCTION_OPERATIONS
+  if(changed_partial_lhs.size() >= 2) TRIQS_RUNTIME_ERROR <<
+  "objective_function::try_add_rectangle(): only 2 operations in a row are allowed";
+#endif
   changed_partial_lhs.emplace_back(partial_lhs.size(),kern(r));
  }
  void try_remove_rectangle(int i) {
-  changed_partial_lhs.emplace_back(-i-1,{});
+#ifdef CHECK_OBJECTIVE_FUNCTION_OPERATIONS
+  if(changed_partial_lhs.size() >= 2) TRIQS_RUNTIME_ERROR <<
+  "objective_function::try_remove_rectangle(): only 2 operations in a row are allowed";
+  if(i >= partial_lhs.size() || i < 0) TRIQS_RUNTIME_ERROR <<
+  "objective_function::try_remove_rectangle(): index out of range, i = " << i;
+#endif
+  changed_partial_lhs.emplace_back(-i-1,rhs_type{});
  }
 
  double operator()() const {
@@ -102,7 +120,7 @@ public:
  void cancel_operations() {
   changed_partial_lhs.resize(0);
  }
- void complete_operation() {
+ void complete_operations() {
   for(auto const& plhs : changed_partial_lhs) {
    int index = plhs.first;
    if(index == partial_lhs.size()) {

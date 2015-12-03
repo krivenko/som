@@ -24,7 +24,7 @@ template<> class kernel<FermionicGf,imtime> {
  gf_mesh<imtime> mesh; // Matsubara time mesh
 
  // Tolerance levels for function evaluation
- static constexpr double tolerance = 1e-10;
+ static constexpr double tolerance = 1e-11;
 
  // Integrated kernel \Lambda(\tau!=0,0)
  vector<double> Lambda_0;
@@ -38,8 +38,8 @@ template<> class kernel<FermionicGf,imtime> {
  // Integrated kernel \Lambda(\tau=\beta,\Omega)
  // In this case the definition involves an integration from \Omega to +\infty
  double Lambda_tau_beta(double Omega) const {
-  return (Omega < 0) ? -std::log(1.0 + std::exp(beta*Omega)) +Omega :
-                       -std::log(1.0 + std::exp(-beta*Omega));
+  return (Omega < 0) ? -std::log(1.0 + std::exp(beta*Omega))/beta +Omega :
+                       -std::log(1.0 + std::exp(-beta*Omega))/beta;
  }
  // Integrated kernel \Lambda(\tau!=0,\Omega)
  double Lambda_tau_not0(int itau, double Omega) const {
