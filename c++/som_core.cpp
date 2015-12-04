@@ -1,4 +1,5 @@
-#include "./som_core.hpp"
+#include "som_core.hpp"
+#include "global_counter.hpp"
 
 namespace som {
 

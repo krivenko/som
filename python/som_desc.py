@@ -28,9 +28,9 @@ c.add_constructor("""(gf_view<imtime> g_tau, gf_view<imtime> S)""",
                   doc = """ """)
 
 c.add_method("""void run (**som::run_parameters_t)""",
-             doc = """  Parameter Name Type Default Documentation
+             doc = """  Parameter Name Type         Default Documentation
 
-  test           int  0                     """)
+  max_rects      unsigned int 60      Maximum number of rectangles to represent spectra (K_{max}) Should be below 70  """)
 
 module.add_class(c)
 

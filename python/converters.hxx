@@ -10,7 +10,7 @@ namespace triqs { namespace py_tools {
 template <> struct py_converter<run_parameters_t> {
  static PyObject *c2py(run_parameters_t const & x) {
   PyObject * d = PyDict_New();
-  PyDict_SetItemString( d, "test", convert_to_python(x.test));
+  PyDict_SetItemString( d, "max_rects", convert_to_python(x.max_rects));
   return d;
  }
 
@@ -23,7 +23,7 @@ template <> struct py_converter<run_parameters_t> {
 
  static run_parameters_t py2c(PyObject *dic) {
   run_parameters_t res;
-  _get_optional(dic, "test", res.test  , 0);
+  _get_optional(dic, "max_rects", res.max_rects  , 60);
   return res;
  }
 
@@ -54,7 +54,7 @@ template <> struct py_converter<run_parameters_t> {
   std::stringstream fs, fs2; int err=0;
 
 #ifndef TRIQS_ALLOW_UNUSED_PARAMETERS
-  std::vector<std::string> ks, all_keys = {"test"};
+  std::vector<std::string> ks, all_keys = {"max_rects"};
   pyref keys = PyDict_Keys(dic);
   if (!convertible_from_python<std::vector<std::string>>(keys, true)) {
    fs << "\nThe dict keys are not strings";
@@ -66,7 +66,7 @@ template <> struct py_converter<run_parameters_t> {
     fs << "\n"<< ++err << " The parameter '" << k << "' is not recognized.";
 #endif
 
-  _check_optional <int>(dic, fs, err, "test", "int");
+  _check_optional <unsigned int>(dic, fs, err, "max_rects", "unsigned int");
   if (err) goto _error;
   return true;
 
