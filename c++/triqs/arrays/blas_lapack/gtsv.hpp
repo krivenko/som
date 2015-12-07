@@ -32,7 +32,7 @@ namespace triqs { namespace arrays { namespace blas {
 
   extern "C" {
    void TRIQS_FORTRAN_MANGLING(dgtsv)(const int &N, const int &NRHS, double DL[], double D[], double DU[], double B[], const int &LDB, int & info);
-   void TRIQS_FORTRAN_MANGLING(cgtsv)(const int &N, const int &NRHS, dcomplex DL[], dcomplex D[], dcomplex DU[], dcomplex B[], const int &LDB, int & info);
+   void TRIQS_FORTRAN_MANGLING(zgtsv)(const int &N, const int &NRHS, dcomplex DL[], dcomplex D[], dcomplex DU[], dcomplex B[], const int &LDB, int & info);
   }
 
   inline void gtsv(const int &N, const int &NRHS, double* DL, double* D, double* DU, double* B, const int &LDB, int & info) {
@@ -40,7 +40,7 @@ namespace triqs { namespace arrays { namespace blas {
   }
 
   inline void gtsv(const int &N, const int &NRHS, dcomplex* DL, dcomplex* D, dcomplex* DU, dcomplex* B, const int &LDB, int & info) {
-   TRIQS_FORTRAN_MANGLING(cgtsv)(N, NRHS, DL, D, DU, B, LDB, info);
+   TRIQS_FORTRAN_MANGLING(zgtsv)(N, NRHS, DL, D, DU, B, LDB, info);
   }
  }
 
@@ -56,12 +56,18 @@ namespace triqs { namespace arrays { namespace blas {
   reflexive_qcache<VT> Cdu(DU);
   reflexive_qcache<MT> Cb(B);
 
-  // TODO
+  if(Cb().memory_layout_is_c()) TRIQS_RUNTIME_ERROR << "RHS matrix passed to gtsv is not in Fortran order";
 
-  get_n_cols(Cb());
+  int N = first_dim(Cd());
+  if(first_dim(Cdl()) !=  N-1)
+   TRIQS_RUNTIME_ERROR << "gtsv : dimension mismatch between sub-diagonal and diagonal vectors, " << first_dim(Cdl()) << " vs " << N;
+  if(first_dim(Cdu()) !=  N-1)
+   TRIQS_RUNTIME_ERROR << "gtsv : dimension mismatch between super-diagonal and diagonal vectors, " << first_dim(Cdu()) << " vs " << N;
+  if(first_dim(Cb()) != N)
+   TRIQS_RUNTIME_ERROR << "gtsv : dimension mismatch between diagonal vector and RHS matrix, " << N << " vs " << first_dim(Cb());
 
   int info;
-
+  f77::gtsv(N, second_dim(Cb()), Cdl().data_start(), Cd().data_start(), Cdu().data_start(), Cb().data_start(), N, info);
   if (info) TRIQS_RUNTIME_ERROR << "Error in gtsv : info = " << info;
  }
 
@@ -74,10 +80,16 @@ namespace triqs { namespace arrays { namespace blas {
   reflexive_qcache<VT> Cdu(DU);
   reflexive_qcache<VT> Cb(B);
 
-  // TODO
+  int N = first_dim(Cd());
+  if(first_dim(Cdl()) !=  N-1)
+   TRIQS_RUNTIME_ERROR << "gtsv : dimension mismatch between sub-diagonal and diagonal vectors, " << first_dim(Cdl()) << " vs " << N;
+  if(first_dim(Cdu()) !=  N-1)
+   TRIQS_RUNTIME_ERROR << "gtsv : dimension mismatch between super-diagonal and diagonal vectors, " << first_dim(Cdu()) << " vs " << N;
+  if(first_dim(Cb()) != N)
+   TRIQS_RUNTIME_ERROR << "gtsv : dimension mismatch between diagonal vector and RHS vector, " << N << " vs " << first_dim(Cb());
 
   int info;
-
+  f77::gtsv(N, 1, Cdl().data_start(), Cd().data_start(), Cdu().data_start(), Cb().data_start(), N, info);
   if (info) TRIQS_RUNTIME_ERROR << "Error in gtsv : info = " << info;
  }
 
