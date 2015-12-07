@@ -1,6 +1,6 @@
 #pragma once
 
-#include <triqs/mpi/communicator.hpp>
+#include <triqs/mpi/base.hpp>
 
 namespace som {
 

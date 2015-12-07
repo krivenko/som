@@ -5,7 +5,7 @@
 set(python_destination applications/analytic_continuation/som)
 
 # make a local pytriqs copy to be able to run in the current dir without installation
-triqs_prepare_local_pytriqs_merged_with_my_python(${python_destination})
+triqs_prepare_local_pytriqs(${python_destination})
 
 # Build the python module
 triqs_python_extension(som ${python_destination})
