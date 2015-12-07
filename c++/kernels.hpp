@@ -31,18 +31,12 @@ template<> class kernel<FermionicGf,imtime> {
  // Integrated kernel \Lambda(\tau!=0,+\infty)
  vector<double> Lambda_inf;
  // Integrated kernel \Lambda(\tau=0,\Omegavector)
- double Lambda_tau_0(double Omega) const {
+ inline double Lambda_tau_0(double Omega) const {
   return (Omega < 0) ? -std::log(1.0 + std::exp(beta*Omega))/beta :
                        -std::log(1.0 + std::exp(-beta*Omega))/beta -Omega;
  }
- // Integrated kernel \Lambda(\tau=\beta,\Omega)
- // In this case the definition involves an integration from \Omega to +\infty
- double Lambda_tau_beta(double Omega) const {
-  return (Omega < 0) ? -std::log(1.0 + std::exp(beta*Omega))/beta +Omega :
-                       -std::log(1.0 + std::exp(-beta*Omega))/beta;
- }
  // Integrated kernel \Lambda(\tau!=0,\Omega)
- double Lambda_tau_not0(int itau, double Omega) const {
+ inline double Lambda_tau_not0(int itau, double Omega) const {
   if(Omega > 0) {
    double s = 0;
    for(long n = 0;;++n) {
@@ -101,7 +95,7 @@ public:
   for(int itau = 1; itau < mesh.size()-1; ++itau) {
    res(itau) = rect.height * (Lambda_tau_not0(itau,e2) - Lambda_tau_not0(itau,e1));
   }
-  res(mesh.size()-1) = rect.height * (Lambda_tau_beta(e1) - Lambda_tau_beta(e2));
+  res(mesh.size()-1) = rect.height * (Lambda_tau_0(-e1) - Lambda_tau_0(-e2));
 
   return res;
  }
