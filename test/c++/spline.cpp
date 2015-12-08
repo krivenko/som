@@ -58,6 +58,26 @@ TEST(spline,spline) {
 }
 
 TEST(spline,regular_spline) {
+ vector<double> y(N);
+
+ for(int i = 0; i < N; ++i) y(i) = f(r_mesh(i));
+
+ regular_spline sp(xmin,xmax,y);
+
+  vector<double> ref(N), result(N);
+ for(int i = 0; i < N; ++i) {
+  double z = ir_mesh1(i);
+  ref(i) = f(z);
+  result(i) = sp(z);
+ }
+ EXPECT_ARRAY_NEAR(result,ref,1e-13);
+
+ for(int i = 0; i < N; ++i) {
+  double z = ir_mesh2(i);
+  ref(i) = f(z);
+  result(i) = sp(z);
+ }
+ EXPECT_ARRAY_NEAR(result,ref,1e-13);
 }
 
 MAKE_MAIN;

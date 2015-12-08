@@ -44,10 +44,10 @@ public:
   TRIQS_RUNTIME_ERROR << "spline : inconsistent sizes of x and y vectors in construction, " << s << " vs " << y.size();
   if(s < 2) TRIQS_RUNTIME_ERROR << "spline : need at least 2 knots";
 
-  double max_x = -std::numeric_limits<double>::infinity();
+  double x_max = -std::numeric_limits<double>::infinity();
   for(auto x_ : x) {
-   if(x_ < max_x) TRIQS_RUNTIME_ERROR << "spline : vector x is not sorted in the ascending order";
-   max_x = x_;
+   if(x_ < x_max) TRIQS_RUNTIME_ERROR << "spline : vector x is not sorted in the ascending order";
+   x_max = x_;
   }
 
   vector<double> ld(s-1), d(s), ud(s-1), k(s);
@@ -91,7 +91,49 @@ public:
 
 // Cubic spline interpolator on a regular mesh
 class regular_spline {
- // TODO
+
+ double x_min, x_max; // abscissae of the leftmost and rightmost knots
+ vector<double> y;    // vector of knot ordinates
+ vector<double> a, b; // spline coefficients
+ int s;               // size of y
+ double dx;           // mesh step
+
+public:
+
+ regular_spline(double x_min, double x_max, vector<double> const& y) :
+ x_min(x_min), x_max(x_max), y(y), a(y.size()-1,0), b(y.size()-1,0),
+ s(y.size()), dx((x_max - x_min)/(y.size()-1)) {
+  if(s < 2) TRIQS_RUNTIME_ERROR << "regular_spline : need at least 2 knots";
+  if(x_min == x_max) TRIQS_RUNTIME_ERROR << "regular_spline : x_min and x_max must not coincide";
+
+  vector<double> ld(s-1), d(s), ud(s-1), k(s);
+  d() = 4/dx;
+  d(0) = d(s-1) = 2/dx;
+  ld() = 1/dx; ud() = 1/dx;
+
+  k(0) = 3*(y(1) - y(0))/(dx*dx);
+  for(int i = 1; i < s-1; ++i) k(i) = 3*(y(i+1) - y(i-1))/(dx*dx);
+  k(s-1) = 3*(y(s-1) - y(s-2))/(dx*dx);
+
+  blas::gtsv(ld,d,ud,k);
+  for(int i = 0; i < s-1; ++i) {
+   a(i) = k(i)*dx - (y(i+1) - y(i));
+   b(i) = -k(i+1)*dx + (y(i+1) - y(i));
+  }
+ }
+
+ inline double operator()(double z) const {
+  if(z <= x_min) return y(0);
+  else if(z >= x_max) return y(s-1);
+  else {
+   int left = std::floor((z - x_min)/dx);
+   int right = left + 1;
+   double t = (z - (x_min + left*dx))/dx;
+   double tt = 1 - t;
+   return tt*y(left)  + t*y(right) + t*tt*(a(left)*tt + b(left)*t);
+  }
+ }
+
 };
 
 }
