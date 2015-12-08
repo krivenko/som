@@ -32,8 +32,8 @@ template<> class kernel<FermionicGf,imtime> {
  vector<double> Lambda_inf;
  // Integrated kernel \Lambda(\tau=0,\Omegavector)
  inline double Lambda_tau_0(double Omega) const {
-  return (Omega < 0) ? -std::log(1.0 + std::exp(beta*Omega))/beta :
-                       -std::log(1.0 + std::exp(-beta*Omega))/beta -Omega;
+  return (Omega < 0) ? -std::log1p(std::exp(beta*Omega))/beta :
+                       -std::log1p(std::exp(-beta*Omega))/beta -Omega;
  }
  // Integrated kernel \Lambda(\tau!=0,\Omega)
  inline double Lambda_tau_not0(int itau, double Omega) const {
