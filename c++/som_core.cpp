@@ -80,9 +80,9 @@ void som_core::run(run_parameters_t const& p) {
  for(auto & r :results) r.insert({2.0,2.0,1.5});
 }
 
-void triqs_gf_view_assign_delegation(gf_view<refreq> g_w, som_core const& cont) {
+gf_view<refreq> som_core::operator()(gf_view<refreq> g_w) const {
  auto shape = get_target_shape(g_w);
- auto gf_dim = cont.results.size();
+ auto gf_dim = results.size();
 
  if(shape[0] != gf_dim || shape[1] != gf_dim)
   TRIQS_RUNTIME_ERROR << "som_core: expected a real-frequency Green's function with matrix dimensions "
@@ -90,13 +90,14 @@ void triqs_gf_view_assign_delegation(gf_view<refreq> g_w, som_core const& cont) 
 
  g_w() = 0;
  for(int i = 0; i < gf_dim; ++i) {
-  auto const& conf = cont.results[i];
+  auto const& conf = results[i];
   for(auto const& rect : conf) {
    for(auto e : g_w.mesh()) g_w.data()(e.index(),i,i) += rect.hilbert_transform(double(e));
    auto & tail = g_w.singularity();
    tail.data()(range(),i,i) += rect.tail_coefficients(tail.order_min(),tail.order_max());
   }
  }
+ return g_w;
 }
 
 }

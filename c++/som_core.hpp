@@ -52,8 +52,10 @@ public:
  TRIQS_WRAP_ARG_AS_DICT // Wrap the parameters as a dictionary in python with the clang tool
  void run(run_parameters_t const& p);
 
+ gf_view<refreq> operator()(gf_view<refreq> g_w) const;
+
  // Fill gf<refreq> with obtained results
- friend void triqs_gf_view_assign_delegation(gf_view<refreq> g_w, som_core const& cont);
+ friend void triqs_gf_view_assign_delegation(gf_view<refreq> g_w, som_core const& cont) { cont(g_w); }
 
 };
 

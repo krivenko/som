@@ -38,6 +38,8 @@ c.add_method("""void run (**som::run_parameters_t)""",
 
   max_rects      unsigned int 60      Maximum number of rectangles to represent spectra (K_{max}), should be below 70  """)
 
+c.add_call(signature = "gf_view<refreq>(gf_view<refreq> g_w)")
+
 module.add_class(c)
 
 module.generate_code()
