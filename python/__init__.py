@@ -23,6 +23,6 @@ r"""
 DOC
 
 """
-from som import SOM
+from som import SomCore
 
-__all__ = ['SOM']
+__all__ = ['SomCore']
