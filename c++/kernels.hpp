@@ -1,10 +1,11 @@
 #pragma once
 
 #include <cmath>
-#include <triqs/arrays/vector.hpp>
+#include <vector>
 #include <triqs/gfs.hpp>
 
 #include "configuration.hpp"
+#include "spline.hpp"
 
 namespace som {
 
@@ -25,39 +26,18 @@ template<> class kernel<FermionicGf,imtime> {
 
  // Tolerance levels for function evaluation
  static constexpr double tolerance = 1e-11;
+ // Number of energy points for Lambda_tau_not0 interpolation
+ static constexpr int n_spline_knots = 10001;
 
- // Integrated kernel \Lambda(\tau!=0,0)
- vector<double> Lambda_0;
- // Integrated kernel \Lambda(\tau!=0,+\infty)
- vector<double> Lambda_inf;
- // Integrated kernel \Lambda(\tau=0,\Omegavector)
+ // Integrated kernel \Lambda(\tau=0,\Omega)
  inline double Lambda_tau_0(double Omega) const {
-  return (Omega < 0) ? -std::log1p(std::exp(beta*Omega))/beta :
-                       -std::log1p(std::exp(-beta*Omega))/beta -Omega;
+  double x = beta*Omega;
+  return (Omega < 0) ? (-std::log1p(std::exp(x))     )/beta :
+                       (-std::log1p(std::exp(-x)) - x)/beta;
  }
- // Integrated kernel \Lambda(\tau!=0,\Omega)
- inline double Lambda_tau_not0(int itau, double Omega) const {
-  if(Omega > 0) {
-   double s = 0;
-   for(long n = 0;;++n) {
-    double z = beta*n + mesh[itau];
-    double t = (n % 2 ? 1 : -1) * std::exp(-Omega*z)/z;
-    if(std::abs(t) < tolerance) break;
-    s += t;
-   }
-   return Lambda_inf[itau] - s;
-  } else if(Omega < 0) {
-   double s = 0;
-   for(long n = 0; ; ++n) {
-    double z = beta*(n+1) - mesh[itau];
-    double t = (n % 2 ? 1 : -1) * std::exp(Omega*z)/z;
-    if(std::abs(t) < tolerance) break;
-    s += t;
-   }
-   return s;
-  } else
-   return Lambda_0[itau];
- }
+
+ // Spline interpolation of the integrated kernel \Lambda(\tau!=0,\Omega)
+ std::vector<regular_spline> Lambda_tau_not0;
 
 public:
 
@@ -65,22 +45,51 @@ public:
  using mesh_type = gf_mesh<imtime>;
 
  kernel(gf_mesh<imtime> const& mesh) :
-  mesh(mesh), beta(mesh.x_max()),
-  Lambda_0(mesh.size()), Lambda_inf(mesh.size()) {
-  // Fill Lambda_0
-  for(int itau = 1; itau < mesh.size(); ++itau) {
-   double s = 0;
-   for(long n = 0; ; ++n) {
-    double x = beta*(2*n+1) - mesh[itau];
-    double t = -beta / (x * (x + beta));
-    if(std::abs(t) < tolerance) break;
-    s += t;
+  mesh(mesh), beta(mesh.x_max()) {
+
+  Lambda_tau_not0.reserve(mesh.size()-2);
+  for(int itau = 1; itau < mesh.size()-1; ++itau) {
+   double alpha = mesh[itau] / beta;
+   // Estimated limits of interpolation segment
+   double Omega_min = (std::log(tolerance) + std::log(1-alpha)) / (1-alpha) / beta;
+   double Omega_max = (std::log(tolerance) + std::log(alpha)) / (-alpha) / beta;
+   double dOmega = (Omega_max - Omega_min) / (n_spline_knots - 1);
+
+   // Integrated kernel \Lambda(\tau,\Omega=+\infty)
+   double Lambda_inf = -M_PI/(beta * std::sin(M_PI * alpha));
+
+   // Evaluate \Lambda(\tau,\Omega) to construct spline
+   vector<double> values(n_spline_knots);
+   for(int i = 0; i < n_spline_knots; ++i) {
+    double Omega = Omega_min + i*dOmega;
+    double val = 0;
+    if(Omega > 0) {
+     for(int n = 0;;++n) {
+      double z = beta*(n + alpha);
+      double t = (n % 2 ? 1 : -1) * std::exp(-Omega*z)/z;
+      if(std::abs(t) < tolerance) break;
+      val += t;
+     }
+     values[i] = Lambda_inf - val;
+    } else if(Omega < 0) {
+     for(int n = 0; ; ++n) {
+      double z = beta*((n+1) - alpha);
+      double t = (n % 2 ? 1 : -1) * std::exp(Omega*z)/z;
+      if(std::abs(t) < tolerance) break;
+      val += t;
+     }
+     values[i] = val;
+    } else { // Omega == 0
+     for(int n = 0; ; ++n) {
+      double z = beta*((2*n+1) - alpha);
+      double t = -beta / (z * (z + beta));
+      if(std::abs(t) < tolerance) break;
+      val += t;
+     }
+    values[i] = val;
+    }
    }
-   Lambda_0[itau] = s;
-  }
-  // Fill Lambda_inf
-  for(int itau = 1; itau < mesh.size(); ++itau) {
-   Lambda_inf[itau] = -M_PI/(beta * std::sin(M_PI * mesh[itau]/beta));
+   Lambda_tau_not0.push_back(regular_spline(Omega_min, Omega_max, values));
   }
  }
 
@@ -93,8 +102,10 @@ public:
   res(0) = rect.height * (Lambda_tau_0(e2) - Lambda_tau_0(e1));
   // (kernel * rect)(0 < \tau < \beta)
   for(int itau = 1; itau < mesh.size()-1; ++itau) {
-   res(itau) = rect.height * (Lambda_tau_not0(itau,e2) - Lambda_tau_not0(itau,e1));
+   auto const& l = Lambda_tau_not0[itau-1];
+   res(itau) = rect.height * (l(e2) - l(e1));
   }
+  // (kernel * rect)(\tau = \beta)
   res(mesh.size()-1) = rect.height * (Lambda_tau_0(-e1) - Lambda_tau_0(-e2));
 
   return res;

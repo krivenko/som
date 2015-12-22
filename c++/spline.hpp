@@ -23,7 +23,7 @@
 #include <limits>
 
 #include <triqs/arrays.hpp>
-#include <triqs/arrays/blas_lapack/gtsv.hpp>
+#include "triqs/arrays/blas_lapack/gtsv.hpp"
 
 namespace som {
 
