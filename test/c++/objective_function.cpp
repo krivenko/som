@@ -1,6 +1,6 @@
 #include <vector>
 
-#include <test_tools.hpp>
+#include <triqs/test_tools/arrays.hpp>
 #include <triqs/gfs.hpp>
 
 #include "kernels.hpp"
