@@ -24,13 +24,21 @@ c = class_(
         c_type = "som_core",   # name of the C++ class
 )
 
-c.add_constructor("""(gf_view<imtime> g_tau, gf_view<imtime> S)""",
+c.add_constructor("""(gf_view<imtime> g_tau, gf_view<imtime> S_tau)""",
+                  doc = """ """)
+
+c.add_constructor("""(gf_view<imfreq> g_iw, gf_view<imfreq> S_iw)""",
+                  doc = """ """)
+
+c.add_constructor("""(gf_view<legendre> g_l, gf_view<legendre> S_l)""",
                   doc = """ """)
 
 c.add_method("""void run (**som::run_parameters_t)""",
              doc = """  Parameter Name Type         Default Documentation
 
-  max_rects      unsigned int 60      Maximum number of rectangles to represent spectra (K_{max}) Should be below 70  """)
+  max_rects      unsigned int 60      Maximum number of rectangles to represent spectra (K_{max}), should be below 70  """)
+
+c.add_call(signature = "gf_view<refreq>(gf_view<refreq> g_w)")
 
 module.add_class(c)
 

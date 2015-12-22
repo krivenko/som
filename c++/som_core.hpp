@@ -19,31 +19,43 @@ using triqs::utility::variant;
 
 class som_core {
 
- using vector_of_real_or_complex_vector_t =
- variant<std::vector<vector<double>>,std::vector<vector<double>>>;
+ using input_data_r_t = std::vector<vector<double>>;
+ using input_data_c_t = std::vector<vector<std::complex<double>>>;
 
  // The right-hand side of the Fredholm integral equation
  // One vector per diagonal matrix element of the Green's function
- vector_of_real_or_complex_vector_t rhs;
+ variant<input_data_r_t,input_data_c_t> rhs;
  // Error bars of the RHS, see eq. 30
  // One vector per diagonal matrix element of the Green's function
- vector_of_real_or_complex_vector_t error_bars;
+ variant<input_data_r_t,input_data_c_t> error_bars;
 
  // Resulting configurations
  std::vector<configuration> results;
 
+ // Kind of the observable, GF/Susceptibility/Conductivity
+ observable_kind kind;
+
+ // Mesh type, imtime/imfreq/legendre
+ int mesh_id;
+ template<typename MT> static int get_mesh_id();
+
+ // Fill rhs and error_bars
+ template<typename... GfOpts>
+ void set_input_data(gf_const_view<GfOpts...> g, gf_const_view<GfOpts...> S);
+
 public:
 
- som_core(gf_const_view<imtime> g_tau, gf_const_view<imtime> S);
- //som_core(gf_const_view<imfreq> g_iw, gf_const_view<imfreq> S);
+ som_core(gf_const_view<imtime> g_tau, gf_const_view<imtime> S_tau);
+ som_core(gf_const_view<imfreq> g_iw, gf_const_view<imfreq> S_iw);
+ som_core(gf_const_view<legendre> g_l, gf_const_view<legendre> S_l);
 
  TRIQS_WRAP_ARG_AS_DICT // Wrap the parameters as a dictionary in python with the clang tool
  void run(run_parameters_t const& p);
 
+ gf_view<refreq> operator()(gf_view<refreq> g_w) const;
+
  // Fill gf<refreq> with obtained results
- friend void triqs_gf_view_assign_delegation(gf_view<refreq> g_w, som_core const& cont) {
-  // TODO
- }
+ friend void triqs_gf_view_assign_delegation(gf_view<refreq> g_w, som_core const& cont) { cont(g_w); }
 
 };
 
