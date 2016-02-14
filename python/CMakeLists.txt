@@ -1,15 +1,9 @@
-#
-# Compile the cython module and install the python files
-
-# where will the python end up in triqs?
-set(python_destination applications/analytic_continuation/som)
-
-# make a local pytriqs copy to be able to run in the current dir without installation
-triqs_prepare_local_pytriqs(${python_destination})
+# make a local pytriqs copy
+triqs_prepare_local_pytriqs(${CMAKE_PROJECT_NAME})
 
 # Build the python module
-triqs_python_extension(som ${python_destination})
-target_link_libraries(som som_c)
+triqs_python_extension_and_install(som)
+target_link_libraries(som som_c ${TRIQS_LIBRARY_ALL})
 include_directories(${TRIQS_INCLUDE_ALL} ${CMAKE_CURRENT_SOURCE_DIR})
 triqs_set_rpath_for_target(som)
 

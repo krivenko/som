@@ -1,10 +1,10 @@
 # start configuration
 cmake_minimum_required(VERSION 2.8)
-project(som CXX)
+project(triqs_som CXX)
 set(CMAKE_BUILD_TYPE Release)
 
 # Version number of the application
-set(SOM_VERSION "0.1")
+set(SOM_VERSION "0.3")
 
 # Append triqs installed files to the cmake load path
 list(APPEND CMAKE_MODULE_PATH ${TRIQS_PATH}/share/triqs/cmake)
@@ -23,6 +23,9 @@ endif(${GIT_RESULT} EQUAL 0)
 
 # We want to be installed in the TRIQS tree
 set(CMAKE_INSTALL_PREFIX ${TRIQS_PATH})
+
+message(STATUS "TRIQS : Adding compilation flags detected by the library (C++11/14, libc++, etc...) ")
+add_definitions(${TRIQS_CXX_DEFINITIONS})
 
 option(Tests "Enable Tests" ON)
 

@@ -3,19 +3,18 @@
 from wrap_generator import *
 
 # The module
-module = module_(full_name = "pytriqs.applications.analytic_continuation.som", doc = "The Stochastic Optimization Method")
+module = module_(app_name="triqs_som", full_name = "som", doc = "The Stochastic Optimization Method")
 
 # All the triqs C++/Python modules
-module.use_module('gf')
+module.use_module('gf', 'triqs')
 
 # Add here all includes beyond what is automatically included by the triqs modules
 module.add_include("../c++/som_core.hpp")
 
 # Add here anything to add in the C++ code at the start, e.g. namespace using
 module.add_preamble("""
-using namespace triqs::gfs;
 using namespace som;
-#include "./converters.hxx"
+#include "converters.hxx"
 """)
 
 # The class som_core
