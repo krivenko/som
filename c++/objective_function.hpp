@@ -7,6 +7,7 @@
 #include <triqs/arrays/vector.hpp>
 
 #include "configuration.hpp"
+#include "pool.hpp"
 
 //#define CHECK_OBJECTIVE_FUNCTION_OPERATIONS
 

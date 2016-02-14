@@ -1,5 +1,6 @@
 #pragma once
 
+#include <utility>
 #include <vector>
 #include <algorithm>
 #include <iterator>
@@ -19,6 +20,7 @@ struct rectangle {
 
  rectangle(double center, double width, double height) :
   center(center), width(width), height(height) {}
+
  double norm() const { return width*height; }
  double operator()(double x) const {
   return (x >= center-width/2 && x <= center+width/2) ? height : 0;
@@ -48,8 +50,10 @@ struct rectangle {
  }
 };
 
+//template<typename LHSTypePtr>
 class configuration {
 
+ //std::vector<std::pair<rectangle,LHSTypePtr>> rects;
  std::vector<rectangle> rects;
 
  static const std::size_t default_max_rects = 70;
@@ -71,7 +75,9 @@ public:
 
  // Access a rectangle by index
  rectangle const& operator[](std::size_t i) const { return rects[i]; }
- rectangle & operator[](std::size_t i) { return rects[i]; }
+ rectangle & operator[](std::size_t i) {
+  return rects[i];
+ }
 
  // Insert a new rectangle
  rectangle& insert(rectangle const& r) {
