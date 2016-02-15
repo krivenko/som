@@ -11,19 +11,21 @@ template<typename T>
 class pool {
 
  struct deleter {
-  pool const* p;
+  pool* const p;
   const int id;
-  deleter(pool<T> *p, int id) : p(p), id(id) {}
-  void operator()(std::unique_ptr<T,deleter> const&) noexcept { p->push(id); }
+  deleter(pool<T> * p, int id) noexcept : p(p), id(id) {}
+  deleter(deleter const&) noexcept = delete;
+  deleter(deleter &&) noexcept = default;
+  void operator()(T *) noexcept { p->spare_ids.push(id); }
  };
  friend struct deleter;
-
- using ptr_type = std::unique_ptr<T,deleter>;
 
  std::vector<T> data;
  std::stack<int> spare_ids;
 
 public:
+
+ using ptr_type = std::unique_ptr<T,deleter>;
 
  template<typename... Args>
  pool(int size, Args&&... args) : data(size, T(args...)) {
@@ -34,7 +36,7 @@ public:
   if(spare_ids.size() == 0) throw(std::bad_alloc());
   int id = spare_ids.top();
   spare_ids.pop();
-  return ptr_type{data[id], deleter(this, id)};
+  return ptr_type(&data[id], deleter(this, id));
  }
 
 };
