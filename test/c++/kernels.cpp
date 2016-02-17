@@ -1,7 +1,7 @@
 #include <vector>
 #include <triqs/test_tools/arrays.hpp>
 
-#include "kernels.hpp"
+#include "kernels/fermionicgf_imtime.hpp"
 
 using namespace som;
 using namespace triqs::gfs;

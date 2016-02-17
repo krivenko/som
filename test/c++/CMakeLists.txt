@@ -5,7 +5,7 @@ link_libraries(som_c ${TRIQS_LIBRARY_ALL} gtest)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../c++ ${TRIQS_INCLUDE_ALL})
 
 # Simple tests
-set(TESTS configuration kernels objective_function global_counter gtsv spline pool)
+set(TESTS configuration kernels global_counter gtsv spline pool)
 set(TESTS gf ${TESTS})
 foreach(t ${TESTS})
     add_executable(${t} ${CMAKE_CURRENT_SOURCE_DIR}/${t}.cpp)

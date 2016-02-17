@@ -1,25 +1,18 @@
 #pragma once
 
 #include <cmath>
-#include <vector>
 #include <triqs/gfs.hpp>
 
-#include "configuration.hpp"
-#include "spline.hpp"
+#include "base.hpp"
+#include "../spline.hpp"
 
 namespace som {
 
-using namespace triqs::arrays;
 using namespace triqs::gfs;
 
-// Kinds of observables
-enum observable_kind {FermionicGf, Susceptibility, Conductivity};
-
-// Integral kernels
-template<observable_kind Kind, typename Mesh> class kernel;
-
 // Kernel: fermionic GF, imaginary time
-template<> class kernel<FermionicGf,imtime> {
+template<> class kernel<FermionicGf,imtime> :
+           public kernel_base<kernel<FermionicGf,imtime>, array<double,1>> {
 
  double beta;          // Inverse temperature
  gf_mesh<imtime> mesh; // Matsubara time mesh
@@ -39,12 +32,16 @@ template<> class kernel<FermionicGf,imtime> {
  // Spline interpolation of the integrated kernel \Lambda(\tau!=0,\Omega)
  std::vector<regular_spline> Lambda_tau_not0;
 
+ using base_type = kernel_base<kernel<FermionicGf,imtime>, array<double,1>>;
+
 public:
 
  using result_type = array<double,1>;
  using mesh_type = gf_mesh<imtime>;
 
- kernel(gf_mesh<imtime> const& mesh) :
+ kernel(gf_mesh<imtime> const& mesh,
+        int rect_cache_size = RECT_IDS, int config_cache_size = CONFIG_IDS) :
+  base_type(result_type(mesh.size()), rect_cache_size, config_cache_size),
   mesh(mesh), beta(mesh.x_max()) {
 
   Lambda_tau_not0.reserve(mesh.size()-2);
@@ -93,28 +90,20 @@ public:
   }
  }
 
- result_type operator()(rectangle const& rect) const {
-  double e1 = rect.center - rect.width/2;
-  double e2 = rect.center + rect.width/2;
-  result_type res(mesh.size());
+ void apply(rectangle const& rect, result_type & res) const {
+
+  double e1 = rect.center() - rect.width()/2;
+  double e2 = rect.center() + rect.width()/2;
 
   // (kernel * rect)(\tau = 0)
-  res(0) = rect.height * (Lambda_tau_0(e2) - Lambda_tau_0(e1));
+  res(0) = rect.height() * (Lambda_tau_0(e2) - Lambda_tau_0(e1));
   // (kernel * rect)(0 < \tau < \beta)
   for(int itau = 1; itau < mesh.size()-1; ++itau) {
    auto const& l = Lambda_tau_not0[itau-1];
-   res(itau) = rect.height * (l(e2) - l(e1));
+   res(itau) = rect.height() * (l(e2) - l(e1));
   }
   // (kernel * rect)(\tau = \beta)
-  res(mesh.size()-1) = rect.height * (Lambda_tau_0(-e1) - Lambda_tau_0(-e2));
-
-  return res;
- }
-
- result_type operator()(configuration const& c) {
-  result_type res(mesh.size());
-  for(auto const& r : c) res += operator()(r);
-  return res;
+  res(mesh.size()-1) = rect.height() * (Lambda_tau_0(-e1) - Lambda_tau_0(-e2));
  }
 
 };

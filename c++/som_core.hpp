@@ -8,7 +8,7 @@
 
 #include "run_parameters.hpp"
 #include "configuration.hpp"
-#include "kernels.hpp"
+#include "kernels/fermionicgf_imtime.hpp"
 #include "objective_function.hpp"
 
 namespace som {

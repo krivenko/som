@@ -13,6 +13,7 @@ class pool {
  struct deleter {
   pool* const p;
   const int id;
+  deleter() noexcept {}
   deleter(pool<T> * p, int id) noexcept : p(p), id(id) {}
   deleter(deleter const&) noexcept = delete;
   deleter(deleter &&) noexcept = default;
