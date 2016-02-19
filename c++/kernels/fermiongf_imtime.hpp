@@ -8,11 +8,12 @@
 
 namespace som {
 
+using namespace triqs::arrays;
 using namespace triqs::gfs;
 
 // Kernel: fermionic GF, imaginary time
-template<> class kernel<FermionicGf,imtime> :
-           public kernel_base<kernel<FermionicGf,imtime>, array<double,1>> {
+template<> class kernel<FermionGf,imtime> :
+           public kernel_base<kernel<FermionGf,imtime>, array<double,1>> {
 
  double beta;          // Inverse temperature
  gf_mesh<imtime> mesh; // Matsubara time mesh
@@ -32,8 +33,6 @@ template<> class kernel<FermionicGf,imtime> :
  // Spline interpolation of the integrated kernel \Lambda(\tau!=0,\Omega)
  std::vector<regular_spline> Lambda_tau_not0;
 
- using base_type = kernel_base<kernel<FermionicGf,imtime>, array<double,1>>;
-
 public:
 
  using result_type = array<double,1>;
@@ -41,7 +40,8 @@ public:
 
  kernel(gf_mesh<imtime> const& mesh,
         int rect_cache_size = RECT_IDS, int config_cache_size = CONFIG_IDS) :
-  base_type(result_type(mesh.size()), rect_cache_size, config_cache_size),
+  kernel_base<kernel<FermionGf,imtime>, array<double,1>>
+  (result_type(mesh.size()), rect_cache_size, config_cache_size),
   mesh(mesh), beta(mesh.x_max()) {
 
   Lambda_tau_not0.reserve(mesh.size()-2);

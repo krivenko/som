@@ -7,7 +7,7 @@
 #include <triqs/arrays/vector.hpp>
 
 #include "configuration.hpp"
-#include "pool.hpp"
+#include "config_update.hpp"
 
 namespace som {
 
@@ -30,18 +30,17 @@ public:
                     rhs_type const& rhs,
                     rhs_type const& error_bars) :
   kern(mesh),
-  rhs(rhs), error_bars(error_bars) {
- }
+  rhs(rhs), error_bars(error_bars) {}
 
  double operator()(configuration const& c) const {
   return sum(abs((kern(c) - rhs) / error_bars));
  }
 
  double operator()(configuration const& c, config_update const& cu) const {
-  // TODO
-  return 0;
+  return sum(abs((kern(c, cu) - rhs) / error_bars));
  }
 
+ KernelType const& get_kernel() { return kern; }
 };
 
 }

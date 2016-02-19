@@ -1,7 +1,7 @@
 #include <vector>
 #include <triqs/test_tools/arrays.hpp>
 
-#include "kernels/fermionicgf_imtime.hpp"
+#include "kernels/fermiongf_imtime.hpp"
 
 using namespace som;
 using namespace triqs::gfs;
@@ -25,11 +25,9 @@ TEST(Kernels,FermionicGf_imtime) {
 
  gf_mesh<imtime> mesh(beta,Fermion,11);
 
- kernel<FermionicGf,imtime> kern(mesh);
+ kernel<FermionGf,imtime> kern(mesh);
 
- for(int i = 0; i < conf.size(); ++i)
-  EXPECT_TRUE(array_are_close(ref[i],kern(conf[i]),1e-5));
-
+ for(int i = 0; i < conf.size(); ++i) EXPECT_TRUE(array_are_close(ref[i],kern(conf[i]),1e-5));
 }
 
 MAKE_MAIN;

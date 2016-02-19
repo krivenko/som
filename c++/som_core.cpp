@@ -41,7 +41,7 @@ void som_core::set_input_data(gf_const_view<GfOpts...> g, gf_const_view<GfOpts..
 
 // Construct on fermionic G(\tau)
 som_core::som_core(gf_const_view<imtime> g_tau, gf_const_view<imtime> S_tau) :
-kind(FermionicGf), mesh_id(get_mesh_id<imtime>()),
+kind(FermionGf), mesh_id(get_mesh_id<imtime>()),
 rhs(input_data_r_t()), error_bars(input_data_r_t()) {
  if(g_tau.domain().statistic != Fermion)
   TRIQS_RUNTIME_ERROR << "som_core: only fermionic Green's functions are supported";
@@ -54,7 +54,7 @@ rhs(input_data_r_t()), error_bars(input_data_r_t()) {
 
 // Construct on fermionic G(i\omega)
 som_core::som_core(gf_const_view<imfreq> g_iw, gf_const_view<imfreq> S_iw) :
-kind(FermionicGf), mesh_id(get_mesh_id<imfreq>()),
+kind(FermionGf), mesh_id(get_mesh_id<imfreq>()),
 rhs(input_data_c_t()), error_bars(input_data_c_t()) {
  if(g_iw.domain().statistic != Fermion)
   TRIQS_RUNTIME_ERROR << "som_core: only fermionic Green's functions are supported";
@@ -64,7 +64,7 @@ rhs(input_data_c_t()), error_bars(input_data_c_t()) {
 
 // Construct on fermionic G_l
 som_core::som_core(gf_const_view<legendre> g_l, gf_const_view<legendre> S_l) :
-kind(FermionicGf), mesh_id(get_mesh_id<legendre>()),
+kind(FermionGf), mesh_id(get_mesh_id<legendre>()),
 rhs(input_data_r_t()), error_bars(input_data_r_t()) {
  if(g_l.domain().statistic != Fermion)
   TRIQS_RUNTIME_ERROR << "som_core: only fermionic Green's functions are supported";
