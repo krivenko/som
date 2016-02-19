@@ -7,7 +7,6 @@
 #include <ostream>
 #include <triqs/utility/exceptions.hpp>
 
-#include "ids.hpp"
 #include "rectangle.hpp"
 
 namespace som {
@@ -18,34 +17,26 @@ class configuration {
 
  // Rectangles in this configuration
  std::vector<rectangle> rects;
- // Unique id of this configuration
- int id;
 
  static const int default_max_rects = 70;
 
 public:
 
- mutable bool lhs_computed = false; // have we already applied the kernel to this configuration?
-
- configuration(int reserved_rects = default_max_rects) : id(get_config_id()) {
+ configuration(int reserved_rects = default_max_rects) {
   rects.reserve(reserved_rects);
  }
- configuration(std::initializer_list<rectangle> const& l) : id(get_config_id()), rects(l) {
+ configuration(std::initializer_list<rectangle> const& l) : rects(l) {
   rects.reserve(default_max_rects);
  }
- configuration(configuration const& r) : id(get_config_id()), rects(r.rects) {}
+ configuration(configuration const&) = default;
  configuration(configuration &&) = default;
  configuration & operator=(configuration const&) = default;
  configuration & operator=(configuration &&) = default;
-
- ~configuration() { release_config_id(id); }
 
  // Number of rectangles
  int size() const { return rects.size(); }
  // Maximum number of rectangles
  int max_size() const { return rects.capacity(); }
- // Returns configuration id
- int get_id() const { return id; }
 
  // Access a rectangle by index
  rectangle const& operator[](int index) const { return rects[index]; }
@@ -83,7 +74,7 @@ public:
  configuration& operator*=(double alpha) {
   if(alpha < 0) TRIQS_RUNTIME_ERROR <<
                 "Cannot multiply a configuration by a negative number " << alpha;
-  for(auto & r : rects) r *= alpha;
+  for(auto & r : rects) r = r*alpha;
   return *this;
  }
  friend configuration operator*(configuration const& c, double alpha) {
@@ -102,7 +93,7 @@ public:
                 << norm << " is requested";
   double old_norm = 0;
   for(auto const& r : rects) old_norm += r.norm();
-  for(auto & r : rects) r *= norm / old_norm;
+  for(auto & r : rects) r = r * (norm / old_norm);
  }
 
  // constant iterator

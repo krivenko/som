@@ -15,9 +15,6 @@ using namespace triqs::gfs;
 template<> class kernel<FermionGf,imtime> :
            public kernel_base<kernel<FermionGf,imtime>, array<double,1>> {
 
- double beta;          // Inverse temperature
- gf_mesh<imtime> mesh; // Matsubara time mesh
-
  // Tolerance levels for function evaluation
  static constexpr double tolerance = 1e-11;
  // Number of energy points for Lambda_tau_not0 interpolation
@@ -38,11 +35,10 @@ public:
  using result_type = array<double,1>;
  using mesh_type = gf_mesh<imtime>;
 
- kernel(gf_mesh<imtime> const& mesh,
-        int rect_cache_size = RECT_IDS, int config_cache_size = CONFIG_IDS) :
-  kernel_base<kernel<FermionGf,imtime>, array<double,1>>
-  (result_type(mesh.size()), rect_cache_size, config_cache_size),
-  mesh(mesh), beta(mesh.x_max()) {
+ const double beta;          // Inverse temperature
+ const gf_mesh<imtime> mesh; // Matsubara time mesh
+
+ kernel(gf_mesh<imtime> const& mesh) : mesh(mesh), beta(mesh.x_max()) {
 
   Lambda_tau_not0.reserve(mesh.size()-2);
   for(int itau = 1; itau < mesh.size()-1; ++itau) {
@@ -92,18 +88,18 @@ public:
 
  void apply(rectangle const& rect, result_type & res) const {
 
-  double e1 = rect.center() - rect.width()/2;
-  double e2 = rect.center() + rect.width()/2;
+  double e1 = rect.center - rect.width/2;
+  double e2 = rect.center + rect.width/2;
 
   // (kernel * rect)(\tau = 0)
-  res(0) = rect.height() * (Lambda_tau_0(e2) - Lambda_tau_0(e1));
+  res(0) = rect.height * (Lambda_tau_0(e2) - Lambda_tau_0(e1));
   // (kernel * rect)(0 < \tau < \beta)
   for(int itau = 1; itau < mesh.size()-1; ++itau) {
    auto const& l = Lambda_tau_not0[itau-1];
-   res(itau) = rect.height() * (l(e2) - l(e1));
+   res(itau) = rect.height * (l(e2) - l(e1));
   }
   // (kernel * rect)(\tau = \beta)
-  res(mesh.size()-1) = rect.height() * (Lambda_tau_0(-e1) - Lambda_tau_0(-e2));
+  res(mesh.size()-1) = rect.height * (Lambda_tau_0(-e1) - Lambda_tau_0(-e2));
  }
 
 };

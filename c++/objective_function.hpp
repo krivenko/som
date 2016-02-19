@@ -36,8 +36,8 @@ public:
   return sum(abs((kern(c) - rhs) / error_bars));
  }
 
- double operator()(configuration const& c, config_update const& cu) const {
-  return sum(abs((kern(c, cu) - rhs) / error_bars));
+ double operator()(config_update const& cu) const {
+  return sum(abs((kern(cu) - rhs) / error_bars));
  }
 
  KernelType const& get_kernel() { return kern; }

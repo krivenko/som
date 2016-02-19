@@ -47,21 +47,19 @@ TEST(objective_function,Change) {
  auto s = S();
 
  obj_function of(mesh, gf, s);
- auto const& kern = of.get_kernel();
 
  EXPECT_NEAR(172.784,of(conf),1e-3);
 
- config_update cu;
+ config_update cu(conf);
  cu.change_rectangle(1, rects[3]);
- EXPECT_NEAR(167.785,of(conf, cu),1e-3);
+ EXPECT_NEAR(167.785,of(cu),1e-3);
 
  cu.reset();
- EXPECT_NEAR(172.784,of(conf, cu),1e-3);
+ EXPECT_NEAR(172.784,of(cu),1e-3);
  cu.change_rectangle(0,rects[1]);
- EXPECT_NEAR(301.098,of(conf, cu),1e-3);
+ EXPECT_NEAR(301.098,of(cu),1e-3);
 
- kern.update_config_cache(conf, cu);
- apply(conf, cu);
+ cu.apply();
  EXPECT_NEAR(301.098,of(conf),1e-3);
 }
 
@@ -71,21 +69,19 @@ TEST(objective_function,Add) {
  auto s = S();
 
  obj_function of(mesh, gf, s);
- auto const& kern = of.get_kernel();
 
  EXPECT_NEAR(173.149,of(conf),1e-3);
 
- config_update cu;
+ config_update cu(conf);
  cu.add_rectangle(rects[2]);
- EXPECT_NEAR(400.832,of(conf, cu),1e-3);
+ EXPECT_NEAR(400.832,of(cu),1e-3);
 
  cu.reset();
- EXPECT_NEAR(173.149,of(conf, cu),1e-3);
+ EXPECT_NEAR(173.149,of(cu),1e-3);
  cu.add_rectangle(rects[3]);
- EXPECT_NEAR(405.862,of(conf, cu),1e-3);
+ EXPECT_NEAR(405.862,of(cu),1e-3);
 
- kern.update_config_cache(conf, cu);
- apply(conf, cu);
+ cu.apply();
  EXPECT_NEAR(405.862,of(conf),1e-3);
 }
 
@@ -95,53 +91,50 @@ TEST(objective_function,Remove) {
  auto s = S();
 
  obj_function of(mesh, gf, s);
- auto const& kern = of.get_kernel();
 
  EXPECT_NEAR(400.832,of(conf),1e-3);
 
- config_update cu;
+ config_update cu(conf);
  cu.remove_rectangle(1);
- EXPECT_NEAR(172.784,of(conf, cu),1e-3);
+ EXPECT_NEAR(172.784,of(cu),1e-3);
 
  cu.reset();
- EXPECT_NEAR(400.832,of(conf, cu),1e-3);
+ EXPECT_NEAR(400.832,of(cu),1e-3);
  cu.remove_rectangle(2);
- EXPECT_NEAR(173.149,of(conf, cu),1e-3);
+ EXPECT_NEAR(173.149,of(cu),1e-3);
 
- kern.update_config_cache(conf, cu);
- apply(conf, cu);
+ cu.apply();
  EXPECT_NEAR(173.149,of(conf),1e-3);
 }
 
-/*
+
 TEST(objective_function,Multiple) {
  configuration conf {rects[0],rects[1]};
  auto gf = GF();
  auto s = S();
 
  obj_function of(mesh, gf, s);
- auto const& kern = of.get_kernel();
 
  EXPECT_NEAR(173.149,of(conf),1e-3);
 
- config_update cu;
+ config_update cu(conf);
  cu.add_rectangle(rects[3]);
  cu.change_rectangle(1,rects[2]);
- EXPECT_NEAR(395.468,of(conf, cu),1e-3);
+ EXPECT_NEAR(395.468,of(cu),1e-3);
 
  cu.reset();
- EXPECT_NEAR(173.149,of(conf, cu),1e-3);
+ EXPECT_NEAR(173.149,of(cu),1e-3);
  cu.change_rectangle(1,rects[2]);
  cu.remove_rectangle(0);
- EXPECT_NEAR(79.8879,of(conf, cu),1e-3);
+ EXPECT_NEAR(79.8879,of(cu),1e-3);
 
- //  of.complete_operations();
-//  EXPECT_NEAR(79.8879,of(),1e-3);
-//  of.try_add_rectangle(rects[3]);
-//  of.try_change_rectangle(0,rects[0]);
-//  EXPECT_NEAR(167.785,of(),1e-3);
-//  of.complete_operations();
-//  EXPECT_NEAR(167.785,of(),1e-3);
-}*/
+ cu.apply();
+ EXPECT_NEAR(79.8879,of(conf),1e-3);
+ cu.add_rectangle(rects[3]);
+ cu.change_rectangle(0,rects[0]);
+ EXPECT_NEAR(167.785,of(cu),1e-3);
+ cu.apply();
+ EXPECT_NEAR(167.785,of(conf),1e-3);
+}
 
 MAKE_MAIN;
