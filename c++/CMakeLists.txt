@@ -3,7 +3,7 @@
 #
 
 # Find all the .cpp files in the current directory
-FILE(GLOB cpp_sources RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
+file(GLOB cpp_sources RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
 
 # Set up the compilation of those files into a shared library
 add_library(som_c ${cpp_sources})
