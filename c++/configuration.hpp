@@ -49,14 +49,20 @@ public:
   rects.reserve(default_max_rects);
  }
  configuration(configuration const&) = default;
- configuration(configuration &&) = default;
+ //configuration(configuration &&) = default;
  configuration & operator=(configuration const&) = default;
- configuration & operator=(configuration &&) = default;
+ //configuration & operator=(configuration &&) = default;
 
  // Number of rectangles
  int size() const { return rects.size(); }
  // Maximum number of rectangles
  int max_size() const { return rects.capacity(); }
+ // Norm of this configuration
+ double norm() const {
+  double res = 0;
+  for(auto const& r : rects) res += r.norm();
+  return res;
+ }
 
  // Access a rectangle by index
  rectangle const& operator[](int index) const { return rects[index]; }

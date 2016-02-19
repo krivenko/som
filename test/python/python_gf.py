@@ -13,7 +13,7 @@ g_w = GfReFreq(window = (-5,5), n_points = 1000, indices = indices)
 
 cont = SomCore(g_tau, s_tau)
 
-run_params = {}
+run_params = {'energy_window' : (-5,5)}
 
 cont.run(**run_params)
 cont(g_w)

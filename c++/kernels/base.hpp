@@ -43,15 +43,11 @@ public:
  kernel_base() = default;
 
  inline ResultType operator()(rectangle const& rect) const {
-  auto const* kern = static_cast<Derived const*>(this);
-  ResultType res(kern->mesh.size());
-  kern->apply(rect, res);
-  return res;
+  return static_cast<Derived const*>(this)->apply(rect);
  }
 
  inline ResultType operator()(configuration const& c) const {
-  auto const* kern = static_cast<Derived const*>(this);
-  ResultType res(kern->mesh.size());
+  ResultType res(static_cast<Derived const*>(this)->mesh.size());
   res() = 0;
   for(auto const& r : c) res += operator()(r);
   return res;

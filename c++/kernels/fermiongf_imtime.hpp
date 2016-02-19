@@ -106,7 +106,10 @@ public:
   }
  }
 
- void apply(rectangle const& rect, result_type & res) const {
+ // Apply to a rectangle
+ result_type apply(rectangle const& rect) const {
+
+  result_type res(mesh.size());
 
   double e1 = rect.center - rect.width/2;
   double e2 = rect.center + rect.width/2;
@@ -120,6 +123,8 @@ public:
   }
   // (kernel * rect)(\tau = \beta)
   res(mesh.size()-1) = rect.height * (Lambda_tau_0(-e1) - Lambda_tau_0(-e2));
+
+  return res;
  }
 
 };
