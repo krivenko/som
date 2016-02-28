@@ -27,6 +27,14 @@ set(CMAKE_INSTALL_PREFIX ${TRIQS_PATH})
 message(STATUS "TRIQS : Adding compilation flags detected by the library (C++11/14, libc++, etc...) ")
 add_definitions(${TRIQS_CXX_DEFINITIONS})
 
+# Detect MPI
+find_package(MPI)
+
+option(EXT_DEBUG "Enable extended debugging output" OFF)
+if(EXT_DEBUG)
+ add_definitions(-DEXT_DEBUG)
+endif(EXT_DEBUG)
+
 option(Tests "Enable Tests" ON)
 
 # Compile C++ code
