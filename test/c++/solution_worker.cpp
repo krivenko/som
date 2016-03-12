@@ -36,13 +36,35 @@ TEST(solution_worker,RandomConfig) {
 
  solution_worker<kernel<FermionGf,imtime>> worker(of, 1.0, params, 10);
 
- worker(10);
+ auto solution = worker(10);
 
- // TODO: compare to the reference solution
+ configuration solution_ref;
+ triqs::h5::file arch("solution_worker.ref.h5", H5F_ACC_RDONLY);
+ h5_read(arch, "RandomConfig_output", solution_ref);
+
+ EXPECT_EQ(solution_ref, solution);
 }
 
 TEST(solution_worker,StartConfig) {
- // TODO
+ obj_function of(mesh, g_tau, s_tau);
+
+ auto params = run_parameters_t({-3.0,3.0});
+ params.n_elementary_updates = 100;
+ params.min_rect_width = 0.001;
+ params.min_rect_weight = 0.001;
+
+ solution_worker<kernel<FermionGf,imtime>> worker(of, 1.0, params, 10);
+
+ triqs::h5::file arch("solution_worker.ref.h5", H5F_ACC_RDONLY);
+ configuration init_config;
+ h5_read(arch, "StartConfig_input", init_config);
+
+ auto solution = worker(init_config);
+
+ configuration solution_ref;
+ h5_read(arch, "StartConfig_output", solution_ref);
+
+ EXPECT_EQ(solution_ref, solution);
 }
 
 MAKE_MAIN;

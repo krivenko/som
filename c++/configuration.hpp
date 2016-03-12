@@ -26,12 +26,14 @@
 #include <iterator>
 #include <ostream>
 #include <triqs/utility/exceptions.hpp>
+#include <triqs/arrays.hpp>
 
 #include "rectangle.hpp"
 
 namespace som {
 
 using namespace triqs::arrays;
+namespace h5 = triqs::h5;
 
 class configuration {
 
@@ -39,6 +41,9 @@ class configuration {
  std::vector<rectangle> rects;
 
  static const int default_max_rects = 70;
+
+ // Remove all rectangles, only for internal use in h5_read
+ void clear() { rects.clear(); }
 
 public:
 
@@ -66,6 +71,10 @@ public:
 
  // Access a rectangle by index
  rectangle const& operator[](int index) const { return rects[index]; }
+
+ // Equality
+ bool operator==(configuration const& c) const { return rects == c.rects; }
+ bool operator!=(configuration const& c) const { return rects != c.rects; }
 
  // Insert a new rectangle
  rectangle& insert(rectangle const& r) {
@@ -138,6 +147,24 @@ public:
    os << r;
   }
   return os;
+ }
+
+ // HDF5
+ friend std::string get_triqs_hdf5_data_scheme(configuration const&) { return "SomConfiguration"; }
+ friend void h5_write(h5::group gr, std::string const& name, configuration const& c) {
+  using triqs::arrays::array;
+  array<double,2> data(c.size(),3);
+  for(int i = 0; i < c.size(); ++i)
+   data(i,range()) = array<double,1>{c[i].center, c[i].width, c[i].height};
+  h5_write(gr, name, data);
+  auto ds = gr.open_dataset(name);
+  h5_write_attribute(ds, "TRIQS_HDF5_data_scheme", get_triqs_hdf5_data_scheme(c));
+ }
+ friend void h5_read(h5::group gr, std::string const& name, configuration& c) {
+  using triqs::arrays::array;
+  array<double,2> data;
+  h5_read(gr, name, data);
+  for(int i = 0; i < first_dim(data); ++i) c.insert({data(i,0), data(i,1), data(i,2)});
  }
 };
 

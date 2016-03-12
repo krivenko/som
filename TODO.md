@@ -1,5 +1,3 @@
-* Enable HDF5 storage of configurations as arrays Nx3
-* Complete solution_worker test
 * Reintroduce LHS-caching scheme (LHS vector storage in kernel_base + static cache_entry database in rectangle/configuration)
 * Add kernels fermiongf_imfreq and fermiongf_legendre
 * Add fit_quality function object, similarly to objective_function

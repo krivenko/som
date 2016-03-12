@@ -119,7 +119,7 @@ public:
  configuration operator()(configuration const& init_config) {
 
   double init_norm = init_config.norm();
-  if(!is_zero(std::abs(init_norm - norm), 1e-14 * norm))
+  if(!triqs::utility::is_zero(std::abs(init_norm - norm), 1e-14 * norm))
    TRIQS_RUNTIME_ERROR << "solution_worker: initial configuration has a wrong norm "
                        << init_norm << ", must be " << norm;
 

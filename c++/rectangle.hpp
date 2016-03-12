@@ -42,6 +42,11 @@ struct rectangle {
  rectangle & operator=(rectangle const&) = default;
  rectangle & operator=(rectangle &&) = default;
 
+ bool operator==(rectangle const& r) const {
+  return center == r.center && width == r.width && height == r.height;
+ }
+ bool operator!=(rectangle const& r) const { return !operator==(r); }
+
  double norm() const { return width * height; }
  double operator()(double x) const {
   return (x >= center - width/2 && x <= center + width/2) ? height : 0;
