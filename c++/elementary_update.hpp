@@ -21,12 +21,12 @@
 #pragma once
 
 #include <array>
-#include <cmath>
 #include <algorithm>
 
 #include <triqs/mc_tools.hpp>
 #include <triqs/utility/numeric_ops.hpp>
 
+#include "expabs_distribution.hpp"
 #include "config_update.hpp"
 
 namespace som {
@@ -44,22 +44,7 @@ protected:
  random_generator & rng;
 
  // Generate change of a parameter :math:`\delta\xi` (see Sec. 3.4)
- //
- // This function returns a real random number dxi from [dxi_min; dxi_max[
- // distributed as P(dxi) = N exp(-gamma*|dxi|/max(|dxi_min|,|dxi_max|))
- double generate_parameter_change(double dxi_min, double dxi_max) const {
-  double dxi_min_abs = std::abs(dxi_min);
-  double dxi_max_abs = std::abs(dxi_max);
-  double L = std::max(dxi_min_abs, dxi_max_abs);
-  double gL = data.gamma / L;
-
-  double x = rng();
-
-  double f = (1-x) * std::copysign(1 - std::exp(-gL * dxi_min_abs), dxi_min) +
-                 x * std::copysign(1 - std::exp(-gL * dxi_max_abs), dxi_max);
-
-  return std::copysign(-std::log(1 - std::abs(f)) / gL, f);
- }
+ expabs_distribution<random_generator> generate_parameter_change;
 
  enum {full = 0, half = 1, opt = 2} selected_parameter_change;
 
@@ -111,7 +96,7 @@ protected:
 public:
 
  elementary_update(mc_data<KernelType> & data, random_generator & rng) :
-  data(data), rng(rng),
+  data(data), rng(rng), generate_parameter_change(rng, data.gamma),
   update{config_update(data.temp_conf), config_update(data.temp_conf), config_update(data.temp_conf)},
   new_objf_value{0,0,0}
   {}
