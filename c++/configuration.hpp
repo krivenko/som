@@ -29,6 +29,7 @@
 #include <triqs/arrays.hpp>
 
 #include "rectangle.hpp"
+#include "unique_id.hpp"
 
 namespace som {
 

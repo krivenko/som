@@ -24,6 +24,8 @@
 #include <complex>
 #include <ostream>
 
+#include "unique_id.hpp"
+
 namespace som {
 
 using namespace triqs::arrays;
