@@ -44,15 +44,13 @@ void som_core::set_input_data(gf_const_view<GfOpts...> g, gf_const_view<GfOpts..
  auto & rhs_ = (input_data_t&)(rhs);
  auto & error_bars_ = (input_data_t&)error_bars;
  auto gf_dim = get_target_shape(g)[0];
+
+ results.reserve(gf_dim);
  for(int i = 0; i < gf_dim; ++i) {
-  rhs_.emplace_back(g.mesh().size());
-  rhs_.back()() = g.data()(range(),i,i);
-
-  error_bars_.emplace_back(S.mesh().size());
-  error_bars_.back()() = S.data()(range(),i,i);
+  rhs_.emplace_back(g.data()(range(),i,i));
+  error_bars_.emplace_back(S.data()(range(),i,i));
+  results.emplace_back(ci);
  }
-
- results.resize(gf_dim);
 }
 
 ////////////////////////////////
@@ -102,7 +100,8 @@ void som_core::run(run_parameters_t const& p) {
  // TODO: force set.energy_bounds.first = 0 for susceptibilities/conductivity
 
  // FIXME
- for(auto & r :results) r.insert({2.0,2.0,1.5});
+ rectangle tmp_r = {2.0, 2.0, 1.5, ci};
+ for(auto & r :results) r = configuration({tmp_r}, ci);
 }
 
 gf_view<refreq> som_core::operator()(gf_view<refreq> g_w) const {

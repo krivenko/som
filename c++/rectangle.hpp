@@ -24,7 +24,10 @@
 #include <complex>
 #include <ostream>
 
-#include "unique_id.hpp"
+#include <triqs/arrays/vector.hpp>
+#include <triqs/utility/numeric_ops.hpp>
+
+#include "cache_index.hpp"
 
 namespace som {
 
@@ -36,16 +39,47 @@ struct rectangle {
  double width;              // width
  double height;             // height
 
- rectangle() = default;
- rectangle(double center, double width, double height) :
-  center(center), width(width), height(height) {}
- rectangle(rectangle const&) = default;
- rectangle(rectangle &&) = default;
- rectangle & operator=(rectangle const&) = default;
- rectangle & operator=(rectangle &&) = default;
+ // Pointer to a cache entry descriptor
+ // Rectangles are immutable objects, therefore they acquire a new cache entry
+ // descriptor only on construction. Copies inherit the same descriptor, and
+ // increase the refcount to it. The refcount is decreased by one on destruction.
+ // Cache entry bound to an existing rectangle is never invalidated, once the LHS is computed.
+ cache_index::entry * cache_entry;
+
+public:
+
+ rectangle(double center, double width, double height, cache_index & ci) :
+  center(center), width(width), height(height), cache_entry(ci.aquire()) {}
+
+ rectangle(rectangle const& r) :
+  center(r.center), width(r.width), height(r.height), cache_entry(r.cache_entry) {
+  cache_entry->incref();
+ }
+ rectangle(rectangle && r) :
+  center(r.center), width(r.width), height(r.height), cache_entry(r.cache_entry) {
+  cache_entry->incref();
+ }
+ rectangle & operator=(rectangle const& r) {
+  cache_entry->decref();
+  center = r.center; width = r.width; height = r.height; cache_entry = r.cache_entry;
+  cache_entry->incref();
+  return *this;
+ }
+ rectangle & operator=(rectangle && r) {
+  using std::swap;
+  swap(center, r.center);
+  swap(width, r.width);
+  swap(height, r.height);
+  swap(cache_entry, r.cache_entry);
+  return *this;
+ }
+ ~rectangle() { cache_entry->decref(); }
 
  bool operator==(rectangle const& r) const {
-  return center == r.center && width == r.width && height == r.height;
+  using triqs::utility::is_zero;
+  return is_zero(center-r.center, 1e-9) &&
+         is_zero(width-r.width, 1e-9) &&
+         is_zero(height-r.height, 1e-9);
  }
  bool operator!=(rectangle const& r) const { return !operator==(r); }
 
@@ -72,14 +106,14 @@ struct rectangle {
  }
 
  // stream insertion
- friend std::ostream& operator<<(std::ostream& os, rectangle r) {
+ friend std::ostream& operator<<(std::ostream& os, rectangle const& r) {
   os << "(c:" << r.center << ", w:" << r.width << ", h:" << r.height << ")";
   return os;
  }
 
  // multiplication by scalar
  friend rectangle operator*(rectangle const& r, double alpha) {
-  return {r.center, r.width, r.height * alpha};
+  return {r.center, r.width, r.height * alpha, r.cache_entry->index};
  }
  friend rectangle operator*(double alpha, rectangle const& r) { return r*alpha; }
 

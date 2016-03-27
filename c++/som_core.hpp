@@ -39,6 +39,10 @@ using triqs::utility::variant;
 
 class som_core {
 
+ // LHS cache index
+ // Must be sure this object is destroyed after all other members
+ cache_index ci;
+
  using input_data_r_t = std::vector<vector<double>>;
  using input_data_c_t = std::vector<vector<std::complex<double>>>;
 

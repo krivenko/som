@@ -26,6 +26,7 @@
 #include <triqs/utility/exceptions.hpp>
 
 #include "configuration.hpp"
+#include "cache_index.hpp"
 
 #define CHECK_CONFIG_UPDATE_OPERATIONS
 
@@ -37,38 +38,81 @@ struct config_update {
  // configuration this update will be applied to
  configuration & conf;
 
- // List of changed rectangles with their indices
+ // List of indices of changed rectangles
  // 0 <= index < INT_MAX: replace rectangle at index
  // index == INT_MAX: add rectangle
  // index < 0: remove rectanle at -index.
- std::vector<std::pair<int,rectangle>> changed_rects;
+ std::vector<int> changed_indices;
+ // New rectangles (for insertions and chages)
+ std::vector<rectangle> new_rects;
 
- config_update(configuration & conf) : conf(conf) { changed_rects.reserve(2); }
+ // Pointer to a cache entry descriptor
+ // Every new config_update object, including copies, aquire a new
+ // cache entry descriptor, which is then released in the destructor.
+ // Methods reset() and *_rectangle() will invalidate the cache entry.
+ cache_index::entry * cache_entry;
+
+ config_update(configuration & conf, cache_index & ci) :
+  conf(conf), cache_entry(ci.aquire()) {
+  changed_indices.reserve(2);
+  new_rects.reserve(2);
+ }
+ config_update(config_update const& cu) :
+  conf(cu.conf), changed_indices(cu.changed_indices), new_rects(cu.new_rects),
+  cache_entry(cu.cache_entry->index.aquire()) {}
+ config_update(config_update && cu) :
+  conf(cu.conf), changed_indices(std::move(cu.changed_indices)), new_rects(std::move(cu.new_rects)),
+  cache_entry(cu.cache_entry->index.aquire()) {}
+ config_update & operator=(config_update const&) = delete;
+ config_update & operator=(config_update &&) = delete;
+ ~config_update() { cache_entry->decref(); }
 
  void add_rectangle(rectangle const& r) {
-  changed_rects.emplace_back(INT_MAX, r);
+  changed_indices.push_back(INT_MAX);
+  new_rects.push_back(r);
+  cache_entry->valid = false;
  }
+ void add_rectangle(rectangle && r) {
+  changed_indices.push_back(INT_MAX);
+  new_rects.push_back(std::move(r));
+  cache_entry->valid = false;
+ }
+
  void remove_rectangle(int index) {
-  changed_rects.emplace_back(-index-1, rectangle{});
+  changed_indices.push_back(-index-1);
+  cache_entry->valid = false;
  }
+
  void change_rectangle(int index, rectangle const& r) {
-  changed_rects.emplace_back(index, r);
+  changed_indices.push_back(index);
+  new_rects.push_back(r);
+  cache_entry->valid = false;
+ }
+ void change_rectangle(int index, rectangle && r) {
+  changed_indices.push_back(index);
+  new_rects.push_back(std::move(r));
+  cache_entry->valid = false;
  }
 
  // access the base configuration
  configuration const& get_config() const { return conf; }
 
- void reset() { changed_rects.resize(0); }
+ void reset() {
+  changed_indices.clear();
+  new_rects.clear();
+  cache_entry->valid = false;
+ }
 
  void apply() {
 #ifdef CHECK_CONFIG_UPDATE_OPERATIONS
-  if(changed_rects.size() > 2)
+  if(changed_indices.size() > 2)
    TRIQS_RUNTIME_ERROR << "config_update: only 2 operations in a row are allowed";
 #endif
-  for(auto const& ch : changed_rects) {
-   int index = ch.first;
+  auto rect_it = std::cbegin(new_rects);
+  for(auto index : changed_indices) {
    if(index == INT_MAX) { // add rectangle
-    conf.insert(ch.second);
+    conf.insert(*rect_it);
+    ++rect_it;
    } else if(index < 0) { // remove rectangle
 #ifdef CHECK_CONFIG_UPDATE_OPERATIONS
   if(-index-1 >= conf.size())
@@ -80,14 +124,16 @@ struct config_update {
   if(index >= conf.size())
    TRIQS_RUNTIME_ERROR << "config_update (change): index out of range, index = " << index;
 #endif
-    conf.replace(index, ch.second);
+    conf.replace(index, *rect_it);
+    ++rect_it;
    }
   }
+  conf.cache_entry->valid = false;
   reset();
  }
 
- int size() const { return changed_rects.size(); }
- operator bool() { return changed_rects.size() > 0; }
+ int size() const { return changed_indices.size(); }
+ operator bool() { return changed_indices.size() > 0; }
 };
 
 }

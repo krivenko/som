@@ -11,10 +11,11 @@ using namespace triqs::arrays;
 using namespace triqs::gfs;
 
 const double beta = 2;
-std::vector<rectangle> rects {{-2,2.6, 0.3},
-                              {1.3,2.6,0.6},
-                              {-0.5,2.6,0.5},
-                              {2,2.6,0.7}};
+cache_index ci;
+std::vector<rectangle> rects {{-2,2.6,0.3,ci},
+                              {1.3,2.6,0.6,ci},
+                              {-0.5,2.6,0.5,ci},
+                              {2,2.6,0.7,ci}};
 
 gf_mesh<imtime> mesh(beta,Fermion,11);
 
@@ -39,18 +40,17 @@ array<double,1> S() {
  return res;
 }
 
-using obj_function = objective_function<kernel<FermionGf,imtime>>;
+auto g = GF();
+auto s = S();
+
+objective_function<kernel<FermionGf,imtime>> of(mesh, g, s);
 
 TEST(objective_function,Change) {
- configuration conf {rects[0],rects[2]};
- auto gf = GF();
- auto s = S();
-
- obj_function of(mesh, gf, s);
+ configuration conf({rects[0],rects[2]},ci);
 
  EXPECT_NEAR(172.784,of(conf),1e-3);
 
- config_update cu(conf);
+ config_update cu(conf,ci);
  cu.change_rectangle(1, rects[3]);
  EXPECT_NEAR(167.785,of(cu),1e-3);
 
@@ -60,19 +60,16 @@ TEST(objective_function,Change) {
  EXPECT_NEAR(301.098,of(cu),1e-3);
 
  cu.apply();
+ of.get_kernel().cache_copy(cu, conf);
  EXPECT_NEAR(301.098,of(conf),1e-3);
 }
 
 TEST(objective_function,Add) {
- configuration conf {rects[0],rects[1]};
- auto gf = GF();
- auto s = S();
-
- obj_function of(mesh, gf, s);
+ configuration conf({rects[0],rects[1]},ci);
 
  EXPECT_NEAR(173.149,of(conf),1e-3);
 
- config_update cu(conf);
+ config_update cu(conf,ci);
  cu.add_rectangle(rects[2]);
  EXPECT_NEAR(400.832,of(cu),1e-3);
 
@@ -82,19 +79,16 @@ TEST(objective_function,Add) {
  EXPECT_NEAR(405.862,of(cu),1e-3);
 
  cu.apply();
+ of.get_kernel().cache_copy(cu, conf);
  EXPECT_NEAR(405.862,of(conf),1e-3);
 }
 
 TEST(objective_function,Remove) {
- configuration conf {rects[0],rects[1],rects[2]};
- auto gf = GF();
- auto s = S();
-
- obj_function of(mesh, gf, s);
+ configuration conf({rects[0],rects[1],rects[2]},ci);
 
  EXPECT_NEAR(400.832,of(conf),1e-3);
 
- config_update cu(conf);
+ config_update cu(conf,ci);
  cu.remove_rectangle(1);
  EXPECT_NEAR(172.784,of(cu),1e-3);
 
@@ -104,20 +98,17 @@ TEST(objective_function,Remove) {
  EXPECT_NEAR(173.149,of(cu),1e-3);
 
  cu.apply();
+ of.get_kernel().cache_copy(cu, conf);
  EXPECT_NEAR(173.149,of(conf),1e-3);
 }
 
 
 TEST(objective_function,Multiple) {
- configuration conf {rects[0],rects[1]};
- auto gf = GF();
- auto s = S();
-
- obj_function of(mesh, gf, s);
+ configuration conf({rects[0],rects[1]},ci);
 
  EXPECT_NEAR(173.149,of(conf),1e-3);
 
- config_update cu(conf);
+ config_update cu(conf,ci);
  cu.add_rectangle(rects[3]);
  cu.change_rectangle(1,rects[2]);
  EXPECT_NEAR(395.468,of(cu),1e-3);
@@ -129,6 +120,7 @@ TEST(objective_function,Multiple) {
  EXPECT_NEAR(79.8879,of(cu),1e-3);
 
  cu.apply();
+ of.get_kernel().cache_copy(cu, conf);
  EXPECT_NEAR(79.8879,of(conf),1e-3);
  cu.add_rectangle(rects[3]);
  cu.change_rectangle(0,rects[0]);

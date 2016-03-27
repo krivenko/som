@@ -37,9 +37,9 @@ template<typename KernelType> class update_insert : public elementary_update<Ker
 
 public:
 
- update_insert(mc_data<KernelType> & data, random_generator & rng,
+ update_insert(mc_data<KernelType> & data, random_generator & rng, cache_index & ci,
                    std::pair<double,double> energy_window, double width_min, double weight_min, int max_rects)  :
-  elementary_update<KernelType>(data, rng),
+  elementary_update<KernelType>(data, rng, ci),
   energy_window(energy_window), width_min(width_min), weight_min(weight_min),
   cnew_min(energy_window.first + width_min/2), cnew_max(energy_window.second - width_min/2),
   max_rects(max_rects)
@@ -81,8 +81,8 @@ public:
   double snew = eu::generate_parameter_change(width_min, snew_max);
   double hnew = snew / wnew;
 
-  eu::update[eu::full].change_rectangle(t, {rect.center, rect.width, rect.height - snew / rect.width});
-  eu::update[eu::full].add_rectangle({cnew, wnew, hnew});
+  eu::update[eu::full].change_rectangle(t, {rect.center, rect.width, rect.height - snew / rect.width, eu::ci});
+  eu::update[eu::full].add_rectangle({cnew, wnew, hnew, eu::ci});
 
   if(snew / 2 < width_min) { // We cannot optimize w.r.t. snew in this case
    eu::new_objf_value[eu::full] = eu::data.objf(eu::update[eu::full]);
@@ -93,8 +93,8 @@ public:
             << ", snew = " << snew << std::endl;
 #endif
   } else {
-   eu::update[eu::half].change_rectangle(t, {rect.center, rect.width, rect.height - (snew/2) / rect.width});
-   eu::update[eu::half].add_rectangle({cnew, wnew, hnew/2});
+   eu::update[eu::half].change_rectangle(t, {rect.center, rect.width, rect.height - (snew/2) / rect.width, eu::ci});
+   eu::update[eu::half].add_rectangle({cnew, wnew, hnew/2, eu::ci});
 
    auto snew_opt = eu::optimize_parameter_change(snew, width_min, snew_max);
 
@@ -106,8 +106,8 @@ public:
    if(snew_opt.first) {
     snew = snew_opt.second;
     hnew = snew / wnew;
-    eu::update[eu::opt].change_rectangle(t, {rect.center, rect.width, rect.height - snew / rect.width});
-    eu::update[eu::opt].add_rectangle({cnew, wnew, hnew});
+    eu::update[eu::opt].change_rectangle(t, {rect.center, rect.width, rect.height - snew / rect.width, eu::ci});
+    eu::update[eu::opt].add_rectangle({cnew, wnew, hnew, eu::ci});
    }
 
    eu::select_parameter_change(snew_opt.first);
@@ -134,8 +134,9 @@ template<typename KernelType> class update_remove_shift : public elementary_upda
 
 public:
 
- update_remove_shift(mc_data<KernelType> & data, random_generator & rng, std::pair<double,double> energy_window) :
-  elementary_update<KernelType>(data, rng),
+ update_remove_shift(mc_data<KernelType> & data, random_generator & rng, cache_index & ci,
+                     std::pair<double,double> energy_window) :
+  elementary_update<KernelType>(data, rng, ci),
   energy_window(energy_window)
  {}
 
@@ -163,9 +164,9 @@ public:
   double dc2_max = energy_window.second - rect2.width/2 - rect2.center;
   double dc2 = eu::generate_parameter_change(dc2_min, dc2_max);
 
-  eu::update[eu::full].change_rectangle(t2, {rect2.center + dc2, rect2.width, rect2.height + rect1.norm() / rect2.width});
+  eu::update[eu::full].change_rectangle(t2, {rect2.center + dc2, rect2.width, rect2.height + rect1.norm() / rect2.width, eu::ci});
   eu::update[eu::full].remove_rectangle(t1);
-  eu::update[eu::half].change_rectangle(t2, {rect2.center + dc2/2, rect2.width, rect2.height + rect1.norm() / rect2.width});
+  eu::update[eu::half].change_rectangle(t2, {rect2.center + dc2/2, rect2.width, rect2.height + rect1.norm() / rect2.width, eu::ci});
   eu::update[eu::half].remove_rectangle(t1);
 
   auto dc2_opt = eu::optimize_parameter_change(dc2, dc2_min, dc2_max);
@@ -179,7 +180,7 @@ public:
 
   if(dc2_opt.first) {
    dc2 = dc2_opt.second;
-   eu::update[eu::opt].change_rectangle(t2, {rect2.center + dc2, rect2.width, rect2.height + rect1.norm() / rect2.width});
+   eu::update[eu::opt].change_rectangle(t2, {rect2.center + dc2, rect2.width, rect2.height + rect1.norm() / rect2.width, eu::ci});
    eu::update[eu::opt].remove_rectangle(t1);
   }
 
@@ -207,9 +208,9 @@ template<typename KernelType> class update_split_shift : public elementary_updat
 
 public:
 
- update_split_shift(mc_data<KernelType> & data, random_generator & rng,
+ update_split_shift(mc_data<KernelType> & data, random_generator & rng, cache_index & ci,
                    std::pair<double,double> energy_window, double width_min, int max_rects) :
-  elementary_update<KernelType>(data, rng),
+  elementary_update<KernelType>(data, rng, ci),
   energy_window(energy_window), width_min(width_min), max_rects(max_rects)
  {}
 
@@ -252,10 +253,10 @@ public:
    double dc1 = eu::generate_parameter_change(dc1_min, dc1_max);
    double dc2 = -dc1 * w1 / w2;
 
-   eu::update[eu::full].change_rectangle(t, {c1 + dc1, w1, rect.height});
-   eu::update[eu::full].add_rectangle({c2 + dc2, w2, rect.height});
-   eu::update[eu::half].change_rectangle(t, {c1 + dc1/2, w1, rect.height});
-   eu::update[eu::half].add_rectangle({c2 + dc2/2, w2, rect.height});
+   eu::update[eu::full].change_rectangle(t, {c1 + dc1, w1, rect.height, eu::ci});
+   eu::update[eu::full].add_rectangle({c2 + dc2, w2, rect.height, eu::ci});
+   eu::update[eu::half].change_rectangle(t, {c1 + dc1/2, w1, rect.height, eu::ci});
+   eu::update[eu::half].add_rectangle({c2 + dc2/2, w2, rect.height, eu::ci});
 
    auto dc1_opt = eu::optimize_parameter_change(dc1, dc1_min, dc1_max);
 
@@ -267,8 +268,8 @@ public:
    if(dc1_opt.first) {
     dc1 = dc1_opt.second;
     dc2 = -dc1 * w1 / w2;
-    eu::update[eu::opt].change_rectangle(t, {c1 + dc1, w1, rect.height});
-    eu::update[eu::opt].add_rectangle({c2 + dc2, w2, rect.height});
+    eu::update[eu::opt].change_rectangle(t, {c1 + dc1, w1, rect.height, eu::ci});
+    eu::update[eu::opt].add_rectangle({c2 + dc2, w2, rect.height, eu::ci});
    }
 
    eu::select_parameter_change(dc1_opt.first);
@@ -279,10 +280,10 @@ public:
    double dc2 = eu::generate_parameter_change(dc2_min, dc2_max);
    double dc1 = -dc2 * w2 / w1;
 
-   eu::update[eu::full].change_rectangle(t, {c1 + dc1, w1, rect.height});
-   eu::update[eu::full].add_rectangle({c2 + dc2, w2, rect.height});
-   eu::update[eu::half].change_rectangle(t, {c1 + dc1/2, w1, rect.height});
-   eu::update[eu::half].add_rectangle({c2 + dc2/2, w2, rect.height});
+   eu::update[eu::full].change_rectangle(t, {c1 + dc1, w1, rect.height, eu::ci});
+   eu::update[eu::full].add_rectangle({c2 + dc2, w2, rect.height, eu::ci});
+   eu::update[eu::half].change_rectangle(t, {c1 + dc1/2, w1, rect.height, eu::ci});
+   eu::update[eu::half].add_rectangle({c2 + dc2/2, w2, rect.height, eu::ci});
 
    auto dc2_opt = eu::optimize_parameter_change(dc2, dc2_min, dc2_max);
 
@@ -294,8 +295,8 @@ public:
   if(dc2_opt.first) {
     dc2 = dc2_opt.second;
     dc1 = -dc2 * w2 / w1;
-    eu::update[eu::opt].change_rectangle(t, {c1 + dc1, w1, rect.height});
-    eu::update[eu::opt].add_rectangle({c2 + dc2, w2, rect.height});
+    eu::update[eu::opt].change_rectangle(t, {c1 + dc1, w1, rect.height, eu::ci});
+    eu::update[eu::opt].add_rectangle({c2 + dc2, w2, rect.height, eu::ci});
    }
 
    eu::select_parameter_change(dc2_opt.first);
@@ -321,9 +322,9 @@ template<typename KernelType> class update_glue_shift : public elementary_update
 
 public:
 
- update_glue_shift(mc_data<KernelType> & data, random_generator & rng,
+ update_glue_shift(mc_data<KernelType> & data, random_generator & rng, cache_index & ci,
                    std::pair<double,double> energy_window) :
-  elementary_update<KernelType>(data, rng),
+  elementary_update<KernelType>(data, rng, ci),
   energy_window(energy_window)
  {}
 
@@ -357,9 +358,9 @@ public:
   double dc_max = energy_window.second - w/2 - c;
   double dc = eu::generate_parameter_change(dc_min, dc_max);
 
-  eu::update[eu::full].change_rectangle(t1, {c + dc, w, h});
+  eu::update[eu::full].change_rectangle(t1, {c + dc, w, h, eu::ci});
   eu::update[eu::full].remove_rectangle(t2);
-  eu::update[eu::half].change_rectangle(t1, {c + dc/2, w, h});
+  eu::update[eu::half].change_rectangle(t1, {c + dc/2, w, h, eu::ci});
   eu::update[eu::half].remove_rectangle(t2);
 
   auto dc_opt = eu::optimize_parameter_change(dc, dc_min, dc_max);
@@ -373,7 +374,7 @@ public:
 
   if(dc_opt.first) {
    dc = dc_opt.second;
-   eu::update[eu::opt].change_rectangle(t1, {c + dc, w, h});
+   eu::update[eu::opt].change_rectangle(t1, {c + dc, w, h, eu::ci});
    eu::update[eu::opt].remove_rectangle(t2);
   }
 

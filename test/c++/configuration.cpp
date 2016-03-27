@@ -7,14 +7,16 @@
 
 using namespace som;
 
-configuration conf1 = {{-2.0,2.6,0.3},
-                       {1.3,2.6,0.6},
-                       {2.0,2.6,0.7}};
+cache_index ci;
+
+configuration conf1({{-2.0,2.6,0.3,ci},
+                     {1.3,2.6,0.6,ci},
+                     {2.0,2.6,0.7,ci}},ci);
 std::string conf1_str =
 "(c:-2, w:2.6, h:0.3),(c:1.3, w:2.6, h:0.6),(c:2, w:2.6, h:0.7)";
-configuration conf2 = {{-3.0,2.6,0.3},
-                       {-1.6,2.4,0.1},
-                       {2.8,2.8,0.55}};
+configuration conf2({{-3.0,2.6,0.3,ci},
+                     {-1.6,2.4,0.1,ci},
+                     {2.8,2.8,0.55,ci}},ci);
 std::string conf2_str =
 "(c:-3, w:2.6, h:0.3),(c:-1.6, w:2.4, h:0.1),(c:2.8, w:2.8, h:0.55)";
 

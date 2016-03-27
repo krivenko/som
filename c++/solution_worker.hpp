@@ -80,10 +80,15 @@ template<typename KernelType> struct mc_data {
 
 template<typename KernelType> class solution_worker {
 
+ cache_index & ci;                          // LHS cache index
+
  mc_generic<double> mc;                     // Markov chain
 
  // MC data
  mc_data<KernelType> data;
+
+ // Shortcut to the kernel
+ KernelType const& kern;
 
  std::pair<double,double> energy_window;    // Estimated lower and upper bounds of the spectrum
  double norm;                               // Norm of the sought solution
@@ -94,22 +99,30 @@ public:
 
  solution_worker(objective_function<KernelType> const& objf,
                  double norm,
+                 cache_index & ci,
                  run_parameters_t const& params,
                  int n_global_updates) :
- mc(n_global_updates, params.n_elementary_updates, 0, params.random_name, params.random_seed, 0),
- data{objf, {}, {}, 0, 0, dist_function(mc.get_rng(), params.n_elementary_updates, params.distrib_d_max), params.gamma},
+ mc(n_global_updates, params.n_elementary_updates, 0, params.random_name, params.random_seed, 0), ci(ci), kern(objf.get_kernel()),
+ data{objf, {{},ci}, {{},ci}, 0, 0, dist_function(mc.get_rng(), params.n_elementary_updates, params.distrib_d_max), params.gamma},
  energy_window(params.energy_window), norm(norm),
  width_min(params.min_rect_width * (params.energy_window.second - params.energy_window.first)),
  weight_min(params.min_rect_weight * norm) {
 
    // Add all elementary updates
-   mc.add_move(update_shift<KernelType>(data, mc.get_rng(), energy_window),                                             "update_shift", 1.0);
-   mc.add_move(update_change_width<KernelType>(data, mc.get_rng(), energy_window, width_min),                           "update_change_width", 1.0);
-   mc.add_move(update_change_weight2<KernelType>(data, mc.get_rng(), weight_min),                                       "update_change_weight2", 1.0);
-   mc.add_move(update_insert<KernelType>(data, mc.get_rng(), energy_window, width_min, weight_min, params.max_rects),   "update_insert", 1.0);
-   mc.add_move(update_remove_shift<KernelType>(data, mc.get_rng(), energy_window),                                      "update_remove_shift", 1.0);
-   mc.add_move(update_split_shift<KernelType>(data, mc.get_rng(), energy_window, width_min, params.max_rects),          "update_split_shift", 1.0);
-   mc.add_move(update_glue_shift<KernelType>(data, mc.get_rng(), energy_window),                                        "update_glue_shift", 1.0);
+   mc.add_move(update_shift<KernelType>(data, mc.get_rng(), ci, energy_window),
+               "update_shift", 1.0);
+   mc.add_move(update_change_width<KernelType>(data, mc.get_rng(), ci, energy_window, width_min),
+               "update_change_width", 1.0);
+   mc.add_move(update_change_weight2<KernelType>(data, mc.get_rng(), ci, weight_min),
+               "update_change_weight2", 1.0);
+   mc.add_move(update_insert<KernelType>(data, mc.get_rng(), ci, energy_window, width_min, weight_min, params.max_rects),
+               "update_insert", 1.0);
+   mc.add_move(update_remove_shift<KernelType>(data, mc.get_rng(), ci, energy_window),
+               "update_remove_shift", 1.0);
+   mc.add_move(update_split_shift<KernelType>(data, mc.get_rng(), ci, energy_window, width_min, params.max_rects),
+               "update_split_shift", 1.0);
+   mc.add_move(update_glue_shift<KernelType>(data, mc.get_rng(), ci, energy_window),
+               "update_glue_shift", 1.0);
 
    // Reset temporary configuration to global_conf after each global update
    mc.set_after_cycle_duty(std::bind(&solution_worker::reset_temp_conf, this));
@@ -149,12 +162,12 @@ public:
 
   auto & rng = mc.get_rng();
 
-  configuration conf;
+  configuration conf(ci);
   for(int i = 0; i < init_config_size; ++i) {
    double center = rng(energy_window.first, energy_window.second);
    double width = rng(width_min, std::min(2*(center-energy_window.first), 2*(energy_window.second-center)));
    double height = rng(weight_min/width, norm/width);
-   conf.insert({center,width,height});
+   conf.insert({center,width,height,ci});
   }
   conf.normalize(norm);
 
@@ -176,7 +189,10 @@ private:
 #endif
 
   std::swap(data.global_conf,conf);
+  kern.cache_swap(data.global_conf,conf);
+
   data.temp_conf = data.global_conf;
+  if(data.global_conf.cache_entry->valid) kern.cache_copy(data.global_conf, data.temp_conf);
   data.temp_objf_value = data.global_objf_value = data.objf(conf);
 
   // Start simulation
@@ -184,6 +200,7 @@ private:
   mc.start(1.0, triqs::utility::clock_callback(-1));
 
   std::swap(data.global_conf,conf);
+  kern.cache_swap(data.global_conf,conf);
 
 #ifdef EXT_DEBUG
   std::cerr << "solution_worker: simulation ended." << std::endl;
@@ -199,7 +216,9 @@ private:
 
  void reset_temp_conf() {
   data.temp_conf = data.global_conf;
+  if(data.global_conf.cache_entry->valid) kern.cache_copy(data.global_conf, data.temp_conf);
   data.temp_objf_value = data.global_objf_value;
+  kern.cache_copy(data.global_conf, data.temp_conf);
 
 #ifdef EXT_DEBUG
   std::cerr << "Temporary configuration reset to (D = "

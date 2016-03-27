@@ -29,35 +29,80 @@
 #include <triqs/arrays.hpp>
 
 #include "rectangle.hpp"
-#include "unique_id.hpp"
+#include "cache_index.hpp"
 
 namespace som {
 
 using namespace triqs::arrays;
 namespace h5 = triqs::h5;
 
-class configuration {
+struct configuration {
 
  // Rectangles in this configuration
  std::vector<rectangle> rects;
 
  static const int default_max_rects = 70;
 
+ // Pointer to a cache entry descriptor
+ // Every new configuration object, including copies, aquire a new
+ // cache entry descriptor, which is then released in the destructor.
+ // Assignments and compound operations *=, += will invalidate the
+ // cache entry. One should manually call kernel_base::cache_* methods
+ // to update the invalidated entries without a full recomputation
+ cache_index::entry * cache_entry;
+
+private:
+
+ // Configurations are supposed to be modified
+ // only by config_update and solution_worker
+ friend class config_update;
+ template<typename KernelType> friend class solution_worker;
+
+ // Insert a new rectangle
+ rectangle& insert(rectangle const& r) {
+  rects.push_back(r);
+  return rects.back();
+ }
+
+ // Remove a rectangle by index
+ void remove(int index) {
+  std::swap(rects[index],rects.back());
+  rects.pop_back();
+ }
+
+ // Replace a rectangle
+ void replace(int index, rectangle const& r) {
+  rects[index] = r;
+ }
+
  // Remove all rectangles, only for internal use in h5_read
  void clear() { rects.clear(); }
 
 public:
 
- configuration(int reserved_rects = default_max_rects) {
+ configuration(cache_index & ci, int reserved_rects = default_max_rects) :
+  cache_entry(ci.aquire()) {
   rects.reserve(reserved_rects);
  }
- configuration(std::initializer_list<rectangle> const& l) : rects(l) {
+ configuration(std::initializer_list<rectangle> const& l, cache_index & ci) :
+  rects(l), cache_entry(ci.aquire()) {
   rects.reserve(default_max_rects);
  }
- configuration(configuration const&) = default;
- //configuration(configuration &&) = default;
- configuration & operator=(configuration const&) = default;
- //configuration & operator=(configuration &&) = default;
+ configuration(configuration const& c) :
+  rects(c.rects), cache_entry(c.cache_entry->index.aquire()) {}
+ configuration(configuration && c) :
+  rects(std::move(c.rects)), cache_entry(c.cache_entry->index.aquire()) {}
+ configuration & operator=(configuration const& c) {
+  rects = c.rects;
+  cache_entry->valid = false;
+  return *this;
+ }
+ configuration & operator=(configuration && c) {
+  std::swap(rects, c.rects);
+  cache_entry->valid = false;
+  return *this;
+ }
+ ~configuration() { cache_entry->decref(); }
 
  // Number of rectangles
  int size() const { return rects.size(); }
@@ -77,27 +122,11 @@ public:
  bool operator==(configuration const& c) const { return rects == c.rects; }
  bool operator!=(configuration const& c) const { return rects != c.rects; }
 
- // Insert a new rectangle
- rectangle& insert(rectangle const& r) {
-  rects.push_back(r);
-  return rects.back();
- }
-
- // Remove a rectangle by index
- void remove(int index) {
-  std::swap(rects[index],rects.back());
-  rects.pop_back();
- }
-
- // Replace a rectangle
- void replace(int index, rectangle const& r) {
-  rects[index] = r;
- }
-
  // Sum of configurations: all rectangles from both of them
  configuration& operator+=(configuration const& c) {
   rects.reserve(rects.size() + c.rects.size());
   std::copy(c.rects.begin(),c.rects.end(),std::back_inserter(rects));
+  cache_entry->valid = false;
   return *this;
  }
  configuration operator+(configuration const& c) const {
@@ -111,6 +140,7 @@ public:
   if(alpha < 0) TRIQS_RUNTIME_ERROR <<
                 "Cannot multiply a configuration by a negative number " << alpha;
   for(auto & r : rects) r = r*alpha;
+  cache_entry->valid = false;
   return *this;
  }
  friend configuration operator*(configuration const& c, double alpha) {
@@ -119,7 +149,9 @@ public:
   return p;
  }
  friend configuration operator*(double alpha, configuration const& c) {
-  return c*alpha;
+  configuration p(c);
+  p *= alpha;
+  return p;
  }
 
  // Normalize configuration to have a total area of norm
@@ -130,6 +162,8 @@ public:
   double old_norm = 0;
   for(auto const& r : rects) old_norm += r.norm();
   for(auto & r : rects) r = r * (norm / old_norm);
+  // Invalidate LHS cache entry
+  cache_entry->valid = false;
  }
 
  // constant iterator
@@ -161,11 +195,11 @@ public:
   auto ds = gr.open_dataset(name);
   h5_write_attribute(ds, "TRIQS_HDF5_data_scheme", get_triqs_hdf5_data_scheme(c));
  }
- friend void h5_read(h5::group gr, std::string const& name, configuration& c) {
+ friend void h5_read(h5::group gr, std::string const& name, configuration& c, cache_index & ci) {
   using triqs::arrays::array;
   array<double,2> data;
   h5_read(gr, name, data);
-  for(int i = 0; i < first_dim(data); ++i) c.insert({data(i,0), data(i,1), data(i,2)});
+  for(int i = 0; i < first_dim(data); ++i) c.insert({data(i,0), data(i,1), data(i,2), ci});
  }
 };
 

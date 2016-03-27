@@ -60,7 +60,7 @@ public:
   return sum(abs((kern(cu) - rhs) / error_bars));
  }
 
- KernelType const& get_kernel() { return kern; }
+ KernelType const& get_kernel() const { return kern; }
 };
 
 }

@@ -10,11 +10,12 @@ using triqs::arrays::vector;
 TEST(Kernels,FermionicGf_imtime) {
 
  double beta = 1;
- configuration conf = {{-2.0,2.6,0.3},
-                       {-1.3,2.6,0.4},
-                       {-0.5,2.6,0.5},
-                       {1.3,2.6,0.6},
-                       {2.0,2.6,0.7}};
+ cache_index ci;
+ configuration conf({{-2.0,2.6,0.3,ci},
+                     {-1.3,2.6,0.4,ci},
+                     {-0.5,2.6,0.5,ci},
+                     {1.3,2.6,0.6,ci},
+                     {2.0,2.6,0.7,ci}},ci);
 
  std::vector<vector<double>> ref = {
  {-0.11009,-0.12894,-0.15171,-0.17935,-0.21309,-0.25448,-0.30549,-0.36872,-0.44746,-0.54600,-0.66991},

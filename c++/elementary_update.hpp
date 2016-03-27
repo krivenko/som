@@ -42,6 +42,8 @@ protected:
 
  mc_data<KernelType> & data;
  random_generator & rng;
+ cache_index & ci;
+ KernelType const& kern;
 
  // Generate change of a parameter :math:`\delta\xi` (see Sec. 3.4)
  expabs_distribution<random_generator> generate_parameter_change;
@@ -95,9 +97,9 @@ protected:
 
 public:
 
- elementary_update(mc_data<KernelType> & data, random_generator & rng) :
-  data(data), rng(rng), generate_parameter_change(rng, data.gamma),
-  update{config_update(data.temp_conf), config_update(data.temp_conf), config_update(data.temp_conf)},
+ elementary_update(mc_data<KernelType> & data, random_generator & rng, cache_index & ci) :
+  data(data), rng(rng), ci(ci), kern(data.objf.get_kernel()), generate_parameter_change(rng, data.gamma),
+  update{config_update(data.temp_conf,ci), config_update(data.temp_conf,ci), config_update(data.temp_conf,ci)},
   new_objf_value{0,0,0}
   {}
 
@@ -106,6 +108,7 @@ public:
  double accept() {
   // Update temporary configuration ...
   update[selected_parameter_change].apply();
+  kern.cache_copy(update[selected_parameter_change], data.temp_conf);
   // and its objective function value
   data.temp_objf_value = new_objf_value[selected_parameter_change];
 
@@ -133,6 +136,7 @@ public:
               << ", D(global) = " << data.global_objf_value << ")" << std::endl;
 #endif
    data.global_conf = data.temp_conf;
+   kern.cache_copy(data.temp_conf, data.global_conf);
    data.global_objf_value = data.temp_objf_value;
   }
 

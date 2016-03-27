@@ -58,7 +58,8 @@ public:
  const double beta;          // Inverse temperature
  const gf_mesh<imtime> mesh; // Matsubara time mesh
 
- kernel(gf_mesh<imtime> const& mesh) : mesh(mesh), beta(mesh.x_max()) {
+ kernel(gf_mesh<imtime> const& mesh) :
+  kernel_base(mesh.size()), mesh(mesh), beta(mesh.x_max()) {
 
   Lambda_tau_not0.reserve(mesh.size()-2);
   for(int itau = 1; itau < mesh.size()-1; ++itau) {

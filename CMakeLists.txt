@@ -30,6 +30,9 @@ add_definitions(${TRIQS_CXX_DEFINITIONS})
 # Detect MPI
 find_package(MPI)
 
+set(CACHE_SIZE 0xffff CACHE STRING "Size of the cache to store computed LHS")
+add_definitions(-DCACHE_SIZE=${CACHE_SIZE})
+
 option(EXT_DEBUG "Enable extended debugging output" OFF)
 if(EXT_DEBUG)
  add_definitions(-DEXT_DEBUG)
