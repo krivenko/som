@@ -54,7 +54,7 @@ public:
   auto & res = lhs_cache[ce.id];
   // Do we have a precomputed LHS for rectangle r?
   if(!ce.valid) {
-   res = DERIVED->apply(rect);
+   DERIVED->apply(rect, res);
    ce.valid = true;
   }
   return res;

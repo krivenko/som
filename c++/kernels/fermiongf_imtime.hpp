@@ -56,10 +56,10 @@ public:
  using mesh_type = gf_mesh<imtime>;
 
  const double beta;          // Inverse temperature
- const gf_mesh<imtime> mesh; // Matsubara time mesh
+ const mesh_type mesh;       // Matsubara time mesh
 
- kernel(gf_mesh<imtime> const& mesh) :
-  kernel_base(mesh.size()), mesh(mesh), beta(mesh.x_max()) {
+ kernel(mesh_type const& mesh) :
+  kernel_base(mesh.size()), mesh(mesh), beta(mesh.domain().beta) {
 
   Lambda_tau_not0.reserve(mesh.size()-2);
   for(int itau = 1; itau < mesh.size()-1; ++itau) {
@@ -108,9 +108,7 @@ public:
  }
 
  // Apply to a rectangle
- result_type apply(rectangle const& rect) const {
-
-  result_type res(mesh.size());
+ void apply(rectangle const& rect, result_type & res) const {
 
   double e1 = rect.center - rect.width/2;
   double e2 = rect.center + rect.width/2;
@@ -124,8 +122,6 @@ public:
   }
   // (kernel * rect)(\tau = \beta)
   res(mesh.size()-1) = rect.height * (Lambda_tau_0(-e1) - Lambda_tau_0(-e2));
-
-  return res;
  }
 
 };

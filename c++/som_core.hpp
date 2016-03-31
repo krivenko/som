@@ -29,6 +29,7 @@
 #include "run_parameters.hpp"
 #include "configuration.hpp"
 #include "kernels/fermiongf_imtime.hpp"
+#include "kernels/fermiongf_imfreq.hpp"
 #include "objective_function.hpp"
 
 namespace som {

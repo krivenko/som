@@ -1,4 +1,4 @@
-* Add kernels fermiongf_imfreq and fermiongf_legendre
+* Add kernel fermiongf_legendre
 * Add fit_quality function object, similarly to objective_function
 * Implement calibration phase (F adjustment)
 * Implement the main phase (accumulation of particular solutions)
