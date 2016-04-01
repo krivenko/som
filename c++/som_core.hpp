@@ -31,6 +31,7 @@
 #include "kernels/fermiongf_imtime.hpp"
 #include "kernels/fermiongf_imfreq.hpp"
 #include "objective_function.hpp"
+#include "fit_quality.hpp"
 
 namespace som {
 
