@@ -43,7 +43,9 @@ array<double,1> S() {
 auto g = GF();
 auto s = S();
 
-objective_function<kernel<FermionGf,imtime>> of(mesh, g, s);
+kernel<FermionGf,imtime> kern(mesh);
+
+objective_function<kernel<FermionGf,imtime>> of(kern, g, s);
 
 TEST(objective_function,Change) {
  configuration conf({rects[0],rects[2]},ci);

@@ -38,7 +38,7 @@ class objective_function {
  using mesh_type = typename KernelType::mesh_type;
 
  // Integral kernel
- KernelType kern;
+ KernelType const& kern;
  // The right-hand side of the Fredholm integral equation
  rhs_type const& rhs;
  // Error bars of the RHS
@@ -46,11 +46,10 @@ class objective_function {
 
 public:
 
- objective_function(mesh_type const& mesh,
+ objective_function(KernelType const& kern,
                     rhs_type const& rhs,
                     rhs_type const& error_bars) :
-  kern(mesh),
-  rhs(rhs), error_bars(error_bars) {}
+  kern(kern), rhs(rhs), error_bars(error_bars) {}
 
  double operator()(configuration const& c) const {
   return sum(abs((kern(c) - rhs) / error_bars));

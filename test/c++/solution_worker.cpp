@@ -28,7 +28,8 @@ using obj_function = objective_function<kernel<FermionGf,imtime>>;
 
 TEST(solution_worker,RandomConfig) {
  cache_index ci;
- obj_function of(mesh, g_tau, s_tau);
+ kernel<FermionGf,imtime> kern(mesh);
+ obj_function of(kern, g_tau, s_tau);
 
  auto params = run_parameters_t({-3.0,3.0});
  params.n_elementary_updates = 100;
@@ -48,7 +49,8 @@ TEST(solution_worker,RandomConfig) {
 
 TEST(solution_worker,StartConfig) {
  cache_index ci;
- obj_function of(mesh, g_tau, s_tau);
+ kernel<FermionGf,imtime> kern(mesh);
+ obj_function of(kern, g_tau, s_tau);
 
  auto params = run_parameters_t({-3.0,3.0});
  params.n_elementary_updates = 100;
