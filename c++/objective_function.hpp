@@ -52,11 +52,11 @@ public:
   kern(kern), rhs(rhs), error_bars(error_bars) {}
 
  double operator()(configuration const& c) const {
-  return sum(abs((kern(c) - rhs) / error_bars));
+  return sum(abs((rhs - kern(c)) / error_bars));
  }
 
  double operator()(config_update const& cu) const {
-  return sum(abs((kern(cu) - rhs) / error_bars));
+  return sum(abs((rhs - kern(cu)) / error_bars));
  }
 
  KernelType const& get_kernel() const { return kern; }

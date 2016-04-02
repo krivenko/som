@@ -1,0 +1,91 @@
+\documentclass[]{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+
+\newcommand{\intt}{\ensuremath{\int\limits_0^\beta}\ d\tau}
+\DeclareMathOperator{\atan}{atan}
+\DeclareMathOperator{\sign}{sign}
+
+% Title Page
+\title{Stochastic Optimization Method for Analytic Continuation: implementation notes}
+\author{Igor Krivenko}
+
+\begin{document}
+\maketitle
+
+This document is a diverse collection of notes, explaining various details of the present SOM implementation.
+It is supposed to serve as an addition to the original paper by Andrey S. Mishchenko (see \verb|som.pdf|).
+
+\section{Supported integral kernels}
+\subsection{Fermionic thermal Green's function in imaginary time}
+
+\begin{equation}
+	G(\tau) = -\int\limits_{-\infty}^\infty
+	d\epsilon \frac{e^{-\tau\epsilon}}{1+e^{-\beta\epsilon}} A(\epsilon).
+\end{equation}
+
+Integral kernel applied to a rectangle,
+\begin{equation}
+	\hat K(\tau;\omega)*R(c,w,h) = \left\{ 
+	\begin{array}{ll}
+	h(\Lambda_0(c + w/2) - \Lambda_0(c - w/2)), & \tau = 0 \\
+	h(\Lambda_0(w/2 - c) - \Lambda_0(-w/2-c)), & \tau = \beta \\
+	h(\Lambda(\tau;c + w/2) - \Lambda(\tau;c - w/2)), & \mathrm{otherwise}
+	\end{array}\right.
+\end{equation}
+\begin{equation}
+	\Lambda_0(\Omega) = \left\{ 
+	\begin{array}{ll}
+	-\frac{1}{\beta}\log(1 + e^{\beta\Omega}), & \Omega < 0 \\
+	-\frac{1}{\beta}\log(1 + e^{-\beta\Omega}) - \Omega, & \Omega \ge 0
+	\end{array}\right.
+\end{equation}
+\begin{equation}
+	\Lambda(\tau;\Omega) = \left\{
+	\begin{array}{ll}
+	\sum_{n=0}^\infty\frac{-\beta}{[\beta(2n+1)-\tau][\beta(2n+2)-\tau]},
+	& \Omega = 0 \\
+	\sum_{n=0}^\infty\frac{(-1)^{n+1}e^{\Omega(\beta(n+1)-\tau)}}{\beta(n+1)-\tau},
+	& \Omega < 0 \\
+	-\frac{\pi}{\beta \sin(\pi\tau/\beta)}
+	-\sum_{n=0}^\infty\frac{(-1)^{n+1}e^{-\Omega(\beta n +\tau)}}{\beta n+\tau},
+	& \Omega > 0 \\
+	\end{array}
+	\right.
+\end{equation}
+Infinite sums in the definition of $\Lambda(\tau;\Omega)$ are calculated for each $\tau$-point $G(\tau)$ is given on, and for a regular set of $\Omega$-points. A cubic spline interpolation in the $\Omega$-direction is then constructed for the sake of performance. $\Lambda(\tau;\Omega)$ approaches its known $\Omega\to-\infty$ and $\Omega\to+\infty$ limits exponentially, so that one can use the following interpolation
+segment,
+\begin{equation}
+	\Omega \in [\frac{\log[tolerance\cdot(1-\tau/\beta)]}{\beta-\tau};
+				\frac{\log[tolerance\cdot(\tau/\beta)]}{-\tau}].
+\end{equation}
+
+\subsection{Fermionic thermal Green's function at imaginary frequencies}
+\begin{equation}
+	G(i\omega_n) = \int\limits_{-\infty}^\infty
+	d\epsilon \frac{1}{i\omega_n-\epsilon} A(\epsilon).
+\end{equation}
+
+Integral kernel applied to a rectangle,
+\begin{equation}
+	\hat K(\tau;\omega)*R(c,w,h) = 
+	h \log\left(\frac{i\omega_n - c + w/2}{i\omega_n - c - w/2}\right).
+\end{equation}
+
+\section{Fit quality criterion for complex functions}
+
+In section 4.1 Mishchenko introduces a special quantity $\kappa$, which characterizes the fit quality of a given particular solution
+$A(\omega)$ (eq. 55).
+\begin{equation}
+	\kappa = \frac{1}{M-1}\sum_{m=2}^M\theta(-\Delta(m)\Delta(m-1)),
+\end{equation}
+where $\Delta(m) = (\tilde G(m) - G(m))/\mathcal{S}(m)$ is the deviation function. The proposed expression for $\kappa$ makes  apparently no sense for complex $G(m)$ and $\Delta(m)$, e.g. when $G$ is given as a function of Matsubara frequencies.
+
+Our generalization consists in a replacement
+\begin{multline}
+	\Delta(m)\Delta(m-1) \mapsto \Re[\Delta(m)\Delta^*(m-1)] =\\=
+	|\Delta(m)||\Delta(m-1)|\cos[\arg(\Delta(m)) - \arg(\Delta(m-1))].
+\end{multline}
+According to the modified definition, two adjacent values of $\Delta$ are considered anti-correlated, if the complex phase shift between them exceeds $\pm\pi/2$. In the case of real-valued quantities the phase shift is always either 0, or $\pi$.
+
+\end{document}

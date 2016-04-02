@@ -62,7 +62,7 @@ public:
   kern(kern), rhs(rhs), error_bars(error_bars) {}
 
  double operator()(configuration const& c) const {
-  auto delta = (kern(c) - rhs) / error_bars;
+  auto delta = (rhs - kern(c)) / error_bars;
   int M = first_dim(delta);
   double kappa = 0;
   for(int i = 1; i < M; ++i) {
