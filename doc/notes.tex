@@ -88,4 +88,24 @@ Our generalization consists in a replacement
 \end{multline}
 According to the modified definition, two adjacent values of $\Delta$ are considered anti-correlated, if the complex phase shift between them exceeds $\pm\pi/2$. In the case of real-valued quantities the phase shift is always either 0, or $\pi$.
 
+\section{Probability density function for the parameter change}
+
+Section 3.4 of \verb|som.pdf| contains a dubious expression for the probability
+density function $\mathcal{P}\sim (\max(|\delta\xi_\mathrm{min}|, |\delta\xi_\mathrm{max}|)/|\delta\xi|)^\gamma$, where $\gamma\gg1$. It is
+obviously divergent at $\delta\xi\to0$ and cannot be properly normalized, if
+ends of $[\delta\xi_\mathrm{min};\delta\xi_\mathrm{max}]$ segment have different signs.
+
+We use a different density function, which is finite everywhere on $\delta\xi\in[\delta\xi_\mathrm{min};\delta\xi_\mathrm{max}]$, and is qualitatively similar to that of Mishchenko.
+\begin{equation}
+	\mathcal{P}(\delta\xi) = \mathcal{N}
+	\exp\left(-\gamma \frac{|\delta\xi|}{L}\right), \quad
+	L \equiv \max(|\delta\xi_\mathrm{min}|, |\delta\xi_\mathrm{max}|),
+\end{equation}
+\begin{equation}
+	\mathcal{N} = \frac{\gamma}{L}\left[
+		\sign(\delta\xi_\mathrm{min})(e^{-\gamma|\delta\xi_\mathrm{min}|/L} - 1) +
+		\sign(\delta\xi_\mathrm{max})(1 - e^{-\gamma|\delta\xi_\mathrm{max}|/L})
+	\right]^{-1}.
+\end{equation}
+
 \end{document}
