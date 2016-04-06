@@ -43,10 +43,10 @@ public:
 
   double x = rng();
 
-  double f = (1-x) * std::copysign(1 - std::exp(-gL * x_min_abs), x_min) +
-                 x * std::copysign(1 - std::exp(-gL * x_max_abs), x_max);
+  double f = (1-x) * std::copysign(std::expm1(-gL * x_min_abs), x_min) +
+                 x * std::copysign(std::expm1(-gL * x_max_abs), x_max);
 
-  return std::copysign(-std::log(1 - std::abs(f)) / gL, f);
+  return std::copysign(std::log1p(-std::abs(f)) / gL, f);
  }
 };
 
