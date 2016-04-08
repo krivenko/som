@@ -61,9 +61,8 @@ class som_core {
  // Kind of the observable, GF/Susceptibility/Conductivity
  observable_kind kind;
 
- // Mesh type, imtime/imfreq/legendre
- int mesh_id;
- template<typename MT> static int get_mesh_id();
+ // Mesh of the input functions
+ variant<gf_mesh<imtime>, gf_mesh<imfreq>, gf_mesh<legendre>> mesh;
 
  // Norm of the solution to be found
  double norm;
@@ -74,13 +73,15 @@ class som_core {
 
 public:
 
- som_core(gf_const_view<imtime> g_tau, gf_const_view<imtime> S_tau);
- som_core(gf_const_view<imfreq> g_iw, gf_const_view<imfreq> S_iw);
- som_core(gf_const_view<legendre> g_l, gf_const_view<legendre> S_l);
-
- // TODO: extend these constructors for susceptibilities and conductivity
- // som_core(gf_const_view<imtime> g_tau, gf_const_view<imtime> S_tau, kind = FermionGf, double norm = 1.0);
- // ...
+ /// Construct on imaginary-time quantities
+ som_core(gf_const_view<imtime> g_tau, gf_const_view<imtime> S_tau,
+          observable_kind kind = FermionGf, double norm = 1.0);
+ /// Construct on imaginary-frequency quantities
+ som_core(gf_const_view<imfreq> g_iw, gf_const_view<imfreq> S_iw,
+          observable_kind kind = FermionGf, double norm = 1.0);
+ /// Construct on quantities in Legendre polynomial basis
+ som_core(gf_const_view<legendre> g_l, gf_const_view<legendre> S_l,
+          observable_kind kind = FermionGf, double norm = 1.0);
 
  TRIQS_WRAP_ARG_AS_DICT // Wrap the parameters as a dictionary in python with c++2py
  void run(run_parameters_t const& p);
@@ -88,7 +89,7 @@ public:
  //
  gf_view<refreq> operator()(gf_view<refreq> g_w) const;
 
- // Fill gf<refreq> with obtained results
+ /// Fill a real-frequency Green's function with obtained results
  friend void triqs_gf_view_assign_delegation(gf_view<refreq> g_w, som_core const& cont) { cont(g_w); }
 
 };

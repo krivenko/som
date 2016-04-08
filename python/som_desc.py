@@ -1,5 +1,5 @@
 # Generated automatically using the command :
-# c++2py.py ../c++/som_core.hpp -p -mtriqs_som -o som --moduledoc "The Stochastic Optimization Method"
+# c++2py.py ../c++/som_core.hpp --compiler_options=-DCACHE_SIZE=0xffff -p -m som -o som --appname triqs_som --moduledoc "The Stochastic Optimization Method"
 from wrap_generator import *
 
 # The module
@@ -19,6 +19,8 @@ using namespace som;
 #include "./converters.hxx"
 """)
 
+module.add_enum("observable_kind", ["FermionGf","Susceptibility","Conductivity"], "som", "Kinds of observables")
+
 # The class som_core
 c = class_(
         py_type = "SomCore",  # name of the python class
@@ -26,14 +28,14 @@ c = class_(
         doc = r"",   # doc of the C++ class
 )
 
-c.add_constructor("""(gf_view<imtime> g_tau, gf_view<imtime> S_tau)""",
-                  doc = """ """)
+c.add_constructor("""(gf_view<imtime> g_tau, gf_view<imtime> S_tau, som::observable_kind kind = FermionGf, double norm = 1.0)""",
+                  doc = """Construct on imaginary-time quantities """)
 
-c.add_constructor("""(gf_view<imfreq> g_iw, gf_view<imfreq> S_iw)""",
-                  doc = """ """)
+c.add_constructor("""(gf_view<imfreq> g_iw, gf_view<imfreq> S_iw, som::observable_kind kind = FermionGf, double norm = 1.0)""",
+                  doc = """Construct on imaginary-frequency quantities """)
 
-c.add_constructor("""(gf_view<legendre> g_l, gf_view<legendre> S_l)""",
-                  doc = """ """)
+c.add_constructor("""(gf_view<legendre> g_l, gf_view<legendre> S_l, som::observable_kind kind = FermionGf, double norm = 1.0)""",
+                  doc = """Construct on quantities in Legendre polynomial basis """)
 
 c.add_method("""void run (**som::run_parameters_t)""",
              doc = """+----------------------+---------------------------+---------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
