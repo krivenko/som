@@ -55,6 +55,8 @@ public:
  using result_type = array<double,1>;
  using mesh_type = gf_mesh<imtime>;
 
+ static const char* name() { return "Fermionic Green's function, imaginary time"; }
+
  const double beta;          // Inverse temperature
  const mesh_type mesh;       // Matsubara time mesh
 

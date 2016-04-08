@@ -1,6 +1,6 @@
 // DO NOT EDIT
 // Generated automatically using libclang using the command :
-// c++2py.py ../c++/som_core.hpp --compiler_options=-DCACHE_SIZE=0xffff -p -m som -o som --appname triqs_som --moduledoc "The Stochastic Optimization Method"
+// c++2py.py ../c++/som_core.hpp --compiler_options=-DCACHE_SIZE=0xffff -p -m som -o som --appname triqs_som --moduledoc "The Stochastic Optimization Method" --only_converters
 
 
 // --- C++ Python converter for run_parameters_t
@@ -19,6 +19,7 @@ template <> struct py_converter<run_parameters_t> {
   PyDict_SetItemString( d, "n_elementary_updates", convert_to_python(x.n_elementary_updates));
   PyDict_SetItemString( d, "distrib_d_max"       , convert_to_python(x.distrib_d_max));
   PyDict_SetItemString( d, "gamma"               , convert_to_python(x.gamma));
+  PyDict_SetItemString( d, "verbosity"           , convert_to_python(x.verbosity));
   return d;
  }
 
@@ -47,6 +48,7 @@ template <> struct py_converter<run_parameters_t> {
   _get_optional(dic, "n_elementary_updates", res.n_elementary_updates   ,1000);
   _get_optional(dic, "distrib_d_max"       , res.distrib_d_max          ,2);
   _get_optional(dic, "gamma"               , res.gamma                  ,2);
+  _get_optional(dic, "verbosity"           , res.verbosity              ,((triqs::mpi::communicator().rank()==0)?3:0));
   return res;
  }
 
@@ -77,7 +79,7 @@ template <> struct py_converter<run_parameters_t> {
   std::stringstream fs, fs2; int err=0;
 
 #ifndef TRIQS_ALLOW_UNUSED_PARAMETERS
-  std::vector<std::string> ks, all_keys = {"energy_window","random_seed","random_name","max_rects","min_rect_width","min_rect_weight","n_elementary_updates","distrib_d_max","gamma"};
+  std::vector<std::string> ks, all_keys = {"energy_window","random_seed","random_name","max_rects","min_rect_width","min_rect_weight","n_elementary_updates","distrib_d_max","gamma","verbosity"};
   pyref keys = PyDict_Keys(dic);
   if (!convertible_from_python<std::vector<std::string>>(keys, true)) {
    fs << "\nThe dict keys are not strings";
@@ -98,6 +100,7 @@ template <> struct py_converter<run_parameters_t> {
   _check_optional <int                      >(dic, fs, err, "n_elementary_updates", "int");
   _check_optional <double                   >(dic, fs, err, "distrib_d_max"       , "double");
   _check_optional <double                   >(dic, fs, err, "gamma"               , "double");
+  _check_optional <int                      >(dic, fs, err, "verbosity"           , "int");
   if (err) goto _error;
   return true;
 

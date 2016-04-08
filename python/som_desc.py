@@ -62,6 +62,10 @@ c.add_method("""void run (**som::run_parameters_t)""",
 
 c.add_call(signature = "gf_view<refreq>(gf_view<refreq> g_w)")
 
+c.add_property(name = "last_run_parameters",
+               getter = cfunction("som::run_parameters_t get_last_run_parameters ()"),
+               doc = """Set of parameters used in the last call to run() """)
+
 module.add_class(c)
 
 module.generate_code()

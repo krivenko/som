@@ -23,6 +23,8 @@
 
 namespace som {
 
+using std::to_string;
+
 void fatal_error(std::string const& message) {
  TRIQS_RUNTIME_ERROR << "som_core: " << message;
 }
@@ -84,7 +86,7 @@ som_core::som_core(gf_const_view<imtime> g_tau, gf_const_view<imtime> S_tau,
    fatal_error("continuation of conductivity is not yet implemented");
    break;
   default:
-   fatal_error("unknown observable kind " + std::to_string(kind));
+   fatal_error("unknown observable kind " + to_string(kind));
  }
 }
 
@@ -116,7 +118,7 @@ som_core::som_core(gf_const_view<imfreq> g_iw, gf_const_view<imfreq> S_iw,
    fatal_error("continuation of conductivity is not yet implemented");
    break;
   default:
-   fatal_error("unknown observable kind " + std::to_string(kind));
+   fatal_error("unknown observable kind " + to_string(kind));
  }
 }
 
@@ -146,19 +148,39 @@ som_core::som_core(gf_const_view<legendre> g_l, gf_const_view<legendre> S_l,
    fatal_error("continuation of conductivity is not yet implemented");
    break;
   default:
-   fatal_error("unknown observable kind " + std::to_string(kind));
+   fatal_error("unknown observable kind " + to_string(kind));
  }
 }
 
 void som_core::run(run_parameters_t const& p) {
 
- // TODO: check that p.min_rect_width in ]0,1[
- // TODO: check that p.min_rect_weight in ]0,1[
- // TODO: force set.energy_bounds.first = 0 for susceptibilities/conductivity
+ auto & lp = last_run_parameters; lp = p;
 
- // FIXME
- rectangle tmp_r = {2.0, 2.0, 1.5, ci};
- for(auto & r :results) r = configuration({tmp_r}, ci);
+ if((kind == Susceptibility || kind == Conductivity) && lp.energy_window.first < 0) {
+  last_run_parameters.energy_window.first = 0;
+  if(lp.verbosity > 0) std::cout << "WARNING: left boundary of the energy window is reset to 0";
+ }
+
+ if(lp.energy_window.first >= lp.energy_window.second)
+  fatal_error("wrong energy window [" + to_string(lp.energy_window.first) +
+              ";" + to_string(lp.energy_window.second) + "]");
+
+ double window_width = lp.energy_window.second - lp.energy_window.first;
+ if(lp.min_rect_width <= 0 || lp.min_rect_width >= window_width)
+  fatal_error("min_rect_width must be in [0;" + to_string(window_width) + "]");
+
+ if(lp.min_rect_weight <= 0 || lp.min_rect_weight >= norm)
+  fatal_error("min_rect_weight must be in [0;" + to_string(norm) + "]");
+
+#define EI(ok, mk) int(ok) + 3 * mk
+
+ switch(EI(kind, mesh.index())) {
+  case EI(FermionGf,0): engine<kernel<FermionGf,imtime>>(); break;
+  case EI(FermionGf,1): engine<kernel<FermionGf,imfreq>>(); break;
+  //case EI(FermionGf,2): engine<kernel<FermionGf,legendre>>(); break;
+  // TODO
+ }
+#undef EI
 }
 
 gf_view<refreq> som_core::operator()(gf_view<refreq> g_w) const {
@@ -167,7 +189,7 @@ gf_view<refreq> som_core::operator()(gf_view<refreq> g_w) const {
 
  if(shape[0] != gf_dim || shape[1] != gf_dim)
   fatal_error("expected a real-frequency Green's function with matrix dimensions "
-              + std::to_string(gf_dim) + "x" + std::to_string(gf_dim) + " in assignment");
+              + to_string(gf_dim) + "x" + to_string(gf_dim) + " in assignment");
 
  g_w() = 0;
  for(int i = 0; i < gf_dim; ++i) {
@@ -179,6 +201,21 @@ gf_view<refreq> som_core::operator()(gf_view<refreq> g_w) const {
   }
  }
  return g_w;
+}
+
+template<typename KernelType> void som_core::engine() {
+
+ typename KernelType::mesh_type const& m = mesh;
+
+ if(last_run_parameters.verbosity > 0) {
+  std::cout << KernelType::name() << std::endl;
+  std::cout << "Mesh: " << m << std::endl;
+  std::cout << "Constructing integral kernel... ";
+ }
+ KernelType kernel(m);
+ if(last_run_parameters.verbosity > 0) std::cout << "done" << std::endl;
+
+ // TODO
 }
 
 }

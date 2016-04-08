@@ -33,6 +33,10 @@ struct run_parameters_t {
  /// Proposal probability parameter :math:`\gamma`
  double gamma = 2;
 
+ /// Verbosity level
+ /// default: 3 on MPI rank 0, 0 otherwise.
+ int verbosity = ((triqs::mpi::communicator().rank() == 0) ? 3 : 0); // silence the slave nodes
+
  run_parameters_t() {}
 
  run_parameters_t(std::pair<double,double> energy_window) : energy_window(energy_window) {}

@@ -71,6 +71,12 @@ class som_core {
  template<typename... GfOpts>
  void set_input_data(gf_const_view<GfOpts...> g, gf_const_view<GfOpts...> S);
 
+ // Run the main part of the algorithm
+ template<typename KernelType> void engine();
+
+ // parameters of the last call to run()
+ run_parameters_t last_run_parameters;
+
 public:
 
  /// Construct on imaginary-time quantities
@@ -85,6 +91,9 @@ public:
 
  TRIQS_WRAP_ARG_AS_DICT // Wrap the parameters as a dictionary in python with c++2py
  void run(run_parameters_t const& p);
+
+ /// Set of parameters used in the last call to run()
+ run_parameters_t get_last_run_parameters() const {return last_run_parameters; }
 
  //
  gf_view<refreq> operator()(gf_view<refreq> g_w) const;

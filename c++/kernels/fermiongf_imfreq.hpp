@@ -39,6 +39,8 @@ public:
  using result_type = array<dcomplex,1>;
  using mesh_type = gf_mesh<imfreq>;
 
+ static const char* name() { return "Fermionic Green's function, imaginary frequency"; }
+
  const double beta;          // Inverse temperature
  const mesh_type mesh; // Matsubara frequency mesh
 
