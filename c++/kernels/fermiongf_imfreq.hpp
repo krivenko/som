@@ -39,8 +39,6 @@ public:
  using result_type = array<dcomplex,1>;
  using mesh_type = gf_mesh<imfreq>;
 
- static const char* name() { return "Fermionic Green's function, imaginary frequency"; }
-
  const double beta;          // Inverse temperature
  const mesh_type mesh; // Matsubara frequency mesh
 
@@ -56,6 +54,12 @@ public:
 
   for(auto iw : mesh)
    res(iw.index()) = rect.height * std::log((dcomplex(iw) - e1) / (dcomplex(iw) - e2));
+ }
+
+ friend std::ostream & operator<<(std::ostream & os, kernel const& kern) {
+  os << "A(\\epsilon) -> G(i\\omega), ";
+  os << "\\beta = " << kern.beta << ", " << kern.mesh.size() << " Matsubara frequencies.";
+  return os;
  }
 
 };

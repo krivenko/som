@@ -82,6 +82,7 @@ template<typename KernelType> class solution_worker {
 
  cache_index & ci;                          // LHS cache index
 
+ bool verbose_mc;                           // Make MC output statistics and percentage
  mc_generic<double> mc;                     // Markov chain
 
  // MC data
@@ -102,30 +103,32 @@ public:
                  cache_index & ci,
                  run_parameters_t const& params,
                  int n_global_updates) :
- mc(n_global_updates, params.n_elementary_updates, 0, params.random_name, params.random_seed, 0), ci(ci), kern(objf.get_kernel()),
- data{objf, {{},ci}, {{},ci}, 0, 0, dist_function(mc.get_rng(), params.n_elementary_updates, params.distrib_d_max), params.gamma},
- energy_window(params.energy_window), norm(norm),
- width_min(params.min_rect_width * (params.energy_window.second - params.energy_window.first)),
- weight_min(params.min_rect_weight * norm) {
+  verbose_mc(params.verbosity >= 3),
+  mc(n_global_updates, params.n_elementary_updates, 0, params.random_name, params.random_seed, verbose_mc ? 3 : 0),
+  ci(ci), kern(objf.get_kernel()),
+  data{objf, {{},ci}, {{},ci}, 0, 0, dist_function(mc.get_rng(), params.n_elementary_updates, params.distrib_d_max), params.gamma},
+  energy_window(params.energy_window), norm(norm),
+  width_min(params.min_rect_width * (params.energy_window.second - params.energy_window.first)),
+  weight_min(params.min_rect_weight * norm) {
 
-   // Add all elementary updates
-   mc.add_move(update_shift<KernelType>(data, mc.get_rng(), ci, energy_window),
-               "update_shift", 1.0);
-   mc.add_move(update_change_width<KernelType>(data, mc.get_rng(), ci, energy_window, width_min),
-               "update_change_width", 1.0);
-   mc.add_move(update_change_weight2<KernelType>(data, mc.get_rng(), ci, weight_min),
-               "update_change_weight2", 1.0);
-   mc.add_move(update_insert<KernelType>(data, mc.get_rng(), ci, energy_window, width_min, weight_min, params.max_rects),
-               "update_insert", 1.0);
-   mc.add_move(update_remove_shift<KernelType>(data, mc.get_rng(), ci, energy_window),
-               "update_remove_shift", 1.0);
-   mc.add_move(update_split_shift<KernelType>(data, mc.get_rng(), ci, energy_window, width_min, params.max_rects),
-               "update_split_shift", 1.0);
-   mc.add_move(update_glue_shift<KernelType>(data, mc.get_rng(), ci, energy_window),
-               "update_glue_shift", 1.0);
+  // Add all elementary updates
+  mc.add_move(update_shift<KernelType>(data, mc.get_rng(), ci, energy_window),
+              "update_shift", 1.0);
+  mc.add_move(update_change_width<KernelType>(data, mc.get_rng(), ci, energy_window, width_min),
+              "update_change_width", 1.0);
+  mc.add_move(update_change_weight2<KernelType>(data, mc.get_rng(), ci, weight_min),
+              "update_change_weight2", 1.0);
+  mc.add_move(update_insert<KernelType>(data, mc.get_rng(), ci, energy_window, width_min, weight_min, params.max_rects),
+              "update_insert", 1.0);
+  mc.add_move(update_remove_shift<KernelType>(data, mc.get_rng(), ci, energy_window),
+              "update_remove_shift", 1.0);
+  mc.add_move(update_split_shift<KernelType>(data, mc.get_rng(), ci, energy_window, width_min, params.max_rects),
+              "update_split_shift", 1.0);
+  mc.add_move(update_glue_shift<KernelType>(data, mc.get_rng(), ci, energy_window),
+              "update_glue_shift", 1.0);
 
-   // Reset temporary configuration to global_conf after each global update
-   mc.set_after_cycle_duty(std::bind(&solution_worker::reset_temp_conf, this));
+  // Reset temporary configuration to global_conf after each global update
+  mc.set_after_cycle_duty(std::bind(&solution_worker::reset_temp_conf, this));
  }
 
  // Start from a given configuration
@@ -180,6 +183,10 @@ public:
   return conf;
  }
 
+ random_generator & get_rng() { return mc.get_rng(); }
+
+ double get_objf_value() const { return data.global_objf_value; }
+
 private:
 
  void run(configuration & conf) {
@@ -202,15 +209,10 @@ private:
   std::swap(data.global_conf,conf);
   kern.cache_swap(data.global_conf,conf);
 
+  if(verbose_mc) mc.collect_results(MPI_COMM_SELF);
+
 #ifdef EXT_DEBUG
   std::cerr << "solution_worker: simulation ended." << std::endl;
-  std::cerr << "Acceptance rates:" << std::endl;
-
-  auto comm = triqs::mpi::communicator();
-  mc.collect_results(comm.split(comm.rank()));
-  auto const& rates = mc.get_acceptance_rates();
-  for(auto const& r : rates)
-   std::cerr << std::setw(25) << std::left << r.first << r.second << std::endl;
 #endif
  }
 

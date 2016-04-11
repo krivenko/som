@@ -21,6 +21,7 @@
 #pragma once
 
 #include <vector>
+#include <iostream>
 
 #include "../rectangle.hpp"
 #include "../configuration.hpp"

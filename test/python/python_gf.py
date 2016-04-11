@@ -15,8 +15,8 @@ cont = SomCore(g_tau, s_tau)
 
 run_params = {'energy_window' : (-5,5)}
 
-cont.run(**run_params)
-cont(g_w)
+#cont.run(**run_params)
+#cont(g_w)
 
 if mpi.is_master_node():
     arch = HDFArchive('python_gf.out.h5','w')

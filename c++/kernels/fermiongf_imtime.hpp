@@ -55,8 +55,6 @@ public:
  using result_type = array<double,1>;
  using mesh_type = gf_mesh<imtime>;
 
- static const char* name() { return "Fermionic Green's function, imaginary time"; }
-
  const double beta;          // Inverse temperature
  const mesh_type mesh;       // Matsubara time mesh
 
@@ -124,6 +122,12 @@ public:
   }
   // (kernel * rect)(\tau = \beta)
   res(mesh.size()-1) = rect.height * (Lambda_tau_0(-e1) - Lambda_tau_0(-e2));
+ }
+
+ friend std::ostream & operator<<(std::ostream & os, kernel const& kern) {
+  os << "A(\\epsilon) -> G(\\tau), ";
+  os << "\\beta = " << kern.beta << ", " << kern.mesh.size() << " \\tau-points.";
+  return os;
  }
 
 };

@@ -17,7 +17,7 @@ TEST(gf, gf_imtime) {
  som_core continuation(g_tau,s_tau);
 
  auto params = run_parameters_t({-5,5});
- continuation.run(params);
+ //continuation.run(params);
 
  g_w() = continuation;
 

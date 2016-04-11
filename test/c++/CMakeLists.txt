@@ -16,7 +16,7 @@ endforeach()
 
 # MPI tests
 foreach(TEST_MPI_NUMPROC 2 3 4)
-    triqs_add_cpp_test(global_counter)
+    triqs_add_cpp_test(shared_counter)
 endforeach()
 
 # Copy h5 files with input data

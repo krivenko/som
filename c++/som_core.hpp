@@ -25,6 +25,7 @@
 #include <triqs/arrays/vector.hpp>
 #include <triqs/gfs.hpp>
 #include <triqs/utility/variant.hpp>
+#include <triqs/mpi/base.hpp>
 
 #include "run_parameters.hpp"
 #include "configuration.hpp"
@@ -48,6 +49,9 @@ class som_core {
  using input_data_r_t = std::vector<vector<double>>;
  using input_data_c_t = std::vector<vector<std::complex<double>>>;
 
+ template<typename Mesh> using input_data_t = std14::conditional_t<
+  std::is_same<Mesh,gf_mesh<imfreq>>::value,input_data_c_t,input_data_r_t>;
+
  // The right-hand side of the Fredholm integral equation
  // One vector per diagonal matrix element of the Green's function
  variant<input_data_r_t,input_data_c_t> rhs;
@@ -67,15 +71,24 @@ class som_core {
  // Norm of the solution to be found
  double norm;
 
+ // Parameters of the last call to run()
+ run_parameters_t params;
+
+ // MPI communicator
+ triqs::mpi::communicator comm;
+
  // Fill rhs and error_bars
  template<typename... GfOpts>
  void set_input_data(gf_const_view<GfOpts...> g, gf_const_view<GfOpts...> S);
 
  // Run the main part of the algorithm
- template<typename KernelType> void engine();
+ template<typename KernelType> void run_impl();
 
- // parameters of the last call to run()
- run_parameters_t last_run_parameters;
+ // Adjust the number of global updates (F)
+ template<typename KernelType> int adjust_f(
+  KernelType const& kern,
+  typename KernelType::result_type rhs_,
+  typename KernelType::result_type error_bars_);
 
 public:
 
@@ -93,7 +106,7 @@ public:
  void run(run_parameters_t const& p);
 
  /// Set of parameters used in the last call to run()
- run_parameters_t get_last_run_parameters() const {return last_run_parameters; }
+ run_parameters_t get_last_run_parameters() const { return params; }
 
  //
  gf_view<refreq> operator()(gf_view<refreq> g_w) const;

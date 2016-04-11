@@ -1,13 +1,13 @@
 #include <triqs/test_tools/arrays.hpp>
 
-#include "global_counter.hpp"
+#include "shared_counter.hpp"
 
 using namespace som;
 
-TEST(global_counter,count) {
+TEST(shared_counter,count) {
  triqs::mpi::communicator c;
 
- global_counter i(c,1);
+ shared_counter i(c,1);
 
 #define check  c.barrier(); EXPECT_EQ(ref,long(i)); c.barrier();
 
