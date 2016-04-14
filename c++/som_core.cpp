@@ -21,15 +21,6 @@
 #include "som_core.hpp"
 #include "solution_worker.hpp"
 
-#ifdef DYNAMIC_LOAD_BALANCING
-
-#if (MPI_VERSION < 3)
-#error Dynamic load balancing requires MPI-3.0 or higher
-#endif
-
-#include "shared_counter.hpp"
-#endif
-
 namespace som {
 
 using namespace triqs::mpi;
@@ -258,13 +249,8 @@ template<typename KernelType> int som_core::adjust_f(KernelType const& kern,
   solution_worker<KernelType> worker(of,norm,ci,params,F);
   auto & rng = worker.get_rng();
 
-  long n_sol;
-#ifdef DYNAMIC_LOAD_BALANCING
-  shared_counter n_sol_sc(comm, 0);
-  while((n_sol = n_sol_sc++) < params.adjust_ngu_n_solutions) {
-#else
-  for(long i = 0; (n_sol = comm.rank() + i*comm.size()) < params.adjust_ngu_n_solutions; ++i) {
-#endif
+  int n_sol;
+  for(int i = 0; (n_sol = comm.rank() + i*comm.size()) < params.adjust_ngu_n_solutions; ++i) {
    if(params.verbosity >= 2) {
     std::cout << "[Node " << comm.rank() << "] Accumulation of particular solution "
               << n_sol << std::endl;
@@ -276,7 +262,7 @@ template<typename KernelType> int som_core::adjust_f(KernelType const& kern,
    if(kappa > params.adjust_ngu_kappa) ++n_good_solutions;
    if(params.verbosity >= 2) {
     std::cout << "[Node " << comm.rank() << "] Particular solution "
-              << long(n_sol) << " is " << (kappa > params.adjust_ngu_kappa ? "" : "not ")
+              << n_sol << " is " << (kappa > params.adjust_ngu_kappa ? "" : "not ")
               << "good (\\kappa = " << kappa
               << ", D = " << worker.get_objf_value() << ")." << std::endl;
    }
