@@ -32,6 +32,7 @@ cont = SomCore(g_tau, s_tau)
 run_params = {'energy_window' : (-5,5)}
 run_params['verbosity'] = 3
 run_params['n_elementary_updates'] = 500
+run_params['adjust_ngu_n_solutions'] = 10;
 
 cont.run(**run_params)
 #cont(g_w)

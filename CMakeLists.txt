@@ -33,6 +33,11 @@ find_package(MPI)
 set(CACHE_SIZE 0xffff CACHE STRING "Size of the cache to store computed LHS")
 add_definitions(-DCACHE_SIZE=${CACHE_SIZE})
 
+option(DYNAMIC_LOAD_BALANCING "Enable dynamic load balancing between MPI processes (requires MPI-3.0)" OFF)
+if(DYNAMIC_LOAD_BALANCING)
+ add_definitions(-DDYNAMIC_LOAD_BALANCING)
+endif(DYNAMIC_LOAD_BALANCING)
+
 option(EXT_DEBUG "Enable extended debugging output" OFF)
 if(EXT_DEBUG)
  add_definitions(-DEXT_DEBUG)
