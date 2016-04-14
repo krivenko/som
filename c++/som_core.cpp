@@ -32,6 +32,7 @@
 
 namespace som {
 
+using namespace triqs::mpi;
 using std::to_string;
 
 void fatal_error(std::string const& message) {
