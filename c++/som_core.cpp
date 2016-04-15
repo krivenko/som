@@ -18,6 +18,8 @@
  * TRIQS. If not, see <http://www.gnu.org/licenses/>.
  *
  ******************************************************************************/
+#include <limits>
+
 #include "som_core.hpp"
 #include "solution_worker.hpp"
 
@@ -53,6 +55,7 @@ void som_core::set_input_data(gf_const_view<GfOpts...> g, gf_const_view<GfOpts..
   error_bars_.emplace_back(S.data()(range(),i,i));
   results.emplace_back(ci);
  }
+ histograms.resize(gf_dim);
 }
 
 //////////////////
@@ -171,6 +174,10 @@ void som_core::run(run_parameters_t const& p) {
  if(params.min_rect_weight <= 0 || params.min_rect_weight >= norm)
   fatal_error("min_rect_weight must be in [0;" + to_string(norm) + "]");
 
+ if(params.adjust_nsol_verygood_d > params.adjust_nsol_good_d)
+  fatal_error("Cannot have adjust_nsol_verygood_d > adjust_nsol_good_d");
+
+// FIXME: get rid of this macro
 #define EI(ok, mk) int(ok) + 3 * mk
 
  switch(EI(kind, mesh.index())) {
@@ -182,7 +189,7 @@ void som_core::run(run_parameters_t const& p) {
 #undef EI
 }
 
-gf_view<refreq> som_core::operator()(gf_view<refreq> g_w) const {
+void som_core::operator()(gf_view<refreq> g_w) const {
  auto shape = get_target_shape(g_w);
  auto gf_dim = results.size();
 
@@ -199,7 +206,6 @@ gf_view<refreq> som_core::operator()(gf_view<refreq> g_w) const {
    tail.data()(range(),i,i) += rect.tail_coefficients(tail.order_min(),tail.order_max());
   }
  }
- return g_w;
 }
 
 template<typename KernelType> void som_core::run_impl() {
@@ -225,10 +231,8 @@ template<typename KernelType> void som_core::run_impl() {
   auto const& error_bars_ = (input_data_t<mesh_t> const&) error_bars;
 
   int F = params.adjust_ngu ? adjust_f(kernel,rhs_[i],error_bars_[i]) : params.n_global_updates;
-  // TODO
+  results[i] = accumulate(kernel,rhs_[i],error_bars_[i],histograms[i],F);
  }
-
- // TODO
 }
 
 template<typename KernelType> int som_core::adjust_f(KernelType const& kern,
@@ -237,7 +241,7 @@ template<typename KernelType> int som_core::adjust_f(KernelType const& kern,
 
  if(params.verbosity >= 1) {
   std::cout << "Adjusting the number of global updates F using "
-            << params.adjust_ngu_n_solutions << " particular solutions..." << std::endl;
+            << params.adjust_ngu_n_solutions << " particular solutions ..." << std::endl;
  }
  objective_function<KernelType> of(kern, rhs_, error_bars_);
  fit_quality<KernelType> fq(kern, rhs_, error_bars_);
@@ -280,6 +284,104 @@ template<typename KernelType> int som_core::adjust_f(KernelType const& kern,
  if(params.verbosity >= 1) std::cout << "F = " << F << " is enough." << std::endl;
 
  return F;
+}
+
+template<typename KernelType> configuration som_core::accumulate(KernelType const& kern,
+ typename KernelType::result_type rhs_,
+ typename KernelType::result_type error_bars_,
+ histogram & hist, int F) {
+
+ if(params.verbosity >= 1) std::cout << "Accumulating particular solutions ..." << std::endl;
+
+ objective_function<KernelType> of(kern, rhs_, error_bars_);
+ solution_worker<KernelType> worker(of,norm,ci,params,F);
+ auto & rng = worker.get_rng();
+
+ // Pairs (configuration, objective function)
+ std::vector<std::pair<configuration,double>> solutions;
+
+ int n_sol_max = 0;                          // Number of solutions to be accumulated
+ int n_sol, i = 0;                           // Global and rank-local indices of solution
+ int n_good_solutions, n_verygood_solutions; // Number of good and very good solutions
+ double objf_min = HUGE_VAL;                 // Minimal value of D
+ do {
+  n_sol_max += params.n_solutions;
+  solutions.reserve(n_sol_max);
+
+  if(params.verbosity >= 1)
+   std::cout << "Increasing the total number of solutions to be accumulated to "
+             << n_sol_max << std::endl;
+
+  for(; (n_sol = comm.rank() + i*comm.size()) < n_sol_max; ++i) {
+   if(params.verbosity >= 2) {
+    std::cout << "[Node " << comm.rank() << "] Accumulation of particular solution "
+              << n_sol << std::endl;
+   }
+
+   solutions.emplace_back(worker(1 + rng(params.max_rects)), 0);
+
+   double D = worker.get_objf_value();
+   solutions.back().second = D;
+   objf_min = std::min(objf_min, D);
+
+   if(params.verbosity >= 2) {
+    std::cout << "[Node " << comm.rank() << "] Solution " << n_sol
+              << ": D = " << D << std::endl;
+   }
+  }
+  comm.barrier();
+
+  // Global minimum of D_min
+  objf_min = mpi_all_reduce(objf_min, comm, 0, MPI_MIN);
+
+  // Recalculate numbers of good and very good solutions
+  n_good_solutions = n_verygood_solutions = 0;
+  for(auto const& s : solutions) {
+   if(s.second/objf_min <= params.adjust_nsol_good_d) ++n_good_solutions;
+   if(s.second/objf_min <= params.adjust_nsol_verygood_d) ++n_verygood_solutions;
+  }
+  n_good_solutions = mpi_all_reduce(n_good_solutions);
+  n_verygood_solutions = mpi_all_reduce(n_verygood_solutions);
+
+  if(params.verbosity >= 1) {
+   std::cout << "D_min = " << objf_min << std::endl;
+   std::cout << "Number of good soulutions (D/D_min <= "
+             << params.adjust_nsol_good_d << ") = " << n_good_solutions << std::endl;
+   std::cout << "Number of very good soulutions (D/D_min <= "
+             << params.adjust_nsol_verygood_d << ") = " << n_verygood_solutions << std::endl;
+  }
+
+ } while(params.adjust_nsol &&
+         double(n_verygood_solutions) / double(n_good_solutions) < params.adjust_nsol_ratio);
+
+ comm.barrier();
+
+ if(params.verbosity >= 1) {
+  std::cout << "Accumulation complete." << std::endl;
+  std::cout << "Summing up good solutions ..." << std::endl;
+ }
+
+ if(params.make_histograms)
+  hist = histogram(objf_min, objf_min * params.hist_max, params.hist_n_bins);
+
+ configuration sol_sum(ci);
+
+ // Rank-local stage of summation
+ for(auto const& s : solutions) {
+  if(params.make_histograms) hist << s.second;
+  // Pick only good solutions
+  if(s.second/objf_min <= params.adjust_nsol_good_d) sol_sum += s.first;
+ }
+ sol_sum *= double(1/n_good_solutions);
+
+ // Sum over all processes
+ sol_sum = mpi_reduce(sol_sum, comm, 0, true);
+
+ if(params.make_histograms) hist = mpi_reduce(hist, comm, 0, true);
+
+ if(params.verbosity >= 1) std::cout << "Done" << std::endl;
+
+ return sol_sum;
 }
 
 }

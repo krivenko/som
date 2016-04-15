@@ -48,6 +48,32 @@ struct run_parameters_t {
  /// Limiting value of :math:`\kappa` used to adjust :math:`F`
  double adjust_ngu_kappa = 0.25;
 
+ /// Number of particular solutions used in the final accumulation (:math:`L`)
+ unsigned int n_solutions = 100;
+
+ /// Adjust the number of solutions used in the final accumulation
+ /// If `true`, use n_solutions as a starting value
+ bool adjust_nsol = true;
+
+ /// Maximal ratio :math:`D/D_\mathrm{min}` for a particular solution to be considered good
+ double adjust_nsol_good_d = 2.0;
+
+ /// Maximal ratio :math:`D/D_\mathrm{min}` for a particular solution to be considered very good
+ double adjust_nsol_verygood_d = 4.0/3.0;
+
+ /// Critical ratio :math:`N_\mathrm{good}/N_\mathrm{very good}` to stop :math:`L`-adjustment procedure.
+ double adjust_nsol_ratio = 0.95;
+
+ /// Accumulate histograms of objective function values
+ bool make_histograms = false;
+
+ /// Right boundary of the histograms, in units of :math:`D_\mathrm{min}`
+ /// (left boundary is always set to :math:`D_\mathrm{min}`)
+ double hist_max = 2.0;
+
+ /// Number of bins for the histograms
+ bool hist_n_bins = 100;
+
  /// Verbosity level
  /// default: 3 on MPI rank 0, 0 otherwise.
  int verbosity = ((triqs::mpi::communicator().rank() == 0) ? 3 : 0); // silence the slave nodes

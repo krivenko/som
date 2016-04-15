@@ -26,6 +26,7 @@
 
 #include <triqs/arrays/vector.hpp>
 #include <triqs/utility/numeric_ops.hpp>
+#include <triqs/mpi/base.hpp>
 
 #include "cache_index.hpp"
 
@@ -117,6 +118,22 @@ public:
  }
  friend rectangle operator*(double alpha, rectangle const& r) { return r*alpha; }
 
+ // POD version of the rectangle, used in MPI operations
+ struct pod_t { double center; double width; double height; };
+
 };
 
 }
+
+namespace triqs { namespace mpi {
+
+template<> inline MPI_Datatype mpi_datatype<som::rectangle::pod_t>() {
+ MPI_Datatype dt;
+ static int blocklengths[] = {1,1,1};
+ static MPI_Aint displacements[] = {0,sizeof(double),2*sizeof(double)};
+ static MPI_Datatype types[] = {MPI_DOUBLE,MPI_DOUBLE,MPI_DOUBLE};
+ MPI_Type_create_struct(3, blocklengths, displacements, types, &dt);
+ return dt;
+}
+
+}}

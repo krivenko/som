@@ -23,6 +23,14 @@ template <> struct py_converter<run_parameters_t> {
   PyDict_SetItemString( d, "adjust_ngu"            , convert_to_python(x.adjust_ngu));
   PyDict_SetItemString( d, "adjust_ngu_n_solutions", convert_to_python(x.adjust_ngu_n_solutions));
   PyDict_SetItemString( d, "adjust_ngu_kappa"      , convert_to_python(x.adjust_ngu_kappa));
+  PyDict_SetItemString( d, "n_solutions"           , convert_to_python(x.n_solutions));
+  PyDict_SetItemString( d, "adjust_nsol"           , convert_to_python(x.adjust_nsol));
+  PyDict_SetItemString( d, "adjust_nsol_good_d"    , convert_to_python(x.adjust_nsol_good_d));
+  PyDict_SetItemString( d, "adjust_nsol_verygood_d", convert_to_python(x.adjust_nsol_verygood_d));
+  PyDict_SetItemString( d, "adjust_nsol_ratio"     , convert_to_python(x.adjust_nsol_ratio));
+  PyDict_SetItemString( d, "make_histograms"       , convert_to_python(x.make_histograms));
+  PyDict_SetItemString( d, "hist_max"              , convert_to_python(x.hist_max));
+  PyDict_SetItemString( d, "hist_n_bins"           , convert_to_python(x.hist_n_bins));
   PyDict_SetItemString( d, "verbosity"             , convert_to_python(x.verbosity));
   return d;
  }
@@ -56,6 +64,14 @@ template <> struct py_converter<run_parameters_t> {
   _get_optional(dic, "adjust_ngu"            , res.adjust_ngu               ,true);
   _get_optional(dic, "adjust_ngu_n_solutions", res.adjust_ngu_n_solutions   ,10);
   _get_optional(dic, "adjust_ngu_kappa"      , res.adjust_ngu_kappa         ,0.25);
+  _get_optional(dic, "n_solutions"           , res.n_solutions              ,100);
+  _get_optional(dic, "adjust_nsol"           , res.adjust_nsol              ,true);
+  _get_optional(dic, "adjust_nsol_good_d"    , res.adjust_nsol_good_d       ,2.0);
+  _get_optional(dic, "adjust_nsol_verygood_d", res.adjust_nsol_verygood_d   ,4.0/3.0);
+  _get_optional(dic, "adjust_nsol_ratio"     , res.adjust_nsol_ratio        ,0.95);
+  _get_optional(dic, "make_histograms"       , res.make_histograms          ,false);
+  _get_optional(dic, "hist_max"              , res.hist_max                 ,2.0);
+  _get_optional(dic, "hist_n_bins"           , res.hist_n_bins              ,100);
   _get_optional(dic, "verbosity"             , res.verbosity                ,((triqs::mpi::communicator().rank()==0)?3:0));
   return res;
  }
@@ -87,7 +103,7 @@ template <> struct py_converter<run_parameters_t> {
   std::stringstream fs, fs2; int err=0;
 
 #ifndef TRIQS_ALLOW_UNUSED_PARAMETERS
-  std::vector<std::string> ks, all_keys = {"energy_window","random_seed","random_name","max_rects","min_rect_width","min_rect_weight","n_elementary_updates","distrib_d_max","gamma","n_global_updates","adjust_ngu","adjust_ngu_n_solutions","adjust_ngu_kappa","verbosity"};
+  std::vector<std::string> ks, all_keys = {"energy_window","random_seed","random_name","max_rects","min_rect_width","min_rect_weight","n_elementary_updates","distrib_d_max","gamma","n_global_updates","adjust_ngu","adjust_ngu_n_solutions","adjust_ngu_kappa","n_solutions","adjust_nsol","adjust_nsol_good_d","adjust_nsol_verygood_d","adjust_nsol_ratio","make_histograms","hist_max","hist_n_bins","verbosity"};
   pyref keys = PyDict_Keys(dic);
   if (!convertible_from_python<std::vector<std::string>>(keys, true)) {
    fs << "\nThe dict keys are not strings";
@@ -112,6 +128,14 @@ template <> struct py_converter<run_parameters_t> {
   _check_optional <bool                     >(dic, fs, err, "adjust_ngu"            , "bool");
   _check_optional <unsigned int             >(dic, fs, err, "adjust_ngu_n_solutions", "unsigned int");
   _check_optional <double                   >(dic, fs, err, "adjust_ngu_kappa"      , "double");
+  _check_optional <unsigned int             >(dic, fs, err, "n_solutions"           , "unsigned int");
+  _check_optional <bool                     >(dic, fs, err, "adjust_nsol"           , "bool");
+  _check_optional <double                   >(dic, fs, err, "adjust_nsol_good_d"    , "double");
+  _check_optional <double                   >(dic, fs, err, "adjust_nsol_verygood_d", "double");
+  _check_optional <double                   >(dic, fs, err, "adjust_nsol_ratio"     , "double");
+  _check_optional <bool                     >(dic, fs, err, "make_histograms"       , "bool");
+  _check_optional <double                   >(dic, fs, err, "hist_max"              , "double");
+  _check_optional <bool                     >(dic, fs, err, "hist_n_bins"           , "bool");
   _check_optional <int                      >(dic, fs, err, "verbosity"             , "int");
   if (err) goto _error;
   return true;

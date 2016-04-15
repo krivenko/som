@@ -27,6 +27,7 @@
 #include <ostream>
 #include <triqs/utility/exceptions.hpp>
 #include <triqs/arrays.hpp>
+#include <triqs/mpi/vector.hpp>
 
 #include "rectangle.hpp"
 #include "cache_index.hpp"
@@ -182,6 +183,24 @@ public:
    os << r;
   }
   return os;
+ }
+
+ // MPI reduce
+ friend configuration mpi_reduce(configuration const& c,
+                                 triqs::mpi::communicator comm = {}, int root = 0, bool all = false) {
+  if(comm.size() == 1) return c;
+  configuration res(c.cache_entry->index);
+
+  std::vector<rectangle::pod_t> pod_rects;
+  pod_rects.reserve(c.size());
+  for(auto const& r : c.rects) pod_rects.push_back({r.center, r.width, r.height});
+
+  pod_rects = mpi_gather(pod_rects, comm, root, all, std::true_type());
+
+  res.rects.reserve(pod_rects.size());
+  for(auto const& r : pod_rects)
+   res.rects.emplace_back(r.center, r.width, r.height, res.cache_entry->index);
+  return res;
  }
 
  // HDF5

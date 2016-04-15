@@ -26,6 +26,7 @@
 #include <triqs/gfs.hpp>
 #include <triqs/utility/variant.hpp>
 #include <triqs/mpi/base.hpp>
+#include <triqs/statistics/histograms.hpp>
 
 #include "run_parameters.hpp"
 #include "configuration.hpp"
@@ -39,6 +40,7 @@ namespace som {
 using namespace triqs::arrays;
 using namespace triqs::gfs;
 using triqs::utility::variant;
+using triqs::statistics::histogram;
 
 class som_core {
 
@@ -77,6 +79,9 @@ class som_core {
  // MPI communicator
  triqs::mpi::communicator comm;
 
+ // Objective function histograms
+ std::vector<histogram> histograms;
+
  // Fill rhs and error_bars
  template<typename... GfOpts>
  void set_input_data(gf_const_view<GfOpts...> g, gf_const_view<GfOpts...> S);
@@ -89,6 +94,13 @@ class som_core {
   KernelType const& kern,
   typename KernelType::result_type rhs_,
   typename KernelType::result_type error_bars_);
+
+ // Accumulate solutions
+ template<typename KernelType> configuration accumulate(
+  KernelType const& kern,
+  typename KernelType::result_type rhs_,
+  typename KernelType::result_type error_bars_,
+  histogram & hist, int F);
 
 public:
 
@@ -109,10 +121,17 @@ public:
  run_parameters_t get_last_run_parameters() const { return params; }
 
  //
- gf_view<refreq> operator()(gf_view<refreq> g_w) const;
+ void operator()(gf_view<refreq> g_w) const;
 
  /// Fill a real-frequency Green's function with obtained results
  friend void triqs_gf_view_assign_delegation(gf_view<refreq> g_w, som_core const& cont) { cont(g_w); }
+
+ // FIXME: use a native Python converter for triqs::statistics::histogram when it's available
+ std::vector<vector<double>> get_histograms() const {
+  std::vector<vector<double>> res;
+  for(auto const& h : histograms) res.push_back(h.data());
+  return res;
+ }
 
 };
 

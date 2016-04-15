@@ -14,6 +14,7 @@ module.add_include("../c++/som_core.hpp")
 # Add here anything to add in the C++ code at the start, e.g. namespace using
 module.add_preamble("""
 #include <triqs/python_tools/converters/pair.hpp>
+#include <triqs/python_tools/converters/vector.hpp>
 using namespace triqs::gfs;
 using namespace som;
 #include "./converters.hxx"
@@ -67,14 +68,34 @@ c.add_method("""void run (**som::run_parameters_t)""",
 +------------------------+---------------------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
 | adjust_ngu_kappa       | double                    | 0.25                          | Limiting value of :math:`\kappa` used to adjust :math:`F`                                                                                     |
 +------------------------+---------------------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
+| n_solutions            | unsigned int              | 100                           | Number of particular solutions used in the final accumulation (:math:`L`)                                                                     |
++------------------------+---------------------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
+| adjust_nsol            | bool                      | true                          | Adjust the number of solutions used in the final accumulation If `true`, use n_solutions as a starting value                                  |
++------------------------+---------------------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
+| adjust_nsol_good_d     | double                    | 2.0                           | Maximal ratio :math:`D/D_\mathrm{min}` for a particular solution to be considered good                                                        |
++------------------------+---------------------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
+| adjust_nsol_verygood_d | double                    | 4.0/3.0                       | Maximal ratio :math:`D/D_\mathrm{min}` for a particular solution to be considered very good                                                   |
++------------------------+---------------------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
+| adjust_nsol_ratio      | double                    | 0.95                          | Critical ratio :math:`N_\mathrm{good}/N_\mathrm{very good}` to stop :math:`L`-adjustment procedure.                                           |
++------------------------+---------------------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
+| make_histograms        | bool                      | false                         | Accumulate histograms of objective function values                                                                                            |
++------------------------+---------------------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
+| hist_max               | double                    | 2.0                           | Right boundary of the histograms, in units of :math:`D_\mathrm{min}` (left boundary is always set to :math:`D_\mathrm{min}`)                  |
++------------------------+---------------------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
+| hist_n_bins            | bool                      | 100                           | Number of bins for the histograms                                                                                                             |
++------------------------+---------------------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
 | verbosity              | int                       | 3 on MPI rank 0, 0 otherwise. | Verbosity level                                                                                                                               |
 +------------------------+---------------------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+ """)
 
-c.add_call(signature = "gf_view<refreq>(gf_view<refreq> g_w)")
+c.add_call(signature = "void(gf_view<refreq> g_w)""")
 
 c.add_property(name = "last_run_parameters",
                getter = cfunction("som::run_parameters_t get_last_run_parameters ()"),
                doc = """Set of parameters used in the last call to run() """)
+
+c.add_property(name = "histograms",
+               getter = cfunction("std::vector<vector<double>> get_histograms ()"),
+               doc = """ """)
 
 module.add_class(c)
 
