@@ -83,6 +83,8 @@ template<typename KernelType> class solution_worker {
  cache_index & ci;                          // LHS cache index
 
  bool verbose_mc;                           // Make MC output statistics and percentage
+ int n_global_updates;                      // Number of global updates
+ int n_elementary_updates;                  // Number of elementary updates per global update
  mc_generic<double> mc;                     // Markov chain
 
  // MC data
@@ -104,7 +106,8 @@ public:
                  run_parameters_t const& params,
                  int n_global_updates) :
   verbose_mc(params.verbosity >= 3),
-  mc(n_global_updates, params.n_elementary_updates, 0, params.random_name, params.random_seed, verbose_mc ? 3 : 0),
+  n_global_updates(n_global_updates), n_elementary_updates(params.n_elementary_updates),
+  mc(params.random_name, params.random_seed, 1, verbose_mc ? 3 : 0),
   ci(ci), kern(objf.get_kernel()),
   data{objf, {{},ci}, {{},ci}, 0, 0, dist_function(mc.get_rng(), params.n_elementary_updates, params.distrib_d_max), params.gamma},
   energy_window(params.energy_window), norm(norm),
@@ -204,7 +207,7 @@ private:
 
   // Start simulation
   data.Z.reset();
-  mc.start(1.0, triqs::utility::clock_callback(-1));
+  mc.run(n_global_updates, n_elementary_updates, triqs::utility::clock_callback(-1));
 
   std::swap(data.global_conf,conf);
   kern.cache_swap(data.global_conf,conf);
