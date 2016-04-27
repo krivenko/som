@@ -9,7 +9,7 @@ module = module_(full_name = "som", doc = "The Stochastic Optimization Method", 
 module.use_module('gf', 'triqs')
 
 # Add here all includes beyond what is automatically included by the triqs modules
-module.add_include("../c++/som_core.hpp")
+module.add_include("som_core.hpp")
 
 # Add here anything to add in the C++ code at the start, e.g. namespace using
 module.add_preamble("""

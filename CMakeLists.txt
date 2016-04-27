@@ -42,6 +42,7 @@ option(Tests "Enable Tests" ON)
 
 # Compile C++ code
 add_subdirectory(c++)
+include_directories(c++)
 
 # Python interface
 if (${TRIQS_WITH_PYTHON_SUPPORT})
