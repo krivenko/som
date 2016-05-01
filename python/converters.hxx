@@ -1,6 +1,6 @@
 // DO NOT EDIT
 // Generated automatically using libclang using the command :
-// c++2py.py ../c++/som_core.hpp --compiler_options=-DCACHE_SIZE=0xffff -p -m som -o som --appname triqs_som --moduledoc "The Stochastic Optimization Method"
+// c++2py.py ../c++/som_core.hpp --compiler_options=-DCACHE_SIZE=0x10000 -p -m som -o som --appname triqs_som --moduledoc "The Stochastic Optimization Method"
 
 
 // --- C++ Python converter for run_parameters_t

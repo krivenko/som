@@ -7,6 +7,7 @@ struct run_parameters_t {
 
  /// Estimated lower and upper bounds of the spectrum
  /// Negative values of the lower bound will be reset to 0 for susceptibilities and conductivity
+ /// type: (double,double)
  std::pair<double,double> energy_window;
 
  /// Seed for random number generator
@@ -61,7 +62,7 @@ struct run_parameters_t {
  /// Maximal ratio :math:`D/D_\mathrm{min}` for a particular solution to be considered very good
  double adjust_nsol_verygood_d = 4.0/3.0;
 
- /// Critical ratio :math:`N_\mathrm{good}/N_\mathrm{very good}` to stop :math:`L`-adjustment procedure.
+ /// Critical ratio :math:`N_\mathrm{very good}/N_\mathrm{good}` to stop :math:`L`-adjustment procedure.
  double adjust_nsol_ratio = 0.95;
 
  /// Accumulate histograms of objective function values
