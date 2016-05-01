@@ -114,6 +114,9 @@ public:
  som_core(gf_const_view<legendre> g_l, gf_const_view<legendre> S_l,
           observable_kind kind = FermionGf, double norm = 1.0);
 
+ /// Destructor
+ ~som_core();
+
  TRIQS_WRAP_ARG_AS_DICT // Wrap the parameters as a dictionary in python with c++2py
  void run(run_parameters_t const& p);
 

@@ -40,6 +40,7 @@ run_params['n_global_updates'] = 50
 run_params['adjust_ngu_n_solutions'] = 10;
 run_params['adjust_nsol'] = True
 run_params['n_solutions'] = 10
+run_params['adjust_nsol_ratio'] = 0.8
 
 cont.run(**run_params)
 cont(g_w)

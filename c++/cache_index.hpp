@@ -84,6 +84,9 @@ public:
  // Mark all cache entries as invalid
  void invalidate_all() { for(auto & h : entries) h.valid = false; }
 
+ // Number of currently used cache entries
+ int n_used_entries() const { return CACHE_SIZE - spare_ids.size(); }
+
 };
 
 }
