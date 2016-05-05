@@ -372,7 +372,7 @@ template<typename KernelType> configuration som_core::accumulate(KernelType cons
   // Pick only good solutions
   if(s.second/objf_min <= params.adjust_nsol_good_d) sol_sum += s.first;
  }
- sol_sum *= double(1/n_good_solutions);
+ sol_sum *= 1.0/double(n_good_solutions);
 
  // Sum over all processes
  sol_sum = mpi_reduce(sol_sum, comm, 0, true);

@@ -119,7 +119,11 @@ public:
  friend rectangle operator*(double alpha, rectangle const& r) { return r*alpha; }
 
  // POD version of the rectangle, used in MPI operations
- struct pod_t { double center; double width; double height; };
+ struct pod_t {
+  double center; double width; double height;
+  pod_t() = default;
+  pod_t(rectangle const& r) : center(r.center), width(r.width), height(r.height) {}
+ };
 
 };
 
@@ -128,11 +132,16 @@ public:
 namespace triqs { namespace mpi {
 
 template<> inline MPI_Datatype mpi_datatype<som::rectangle::pod_t>() {
- MPI_Datatype dt;
- static int blocklengths[] = {1,1,1};
- static MPI_Aint displacements[] = {0,sizeof(double),2*sizeof(double)};
- static MPI_Datatype types[] = {MPI_DOUBLE,MPI_DOUBLE,MPI_DOUBLE};
- MPI_Type_create_struct(3, blocklengths, displacements, types, &dt);
+ bool type_committed = false;
+ static MPI_Datatype dt;
+ if(!type_committed) {
+  int blocklengths[] = {1,1,1};
+  MPI_Aint displacements[] = {0,sizeof(double),2*sizeof(double)};
+  MPI_Datatype types[] = {MPI_DOUBLE,MPI_DOUBLE,MPI_DOUBLE};
+  MPI_Type_create_struct(3, blocklengths, displacements, types, &dt);
+  MPI_Type_commit(&dt);
+  type_committed = true;
+ }
  return dt;
 }
 

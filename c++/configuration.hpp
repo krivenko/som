@@ -191,15 +191,10 @@ public:
   if(comm.size() == 1) return c;
   configuration res(c.cache_entry->index);
 
-  std::vector<rectangle::pod_t> pod_rects;
-  pod_rects.reserve(c.size());
-  for(auto const& r : c.rects) pod_rects.push_back({r.center, r.width, r.height});
-
+  std::vector<rectangle::pod_t> pod_rects(std::begin(c), std::end(c));
   pod_rects = mpi_gather(pod_rects, comm, root, all, std::true_type());
 
-  res.rects.reserve(pod_rects.size());
-  for(auto const& r : pod_rects)
-   res.rects.emplace_back(r.center, r.width, r.height, res.cache_entry->index);
+  for(auto const& r : pod_rects) res.insert({r.center, r.width, r.height, res.cache_entry->index});
   return res;
  }
 
