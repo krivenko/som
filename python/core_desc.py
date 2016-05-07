@@ -3,7 +3,7 @@
 from wrap_generator import *
 
 # The module
-module = module_(full_name = "som", doc = "The Stochastic Optimization Method", app_name = "triqs_som")
+module = module_(full_name = "core", doc = "The Stochastic Optimization Method", app_name = "triqs_som")
 
 # All the triqs C++/Python modules
 module.use_module('gf', 'triqs')
@@ -87,7 +87,11 @@ c.add_method("""void run (**som::run_parameters_t)""",
 | verbosity              | int             | 3 on MPI rank 0, 0 otherwise. | Verbosity level                                                                                                                               |
 +------------------------+-----------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+ """)
 
-c.add_call(signature = "void(gf_view<refreq> g_w)""")
+c.add_call(signature = "void(gf_view<refreq> g_w)", calling_pattern = "triqs_gf_view_assign_delegation(g_w, self_c)")
+c.add_call(signature = "void(gf_view<imtime> g_tau)", calling_pattern = "triqs_gf_view_assign_delegation(g_tau, self_c)")
+c.add_call(signature = "void(gf_view<imfreq> g_iw)", calling_pattern = "triqs_gf_view_assign_delegation(g_iw, self_c)")
+# FIXME
+#c.add_call(signature = "void(gf_view<legendre> g_l)", calling_pattern = "triqs_gf_view_assign_delegation(g_l, self_c)")
 
 c.add_property(name = "last_run_parameters",
                getter = cfunction("som::run_parameters_t get_last_run_parameters ()"),

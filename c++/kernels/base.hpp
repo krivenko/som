@@ -20,6 +20,7 @@
  ******************************************************************************/
 #pragma once
 
+#include <string>
 #include <vector>
 #include <iostream>
 
@@ -31,6 +32,35 @@ namespace som {
 
 // Kinds of observables
 enum observable_kind {FermionGf, Susceptibility, Conductivity};
+
+// Statistics of observables
+triqs::gfs::statistic_enum observable_statistics(observable_kind kind) {
+ switch(kind) {
+  case FermionGf: return triqs::gfs::Fermion;
+  case Susceptibility: return triqs::gfs::Boson;
+  case Conductivity: return triqs::gfs::Boson;
+ }
+}
+
+// Mesh traits
+template<typename MeshType> struct mesh_traits;
+
+template<> struct mesh_traits<triqs::gfs::imtime> {
+ static constexpr int index = 0;
+ static std::string name() { return "imaginary time"; }
+};
+template<> struct mesh_traits<triqs::gfs::imfreq> {
+ static constexpr int index = 1;
+ static std::string name() { return "imaginary frequency"; }
+};
+template<> struct mesh_traits<triqs::gfs::legendre> {
+ static constexpr int index = 2;
+ static std::string name() { return "Legendre"; }
+};
+template<> struct mesh_traits<triqs::gfs::refreq> {
+ static constexpr int index = -1;
+ static std::string name() { return "real frequency"; }
+};
 
 // Integral kernels
 template<observable_kind, typename Mesh> class kernel;

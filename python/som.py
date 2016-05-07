@@ -24,6 +24,16 @@ DOC
 
 """
 from core import SomCore
-from som import Som
+import numpy as np
 
-__all__ = ['SomCore','Som']
+class Som(SomCore):
+    """Stochastic Optimization Method"""
+
+    def __init__(self, g, s = None):
+        if s is None:
+            s = g.copy()
+            s.data[:,Ellipsis] = np.eye(s.target_shape[0])
+        SomCore.__init__(self, g, s)
+
+    def __rlshift__(self, g):
+        SomCore.__call__(self, g)

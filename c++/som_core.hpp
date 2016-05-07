@@ -123,11 +123,9 @@ public:
  /// Set of parameters used in the last call to run()
  run_parameters_t get_last_run_parameters() const { return params; }
 
- //
- void operator()(gf_view<refreq> g_w) const;
-
- /// Fill a real-frequency Green's function with obtained results
- friend void triqs_gf_view_assign_delegation(gf_view<refreq> g_w, som_core const& cont) { cont(g_w); }
+ /// Fill a Green's function using the calculated spectra
+ template<typename MeshType>
+ friend void triqs_gf_view_assign_delegation(gf_view<MeshType> g, som_core const& cont);
 
  // FIXME: use a native Python converter for triqs::statistics::histogram when it's available
  std::vector<vector<double>> get_histograms() const {

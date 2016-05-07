@@ -67,6 +67,10 @@ som_core::som_core(gf_const_view<imtime> g_tau, gf_const_view<imtime> S_tau,
                    observable_kind kind, double norm) :
  mesh(g_tau.mesh()), kind(kind), norm(norm),
  rhs(input_data_r_t()), error_bars(input_data_r_t()) {
+
+ if(g_tau.domain().statistic != observable_statistics(kind))
+  fatal_error("Wrong g_tau statistics for this observable kind");
+
  switch(kind) {
   case FermionGf: {
    if(g_tau.domain().statistic != Fermion)
@@ -97,10 +101,12 @@ som_core::som_core(gf_const_view<imfreq> g_iw, gf_const_view<imfreq> S_iw,
                    observable_kind kind, double norm) :
  mesh(g_iw.mesh()), kind(kind), norm(norm),
  rhs(input_data_c_t()), error_bars(input_data_c_t()) {
+
+ if(g_iw.domain().statistic != observable_statistics(kind))
+  fatal_error("Wrong g_iw statistics for this observable kind");
+
  switch(kind) {
   case FermionGf: {
-   if(g_iw.domain().statistic != Fermion)
-    fatal_error("only fermionic Green's functions are supported");
    if(norm != 1.0) fatal_error("fermionic Green's functions must have a norm of 1.0");
    check_input_gf(g_iw,S_iw);
    if(!is_gf_real_in_tau(g_iw) || !is_gf_real_in_tau(S_iw))
@@ -129,10 +135,12 @@ som_core::som_core(gf_const_view<legendre> g_l, gf_const_view<legendre> S_l,
                    observable_kind kind, double norm) :
  mesh(g_l.mesh()), kind(kind), norm(norm),
  rhs(input_data_r_t()), error_bars(input_data_r_t()) {
+
+ if(g_l.domain().statistic != observable_statistics(kind))
+    fatal_error("Wrong g_l statistics for this observable kind");
+
  switch(kind) {
   case FermionGf: {
-   if(g_l.domain().statistic != Fermion)
-    fatal_error("only fermionic Green's functions are supported");
    if(norm != 1.0) fatal_error("fermionic Green's functions must have a norm of 1.0");
    check_input_gf(g_l,S_l);
    if(!is_gf_real(g_l) || !is_gf_real(S_l))
@@ -153,6 +161,10 @@ som_core::som_core(gf_const_view<legendre> g_l, gf_const_view<legendre> S_l,
    fatal_error("unknown observable kind " + to_string(kind));
  }
 }
+
+///////////
+// run() //
+///////////
 
 void som_core::run(run_parameters_t const& p) {
 
@@ -181,31 +193,12 @@ void som_core::run(run_parameters_t const& p) {
 #define EI(ok, mk) int(ok) + 3 * mk
 
  switch(EI(kind, mesh.index())) {
-  case EI(FermionGf,0): run_impl<kernel<FermionGf,imtime>>(); break;
-  case EI(FermionGf,1): run_impl<kernel<FermionGf,imfreq>>(); break;
-  //case EI(FermionGf,2): run_impl<kernel<FermionGf,legendre>>(); break;
+  case EI(FermionGf,mesh_traits<imtime>::index): run_impl<kernel<FermionGf,imtime>>(); break;
+  case EI(FermionGf,mesh_traits<imfreq>::index): run_impl<kernel<FermionGf,imfreq>>(); break;
+  //case EI(FermionGf,mesh_traits<legendre>::index): run_impl<kernel<FermionGf,legendre>>(); break;
   // TODO
  }
 #undef EI
-}
-
-void som_core::operator()(gf_view<refreq> g_w) const {
- auto shape = get_target_shape(g_w);
- auto gf_dim = results.size();
-
- if(shape[0] != gf_dim || shape[1] != gf_dim)
-  fatal_error("expected a real-frequency Green's function with matrix dimensions "
-              + to_string(gf_dim) + "x" + to_string(gf_dim) + " in assignment");
-
- g_w() = 0;
- for(int i = 0; i < gf_dim; ++i) {
-  auto const& conf = results[i];
-  for(auto const& rect : conf) {
-   for(auto e : g_w.mesh()) g_w.data()(e.index(),i,i) += rect.hilbert_transform(double(e));
-   auto & tail = g_w.singularity();
-   tail.data()(range(),i,i) += rect.tail_coefficients(tail.order_min(),tail.order_max());
-  }
- }
 }
 
 template<typename KernelType> void som_core::run_impl() {
@@ -233,6 +226,8 @@ template<typename KernelType> void som_core::run_impl() {
   int F = params.adjust_ngu ? adjust_f(kernel,rhs_[i],error_bars_[i]) : params.n_global_updates;
   results[i] = accumulate(kernel,rhs_[i],error_bars_[i],histograms[i],F);
  }
+
+ ci.invalidate_all();
 }
 
 template<typename KernelType> int som_core::adjust_f(KernelType const& kern,
@@ -393,5 +388,71 @@ som_core::~som_core() {
   "n_configs = " << n_configs << ", n_rects = " << n_rects <<
   ", n_used_entries = " << ci.n_used_entries();
 }
+
+///////////////////////////////////////
+// triqs_gf_view_assign_delegation() //
+///////////////////////////////////////
+
+template<typename MeshType> void check_gf_dim(gf_view<MeshType> g, int expected_dim) {
+ auto shape = get_target_shape(g);
+ if(shape[0] != expected_dim || shape[1] != expected_dim)
+  fatal_error("expected a " + mesh_traits<MeshType>::name()
+              + " Green's function with matrix dimensions "
+              + to_string(expected_dim) + "x" + to_string(expected_dim));
+}
+
+template<typename MeshType> void check_gf_stat(gf_view<MeshType> g, triqs::gfs::statistic_enum expected_stat) {
+ if(g.domain().statistic != expected_stat)
+  fatal_error("expected a " + mesh_traits<MeshType>::name()
+              + " Green's function with "
+              + (expected_stat == Fermion ? "fermionic" : "bosonic")
+              + " statistics");
+}
+
+template<typename MeshType>
+void triqs_gf_view_assign_delegation(gf_view<MeshType> g, som_core const& cont) {
+ auto gf_dim = cont.results.size();
+ check_gf_dim(g, gf_dim);
+ check_gf_stat(g, observable_statistics(cont.kind));
+
+ g() = 0;
+ switch(cont.kind) {
+  case FermionGf: {
+   kernel<FermionGf,MeshType> kern(g.mesh());
+   for(int i = 0; i < gf_dim; ++i) g.data()(range(),i,i) = kern(cont.results[i]);
+   return;
+  }
+  // TODO
+  case Susceptibility:
+   fatal_error("continuation of susceptibilities is not yet implemented");
+   break;
+  // TODO
+  case Conductivity:
+   fatal_error("continuation of conductivity is not yet implemented");
+   break;
+  default:
+   fatal_error("unknown observable kind " + to_string(cont.kind));
+ }
+}
+
+template<> void triqs_gf_view_assign_delegation<refreq>(gf_view<refreq> g_w, som_core const& cont) {
+ auto gf_dim = cont.results.size();
+ check_gf_dim(g_w, gf_dim);
+
+ g_w() = 0;
+ for(int i = 0; i < gf_dim; ++i) {
+  auto const& conf = cont.results[i];
+  for(auto const& rect : conf) {
+   for(auto e : g_w.mesh()) g_w.data()(e.index(),i,i) += rect.hilbert_transform(double(e));
+   auto & tail = g_w.singularity();
+   tail.data()(range(),i,i) += rect.tail_coefficients(tail.order_min(),tail.order_max());
+  }
+ }
+}
+
+template void triqs_gf_view_assign_delegation<imtime>(gf_view<imtime>, som_core const&);
+template void triqs_gf_view_assign_delegation<imfreq>(gf_view<imfreq>, som_core const&);
+// TODO
+//template void triqs_gf_view_assign_delegation<legendre>(gf_view<legendre>, som_core const&);
 
 }
