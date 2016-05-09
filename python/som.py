@@ -29,11 +29,11 @@ import numpy as np
 class Som(SomCore):
     """Stochastic Optimization Method"""
 
-    def __init__(self, g, s = None):
+    def __init__(self, g, s = None, kind = "FermionGf", norm = 1.0):
         if s is None:
             s = g.copy()
             s.data[:,Ellipsis] = np.eye(s.target_shape[0])
-        SomCore.__init__(self, g, s)
+        SomCore.__init__(self, g, s, kind, norm)
 
     def __rlshift__(self, g):
         SomCore.__call__(self, g)
