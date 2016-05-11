@@ -127,12 +127,8 @@ public:
  template<typename MeshType>
  friend void triqs_gf_view_assign_delegation(gf_view<MeshType> g, som_core const& cont);
 
- // FIXME: use a native Python converter for triqs::statistics::histogram when it's available
- std::vector<vector<double>> get_histograms() const {
-  std::vector<vector<double>> res;
-  for(auto const& h : histograms) res.push_back(h.data());
-  return res;
- }
+ /// Accumulated objective function histograms
+ std::vector<histogram> const& get_histograms() const { return histograms; }
 
 };
 

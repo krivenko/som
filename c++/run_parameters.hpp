@@ -73,7 +73,7 @@ struct run_parameters_t {
  double hist_max = 2.0;
 
  /// Number of bins for the histograms
- bool hist_n_bins = 100;
+ int hist_n_bins = 100;
 
  /// Verbosity level
  /// default: 3 on MPI rank 0, 0 otherwise.

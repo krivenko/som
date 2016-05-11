@@ -25,5 +25,6 @@ DOC
 """
 from core import SomCore
 from som import Som
+from histogram import Histogram, pdf, cdf
 
-__all__ = ['SomCore','Som']
+__all__ = ['SomCore','Som','Histogram','pdf','cdf']

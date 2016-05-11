@@ -7,6 +7,7 @@ module = module_(full_name = "core", doc = "The Stochastic Optimization Method",
 
 # All the triqs C++/Python modules
 module.use_module('gf', 'triqs')
+module.use_module('histogram', 'triqs_som')
 
 # Add here all includes beyond what is automatically included by the triqs modules
 module.add_include("som_core.hpp")
@@ -98,8 +99,8 @@ c.add_property(name = "last_run_parameters",
                doc = """Set of parameters used in the last call to run() """)
 
 c.add_property(name = "histograms",
-               getter = cfunction("std::vector<vector<double>> get_histograms ()"),
-               doc = """ """)
+               getter = cfunction("std::vector<histogram> get_histograms ()"),
+               doc = """Accumulated objective function histograms""")
 
 module.add_class(c)
 

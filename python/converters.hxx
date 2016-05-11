@@ -1,6 +1,6 @@
 // DO NOT EDIT
 // Generated automatically using libclang using the command :
-// c++2py.py ../c++/som_core.hpp --compiler_options=-DCACHE_SIZE=0x10000 -p -m som -o som --appname triqs_som --moduledoc "The Stochastic Optimization Method"
+// c++2py.py ../c++/som_core.hpp --only_converters --compiler_options=-DCACHE_SIZE=0x10000 -p -m som -o som --appname triqs_som --moduledoc "The Stochastic Optimization Method"
 
 
 // --- C++ Python converter for run_parameters_t
@@ -135,7 +135,7 @@ template <> struct py_converter<run_parameters_t> {
   _check_optional <double                   >(dic, fs, err, "adjust_nsol_ratio"     , "double");
   _check_optional <bool                     >(dic, fs, err, "make_histograms"       , "bool");
   _check_optional <double                   >(dic, fs, err, "hist_max"              , "double");
-  _check_optional <bool                     >(dic, fs, err, "hist_n_bins"           , "bool");
+  _check_optional <int                      >(dic, fs, err, "hist_n_bins"           , "int");
   _check_optional <int                      >(dic, fs, err, "verbosity"             , "int");
   if (err) goto _error;
   return true;

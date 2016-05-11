@@ -14,7 +14,7 @@ file(GLOB_RECURSE doc_sources *.rst)
 
 # create documentation target
 set(sphinx_top ${CMAKE_CURRENT_BINARY_DIR}/html/index.html)
-add_custom_command(OUTPUT ${sphinx_top} DEPENDS ${doc_sources} py_copy som som_c
+add_custom_command(OUTPUT ${sphinx_top} DEPENDS ${doc_sources} py_copy core som_c
                    COMMAND ${CMAKE_BINARY_DIR}/build_pytriqs ${TRIQS_SPHINXBUILD_EXECUTABLE} -c . -b html ${CMAKE_CURRENT_SOURCE_DIR} html)
 add_custom_target(doc_sphinx ALL DEPENDS ${sphinx_top})
 

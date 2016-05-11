@@ -41,6 +41,7 @@ run_params['adjust_ngu_n_solutions'] = 10;
 run_params['adjust_nsol'] = True
 run_params['n_solutions'] = 10
 run_params['adjust_nsol_ratio'] = 0.8
+run_params['make_histograms'] = True
 
 cont.run(**run_params)
 g_w << cont
@@ -53,3 +54,4 @@ if mpi.is_master_node():
     arch = HDFArchive('python_gf.out.h5','w')
     arch['g_w'] = g_w
     arch['g_tau_rec'] = g_tau_rec
+    arch['histograms'] = cont.histograms
