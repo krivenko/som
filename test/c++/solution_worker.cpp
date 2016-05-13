@@ -32,7 +32,7 @@ TEST(solution_worker,RandomConfig) {
  obj_function of(kern, g_tau, s_tau);
 
  auto params = run_parameters_t({-3.0,3.0});
- params.n_elementary_updates = 100;
+ params.t = 100;
  params.min_rect_width = 0.001;
  params.min_rect_weight = 0.001;
 
@@ -53,7 +53,7 @@ TEST(solution_worker,StartConfig) {
  obj_function of(kern, g_tau, s_tau);
 
  auto params = run_parameters_t({-3.0,3.0});
- params.n_elementary_updates = 100;
+ params.t = 100;
  params.min_rect_width = 0.001;
  params.min_rect_weight = 0.001;
 

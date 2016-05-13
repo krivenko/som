@@ -186,7 +186,7 @@ void som_core::run(run_parameters_t const& p) {
  if(params.min_rect_weight <= 0 || params.min_rect_weight >= norm)
   fatal_error("min_rect_weight must be in [0;" + to_string(norm) + "]");
 
- if(params.adjust_nsol_verygood_d > params.adjust_nsol_good_d)
+ if(params.adjust_l_verygood_d > params.adjust_l_good_d)
   fatal_error("Cannot have adjust_nsol_verygood_d > adjust_nsol_good_d");
 
 // FIXME: get rid of this macro
@@ -223,7 +223,7 @@ template<typename KernelType> void som_core::run_impl() {
   auto const& rhs_ = (input_data_t<mesh_t> const&) rhs;
   auto const& error_bars_ = (input_data_t<mesh_t> const&) error_bars;
 
-  int F = params.adjust_ngu ? adjust_f(kernel,rhs_[i],error_bars_[i]) : params.n_global_updates;
+  int F = params.adjust_f ? adjust_f(kernel,rhs_[i],error_bars_[i]) : params.f;
   results[i] = accumulate(kernel,rhs_[i],error_bars_[i],histograms[i],F);
  }
 
@@ -236,12 +236,12 @@ template<typename KernelType> int som_core::adjust_f(KernelType const& kern,
 
  if(params.verbosity >= 1) {
   std::cout << "Adjusting the number of global updates F using "
-            << params.adjust_ngu_n_solutions << " particular solutions ..." << std::endl;
+            << params.adjust_f_l << " particular solutions ..." << std::endl;
  }
  objective_function<KernelType> of(kern, rhs_, error_bars_);
  fit_quality<KernelType> fq(kern, rhs_, error_bars_);
 
- int F = params.n_global_updates;
+ int F = params.f;
 
  int n_good_solutions;
  for(n_good_solutions = 0;;n_good_solutions = 0, F *= 2) {
@@ -249,7 +249,7 @@ template<typename KernelType> int som_core::adjust_f(KernelType const& kern,
   auto & rng = worker.get_rng();
 
   int n_sol;
-  for(int i = 0; (n_sol = comm.rank() + i*comm.size()) < params.adjust_ngu_n_solutions; ++i) {
+  for(int i = 0; (n_sol = comm.rank() + i*comm.size()) < params.adjust_f_l; ++i) {
    if(params.verbosity >= 2) {
     std::cout << "[Node " << comm.rank() << "] Accumulation of particular solution "
               << n_sol << std::endl;
@@ -258,10 +258,10 @@ template<typename KernelType> int som_core::adjust_f(KernelType const& kern,
    auto solution = worker(1 + rng(params.max_rects));
    double kappa = fq(solution);
 
-   if(kappa > params.adjust_ngu_kappa) ++n_good_solutions;
+   if(kappa > params.adjust_f_kappa) ++n_good_solutions;
    if(params.verbosity >= 2) {
     std::cout << "[Node " << comm.rank() << "] Particular solution "
-              << n_sol << " is " << (kappa > params.adjust_ngu_kappa ? "" : "not ")
+              << n_sol << " is " << (kappa > params.adjust_f_kappa ? "" : "not ")
               << "good (\\kappa = " << kappa
               << ", D = " << worker.get_objf_value() << ")." << std::endl;
    }
@@ -271,10 +271,10 @@ template<typename KernelType> int som_core::adjust_f(KernelType const& kern,
 
   if(params.verbosity >= 1)
    std::cout << "F = " << F << ", "
-             << n_good_solutions << " solutions with \\kappa > " << params.adjust_ngu_kappa
-             << " (out of " << params.adjust_ngu_n_solutions << ")" << std::endl;
+             << n_good_solutions << " solutions with \\kappa > " << params.adjust_f_kappa
+             << " (out of " << params.adjust_f_l << ")" << std::endl;
 
-  if(n_good_solutions > params.adjust_ngu_n_solutions/2) break;
+  if(n_good_solutions > params.adjust_f_l/2) break;
  }
  if(params.verbosity >= 1) std::cout << "F = " << F << " is enough." << std::endl;
 
@@ -300,7 +300,7 @@ template<typename KernelType> configuration som_core::accumulate(KernelType cons
  int n_good_solutions, n_verygood_solutions; // Number of good and very good solutions
  double objf_min = HUGE_VAL;                 // Minimal value of D
  do {
-  n_sol_max += params.n_solutions;
+  n_sol_max += params.l;
   solutions.reserve(n_sol_max);
 
   if(params.verbosity >= 1)
@@ -332,8 +332,8 @@ template<typename KernelType> configuration som_core::accumulate(KernelType cons
   // Recalculate numbers of good and very good solutions
   n_good_solutions = n_verygood_solutions = 0;
   for(auto const& s : solutions) {
-   if(s.second/objf_min <= params.adjust_nsol_good_d) ++n_good_solutions;
-   if(s.second/objf_min <= params.adjust_nsol_verygood_d) ++n_verygood_solutions;
+   if(s.second/objf_min <= params.adjust_l_good_d) ++n_good_solutions;
+   if(s.second/objf_min <= params.adjust_l_verygood_d) ++n_verygood_solutions;
   }
   n_good_solutions = mpi_all_reduce(n_good_solutions);
   n_verygood_solutions = mpi_all_reduce(n_verygood_solutions);
@@ -341,13 +341,13 @@ template<typename KernelType> configuration som_core::accumulate(KernelType cons
   if(params.verbosity >= 1) {
    std::cout << "D_min = " << objf_min << std::endl;
    std::cout << "Number of good soulutions (D/D_min <= "
-             << params.adjust_nsol_good_d << ") = " << n_good_solutions << std::endl;
+             << params.adjust_l_good_d << ") = " << n_good_solutions << std::endl;
    std::cout << "Number of very good soulutions (D/D_min <= "
-             << params.adjust_nsol_verygood_d << ") = " << n_verygood_solutions << std::endl;
+             << params.adjust_l_verygood_d << ") = " << n_verygood_solutions << std::endl;
   }
 
- } while(params.adjust_nsol &&
-         double(n_verygood_solutions) / double(n_good_solutions) < params.adjust_nsol_ratio);
+ } while(params.adjust_l &&
+         double(n_verygood_solutions) / double(n_good_solutions) < params.adjust_l_ratio);
 
  comm.barrier();
 
@@ -365,7 +365,7 @@ template<typename KernelType> configuration som_core::accumulate(KernelType cons
  for(auto const& s : solutions) {
   if(params.make_histograms) hist << s.second;
   // Pick only good solutions
-  if(s.second/objf_min <= params.adjust_nsol_good_d) sol_sum += s.first;
+  if(s.second/objf_min <= params.adjust_l_good_d) sol_sum += s.first;
  }
  sol_sum *= 1.0/double(n_good_solutions);
 

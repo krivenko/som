@@ -83,8 +83,8 @@ template<typename KernelType> class solution_worker {
  cache_index & ci;                          // LHS cache index
 
  bool verbose_mc;                           // Make MC output statistics and percentage
- int n_global_updates;                      // Number of global updates
- int n_elementary_updates;                  // Number of elementary updates per global update
+ int f;                                     // Number of global updates
+ int t;                                     // Number of elementary updates per global update
  mc_generic<double> mc;                     // Markov chain
 
  // MC data
@@ -104,12 +104,12 @@ public:
                  double norm,
                  cache_index & ci,
                  run_parameters_t const& params,
-                 int n_global_updates) :
+                 int f) :
   verbose_mc(params.verbosity >= 3),
-  n_global_updates(n_global_updates), n_elementary_updates(params.n_elementary_updates),
+  f(f), t(params.t),
   mc(params.random_name, params.random_seed, 1, verbose_mc ? 3 : 0),
   ci(ci), kern(objf.get_kernel()),
-  data{objf, {{},ci}, {{},ci}, 0, 0, dist_function(mc.get_rng(), params.n_elementary_updates, params.distrib_d_max), params.gamma},
+  data{objf, {{},ci}, {{},ci}, 0, 0, dist_function(mc.get_rng(), params.t, params.distrib_d_max), params.gamma},
   energy_window(params.energy_window), norm(norm),
   width_min(params.min_rect_width * (params.energy_window.second - params.energy_window.first)),
   weight_min(params.min_rect_weight * norm) {
@@ -207,7 +207,7 @@ private:
 
   // Start simulation
   data.Z.reset();
-  mc.run(n_global_updates, n_elementary_updates, triqs::utility::clock_callback(-1));
+  mc.run(f, t, triqs::utility::clock_callback(-1));
 
   std::swap(data.global_conf,conf);
   kern.cache_swap(data.global_conf,conf);

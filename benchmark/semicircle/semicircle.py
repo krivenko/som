@@ -34,13 +34,13 @@ cont = Som(g_tau, s_tau)
 run_params = {'energy_window' : (-5,5)}
 run_params['verbosity'] = 3
 run_params['random_seed'] = seed
-run_params['n_elementary_updates'] = 500
-run_params['adjust_ngu'] = True
-run_params['n_global_updates'] = 50
-run_params['adjust_ngu_n_solutions'] = 10;
-run_params['adjust_nsol'] = True
-run_params['n_solutions'] = 10
-run_params['adjust_nsol_ratio'] = 0.8
+run_params['t'] = 500
+run_params['adjust_f'] = True
+run_params['f'] = 50
+run_params['adjust_f_l'] = 10;
+run_params['adjust_l'] = True
+run_params['l'] = 10
+run_params['adjust_l_ratio'] = 0.8
 run_params['make_histograms'] = True
 
 cont.run(**run_params)

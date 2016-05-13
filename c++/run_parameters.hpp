@@ -28,7 +28,7 @@ struct run_parameters_t {
  double min_rect_weight = 1e-3;
 
  /// Number of elementary updates per global update (:math:`T`)
- int n_elementary_updates = 1000;
+ int t = 1000;
 
  /// Maximal parameter of the power-law distribution function for the Metropolis algorithm
  double distrib_d_max = 2;
@@ -37,33 +37,33 @@ struct run_parameters_t {
  double gamma = 2;
 
  /// Number of global updates (:math:`F`)
- unsigned int n_global_updates = 100;
+ unsigned int f = 100;
 
  /// Adjust the number of global updates automatically
  /// If `true`, use n_global_updates as a starting value
- bool adjust_ngu = true;
+ bool adjust_f = true;
 
  /// Number of particular solutions used to adjust :math:`F`
- unsigned int adjust_ngu_n_solutions = 10;
+ unsigned int adjust_f_l = 10;
 
  /// Limiting value of :math:`\kappa` used to adjust :math:`F`
- double adjust_ngu_kappa = 0.25;
+ double adjust_f_kappa = 0.25;
 
  /// Number of particular solutions used in the final accumulation (:math:`L`)
- unsigned int n_solutions = 100;
+ unsigned int l = 500;
 
  /// Adjust the number of solutions used in the final accumulation
  /// If `true`, use n_solutions as a starting value
- bool adjust_nsol = true;
+ bool adjust_l = true;
 
  /// Maximal ratio :math:`D/D_\mathrm{min}` for a particular solution to be considered good
- double adjust_nsol_good_d = 2.0;
+ double adjust_l_good_d = 2.0;
 
  /// Maximal ratio :math:`D/D_\mathrm{min}` for a particular solution to be considered very good
- double adjust_nsol_verygood_d = 4.0/3.0;
+ double adjust_l_verygood_d = 4.0/3.0;
 
  /// Critical ratio :math:`N_\mathrm{very good}/N_\mathrm{good}` to stop :math:`L`-adjustment procedure.
- double adjust_nsol_ratio = 0.95;
+ double adjust_l_ratio = 0.95;
 
  /// Accumulate histograms of objective function values
  bool make_histograms = false;
