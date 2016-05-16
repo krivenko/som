@@ -72,6 +72,23 @@ Integral kernel applied to a rectangle,
 	h \log\left(\frac{i\omega_n - c + w/2}{i\omega_n - c - w/2}\right).
 \end{equation}
 
+\subsection{Fermionic thermal Green's function in Legendre polynomial basis}
+\begin{equation}
+	G(\ell) = -\int\limits_{-\infty}^\infty
+	d\epsilon \frac{\beta\sqrt{2\ell+1}(-\mathrm{sgn}(\epsilon))^\ell i_{\ell}(\beta|\epsilon|/2)}
+	{2\cosh(\beta\epsilon/2)} A(\epsilon)
+\end{equation}
+$i_\ell(x)$ is the modified spherical Bessel function of the first kind.
+
+Integral kernel applied to a rectangle,
+\begin{equation}
+	\hat K(\ell;\omega)*R(c,w,h) = h (\Lambda(\ell;c+w/2) - \Lambda(\ell;c-w/2)) 
+\end{equation}
+\begin{equation}
+	\Lambda(\ell;\Omega) = (-\mathrm{sgn}(\Omega))^{\ell+1}\sqrt{2\ell+1}
+	\int_0^{|\Omega|\beta/2} \frac{i_\ell(x)}{\cosh(x)} dx
+\end{equation}
+
 \section{Fit quality criterion for complex functions}
 
 In section 4.1 Mishchenko introduces a special quantity $\kappa$, which characterizes the fit quality of a given particular solution
