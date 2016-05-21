@@ -7,7 +7,7 @@ module = module_(full_name = "core", doc = "The Stochastic Optimization Method",
 
 # All the triqs C++/Python modules
 module.use_module('gf', 'triqs')
-module.use_module('histogram', 'triqs_som')
+module.use_module('histograms', 'triqs')
 
 # Add here all includes beyond what is automatically included by the triqs modules
 module.add_include("som_core.hpp")
@@ -17,6 +17,7 @@ module.add_preamble("""
 #include <triqs/python_tools/converters/pair.hpp>
 #include <triqs/python_tools/converters/vector.hpp>
 using namespace triqs::gfs;
+using namespace triqs::statistics;
 using namespace som;
 #include "./converters.hxx"
 """)
