@@ -89,6 +89,46 @@ Integral kernel applied to a rectangle,
 	\int_0^{|\Omega|\beta/2} \frac{i_\ell(x)}{\cosh(x)} dx
 \end{equation}
 
+The integral $\int_0^z \frac{i_\ell(x)}{\cosh(x)} dx$ is rather inconvenient for fast numerical evaluation. It cannot be expressed in terms of elementary functions or of a quickly converging series. Moreover, it grows logarithmically for $z\to\infty$, which makes spline interpolation infeasible.
+
+These difficulties urge us to use a combined evaluation scheme. The scheme is based on the following expression for the integrand:
+\begin{equation}\label{il_cosh_series}
+	\frac{i_\ell(x)}{\cosh(x)} =
+	\frac{e^x}{e^x+e^{-x}}\sum_{k=0}^\ell(-1)^k
+		\frac{a_k(\ell+1/2)}{x^{k+1}} +
+	\frac{e^{-x}}{e^x+e^{-x}}\sum_{k=0}^\ell(-1)^{n+1}
+		\frac{a_k(\ell+1/2)}{x^{k+1}},
+\end{equation}
+where $a_k(\ell+1/2)$ are coefficients of the Bessel polynomials,
+\begin{equation}
+	a_k(\ell+1/2) = \frac{(l+k)!}{2^k k!(l-k)!} =
+	\prod_{i=1}^k \frac{1}{2i}[\ell-k+2i-1][\ell-k+2i].
+\end{equation}
+
+For large $x$ (high-frequency region) the integrand can be approximated as
+\begin{equation}\label{il_cosh_series_high}
+	\frac{i_\ell(x)}{\cosh(x)} \approx
+		\sum_{k=0}^\ell(-1)^k \frac{a_k(\ell+1/2)}{x^{k+1}}.
+\end{equation}
+
+For each $\ell$ the boundary value $x_0$ between the low- and high- frequency regions is found by a direct evaluation of (\ref{il_cosh_series}) and (\ref{il_cosh_series_high}). $x_0\approx15$ for $\ell=0$ (discrepancy on the level of $10^{-13}$) and grows as $\ell^2$ for higher $\ell$.
+
+In the low-energy region we do the integral $F^<(z) \equiv \int_0^z \frac{i_\ell(x)}{\cosh(x)} dx$ on a fixed $z$-mesh, $z\in[0;x_0]$, using the adaptive Simpson's method. Results of the integrations are used to construct a cubic spline interpolation of $F^<(z)$.
+
+In the high-energy region we use the asymptotic form (\ref{il_cosh_series_high}) to do the integral,
+\begin{equation}
+	F^>(z)|_{z>x_0} = F^<(x_0) +
+		\int_{x_0}^z dx \sum_{k=0}^\ell(-1)^k \frac{a_k(\ell+1/2)}{x^{k+1}},
+\end{equation}
+\begin{equation}
+	\int_{x_0}^z dx \sum_{k=0}^\ell(-1)^k \frac{a_k(\ell+1/2)}{x^{k+1}} =
+	\left.\left\{
+		\log(x) +
+		\sum_{k=1}^\ell (-1)^{k+1}\frac{a_k(\ell+1/2)}{x^k k}
+	\right\}\right|_{x_0}^z.
+\end{equation}
+
+
 \section{Fit quality criterion for complex functions}
 
 In section 4.1 Mishchenko introduces a special quantity $\kappa$, which characterizes the fit quality of a given particular solution

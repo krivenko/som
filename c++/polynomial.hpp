@@ -33,7 +33,7 @@ class polynomial {
 
 public:
 
- polynomial(vector<double> const& coeffs) : coeffs(coeffs) {}
+ polynomial(vector<double> const& coeffs = {}) : coeffs(coeffs) {}
 
  // Evaluation using Horner's rule
  double operator()(double x) const {
@@ -41,6 +41,9 @@ public:
   for(int i = coeffs.size()-1; i>=0; --i) b = b*x + coeffs[i];
   return b;
  }
+
+ double  operator[](int n) const { return coeffs[n]; }
+ double& operator[](int n) { return coeffs[n]; }
 
 };
 

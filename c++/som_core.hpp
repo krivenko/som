@@ -32,6 +32,7 @@
 #include "configuration.hpp"
 #include "kernels/fermiongf_imtime.hpp"
 #include "kernels/fermiongf_imfreq.hpp"
+#include "kernels/fermiongf_legendre.hpp"
 #include "objective_function.hpp"
 #include "fit_quality.hpp"
 

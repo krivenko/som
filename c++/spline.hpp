@@ -38,6 +38,8 @@ class spline {
 
 public:
 
+ spline() = default;
+
  spline(vector<double> const& x, vector<double> const& y) :
   x(x), y(y), s(x.size()), a(x.size()-1,0), b(x.size()-1,0) {
   if(s != y.size())
@@ -99,6 +101,8 @@ class regular_spline {
  double dx;           // mesh step
 
 public:
+
+ regular_spline() = default;
 
  regular_spline(double x_min, double x_max, vector<double> const& y) :
  x_min(x_min), x_max(x_max), y(y), a(y.size()-1,0), b(y.size()-1,0),

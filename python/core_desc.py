@@ -92,8 +92,7 @@ c.add_method("""void run (**som::run_parameters_t)""",
 c.add_call(signature = "void(gf_view<refreq> g_w)", calling_pattern = "triqs_gf_view_assign_delegation(g_w, self_c)")
 c.add_call(signature = "void(gf_view<imtime> g_tau)", calling_pattern = "triqs_gf_view_assign_delegation(g_tau, self_c)")
 c.add_call(signature = "void(gf_view<imfreq> g_iw)", calling_pattern = "triqs_gf_view_assign_delegation(g_iw, self_c)")
-# FIXME
-#c.add_call(signature = "void(gf_view<legendre> g_l)", calling_pattern = "triqs_gf_view_assign_delegation(g_l, self_c)")
+c.add_call(signature = "void(gf_view<legendre> g_l)", calling_pattern = "triqs_gf_view_assign_delegation(g_l, self_c)")
 
 c.add_property(name = "last_run_parameters",
                getter = cfunction("som::run_parameters_t get_last_run_parameters ()"),

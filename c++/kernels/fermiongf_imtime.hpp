@@ -22,6 +22,7 @@
 
 #include <cmath>
 #include <triqs/gfs.hpp>
+#include <triqs/utility/numeric_ops.hpp>
 
 #include "base.hpp"
 #include "../spline.hpp"
@@ -77,11 +78,12 @@ public:
    for(int i = 0; i < n_spline_knots; ++i) {
     double Omega = Omega_min + i*dOmega;
     double val = 0;
+    using triqs::utility::is_zero;
     if(Omega > 0) {
      for(int n = 0;;++n) {
       double z = beta*(n + alpha);
       double t = (n % 2 ? 1 : -1) * std::exp(-Omega*z)/z;
-      if(std::abs(t) < tolerance) break;
+      if(is_zero(t,tolerance)) break;
       val += t;
      }
      values[i] = Lambda_inf - val;
@@ -89,7 +91,7 @@ public:
      for(int n = 0; ; ++n) {
       double z = beta*((n+1) - alpha);
       double t = (n % 2 ? 1 : -1) * std::exp(Omega*z)/z;
-      if(std::abs(t) < tolerance) break;
+      if(is_zero(t,tolerance)) break;
       val += t;
      }
      values[i] = val;
@@ -97,7 +99,7 @@ public:
      for(int n = 0; ; ++n) {
       double z = beta*((2*n+1) - alpha);
       double t = -beta / (z * (z + beta));
-      if(std::abs(t) < tolerance) break;
+      if(is_zero(t,tolerance)) break;
       val += t;
      }
     values[i] = val;

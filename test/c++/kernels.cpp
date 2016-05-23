@@ -3,6 +3,7 @@
 
 #include "kernels/fermiongf_imtime.hpp"
 #include "kernels/fermiongf_imfreq.hpp"
+#include "kernels/fermiongf_legendre.hpp"
 
 using namespace som;
 using namespace triqs::gfs;
@@ -45,6 +46,24 @@ TEST(Kernels,FermionicGf_imfreq) {
   {0.0552639-0.384823_j,0.00716173-0.136697_j,0.00261382-0.0824898_j,0.00133869-0.0590156_j,0.000811104-0.0459314_j},
   {-0.156517-0.414809_j,-0.022004-0.161504_j,-0.0081086-0.0984203_j,-0.00416442-0.0706098_j,-0.00252612-0.055019_j},
   {-0.243283-0.413524_j,-0.0385507-0.183865_j,-0.0144219-0.113777_j,-0.00743947-0.0819901_j,-0.00452108-0.0640049_j}};
+
+ for(int i = 0; i < conf.size(); ++i) EXPECT_TRUE(array_are_close(ref[i],kern(conf[i]),1e-6));
+}
+
+TEST(Kernels,FermionicGf_legendre) {
+
+ double beta = 20;
+ gf_mesh<legendre> mesh(beta,Fermion,6);
+ kernel<FermionGf,legendre> kern(mesh);
+ ci.invalidate_all();
+
+ std::vector<vector<double>> ref = {
+  {-0.465179,-0.747229,-0.833273,-0.799289,-0.696080,-0.565346},
+  {-1.630750,-1.736251,-1.460038,-1.143283,-0.857793,-0.621510},
+  {-3.303686,-0.642145,-2.242365,-0.634179,-0.943494,-0.377875},
+  {-2.446126, 2.604377,-2.190057, 1.714925,-1.286690, 0.932265},
+  {-1.085418, 1.743534,-1.944303, 1.865007,-1.624187, 1.319142}
+ };
 
  for(int i = 0; i < conf.size(); ++i) EXPECT_TRUE(array_are_close(ref[i],kern(conf[i]),1e-6));
 }

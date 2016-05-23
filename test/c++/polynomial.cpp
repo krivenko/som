@@ -5,7 +5,7 @@
 using som::polynomial;
 
 TEST(polynomial, empty) {
- polynomial p({});
+ polynomial p;
 
  EXPECT_EQ(0,p(0));
  EXPECT_EQ(0,p(10));

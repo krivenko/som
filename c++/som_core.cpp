@@ -196,7 +196,7 @@ void som_core::run(run_parameters_t const& p) {
  switch(EI(kind, mesh.index())) {
   case EI(FermionGf,mesh_traits<imtime>::index): run_impl<kernel<FermionGf,imtime>>(); break;
   case EI(FermionGf,mesh_traits<imfreq>::index): run_impl<kernel<FermionGf,imfreq>>(); break;
-  //case EI(FermionGf,mesh_traits<legendre>::index): run_impl<kernel<FermionGf,legendre>>(); break;
+  case EI(FermionGf,mesh_traits<legendre>::index): run_impl<kernel<FermionGf,legendre>>(); break;
   // TODO
  }
 #undef EI
@@ -453,7 +453,6 @@ template<> void triqs_gf_view_assign_delegation<refreq>(gf_view<refreq> g_w, som
 
 template void triqs_gf_view_assign_delegation<imtime>(gf_view<imtime>, som_core const&);
 template void triqs_gf_view_assign_delegation<imfreq>(gf_view<imfreq>, som_core const&);
-// TODO
-//template void triqs_gf_view_assign_delegation<legendre>(gf_view<legendre>, som_core const&);
+template void triqs_gf_view_assign_delegation<legendre>(gf_view<legendre>, som_core const&);
 
 }
