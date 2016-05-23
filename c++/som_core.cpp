@@ -75,7 +75,6 @@ som_core::som_core(gf_const_view<imtime> g_tau, gf_const_view<imtime> S_tau,
   case FermionGf: {
    if(g_tau.domain().statistic != Fermion)
     fatal_error("only fermionic Green's functions are supported");
-   if(norm != 1.0) fatal_error("fermionic Green's functions must have a norm of 1.0");
    check_input_gf(g_tau,S_tau);
    if(!is_gf_real(g_tau) || !is_gf_real(S_tau))
     fatal_error("imaginary time Green's functions must be real");
@@ -107,7 +106,8 @@ som_core::som_core(gf_const_view<imfreq> g_iw, gf_const_view<imfreq> S_iw,
 
  switch(kind) {
   case FermionGf: {
-   if(norm != 1.0) fatal_error("fermionic Green's functions must have a norm of 1.0");
+   if(g_iw.domain().statistic != Fermion)
+    fatal_error("only fermionic Green's functions are supported");
    check_input_gf(g_iw,S_iw);
    if(!is_gf_real_in_tau(g_iw) || !is_gf_real_in_tau(S_iw))
     fatal_error("imaginary frequency Green's functions must correspond to a real G(\\tau)");
@@ -141,7 +141,8 @@ som_core::som_core(gf_const_view<legendre> g_l, gf_const_view<legendre> S_l,
 
  switch(kind) {
   case FermionGf: {
-   if(norm != 1.0) fatal_error("fermionic Green's functions must have a norm of 1.0");
+   if(g_l.domain().statistic != Fermion)
+    fatal_error("only fermionic Green's functions are supported");
    check_input_gf(g_l,S_l);
    if(!is_gf_real(g_l) || !is_gf_real(S_l))
     fatal_error("Legendre Green's functions must be real");
