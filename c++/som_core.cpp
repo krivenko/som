@@ -410,6 +410,20 @@ template<typename MeshType> void check_gf_stat(gf_view<MeshType> g, triqs::gfs::
               + " statistics");
 }
 
+void fill_data(gf_view<imtime> g_tau, int i, vector<double> const& data) {
+ g_tau.data()(range(),i,i) = data;
+}
+
+void fill_data(gf_view<imfreq> g_iw, int i, vector<std::complex<double>> const& data) {
+ auto g_positive_freq = positive_freq_view(g_iw);
+ g_positive_freq.data()(range(),i,i) = data;
+ g_iw = make_gf_from_real_gf(make_const_view(g_positive_freq));
+}
+
+void fill_data(gf_view<legendre> g_l, int i, vector<double> const& data) {
+ g_l.data()(range(),i,i) = data;
+}
+
 template<typename MeshType>
 void triqs_gf_view_assign_delegation(gf_view<MeshType> g, som_core const& cont) {
  auto gf_dim = cont.results.size();
@@ -420,7 +434,7 @@ void triqs_gf_view_assign_delegation(gf_view<MeshType> g, som_core const& cont) 
  switch(cont.kind) {
   case FermionGf: {
    kernel<FermionGf,MeshType> kern(g.mesh());
-   for(int i = 0; i < gf_dim; ++i) g.data()(range(),i,i) = kern(cont.results[i]);
+   for(int i = 0; i < gf_dim; ++i) fill_data(g, i, kern(cont.results[i]));
    return;
   }
   // TODO
