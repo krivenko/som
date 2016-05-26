@@ -21,9 +21,11 @@ def make_ref(g):
 def plot_A_w(g_w, g_w_ref, fig):
     ax = fig.add_axes([.1,.55,.85,.4])
     w_mesh = [w for w in g_w.mesh]
-    ax.plot(w_mesh, -g_w.data[:,0,0].imag/np.pi, color = 'red', linewidth = 0.6, label = 'SOM')
-    ax.plot(w_mesh, -g_w_ref.data[:,0,0].imag/np.pi, color = 'blue', linewidth = 0.6, linestyle='dashed', label = 'reference')
-    ax.legend()
+    ax.plot(w_mesh, -g_w.data[:,0,0].imag/np.pi,
+            color = 'red', linewidth = 0.6, label = 'SOM')
+    ax.plot(w_mesh, -g_w_ref.data[:,0,0].imag/np.pi,
+            color = 'blue', linewidth = 0.6, linestyle='dashed', label = 'reference')
+    ax.legend(fontsize = 8)
     ax.set_xlabel("$\\omega$")
     ax.set_ylabel("$A(\\omega)$")
     ax.set_xlim(w_mesh[0].real, w_mesh[-1].real)
@@ -35,7 +37,7 @@ def plot_histogram(histos, fig):
     dx = (hist.limits[1] - hist.limits[0]) / len(hist)
     x = np.linspace(hist.limits[0], hist.limits[1], len(hist.data))
     y = hist.data
-    ax.bar(x, y, dx, color = 'green')
+    ax.bar(x, y, dx, color = 'green', linewidth = 0.1)
     ax.set_xlabel("$D$")
     ax.set_ylabel("$P(D)$")
     ax.set_xlim(*hist.limits)
@@ -58,11 +60,13 @@ def make_g_iw_page(gr, s):
     g_iw_rec = gr['g_rec']
     iw_mesh = [w.imag for w in g_iw.mesh if w.imag > 0]
     ax = fig.add_axes([.1,.1,.54,.35])
-    ax.plot(iw_mesh ,g_iw.data[len(iw_mesh):,0,0].imag, color = 'blue', linewidth = 0.6, label = 'original')
-    ax.plot(iw_mesh ,g_iw_rec.data[len(iw_mesh):,0,0].imag, color = 'red', linewidth = 0.6, label = 'reconstructed')
+    ax.plot(iw_mesh ,g_iw.data[len(iw_mesh):,0,0].imag,
+            color = 'blue', linewidth = 0.6, label = 'original')
+    ax.plot(iw_mesh ,g_iw_rec.data[len(iw_mesh):,0,0].imag,
+            color = 'red', linewidth = 0.6, label = 'reconstructed')
     ax.set_xlabel("$\\omega_n$")
     ax.set_ylabel("$\\Im G(i\\omega)$")
-    ax.legend()
+    ax.legend(fontsize = 8, loc = 'lower center')
 
     pp.savefig(fig)
 
@@ -83,13 +87,15 @@ def make_g_tau_page(gr, s):
     g_tau_rec = gr['g_rec']
     tau_mesh = [tau for tau in g_tau.mesh]
     ax = fig.add_axes([.1,.1,.54,.35])
-    ax.plot(tau_mesh, g_tau.data[:,0,0], color = 'blue', linewidth = 0.6, label = 'original')
-    ax.plot(tau_mesh, g_tau_rec.data[:,0,0], color = 'red', linewidth = 0.6, label = 'reconstructed')
+    ax.plot(tau_mesh, g_tau.data[:,0,0],
+            color = 'blue', linewidth = 0.6, label = 'original')
+    ax.plot(tau_mesh, g_tau_rec.data[:,0,0],
+            color = 'red', linewidth = 0.6, label = 'reconstructed')
     ax.set_xlim(0, g_tau.beta)
     ax.set_ylim(-1, 0)
     ax.set_xlabel("$\\tau$")
     ax.set_ylabel("$G(\\tau)$")
-    ax.legend()
+    ax.legend(fontsize = 8, loc = 'lower center')
 
     pp.savefig(fig)
 
@@ -110,12 +116,14 @@ def make_g_l_page(gr, s):
     g_l_rec = gr['g_rec']
     l_mesh = [l for l in g_l.mesh]
     ax = fig.add_axes([.1,.1,.54,.35])
-    ax.plot(l_mesh, g_l.data[:,0,0], color = 'blue', linewidth = 0.6, label = 'original')
-    ax.plot(l_mesh, g_l_rec.data[:,0,0], color = 'red', linewidth = 0.6, label = 'reconstructed')
+    ax.plot(l_mesh, g_l.data[:,0,0],
+            color = 'blue', linewidth = 0.6, label = 'original')
+    ax.plot(l_mesh, g_l_rec.data[:,0,0],
+            color = 'red', linewidth = 0.6, label = 'reconstructed')
     ax.set_xlim(0, l_mesh[-1].real)
     ax.set_xlabel("$\\ell$")
     ax.set_ylabel("$G(\\ell)$")
-    ax.legend()
+    ax.legend(fontsize = 8, loc = 'lower center')
 
     pp.savefig(fig)
 
