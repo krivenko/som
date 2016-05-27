@@ -341,9 +341,9 @@ template<typename KernelType> configuration som_core::accumulate(KernelType cons
 
   if(params.verbosity >= 1) {
    std::cout << "D_min = " << objf_min << std::endl;
-   std::cout << "Number of good soulutions (D/D_min <= "
+   std::cout << "Number of good solutions (D/D_min <= "
              << params.adjust_l_good_d << ") = " << n_good_solutions << std::endl;
-   std::cout << "Number of very good soulutions (D/D_min <= "
+   std::cout << "Number of very good solutions (D/D_min <= "
              << params.adjust_l_verygood_d << ") = " << n_verygood_solutions << std::endl;
   }
 
