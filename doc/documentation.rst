@@ -8,4 +8,6 @@ Documentation
 .. toctree::
    :maxdepth: 1
 
+   example
    parameters
+   kernels
