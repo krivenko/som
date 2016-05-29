@@ -48,7 +48,7 @@ struct run_parameters_t {
  double min_rect_weight = 1e-3;
 
  /// Number of elementary updates per global update (:math:`T`)
- int t = 1000;
+ int t = 100;
 
  /// Maximal parameter of the power-law distribution function for the Metropolis algorithm
  double distrib_d_max = 2;
