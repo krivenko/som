@@ -1,3 +1,4 @@
+.. _kernels:
 
 Supported integral kernels
 ==========================

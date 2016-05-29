@@ -2,9 +2,13 @@
 Authors
 =======
 
-This analytical continuation program has been written by I. Krivenko.
-It is based on a method devised by Andrey S. Mishchenko. You can
-find a detailed description of the method in Chapter 14 of the Lecture Notes
+This analytical continuation program has been written by Igor Krivenko.
+
+It is based on a method devised by Andrey S. Mishchenko and coauthors.
+
+    `A. S. Mishchenko, N. V. Prokof’ev, A. Sakamoto, and B. V. Svistunov, Phys. Rev. B 62, 6317 <http://dx.doi.org/10.1103/PhysRevB.62.6317>`_
+
+You can find a detailed description of the method in Chapter 14 of the Lecture Notes
 from the Autumn School "Correlated Electrons: From Models to Materials".
 
 ::
@@ -19,7 +23,7 @@ The Lecture Notes are available free of charge online,
 
     http://www.cond-mat.de/events/correl12/manuscripts/
 
-A copy of the Chapter 14 is included in the source codes (see `doc/notes/som.pdf`)
+A copy of the Chapter 14 is included in the source codes (see `doc/notes/som.pdf`).
 
 Acknowledgements
 ================

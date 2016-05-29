@@ -74,7 +74,7 @@ struct run_parameters_t {
 
  /// Adjust the number of solutions used in the final accumulation
  /// If `true`, use n_solutions as a starting value
- bool adjust_l = true;
+ bool adjust_l = false;
 
  /// Maximal ratio :math:`D/D_\mathrm{min}` for a particular solution to be considered good
  double adjust_l_good_d = 2.0;

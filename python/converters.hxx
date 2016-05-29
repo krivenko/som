@@ -65,7 +65,7 @@ template <> struct py_converter<run_parameters_t> {
   _get_optional(dic, "adjust_f_l"         , res.adjust_f_l            ,10);
   _get_optional(dic, "adjust_f_kappa"     , res.adjust_f_kappa        ,0.25);
   _get_optional(dic, "l"                  , res.l                     ,500);
-  _get_optional(dic, "adjust_l"           , res.adjust_l              ,true);
+  _get_optional(dic, "adjust_l"           , res.adjust_l              ,false);
   _get_optional(dic, "adjust_l_good_d"    , res.adjust_l_good_d       ,2.0);
   _get_optional(dic, "adjust_l_verygood_d", res.adjust_l_verygood_d   ,4.0/3.0);
   _get_optional(dic, "adjust_l_ratio"     , res.adjust_l_ratio        ,0.95);
