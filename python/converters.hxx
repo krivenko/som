@@ -57,7 +57,7 @@ template <> struct py_converter<run_parameters_t> {
   _get_optional(dic, "max_rects"          , res.max_rects             ,60);
   _get_optional(dic, "min_rect_width"     , res.min_rect_width        ,1e-3);
   _get_optional(dic, "min_rect_weight"    , res.min_rect_weight       ,1e-3);
-  _get_optional(dic, "t"                  , res.t                     ,100);
+  _get_optional(dic, "t"                  , res.t                     ,1000);
   _get_optional(dic, "distrib_d_max"      , res.distrib_d_max         ,2);
   _get_optional(dic, "gamma"              , res.gamma                 ,2);
   _get_optional(dic, "f"                  , res.f                     ,100);

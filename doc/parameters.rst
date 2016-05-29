@@ -1,5 +1,5 @@
 
-run() parameters
-================
+Run parameters
+==============
 
 .. include:: ../python/parameters.rst
