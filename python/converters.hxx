@@ -72,7 +72,7 @@ template <> struct py_converter<run_parameters_t> {
   _get_optional(dic, "make_histograms"    , res.make_histograms       ,false);
   _get_optional(dic, "hist_max"           , res.hist_max              ,2.0);
   _get_optional(dic, "hist_n_bins"        , res.hist_n_bins           ,100);
-  _get_optional(dic, "verbosity"          , res.verbosity             ,((triqs::mpi::communicator().rank()==0)?3:0));
+  _get_optional(dic, "verbosity"          , res.verbosity             ,((triqs::mpi::communicator().rank()==0)?2:0));
   return res;
  }
 

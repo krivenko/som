@@ -95,9 +95,9 @@ struct run_parameters_t {
  /// Number of bins for the histograms
  int hist_n_bins = 100;
 
- /// Verbosity level
- /// default: 3 on MPI rank 0, 0 otherwise.
- int verbosity = ((triqs::mpi::communicator().rank() == 0) ? 3 : 0); // silence the slave nodes
+ /// Verbosity level (max level - 3)
+ /// default: 2 on MPI rank 0, 0 otherwise.
+ int verbosity = ((triqs::mpi::communicator().rank() == 0) ? 2 : 0); // silence the slave nodes
 
  run_parameters_t() {}
 
