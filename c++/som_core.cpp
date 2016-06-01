@@ -190,16 +190,20 @@ void som_core::run(run_parameters_t const& p) {
  if(params.adjust_l_verygood_d > params.adjust_l_good_d)
   fatal_error("Cannot have adjust_nsol_verygood_d > adjust_nsol_good_d");
 
-// FIXME: get rid of this macro
-#define EI(ok, mk) int(ok) + 3 * mk
+ triqs::signal_handler::start();
+ try {
+  // FIXME: get rid of this macro
+  #define EI(ok, mk) int(ok) + 3 * mk
 
- switch(EI(kind, mesh.index())) {
-  case EI(FermionGf,mesh_traits<imtime>::index): run_impl<kernel<FermionGf,imtime>>(); break;
-  case EI(FermionGf,mesh_traits<imfreq>::index): run_impl<kernel<FermionGf,imfreq>>(); break;
-  case EI(FermionGf,mesh_traits<legendre>::index): run_impl<kernel<FermionGf,legendre>>(); break;
-  // TODO
- }
-#undef EI
+  switch(EI(kind, mesh.index())) {
+   case EI(FermionGf,mesh_traits<imtime>::index): run_impl<kernel<FermionGf,imtime>>(); break;
+   case EI(FermionGf,mesh_traits<imfreq>::index): run_impl<kernel<FermionGf,imfreq>>(); break;
+   case EI(FermionGf,mesh_traits<legendre>::index): run_impl<kernel<FermionGf,legendre>>(); break;
+   // TODO
+  }
+  #undef EI
+ } catch(stopped) { triqs::signal_handler::received(true); }
+ triqs::signal_handler::stop();
 }
 
 template<typename KernelType> void som_core::run_impl() {
@@ -208,11 +212,11 @@ template<typename KernelType> void som_core::run_impl() {
  mesh_t const& m = mesh;
 
  if(params.verbosity > 0) {
-  std::cout << "Constructing integral kernel... ";
+  std::cout << "Constructing integral kernel... " << std::flush;
  }
  KernelType kernel(m);
  if(params.verbosity > 0) {
-  std::cout << "done" << std::endl;
+  std::cout << "done" << std::endl << std::flush;
   std::cout << "Kernel: " << kernel << std::endl;
  }
 

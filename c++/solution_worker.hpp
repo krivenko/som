@@ -25,6 +25,7 @@
 #include <algorithm>
 #include <functional>
 #include <iomanip>
+#include <exception>
 
 #include <triqs/utility/numeric_ops.hpp>
 #include <triqs/mc_tools.hpp>
@@ -37,6 +38,9 @@
 namespace som {
 
 using namespace triqs::mc_tools;
+
+// Exception: worker has been stopped
+class stopped : std::exception {};
 
 // Distribution function Z(x), see eq. (46)
 class dist_function {
@@ -207,12 +211,15 @@ private:
 
   // Start simulation
   data.Z.reset();
-  mc.run(f, t, triqs::utility::clock_callback(-1));
+  int res_code = mc.run(f, t, triqs::utility::clock_callback(-1));
 
   std::swap(data.global_conf,conf);
   kern.cache_swap(data.global_conf,conf);
 
   if(verbose_mc) mc.collect_results(MPI_COMM_SELF);
+
+  // Stopped by a signal
+  if(res_code == 2) throw(stopped());
 
 #ifdef EXT_DEBUG
   std::cerr << "solution_worker: simulation ended." << std::endl;
