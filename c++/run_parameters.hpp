@@ -38,6 +38,10 @@ struct run_parameters_t {
  /// type: str
  std::string random_name = "";
 
+ /// Maximum runtime in seconds, use -1 to set infinite
+ /// default: -1 = infinite
+ int max_time = -1;
+
  /// Maximum number of rectangles to represent spectra (:math:`K_{max}`), should be below 70
  unsigned int max_rects = 60;
 

@@ -40,7 +40,19 @@ namespace som {
 using namespace triqs::mc_tools;
 
 // Exception: worker has been stopped
-class stopped : std::exception {};
+struct stopped : public std::exception {
+ int code;
+ stopped(int code) noexcept : code(code) {}
+ stopped(stopped const&) noexcept = default;
+ const char* what() {
+  switch(code) {
+   case 0: return "Computation has run until the end";
+   case 1: return "Computation has run out of time";
+   case 2: return "Computation has been stopped by a signal";
+  }
+  return "";
+ }
+};
 
 // Distribution function Z(x), see eq. (46)
 class dist_function {
@@ -84,12 +96,13 @@ template<typename KernelType> struct mc_data {
 
 template<typename KernelType> class solution_worker {
 
- cache_index & ci;                          // LHS cache index
+ cache_index & ci;                           // LHS cache index
 
- bool verbose_mc;                           // Make MC output statistics and percentage
- int f;                                     // Number of global updates
- int t;                                     // Number of elementary updates per global update
- mc_generic<double> mc;                     // Markov chain
+ bool verbose_mc;                            // Make MC output statistics and percentage
+ int f;                                      // Number of global updates
+ int t;                                      // Number of elementary updates per global update
+ mc_generic<double> mc;                      // Markov chain
+ std::function<bool()> const& stop_callback; // Stop callback function for mc_generic
 
  // MC data
  mc_data<KernelType> data;
@@ -108,10 +121,12 @@ public:
                  double norm,
                  cache_index & ci,
                  run_parameters_t const& params,
+                 std::function<bool()> const& stop_callback,
                  int f) :
   verbose_mc(params.verbosity >= 3),
   f(f), t(params.t),
   mc(params.random_name, params.random_seed, 1, verbose_mc ? 3 : 0),
+  stop_callback(stop_callback),
   ci(ci), kern(objf.get_kernel()),
   data{objf, {{},ci}, {{},ci}, 0, 0, dist_function(mc.get_rng(), params.t, params.distrib_d_max), params.gamma},
   energy_window(params.energy_window), norm(norm),
@@ -211,15 +226,15 @@ private:
 
   // Start simulation
   data.Z.reset();
-  int res_code = mc.run(f, t, triqs::utility::clock_callback(-1));
+  int res_code = mc.run(f, t, stop_callback);
 
   std::swap(data.global_conf,conf);
   kern.cache_swap(data.global_conf,conf);
 
   if(verbose_mc) mc.collect_results(MPI_COMM_SELF);
 
-  // Stopped by a signal
-  if(res_code == 2) throw(stopped());
+  // Stopped prematurely
+  if(res_code) throw(stopped(res_code));
 
 #ifdef EXT_DEBUG
   std::cerr << "solution_worker: simulation ended." << std::endl;

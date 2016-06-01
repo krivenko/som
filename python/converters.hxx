@@ -13,6 +13,7 @@ template <> struct py_converter<run_parameters_t> {
   PyDict_SetItemString( d, "energy_window"      , convert_to_python(x.energy_window));
   PyDict_SetItemString( d, "random_seed"        , convert_to_python(x.random_seed));
   PyDict_SetItemString( d, "random_name"        , convert_to_python(x.random_name));
+  PyDict_SetItemString( d, "max_time"           , convert_to_python(x.max_time));
   PyDict_SetItemString( d, "max_rects"          , convert_to_python(x.max_rects));
   PyDict_SetItemString( d, "min_rect_width"     , convert_to_python(x.min_rect_width));
   PyDict_SetItemString( d, "min_rect_weight"    , convert_to_python(x.min_rect_weight));
@@ -54,6 +55,7 @@ template <> struct py_converter<run_parameters_t> {
   res.energy_window = convert_from_python<std::pair<double, double>>(PyDict_GetItemString(dic, "energy_window"));
   _get_optional(dic, "random_seed"        , res.random_seed           ,34788+928374*triqs::mpi::communicator().rank());
   _get_optional(dic, "random_name"        , res.random_name           ,"");
+  _get_optional(dic, "max_time"           , res.max_time              ,-1);
   _get_optional(dic, "max_rects"          , res.max_rects             ,60);
   _get_optional(dic, "min_rect_width"     , res.min_rect_width        ,1e-3);
   _get_optional(dic, "min_rect_weight"    , res.min_rect_weight       ,1e-3);
@@ -103,7 +105,7 @@ template <> struct py_converter<run_parameters_t> {
   std::stringstream fs, fs2; int err=0;
 
 #ifndef TRIQS_ALLOW_UNUSED_PARAMETERS
-  std::vector<std::string> ks, all_keys = {"energy_window","random_seed","random_name","max_rects","min_rect_width","min_rect_weight","t","distrib_d_max","gamma","f","adjust_f","adjust_f_l","adjust_f_kappa","l","adjust_l","adjust_l_good_d","adjust_l_verygood_d","adjust_l_ratio","make_histograms","hist_max","hist_n_bins","verbosity"};
+  std::vector<std::string> ks, all_keys = {"energy_window","random_seed","random_name","max_time","max_rects","min_rect_width","min_rect_weight","t","distrib_d_max","gamma","f","adjust_f","adjust_f_l","adjust_f_kappa","l","adjust_l","adjust_l_good_d","adjust_l_verygood_d","adjust_l_ratio","make_histograms","hist_max","hist_n_bins","verbosity"};
   pyref keys = PyDict_Keys(dic);
   if (!convertible_from_python<std::vector<std::string>>(keys, true)) {
    fs << "\nThe dict keys are not strings";
@@ -118,6 +120,7 @@ template <> struct py_converter<run_parameters_t> {
   _check_mandatory<std::pair<double, double>>(dic, fs, err, "energy_window"      , "std::pair<double, double>");
   _check_optional <int                      >(dic, fs, err, "random_seed"        , "int");
   _check_optional <std::string              >(dic, fs, err, "random_name"        , "std::string");
+  _check_optional <int                      >(dic, fs, err, "max_time"           , "int");
   _check_optional <unsigned int             >(dic, fs, err, "max_rects"          , "unsigned int");
   _check_optional <double                   >(dic, fs, err, "min_rect_width"     , "double");
   _check_optional <double                   >(dic, fs, err, "min_rect_weight"    , "double");

@@ -77,6 +77,9 @@ class som_core {
  // Parameters of the last call to run()
  run_parameters_t params;
 
+ // Status of the run upon exit: 0 for clean termination, > 0 otherwise.
+ int run_status = 0;
+
  // MPI communicator
  triqs::mpi::communicator comm;
 
@@ -94,14 +97,17 @@ class som_core {
  template<typename KernelType> int adjust_f(
   KernelType const& kern,
   typename KernelType::result_type rhs_,
-  typename KernelType::result_type error_bars_);
+  typename KernelType::result_type error_bars_,
+  std::function<bool()> const& stop_callback);
 
  // Accumulate solutions
  template<typename KernelType> configuration accumulate(
   KernelType const& kern,
   typename KernelType::result_type rhs_,
   typename KernelType::result_type error_bars_,
-  histogram & hist, int F);
+  histogram & hist,
+  std::function<bool()> const& stop_callback,
+  int F);
 
 public:
 
@@ -123,6 +129,9 @@ public:
 
  /// Set of parameters used in the last call to run()
  run_parameters_t get_last_run_parameters() const { return params; }
+
+ /// Status of the run on exit
+ int get_run_status() const { return run_status; }
 
  /// Fill a Green's function using the calculated spectra
  template<typename MeshType>

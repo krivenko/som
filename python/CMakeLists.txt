@@ -5,6 +5,7 @@ triqs_prepare_local_pytriqs(${CMAKE_PROJECT_NAME})
 triqs_python_extension_and_install(core)
 target_link_libraries(core som_c ${TRIQS_LIBRARY_ALL})
 triqs_set_rpath_for_target(core)
+file(COPY parameters.rst DESTINATION .)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_BINARY_DIR}/include ${TRIQS_INCLUDE_ALL})
 

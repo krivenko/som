@@ -26,9 +26,9 @@ module.add_enum("observable_kind", ["FermionGf","Susceptibility","Conductivity"]
 
 # The class som_core
 c = class_(
-        py_type = "SomCore",  # name of the python class
-        c_type = "som_core",   # name of the C++ class
-        doc = r"",   # doc of the C++ class
+        py_type = "SomCore",        # name of the python class
+        c_type = "som_core",        # name of the C++ class
+        doc = r"Main class of SOM", # doc of the C++ class
 )
 
 c.add_constructor("""(gf_view<imtime> g_tau, gf_view<imtime> S_tau, som::observable_kind kind = FermionGf, double norm = 1.0)""",
@@ -42,53 +42,7 @@ c.add_constructor("""(gf_view<legendre> g_l, gf_view<legendre> S_l, som::observa
 
 c.add_method("""void run (**som::run_parameters_t)""",
              release_GIL_and_enable_signal = True,
-             doc = """+---------------------+-----------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-| Parameter Name      | Type            | Default                       | Documentation                                                                                                                                 |
-+=====================+=================+===============================+===============================================================================================================================================+
-| energy_window       | (double,double) | --                            | Estimated lower and upper bounds of the spectrum Negative values of the lower bound will be reset to 0 for susceptibilities and conductivity  |
-+---------------------+-----------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-| random_seed         | int             | 34788 + 928374 * MPI.rank     | Seed for random number generator                                                                                                              |
-+---------------------+-----------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-| random_name         | str             | ""                            | Name of random number generator                                                                                                               |
-+---------------------+-----------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-| max_rects           | unsigned int    | 60                            | Maximum number of rectangles to represent spectra (:math:`K_{max}`), should be below 70                                                       |
-+---------------------+-----------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-| min_rect_width      | double          | 1e-3                          | Minimal width of a rectangle, in units of the energy window width                                                                             |
-+---------------------+-----------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-| min_rect_weight     | double          | 1e-3                          | Minimal weight of a rectangle, in units of the requested norm of a solution                                                                   |
-+---------------------+-----------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-| t                   | int             | 1000                          | Number of elementary updates per global update (:math:`T`)                                                                                    |
-+---------------------+-----------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-| distrib_d_max       | double          | 2                             | Maximal parameter of the power-law distribution function for the Metropolis algorithm                                                         |
-+---------------------+-----------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-| gamma               | double          | 2                             | Proposal probability parameter :math:`\gamma`                                                                                                 |
-+---------------------+-----------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-| f                   | unsigned int    | 100                           | Number of global updates (:math:`F`)                                                                                                          |
-+---------------------+-----------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-| adjust_f            | bool            | true                          | Adjust the number of global updates automatically If `true`, use n_global_updates as a starting value                                         |
-+---------------------+-----------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-| adjust_f_l          | unsigned int    | 10                            | Number of particular solutions used to adjust :math:`F`                                                                                       |
-+---------------------+-----------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-| adjust_f_kappa      | double          | 0.25                          | Limiting value of :math:`\kappa` used to adjust :math:`F`                                                                                     |
-+---------------------+-----------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-| l                   | unsigned int    | 500                           | Number of particular solutions used in the final accumulation (:math:`L`)                                                                     |
-+---------------------+-----------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-| adjust_l            | bool            | false                         | Adjust the number of solutions used in the final accumulation If `true`, use n_solutions as a starting value                                  |
-+---------------------+-----------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-| adjust_l_good_d     | double          | 2.0                           | Maximal ratio :math:`D/D_\mathrm{min}` for a particular solution to be considered good                                                        |
-+---------------------+-----------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-| adjust_l_verygood_d | double          | 4.0/3.0                       | Maximal ratio :math:`D/D_\mathrm{min}` for a particular solution to be considered very good                                                   |
-+---------------------+-----------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-| adjust_l_ratio      | double          | 0.95                          | Critical ratio :math:`N_\mathrm{very good}/N_\mathrm{good}` to stop :math:`L`-adjustment procedure.                                           |
-+---------------------+-----------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-| make_histograms     | bool            | false                         | Accumulate histograms of objective function values                                                                                            |
-+---------------------+-----------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-| hist_max            | double          | 2.0                           | Right boundary of the histograms, in units of :math:`D_\mathrm{min}` (left boundary is always set to :math:`D_\mathrm{min}`)                  |
-+---------------------+-----------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-| hist_n_bins         | int             | 100                           | Number of bins for the histograms                                                                                                             |
-+---------------------+-----------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-| verbosity           | int             | 2 on MPI rank 0, 0 otherwise. | Verbosity level (max level - 3)                                                                                                               |
-+---------------------+-----------------+-------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+ """)
+             doc = open('parameters.rst', 'r').read())
 
 c.add_call(signature = "void(gf_view<refreq> g_w)", calling_pattern = "triqs_gf_view_assign_delegation(g_w, self_c)")
 c.add_call(signature = "void(gf_view<imtime> g_tau)", calling_pattern = "triqs_gf_view_assign_delegation(g_tau, self_c)")
@@ -98,6 +52,10 @@ c.add_call(signature = "void(gf_view<legendre> g_l)", calling_pattern = "triqs_g
 c.add_property(name = "last_run_parameters",
                getter = cfunction("som::run_parameters_t get_last_run_parameters ()"),
                doc = """Set of parameters used in the last call to run() """)
+
+c.add_property(name = "run_status",
+               getter = cfunction("int get_run_status ()"),
+               doc = """Status of the run on exit """)
 
 c.add_property(name = "histograms",
                getter = cfunction("std::vector<histogram> get_histograms ()"),

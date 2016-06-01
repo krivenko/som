@@ -191,6 +191,7 @@ void som_core::run(run_parameters_t const& p) {
   fatal_error("Cannot have adjust_nsol_verygood_d > adjust_nsol_good_d");
 
  triqs::signal_handler::start();
+ run_status = 0;
  try {
   // FIXME: get rid of this macro
   #define EI(ok, mk) int(ok) + 3 * mk
@@ -202,11 +203,16 @@ void som_core::run(run_parameters_t const& p) {
    // TODO
   }
   #undef EI
- } catch(stopped) { triqs::signal_handler::received(true); }
+ } catch(stopped & e) {
+  run_status = e.code;
+  triqs::signal_handler::received(true);
+ }
  triqs::signal_handler::stop();
 }
 
 template<typename KernelType> void som_core::run_impl() {
+
+ auto stop_callback = triqs::utility::clock_callback(params.max_time);
 
  using mesh_t = typename KernelType::mesh_type;
  mesh_t const& m = mesh;
@@ -228,8 +234,8 @@ template<typename KernelType> void som_core::run_impl() {
   auto const& rhs_ = (input_data_t<mesh_t> const&) rhs;
   auto const& error_bars_ = (input_data_t<mesh_t> const&) error_bars;
 
-  int F = params.adjust_f ? adjust_f(kernel,rhs_[i],error_bars_[i]) : params.f;
-  results[i] = accumulate(kernel,rhs_[i],error_bars_[i],histograms[i],F);
+  int F = params.adjust_f ? adjust_f(kernel,rhs_[i],error_bars_[i],stop_callback) : params.f;
+  results[i] = accumulate(kernel,rhs_[i],error_bars_[i],histograms[i],stop_callback,F);
  }
 
  ci.invalidate_all();
@@ -237,7 +243,8 @@ template<typename KernelType> void som_core::run_impl() {
 
 template<typename KernelType> int som_core::adjust_f(KernelType const& kern,
  typename KernelType::result_type rhs_,
- typename KernelType::result_type error_bars_) {
+ typename KernelType::result_type error_bars_,
+ std::function<bool()> const& stop_callback) {
 
  if(params.verbosity >= 1) {
   std::cout << "Adjusting the number of global updates F using "
@@ -250,7 +257,7 @@ template<typename KernelType> int som_core::adjust_f(KernelType const& kern,
 
  int n_good_solutions;
  for(n_good_solutions = 0;;n_good_solutions = 0, F *= 2) {
-  solution_worker<KernelType> worker(of,norm,ci,params,F);
+  solution_worker<KernelType> worker(of,norm,ci,params,stop_callback,F);
   auto & rng = worker.get_rng();
 
   int n_sol;
@@ -289,12 +296,14 @@ template<typename KernelType> int som_core::adjust_f(KernelType const& kern,
 template<typename KernelType> configuration som_core::accumulate(KernelType const& kern,
  typename KernelType::result_type rhs_,
  typename KernelType::result_type error_bars_,
- histogram & hist, int F) {
+ histogram & hist,
+ std::function<bool()> const& stop_callback,
+ int F) {
 
  if(params.verbosity >= 1) std::cout << "Accumulating particular solutions ..." << std::endl;
 
  objective_function<KernelType> of(kern, rhs_, error_bars_);
- solution_worker<KernelType> worker(of,norm,ci,params,F);
+ solution_worker<KernelType> worker(of,norm,ci,params,stop_callback,F);
  auto & rng = worker.get_rng();
 
  // Pairs (configuration, objective function)

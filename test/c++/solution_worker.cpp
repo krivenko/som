@@ -26,6 +26,7 @@
 
 using namespace som;
 using namespace triqs::arrays;
+using triqs::utility::clock_callback;
 
 double beta;
 gf_mesh<imtime> mesh;
@@ -56,7 +57,7 @@ TEST(solution_worker,RandomConfig) {
  params.min_rect_width = 0.001;
  params.min_rect_weight = 0.001;
 
- solution_worker<kernel<FermionGf,imtime>> worker(of, 1.0, ci, params, 10);
+ solution_worker<kernel<FermionGf,imtime>> worker(of, 1.0, ci, params, clock_callback(-1), 10);
 
  auto solution = worker(10);
 
@@ -77,7 +78,7 @@ TEST(solution_worker,StartConfig) {
  params.min_rect_width = 0.001;
  params.min_rect_weight = 0.001;
 
- solution_worker<kernel<FermionGf,imtime>> worker(of, 1.0, ci, params, 10);
+ solution_worker<kernel<FermionGf,imtime>> worker(of, 1.0, ci, params, clock_callback(-1), 10);
 
  triqs::h5::file arch("solution_worker.ref.h5", H5F_ACC_RDONLY);
  configuration init_config(ci);
