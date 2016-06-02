@@ -40,41 +40,43 @@ struct rectangle {
  double width;              // width
  double height;             // height
 
- // Pointer to a cache entry descriptor
+ // Reference to the cache index and id within the cache
  // Rectangles are immutable objects, therefore they acquire a new cache entry
  // descriptor only on construction. Copies inherit the same descriptor, and
  // increase the refcount to it. The refcount is decreased by one on destruction.
  // Cache entry bound to an existing rectangle is never invalidated, once the LHS is computed.
- cache_index::entry * cache_entry;
+ cache_index & ci;
+ int cache_id;
 
 public:
 
  rectangle(double center, double width, double height, cache_index & ci) :
-  center(center), width(width), height(height), cache_entry(ci.aquire()) {}
+  center(center), width(width), height(height), ci(ci), cache_id(ci.aquire()) {}
 
  rectangle(rectangle const& r) :
-  center(r.center), width(r.width), height(r.height), cache_entry(r.cache_entry) {
-  cache_entry->incref();
+  center(r.center), width(r.width), height(r.height), ci(r.ci), cache_id(r.cache_id) {
+  ci.incref(cache_id);
  }
- rectangle(rectangle && r) :
-  center(r.center), width(r.width), height(r.height), cache_entry(r.cache_entry) {
-  cache_entry->incref();
+ rectangle(rectangle && r) noexcept :
+  center(r.center), width(r.width), height(r.height), ci(r.ci), cache_id(r.cache_id) {
+  ci.incref(cache_id);
  }
  rectangle & operator=(rectangle const& r) {
-  cache_entry->decref();
-  center = r.center; width = r.width; height = r.height; cache_entry = r.cache_entry;
-  cache_entry->incref();
+  ci.decref(cache_id);
+  cache_id = r.cache_id;
+  center = r.center; width = r.width; height = r.height;
+  ci.incref(cache_id);
   return *this;
  }
- rectangle & operator=(rectangle && r) {
+ rectangle & operator=(rectangle && r) noexcept {
   using std::swap;
   swap(center, r.center);
   swap(width, r.width);
   swap(height, r.height);
-  swap(cache_entry, r.cache_entry);
+  swap(cache_id, r.cache_id);
   return *this;
  }
- ~rectangle() { cache_entry->decref(); }
+ ~rectangle() { ci.decref(cache_id); }
 
  bool operator==(rectangle const& r) const {
   using triqs::utility::is_zero;
@@ -114,7 +116,7 @@ public:
 
  // multiplication by scalar
  friend rectangle operator*(rectangle const& r, double alpha) {
-  return {r.center, r.width, r.height * alpha, r.cache_entry->index};
+  return {r.center, r.width, r.height * alpha, r.ci};
  }
  friend rectangle operator*(double alpha, rectangle const& r) { return r*alpha; }
 

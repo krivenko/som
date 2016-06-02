@@ -46,52 +46,53 @@ struct config_update {
  // New rectangles (for insertions and chages)
  std::vector<rectangle> new_rects;
 
- // Pointer to a cache entry descriptor
+ // Reference to the cache index and id within the cache
  // Every new config_update object, including copies, aquire a new
  // cache entry descriptor, which is then released in the destructor.
  // Methods reset() and *_rectangle() will invalidate the cache entry.
- cache_index::entry * cache_entry;
+ cache_index & ci;
+ int cache_id;
 
  config_update(configuration & conf, cache_index & ci) :
-  conf(conf), cache_entry(ci.aquire()) {
+  conf(conf), ci(ci), cache_id(ci.aquire()) {
   changed_indices.reserve(2);
   new_rects.reserve(2);
  }
  config_update(config_update const& cu) :
   conf(cu.conf), changed_indices(cu.changed_indices), new_rects(cu.new_rects),
-  cache_entry(cu.cache_entry->index.aquire()) {}
- config_update(config_update && cu) :
+  ci(cu.ci), cache_id(ci.aquire()) {}
+ config_update(config_update && cu) noexcept :
   conf(cu.conf), changed_indices(std::move(cu.changed_indices)), new_rects(std::move(cu.new_rects)),
-  cache_entry(cu.cache_entry->index.aquire()) {}
+  ci(cu.ci), cache_id(ci.aquire()) {}
  config_update & operator=(config_update const&) = delete;
  config_update & operator=(config_update &&) = delete;
- ~config_update() { cache_entry->decref(); }
+ ~config_update() { ci.decref(cache_id); }
 
  void add_rectangle(rectangle const& r) {
   changed_indices.push_back(INT_MAX);
   new_rects.push_back(r);
-  cache_entry->valid = false;
+  ci[cache_id].valid = false;
  }
  void add_rectangle(rectangle && r) {
   changed_indices.push_back(INT_MAX);
   new_rects.push_back(std::move(r));
-  cache_entry->valid = false;
+  ci[cache_id].valid = false;
  }
 
  void remove_rectangle(int index) {
   changed_indices.push_back(-index-1);
-  cache_entry->valid = false;
+  ci[cache_id].valid = false;
  }
 
  void change_rectangle(int index, rectangle const& r) {
   changed_indices.push_back(index);
   new_rects.push_back(r);
-  cache_entry->valid = false;
+  ci[cache_id].valid = false;
  }
  void change_rectangle(int index, rectangle && r) {
   changed_indices.push_back(index);
   new_rects.push_back(std::move(r));
-  cache_entry->valid = false;
+  ci[cache_id].valid = false;
  }
 
  // access the base configuration
@@ -100,7 +101,7 @@ struct config_update {
  void reset() {
   changed_indices.clear();
   new_rects.clear();
-  cache_entry->valid = false;
+  ci[cache_id].valid = false;
  }
 
  void apply() {
@@ -128,7 +129,7 @@ struct config_update {
     ++rect_it;
    }
   }
-  conf.cache_entry->valid = false;
+  ci[conf.cache_id].valid = false;
   reset();
  }
 

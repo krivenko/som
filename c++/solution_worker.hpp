@@ -217,18 +217,20 @@ private:
   std::cerr << "solution_worker: starting simulation ..." << std::endl;
 #endif
 
-  std::swap(data.global_conf,conf);
+  using std::swap;
+  swap(data.global_conf,conf);
   kern.cache_swap(data.global_conf,conf);
 
   data.temp_conf = data.global_conf;
-  if(data.global_conf.cache_entry->valid) kern.cache_copy(data.global_conf, data.temp_conf);
+  if(data.global_conf.ci[data.global_conf.cache_id].valid)
+   kern.cache_copy(data.global_conf, data.temp_conf);
   data.temp_objf_value = data.global_objf_value = data.objf(conf);
 
   // Start simulation
   data.Z.reset();
   int res_code = mc.run(f, t, stop_callback);
 
-  std::swap(data.global_conf,conf);
+  swap(data.global_conf,conf);
   kern.cache_swap(data.global_conf,conf);
 
   if(verbose_mc) mc.collect_results(MPI_COMM_SELF);
@@ -243,7 +245,8 @@ private:
 
  void reset_temp_conf() {
   data.temp_conf = data.global_conf;
-  if(data.global_conf.cache_entry->valid) kern.cache_copy(data.global_conf, data.temp_conf);
+  if(data.global_conf.ci[data.global_conf.cache_id].valid)
+   kern.cache_copy(data.global_conf, data.temp_conf);
   data.temp_objf_value = data.global_objf_value;
   kern.cache_copy(data.global_conf, data.temp_conf);
 

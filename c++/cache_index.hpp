@@ -37,19 +37,8 @@ public:
 
  // Descriptor of a cache entry
  struct entry {
-  const int id;     // position in the cache
-  int refcount;     // number of references to the respective cache entry
-  bool valid;       // is the respective cache entry valid?
-
-  // Reference to the parent cache_index object
-  cache_index & index;
-
-  entry(int id, cache_index & index) : id(id), refcount(0), valid(false), index(index) {}
-
-  // Increase reference count
-  inline void incref() { ++refcount; }
-  // Decrease reference count
-  inline void decref() { --refcount; if(refcount == 0) index.spare_ids.push(id); }
+  int refcount = 0;   // number of references to the respective cache entry
+  bool valid = false; // is the respective cache entry valid?
  };
 
 private:
@@ -57,35 +46,58 @@ private:
  std::vector<entry> entries; // Cache entry descriptors
  std::stack<int> spare_ids;  // Pool of descriptors not referenced by any objects
 
-public:
-
- // Constructor
- cache_index(int capacity = CACHE_SIZE) {
-  entries.reserve(capacity);
-  for(int id = 0; id < capacity; ++id) {
-   entries.emplace_back(id, *this);
-   spare_ids.push(capacity - 1 - id);
+ void extend() {
+  int cap = entries.size();
+  int new_cap = cap + CACHE_SIZE;
+#ifdef EXT_DEBUG
+  std::cerr << "Extending LHS cache from "
+            << cap << " to " << new_cap << " entries." << std::endl;
+#endif
+  entries.reserve(new_cap);
+  for(int id = cap; id < new_cap; ++id) {
+   entries.emplace_back();
+   spare_ids.push(new_cap - 1 + cap - id);
   }
  }
 
+public:
+
+ // Constructor
+ cache_index() { extend(); }
+
  // Aquire ownership over a free cache entry
- entry * aquire() {
-  if(spare_ids.size() == 0)
-   TRIQS_RUNTIME_ERROR << "Capacity of the LHS cache is exhausted. "
-                          "Consider rebuilding with larger CACHE_SIZE.";
+ inline int aquire() {
+  if(spare_ids.empty()) extend();
   int id = spare_ids.top();
   spare_ids.pop();
-  auto h = &entries[id];
-  ++h->refcount;
-  h->valid = false;
-  return h;
+  auto & e = entries[id];
+  ++e.refcount;
+  e.valid = false;
+  return id;
  }
+
+ // Increase reference count for cache entry id
+ inline void incref(int id) { ++entries[id].refcount; }
+
+ // Decrease reference count
+ inline void decref(int id) {
+  auto & e = entries[id];
+  --e.refcount;
+  if(e.refcount == 0) spare_ids.push(id);
+ }
+
+ // Access to entries
+ inline entry & operator[](int id) { return entries[id]; }
+ inline entry const& operator[](int id) const { return entries[id]; }
+
+ // Current size of the index
+ inline std::size_t size() const { return entries.size(); }
 
  // Mark all cache entries as invalid
  void invalidate_all() { for(auto & h : entries) h.valid = false; }
 
  // Number of currently used cache entries
- int n_used_entries() const { return CACHE_SIZE - spare_ids.size(); }
+ int n_used_entries() const { return entries.size() - spare_ids.size(); }
 
 };
 

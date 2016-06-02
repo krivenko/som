@@ -44,13 +44,14 @@ struct configuration {
 
  static const int default_max_rects = 70;
 
- // Pointer to a cache entry descriptor
+ // Reference to the cache index and id within the cache
  // Every new configuration object, including copies, aquire a new
  // cache entry descriptor, which is then released in the destructor.
  // Assignments and compound operations *=, += will invalidate the
  // cache entry. One should manually call kernel_base::cache_* methods
  // to update the invalidated entries without a full recomputation
- cache_index::entry * cache_entry;
+ cache_index & ci;
+ int cache_id;
 
 private:
 
@@ -82,28 +83,28 @@ private:
 public:
 
  configuration(cache_index & ci, int reserved_rects = default_max_rects) :
-  cache_entry(ci.aquire()) {
+  ci(ci), cache_id(ci.aquire()) {
   rects.reserve(reserved_rects);
  }
  configuration(std::initializer_list<rectangle> const& l, cache_index & ci) :
-  rects(l), cache_entry(ci.aquire()) {
+  rects(l), ci(ci), cache_id(ci.aquire()) {
   rects.reserve(default_max_rects);
  }
  configuration(configuration const& c) :
-  rects(c.rects), cache_entry(c.cache_entry->index.aquire()) {}
- configuration(configuration && c) :
-  rects(std::move(c.rects)), cache_entry(c.cache_entry->index.aquire()) {}
+  rects(c.rects), ci(c.ci), cache_id(ci.aquire()) {}
+ configuration(configuration && c) noexcept :
+  rects(std::move(c.rects)), ci(c.ci), cache_id(ci.aquire()) {}
  configuration & operator=(configuration const& c) {
   rects = c.rects;
-  cache_entry->valid = false;
+  ci[cache_id].valid = false;
   return *this;
  }
- configuration & operator=(configuration && c) {
+ configuration & operator=(configuration && c) noexcept {
   std::swap(rects, c.rects);
-  cache_entry->valid = false;
+  ci[cache_id].valid = false;
   return *this;
  }
- ~configuration() { cache_entry->decref(); }
+ ~configuration() { ci.decref(cache_id); }
 
  // Number of rectangles
  int size() const { return rects.size(); }
@@ -127,7 +128,7 @@ public:
  configuration& operator+=(configuration const& c) {
   rects.reserve(rects.size() + c.rects.size());
   std::copy(c.rects.begin(),c.rects.end(),std::back_inserter(rects));
-  cache_entry->valid = false;
+  ci[cache_id].valid = false;
   return *this;
  }
  configuration operator+(configuration const& c) const {
@@ -141,7 +142,7 @@ public:
   if(alpha < 0) TRIQS_RUNTIME_ERROR <<
                 "Cannot multiply a configuration by a negative number " << alpha;
   for(auto & r : rects) r = r*alpha;
-  cache_entry->valid = false;
+  ci[cache_id].valid = false;
   return *this;
  }
  friend configuration operator*(configuration const& c, double alpha) {
@@ -164,7 +165,7 @@ public:
   for(auto const& r : rects) old_norm += r.norm();
   for(auto & r : rects) r = r * (norm / old_norm);
   // Invalidate LHS cache entry
-  cache_entry->valid = false;
+  ci[cache_id].valid = false;
  }
 
  // constant iterator
@@ -189,12 +190,12 @@ public:
  friend configuration mpi_reduce(configuration const& c,
                                  triqs::mpi::communicator comm = {}, int root = 0, bool all = false) {
   if(comm.size() == 1) return c;
-  configuration res(c.cache_entry->index);
+  configuration res(c.ci);
 
   std::vector<rectangle::pod_t> pod_rects(std::begin(c), std::end(c));
   pod_rects = mpi_gather(pod_rects, comm, root, all, std::true_type());
 
-  for(auto const& r : pod_rects) res.insert({r.center, r.width, r.height, res.cache_entry->index});
+  for(auto const& r : pod_rects) res.insert({r.center, r.width, r.height, res.ci});
   return res;
  }
 
