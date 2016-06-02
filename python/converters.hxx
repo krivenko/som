@@ -11,28 +11,30 @@ template <> struct py_converter<run_parameters_t> {
  static PyObject *c2py(run_parameters_t const & x) {
   PyObject * d = PyDict_New();
   PyDict_SetItemString( d, "energy_window"      , convert_to_python(x.energy_window));
+  PyDict_SetItemString( d, "max_time"           , convert_to_python(x.max_time));
+  PyDict_SetItemString( d, "verbosity"          , convert_to_python(x.verbosity));
+  PyDict_SetItemString( d, "t"                  , convert_to_python(x.t));
+  PyDict_SetItemString( d, "f"                  , convert_to_python(x.f));
+  PyDict_SetItemString( d, "adjust_f"           , convert_to_python(x.adjust_f));
+  PyDict_SetItemString( d, "l"                  , convert_to_python(x.l));
+  PyDict_SetItemString( d, "adjust_l"           , convert_to_python(x.adjust_l));
+  PyDict_SetItemString( d, "make_histograms"    , convert_to_python(x.make_histograms));
   PyDict_SetItemString( d, "random_seed"        , convert_to_python(x.random_seed));
   PyDict_SetItemString( d, "random_name"        , convert_to_python(x.random_name));
-  PyDict_SetItemString( d, "max_time"           , convert_to_python(x.max_time));
   PyDict_SetItemString( d, "max_rects"          , convert_to_python(x.max_rects));
   PyDict_SetItemString( d, "min_rect_width"     , convert_to_python(x.min_rect_width));
   PyDict_SetItemString( d, "min_rect_weight"    , convert_to_python(x.min_rect_weight));
-  PyDict_SetItemString( d, "t"                  , convert_to_python(x.t));
   PyDict_SetItemString( d, "distrib_d_max"      , convert_to_python(x.distrib_d_max));
   PyDict_SetItemString( d, "gamma"              , convert_to_python(x.gamma));
-  PyDict_SetItemString( d, "f"                  , convert_to_python(x.f));
-  PyDict_SetItemString( d, "adjust_f"           , convert_to_python(x.adjust_f));
+  PyDict_SetItemString( d, "adjust_f_range"     , convert_to_python(x.adjust_f_range));
   PyDict_SetItemString( d, "adjust_f_l"         , convert_to_python(x.adjust_f_l));
   PyDict_SetItemString( d, "adjust_f_kappa"     , convert_to_python(x.adjust_f_kappa));
-  PyDict_SetItemString( d, "l"                  , convert_to_python(x.l));
-  PyDict_SetItemString( d, "adjust_l"           , convert_to_python(x.adjust_l));
+  PyDict_SetItemString( d, "adjust_l_range"     , convert_to_python(x.adjust_l_range));
   PyDict_SetItemString( d, "adjust_l_good_d"    , convert_to_python(x.adjust_l_good_d));
   PyDict_SetItemString( d, "adjust_l_verygood_d", convert_to_python(x.adjust_l_verygood_d));
   PyDict_SetItemString( d, "adjust_l_ratio"     , convert_to_python(x.adjust_l_ratio));
-  PyDict_SetItemString( d, "make_histograms"    , convert_to_python(x.make_histograms));
   PyDict_SetItemString( d, "hist_max"           , convert_to_python(x.hist_max));
   PyDict_SetItemString( d, "hist_n_bins"        , convert_to_python(x.hist_n_bins));
-  PyDict_SetItemString( d, "verbosity"          , convert_to_python(x.verbosity));
   return d;
  }
 
@@ -53,28 +55,30 @@ template <> struct py_converter<run_parameters_t> {
  static run_parameters_t py2c(PyObject *dic) {
   run_parameters_t res;
   res.energy_window = convert_from_python<std::pair<double, double>>(PyDict_GetItemString(dic, "energy_window"));
+  _get_optional(dic, "max_time"           , res.max_time              ,-1);
+  _get_optional(dic, "verbosity"          , res.verbosity             ,((triqs::mpi::communicator().rank()==0)?2:0));
+  _get_optional(dic, "t"                  , res.t                     ,1000);
+  _get_optional(dic, "f"                  , res.f                     ,100);
+  _get_optional(dic, "adjust_f"           , res.adjust_f              ,true);
+  _get_optional(dic, "l"                  , res.l                     ,500);
+  _get_optional(dic, "adjust_l"           , res.adjust_l              ,false);
+  _get_optional(dic, "make_histograms"    , res.make_histograms       ,false);
   _get_optional(dic, "random_seed"        , res.random_seed           ,34788+928374*triqs::mpi::communicator().rank());
   _get_optional(dic, "random_name"        , res.random_name           ,"");
-  _get_optional(dic, "max_time"           , res.max_time              ,-1);
   _get_optional(dic, "max_rects"          , res.max_rects             ,60);
   _get_optional(dic, "min_rect_width"     , res.min_rect_width        ,1e-3);
   _get_optional(dic, "min_rect_weight"    , res.min_rect_weight       ,1e-3);
-  _get_optional(dic, "t"                  , res.t                     ,1000);
   _get_optional(dic, "distrib_d_max"      , res.distrib_d_max         ,2);
   _get_optional(dic, "gamma"              , res.gamma                 ,2);
-  _get_optional(dic, "f"                  , res.f                     ,100);
-  _get_optional(dic, "adjust_f"           , res.adjust_f              ,true);
-  _get_optional(dic, "adjust_f_l"         , res.adjust_f_l            ,10);
+  _get_optional(dic, "adjust_f_range"     , res.adjust_f_range        ,std::pair<int,int>{100,5000});
+  _get_optional(dic, "adjust_f_l"         , res.adjust_f_l            ,20);
   _get_optional(dic, "adjust_f_kappa"     , res.adjust_f_kappa        ,0.25);
-  _get_optional(dic, "l"                  , res.l                     ,500);
-  _get_optional(dic, "adjust_l"           , res.adjust_l              ,false);
+  _get_optional(dic, "adjust_l_range"     , res.adjust_l_range        ,std::pair<int,int>{100,2000});
   _get_optional(dic, "adjust_l_good_d"    , res.adjust_l_good_d       ,2.0);
   _get_optional(dic, "adjust_l_verygood_d", res.adjust_l_verygood_d   ,4.0/3.0);
   _get_optional(dic, "adjust_l_ratio"     , res.adjust_l_ratio        ,0.95);
-  _get_optional(dic, "make_histograms"    , res.make_histograms       ,false);
   _get_optional(dic, "hist_max"           , res.hist_max              ,2.0);
   _get_optional(dic, "hist_n_bins"        , res.hist_n_bins           ,100);
-  _get_optional(dic, "verbosity"          , res.verbosity             ,((triqs::mpi::communicator().rank()==0)?2:0));
   return res;
  }
 
@@ -105,7 +109,7 @@ template <> struct py_converter<run_parameters_t> {
   std::stringstream fs, fs2; int err=0;
 
 #ifndef TRIQS_ALLOW_UNUSED_PARAMETERS
-  std::vector<std::string> ks, all_keys = {"energy_window","random_seed","random_name","max_time","max_rects","min_rect_width","min_rect_weight","t","distrib_d_max","gamma","f","adjust_f","adjust_f_l","adjust_f_kappa","l","adjust_l","adjust_l_good_d","adjust_l_verygood_d","adjust_l_ratio","make_histograms","hist_max","hist_n_bins","verbosity"};
+  std::vector<std::string> ks, all_keys = {"energy_window","max_time","verbosity","t","f","adjust_f","l","adjust_l","make_histograms","random_seed","random_name","max_rects","min_rect_width","min_rect_weight","distrib_d_max","gamma","adjust_f_range","adjust_f_l","adjust_f_kappa","adjust_l_range","adjust_l_good_d","adjust_l_verygood_d","adjust_l_ratio","hist_max","hist_n_bins"};
   pyref keys = PyDict_Keys(dic);
   if (!convertible_from_python<std::vector<std::string>>(keys, true)) {
    fs << "\nThe dict keys are not strings";
@@ -118,28 +122,30 @@ template <> struct py_converter<run_parameters_t> {
 #endif
 
   _check_mandatory<std::pair<double, double>>(dic, fs, err, "energy_window"      , "std::pair<double, double>");
+  _check_optional <int                      >(dic, fs, err, "max_time"           , "int");
+  _check_optional <int                      >(dic, fs, err, "verbosity"          , "int");
+  _check_optional <int                      >(dic, fs, err, "t"                  , "int");
+  _check_optional <int                      >(dic, fs, err, "f"                  , "int");
+  _check_optional <bool                     >(dic, fs, err, "adjust_f"           , "bool");
+  _check_optional <int                      >(dic, fs, err, "l"                  , "int");
+  _check_optional <bool                     >(dic, fs, err, "adjust_l"           , "bool");
+  _check_optional <bool                     >(dic, fs, err, "make_histograms"    , "bool");
   _check_optional <int                      >(dic, fs, err, "random_seed"        , "int");
   _check_optional <std::string              >(dic, fs, err, "random_name"        , "std::string");
-  _check_optional <int                      >(dic, fs, err, "max_time"           , "int");
-  _check_optional <unsigned int             >(dic, fs, err, "max_rects"          , "unsigned int");
+  _check_optional <int                      >(dic, fs, err, "max_rects"          , "int");
   _check_optional <double                   >(dic, fs, err, "min_rect_width"     , "double");
   _check_optional <double                   >(dic, fs, err, "min_rect_weight"    , "double");
-  _check_optional <int                      >(dic, fs, err, "t"                  , "int");
   _check_optional <double                   >(dic, fs, err, "distrib_d_max"      , "double");
   _check_optional <double                   >(dic, fs, err, "gamma"              , "double");
-  _check_optional <unsigned int             >(dic, fs, err, "f"                  , "unsigned int");
-  _check_optional <bool                     >(dic, fs, err, "adjust_f"           , "bool");
-  _check_optional <unsigned int             >(dic, fs, err, "adjust_f_l"         , "unsigned int");
+  _check_optional <std::pair<int, int>      >(dic, fs, err, "adjust_f_range"     , "std::pair<int, int>");
+  _check_optional <int                      >(dic, fs, err, "adjust_f_l"         , "int");
   _check_optional <double                   >(dic, fs, err, "adjust_f_kappa"     , "double");
-  _check_optional <unsigned int             >(dic, fs, err, "l"                  , "unsigned int");
-  _check_optional <bool                     >(dic, fs, err, "adjust_l"           , "bool");
+  _check_optional <std::pair<int, int>      >(dic, fs, err, "adjust_l_range"     , "std::pair<int, int>");
   _check_optional <double                   >(dic, fs, err, "adjust_l_good_d"    , "double");
   _check_optional <double                   >(dic, fs, err, "adjust_l_verygood_d", "double");
   _check_optional <double                   >(dic, fs, err, "adjust_l_ratio"     , "double");
-  _check_optional <bool                     >(dic, fs, err, "make_histograms"    , "bool");
   _check_optional <double                   >(dic, fs, err, "hist_max"           , "double");
   _check_optional <int                      >(dic, fs, err, "hist_n_bins"        , "int");
-  _check_optional <int                      >(dic, fs, err, "verbosity"          , "int");
   if (err) goto _error;
   return true;
 

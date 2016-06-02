@@ -54,8 +54,6 @@ run_params['t'] = 500
 run_params['f'] = 100
 # Number of particular solutions
 run_params['l'] = 1000
-# Maximum number of rectangles to represent a solution
-run_params['max_rects'] = 100
 # Accumulate histogram of the objective function values
 run_params['make_histograms'] = True
 

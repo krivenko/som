@@ -21,6 +21,11 @@
 #include <limits>
 
 #include "som_core.hpp"
+#include "kernels/fermiongf_imtime.hpp"
+#include "kernels/fermiongf_imfreq.hpp"
+#include "kernels/fermiongf_legendre.hpp"
+#include "objective_function.hpp"
+#include "fit_quality.hpp"
 #include "solution_worker.hpp"
 
 namespace som {
@@ -30,6 +35,10 @@ using std::to_string;
 
 void fatal_error(std::string const& message) {
  TRIQS_RUNTIME_ERROR << "som_core: " << message;
+}
+
+void warning(std::string const& message) {
+ std::cout << "WARNING: " << message << std::endl;
 }
 
 template<typename... GfOpts>
@@ -173,7 +182,7 @@ void som_core::run(run_parameters_t const& p) {
 
  if((kind == Susceptibility || kind == Conductivity) && params.energy_window.first < 0) {
   params.energy_window.first = 0;
-  if(params.verbosity > 0) std::cout << "WARNING: left boundary of the energy window is reset to 0";
+  if(params.verbosity > 0) warning("left boundary of the energy window is reset to 0");
  }
 
  if(params.energy_window.first >= params.energy_window.second)
@@ -181,14 +190,17 @@ void som_core::run(run_parameters_t const& p) {
               ";" + to_string(params.energy_window.second) + "]");
 
  double window_width = params.energy_window.second - params.energy_window.first;
- if(params.min_rect_width <= 0 || params.min_rect_width >= window_width)
-  fatal_error("min_rect_width must be in [0;" + to_string(window_width) + "]");
+ if(params.min_rect_width <= 0 || params.min_rect_width > 1)
+  fatal_error("min_rect_width must be in (0;1]");
 
- if(params.min_rect_weight <= 0 || params.min_rect_weight >= norm)
-  fatal_error("min_rect_weight must be in [0;" + to_string(norm) + "]");
+ if(params.min_rect_weight <= 0 || params.min_rect_weight > 1)
+  fatal_error("min_rect_weight must be in (0;1]");
 
- if(params.adjust_l_verygood_d > params.adjust_l_good_d)
-  fatal_error("Cannot have adjust_nsol_verygood_d > adjust_nsol_good_d");
+ if(params.adjust_f_range.first > params.adjust_f_range.second)
+  fatal_error("Wrong adjust_f_range");
+
+ if(params.adjust_l_range.first > params.adjust_l_range.second)
+  fatal_error("Wrong adjust_l_range");
 
  triqs::signal_handler::start();
  run_status = 0;
@@ -253,10 +265,18 @@ template<typename KernelType> int som_core::adjust_f(KernelType const& kern,
  objective_function<KernelType> of(kern, rhs_, error_bars_);
  fit_quality<KernelType> fq(kern, rhs_, error_bars_);
 
- int F = params.f;
+ int F = params.adjust_f_range.first;
 
- int n_good_solutions;
- for(n_good_solutions = 0;;n_good_solutions = 0, F *= 2) {
+ int l_good;
+ for(l_good = 0;;l_good = 0, F *= 2) {
+  // Upper bound of adjust_f_range is reached
+  if(F >= params.adjust_f_range.second) {
+   F = params.adjust_f_range.second;
+   if(params.verbosity >= 1)
+    warning("Upper bound of adjust_f_range has been reached, will use F = " + std::to_string(F));
+   break;
+  }
+
   solution_worker<KernelType> worker(of,norm,ci,params,stop_callback,F);
   auto & rng = worker.get_rng();
 
@@ -270,7 +290,7 @@ template<typename KernelType> int som_core::adjust_f(KernelType const& kern,
    auto solution = worker(1 + rng(params.max_rects));
    double kappa = fq(solution);
 
-   if(kappa > params.adjust_f_kappa) ++n_good_solutions;
+   if(kappa > params.adjust_f_kappa) ++l_good;
    if(params.verbosity >= 2) {
     std::cout << "[Node " << comm.rank() << "] Particular solution "
               << n_sol << " is " << (kappa > params.adjust_f_kappa ? "" : "not ")
@@ -279,16 +299,19 @@ template<typename KernelType> int som_core::adjust_f(KernelType const& kern,
    }
   }
   comm.barrier();
-  n_good_solutions = mpi_all_reduce(n_good_solutions,comm);
+  l_good = mpi_all_reduce(l_good,comm);
 
   if(params.verbosity >= 1)
    std::cout << "F = " << F << ", "
-             << n_good_solutions << " solutions with \\kappa > " << params.adjust_f_kappa
+             << l_good<< " solutions with \\kappa > " << params.adjust_f_kappa
              << " (out of " << params.adjust_f_l << ")" << std::endl;
 
-  if(n_good_solutions > params.adjust_f_l/2) break;
+  // Converged
+  if(l_good > params.adjust_f_l/2) {
+   if(params.verbosity >= 1) std::cout << "F = " << F << " is enough." << std::endl;
+   break;
+  }
  }
- if(params.verbosity >= 1) std::cout << "F = " << F << " is enough." << std::endl;
 
  return F;
 }
@@ -314,7 +337,14 @@ template<typename KernelType> configuration som_core::accumulate(KernelType cons
  int n_good_solutions, n_verygood_solutions; // Number of good and very good solutions
  double objf_min = HUGE_VAL;                 // Minimal value of D
  do {
-  n_sol_max += params.l;
+  if(params.adjust_l) {
+   n_sol_max += params.adjust_l_range.first;
+   if(n_sol_max > params.adjust_l_range.second) {
+    if(params.verbosity >= 1) warning("Upper bound of adjust_l_range has been reached");
+    break;
+   }
+  } else
+   n_sol_max = params.l;
   solutions.reserve(n_sol_max);
 
   if(params.verbosity >= 1)
