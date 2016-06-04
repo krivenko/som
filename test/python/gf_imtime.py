@@ -23,22 +23,41 @@ from pytriqs.gf.local import *
 from pytriqs.archive import HDFArchive
 import pytriqs.utility.mpi as mpi
 from triqs_som.som import Som
+from pytriqs.utility.comparison_tests import *
 
-beta = 10
-indices = [1,2]
+arch = HDFArchive('gf_imtime.ref.h5', 'r')
 
-g_tau = GfImTime(beta = beta, n_points = 200, indices = indices)
-s_tau = GfImTime(beta = beta, n_points = 200, indices = indices)
+g_tau = arch['g_tau']
 
-g_w = GfReFreq(window = (-5,5), n_points = 1000, indices = indices)
+S_tau = g_tau.copy()
+S_tau.data[:,0,0] = 1.0
+S_tau.data[:,1,1] = 1.0
 
-cont = Som(g_tau, s_tau)
+cont = Som(g_tau, S_tau, kind = "FermionGf")
 
 run_params = {'energy_window' : (-5,5)}
+run_params['verbosity'] = 3
+run_params['adjust_f'] =  False
+run_params['adjust_l'] = False
+run_params['t'] = 100
+run_params['f'] = 50
+run_params['l'] = 30
+run_params['make_histograms'] = True
 
-#cont.run(**run_params)
-#g_w << cont
+cont.run(**run_params)
+
+g_rec_tau = g_tau.copy()
+g_rec_tau << cont
+
+g_w = GfReFreq(window = (-6.0,6.0), n_points = 1200, indices = g_tau.indices)
+g_w << cont
 
 if mpi.is_master_node():
-    arch = HDFArchive('python_gf.out.h5','w')
-    arch['g_w'] = g_w
+#    with HDFArchive('gf_imtime.ref.h5', 'a') as arch:
+#        arch['g_rec_tau'] = g_rec_tau
+#        arch['g_w'] = g_w
+#        arch['histograms'] = cont.histograms
+    assert_gfs_are_close(g_rec_tau, arch['g_rec_tau'])
+    assert_gfs_are_close(g_w, arch['g_w'])
+    assert_arrays_are_close(cont.histograms[0].data, arch['histograms'][0].data)
+    assert_arrays_are_close(cont.histograms[1].data, arch['histograms'][1].data)
