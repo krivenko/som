@@ -52,6 +52,7 @@ public:
   double dc_min = energy_window.first + rect.width/2 - rect.center;
   double dc_max = energy_window.second - rect.width/2 - rect.center;
   double dc = eu::generate_parameter_change(dc_min, dc_max);
+  if(dc == 0) return 0;
 
   eu::update[eu::full].change_rectangle(t, {rect.center + dc, rect.width, rect.height, eu::ci});
   eu::update[eu::half].change_rectangle(t, {rect.center + dc/2, rect.width, rect.height, eu::ci});
@@ -111,6 +112,7 @@ public:
   double dw_min = width_min - rect.width;
   double dw_max = std::min(2*(rect.center - energy_window.first), 2*(energy_window.second - rect.center)) - rect.width;
   double dw = eu::generate_parameter_change(dw_min, dw_max);
+  if(dw == 0) return 0;
 
   eu::update[eu::full].change_rectangle(t, {rect.center, rect.width + dw, rect.height * (1 - dw / (rect.width + dw)), eu::ci});
   eu::update[eu::half].change_rectangle(t, {rect.center, rect.width + dw/2, rect.height * (1 - (dw/2) / (rect.width + dw/2)), eu::ci});
@@ -179,6 +181,7 @@ public:
   double dh1_min = weight_min / rect1.width - rect1.height;
   double dh1_max = (rect2.width * rect2.height - weight_min) / rect1.width;
   double dh1 = eu::generate_parameter_change(dh1_min, dh1_max);
+  if(dh1 == 0) return 0;
 
   eu::update[eu::full].change_rectangle(t1, {rect1.center, rect1.width, rect1.height + dh1, eu::ci});
   eu::update[eu::full].change_rectangle(t2, {rect2.center, rect2.width, rect2.height - dh1 * (rect1.width / rect2.width), eu::ci});
