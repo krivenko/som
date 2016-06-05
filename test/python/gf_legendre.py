@@ -58,6 +58,6 @@ if mpi.is_master_node():
 #        arch['g_w'] = g_w
 #        arch['histograms'] = cont.histograms
     assert_gfs_are_close(g_rec_l, arch['g_rec_l'])
-    assert_gfs_are_close(g_w, arch['g_w'])
+    assert_gfs_are_close(g_w, arch['g_w'], 5e-5)
     assert_arrays_are_close(cont.histograms[0].data, arch['histograms'][0].data)
     assert_arrays_are_close(cont.histograms[1].data, arch['histograms'][1].data)
