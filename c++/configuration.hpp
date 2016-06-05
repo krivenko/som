@@ -93,7 +93,7 @@ public:
  configuration(configuration const& c) :
   rects(c.rects), ci(c.ci), cache_id(ci.aquire()) {}
  configuration(configuration && c) noexcept :
-  rects(std::move(c.rects)), ci(c.ci), cache_id(ci.aquire()) {}
+  rects(c.rects), ci(c.ci), cache_id(ci.aquire()) {}
  configuration & operator=(configuration const& c) {
   rects = c.rects;
   ci[cache_id].valid = false;

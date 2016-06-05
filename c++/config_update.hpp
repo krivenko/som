@@ -62,7 +62,7 @@ struct config_update {
   conf(cu.conf), changed_indices(cu.changed_indices), new_rects(cu.new_rects),
   ci(cu.ci), cache_id(ci.aquire()) {}
  config_update(config_update && cu) noexcept :
-  conf(cu.conf), changed_indices(std::move(cu.changed_indices)), new_rects(std::move(cu.new_rects)),
+  conf(cu.conf), changed_indices(cu.changed_indices), new_rects(cu.new_rects),
   ci(cu.ci), cache_id(ci.aquire()) {}
  config_update & operator=(config_update const&) = delete;
  config_update & operator=(config_update &&) = delete;
