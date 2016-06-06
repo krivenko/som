@@ -7,12 +7,18 @@ Run analytical continuation
 
 .. literalinclude:: example.py
 
+Download input file :download:`example.h5`.
+
 Plot input and reconstructed imaginary-time GF's
 ------------------------------------------------
 
-.. literalinclude:: plot_g_tau.py
+.. plot:: plot_g_tau.py
+    :include-source:
+    :scale: 100
 
 Plot the spectral function
 --------------------------
 
-.. literalinclude:: plot_g_w.py
+.. plot:: plot_g_w.py
+    :include-source:
+    :scale: 100
