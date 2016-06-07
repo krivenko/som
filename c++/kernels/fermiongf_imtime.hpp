@@ -64,6 +64,7 @@ public:
 
   Lambda_tau_not0.reserve(mesh.size()-2);
   for(int itau = 1; itau < mesh.size()-1; ++itau) {
+   bool beta_half = (mesh.size()%2) && (itau == mesh.size() / 2);
    double alpha = mesh[itau] / beta;
    // Estimated limits of interpolation segment
    double Omega_min = (std::log(tolerance) + std::log(1-alpha)) / (1-alpha) / beta;
@@ -80,6 +81,10 @@ public:
     double val = 0;
     using triqs::utility::is_zero;
     if(Omega > 0) {
+     if(beta_half) {
+      values[i] = (2*std::atan(std::exp(-Omega*beta/2)) - M_PI)/beta;
+      continue;
+     }
      for(int n = 0;;++n) {
       double z = beta*(n + alpha);
       double t = (n % 2 ? 1 : -1) * std::exp(-Omega*z)/z;
@@ -88,6 +93,10 @@ public:
      }
      values[i] = Lambda_inf - val;
     } else if(Omega < 0) {
+     if(beta_half) {
+      values[i] = -(2/beta)*std::atan(std::exp(Omega*beta/2));
+      continue;
+     }
      for(int n = 0; ; ++n) {
       double z = beta*((n+1) - alpha);
       double t = (n % 2 ? 1 : -1) * std::exp(Omega*z)/z;
@@ -96,6 +105,10 @@ public:
      }
      values[i] = val;
     } else { // Omega == 0
+     if(beta_half) {
+      values[i] = -M_PI/(2*beta);
+      continue;
+     }
      for(int n = 0; ; ++n) {
       double z = beta*((2*n+1) - alpha);
       double t = -beta / (z * (z + beta));

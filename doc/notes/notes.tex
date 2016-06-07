@@ -53,7 +53,16 @@ Integral kernel applied to a rectangle,
 	\end{array}
 	\right.
 \end{equation}
-Infinite sums in the definition of $\Lambda(\tau;\Omega)$ are calculated for each $\tau$-point $G(\tau)$ is given on, and for a regular set of $\Omega$-points. A cubic spline interpolation in the $\Omega$-direction is then constructed for the sake of performance. $\Lambda(\tau;\Omega)$ approaches its known $\Omega\to-\infty$ and $\Omega\to+\infty$ limits exponentially, so that one can use the following interpolation
+\begin{equation}
+	\Lambda(\beta/2;\Omega) = \left\{
+	\begin{array}{ll}
+	-\frac{\pi}{2\beta},& \Omega = 0 \\
+	-\frac{2}{\beta}\atan(\exp(\Omega\beta/2)),& \Omega < 0 \\
+	\frac{1}{\beta}[2\atan(\exp(-\Omega\beta/2)) - \pi]& \Omega > 0 \\
+	\end{array}
+	\right.
+\end{equation}
+Infinite sums in the definition of $\Lambda(\tau;\Omega)$ are calculated for each $\tau$-point $G(\tau)$ is given on, and for a regular set of $\Omega$-points (a point $\tau = \beta/2$ is treated specially, since the respective series converges very slowly). A cubic spline interpolation in the $\Omega$-direction is then constructed for the sake of performance. $\Lambda(\tau;\Omega)$ approaches its known $\Omega\to-\infty$ and $\Omega\to+\infty$ limits exponentially, so that one can use the following interpolation
 segment,
 \begin{equation}
 	\Omega \in [\frac{\log[tolerance\cdot(1-\tau/\beta)]}{\beta-\tau};

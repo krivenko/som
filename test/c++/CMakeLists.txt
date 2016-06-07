@@ -6,9 +6,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../c++ ${TRIQS_INCLUDE_ALL})
 # Simple tests
 file(GLOB test_sources RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
 
-# FIXME
-list(REMOVE_ITEM test_sources gf.cpp)
-
 foreach(filename ${test_sources})
     get_filename_component(t ${filename} NAME_WE)
     add_executable(${t} ${CMAKE_CURRENT_SOURCE_DIR}/${filename})
