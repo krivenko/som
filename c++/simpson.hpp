@@ -20,6 +20,7 @@
  ******************************************************************************/
 #pragma once
 
+#include <triqs/arrays/array.hpp>
 #include <triqs/utility/numeric_ops.hpp>
 
 namespace som {
@@ -47,6 +48,20 @@ auto adaptive_simpson_impl(F f, X a, X b, X eps, X whole) -> decltype(f(a)*a) {
 template<typename X, typename F>
 auto adaptive_simpson(F f, X x_min, X x_max, X eps) -> decltype(f(x_min)*x_min) {
  return adaptive_simpson_impl(f, x_min, x_max, eps, simpson(f, x_min, x_max));
+}
+
+// Compute F(X_i) = \int_{x_min}^X f(x) dx, X_i = x_min, ..., x_max
+template<typename X, typename F>
+auto primitive(F f, X x_min, X x_max, int N, X eps) -> triqs::arrays::array<decltype(f(x_min)*x_min),1> {
+ using res_type = decltype(f(x_min)*x_min);
+ triqs::arrays::array<res_type,1> res(N);
+ res(0) = res_type{};
+ auto h = (x_max - x_min)/(N-1);
+ for(int i = 0; i < N-1; ++i) {
+  auto a = i*h, b = (i+1)*h;
+  res(i+1) = res(i) + adaptive_simpson(f, a, b, eps);
+ }
+ return res;
 }
 
 }

@@ -98,11 +98,7 @@ template<> class kernel<FermionGf,legendre> :
    high_energy_pol = polynomial(int_tail_coeffs);
 
    // Fill low_energy_spline
-   vector<double> spline_knots(n_spline_knots);
-   double h = x0 / (spline_knots.size() - 1);
-   spline_knots[0] = 0;
-   for(int i = 0; i < spline_knots.size()-1; ++i)
-    spline_knots[i+1] = spline_knots[i] + adaptive_simpson(integrand, i*h, (i+1)*h, tolerance);
+   auto spline_knots = primitive(integrand, .0, x0, n_spline_knots, tolerance);
    low_energy_spline = regular_spline(0, x0, spline_knots);
 
    // Set low_energy_x0 and high_energy_x0
