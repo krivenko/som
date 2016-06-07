@@ -188,7 +188,8 @@ public:
 
  // MPI reduce
  friend configuration mpi_reduce(configuration const& c,
-                                 triqs::mpi::communicator comm = {}, int root = 0, bool all = false) {
+                                 triqs::mpi::communicator comm = {}, int root = 0, bool all = false, MPI_Op op = MPI_SUM) {
+  assert(op == MPI_SUM);
   if(comm.size() == 1) return c;
   configuration res(c.ci);
 
