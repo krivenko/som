@@ -109,7 +109,7 @@ struct config_update {
   if(changed_indices.size() > 2)
    TRIQS_RUNTIME_ERROR << "config_update: only 2 operations in a row are allowed";
 #endif
-  auto rect_it = std::cbegin(new_rects);
+  auto rect_it = std::begin(new_rects);
   for(auto index : changed_indices) {
    if(index == INT_MAX) { // add rectangle
     conf.insert(*rect_it);

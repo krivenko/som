@@ -121,7 +121,7 @@ public:
    // Cache entry holds the LHS for the *updated configuration*
    res = operator()(conf);
 
-   auto rect_it = std::cbegin(cu.new_rects);
+   auto rect_it = std::begin(cu.new_rects);
    for(int index : cu.changed_indices) {
     if(index == INT_MAX) { // add rectangle
      res += operator()(*rect_it);
