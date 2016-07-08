@@ -80,9 +80,9 @@ public:
 
  bool operator==(rectangle const& r) const {
   using triqs::utility::is_zero;
-  return is_zero(center-r.center, 1e-9) &&
-         is_zero(width-r.width, 1e-9) &&
-         is_zero(height-r.height, 1e-9);
+  return is_zero(center-r.center, 1e-8) &&
+         is_zero(width-r.width, 1e-8) &&
+         is_zero(height-r.height, 1e-8);
  }
  bool operator!=(rectangle const& r) const { return !operator==(r); }
 

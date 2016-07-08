@@ -224,7 +224,7 @@ private:
   data.temp_conf = data.global_conf;
   if(data.global_conf.ci[data.global_conf.cache_id].valid)
    kern.cache_copy(data.global_conf, data.temp_conf);
-  data.temp_objf_value = data.global_objf_value = data.objf(conf);
+  data.temp_objf_value = data.global_objf_value = data.objf(data.global_conf);
 
   // Start simulation
   data.Z.reset();
