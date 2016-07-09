@@ -16,9 +16,9 @@ energy_window = (-4.0,4.0)  # Energy window to search the solution in
 run_params = {'energy_window' : energy_window}
 # Verbosity level
 run_params['verbosity'] = 3
-# Do not adjust the number of global updates
+# Adjust the number of global updates
 run_params['adjust_f'] = True
-# Do not adjust the number of particular solutions to be accumulated
+# Adjust the number of particular solutions to be accumulated
 run_params['adjust_l'] = True
 # Number of local updates per global update
 run_params['t'] = 500
