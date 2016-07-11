@@ -36,7 +36,7 @@ configuration conf({{-2.0,2.6,0.3,ci},
                     {1.3,2.6,0.6,ci},
                     {2.0,2.6,0.7,ci}},ci);
 
-TEST(Kernels,FermionicGf_imtime) {
+TEST(FermionGf, imtime) {
 
  double beta = 1;
  gf_mesh<imtime> mesh(beta,Fermion,11);
@@ -53,7 +53,7 @@ TEST(Kernels,FermionicGf_imtime) {
  for(int i = 0; i < conf.size(); ++i) EXPECT_TRUE(array_are_close(ref[i],kern(conf[i]),1e-5));
 }
 
-TEST(Kernels,FermionicGf_imfreq) {
+TEST(FermionGf, imfreq) {
 
  double beta = 1;
  gf_mesh<imfreq> mesh(beta,Fermion,5);
@@ -70,7 +70,7 @@ TEST(Kernels,FermionicGf_imfreq) {
  for(int i = 0; i < conf.size(); ++i) EXPECT_TRUE(array_are_close(ref[i],kern(conf[i]),1e-6));
 }
 
-TEST(Kernels,FermionicGf_legendre) {
+TEST(FermionGf, legendre) {
 
  double beta = 20;
  gf_mesh<legendre> mesh(beta,Fermion,6);

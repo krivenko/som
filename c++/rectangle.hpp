@@ -91,18 +91,26 @@ public:
   return (x >= center - width/2 && x <= center + width/2) ? height : 0;
  }
 
- std::complex<double> hilbert_transform(std::complex<double> z) const {
-  return -height*std::log((center + width/2 - z)/(center - width/2 - z));
+ std::complex<double> hilbert_transform(std::complex<double> z, bool multiply_by_e = false) const {
+  if(multiply_by_e)
+   // -\int_{c-w/2}^{c+w/2} d\epsilon' \frac{\epsilon'}{\epsilon' - \epsilon - i0}
+   return -height*(width + z*std::log((center + width/2 - z)/(center - width/2 - z)));
+  else
+   // -\int_{c-w/2}^{c+w/2} d\epsilon' \frac{1}{\epsilon' - \epsilon - i0}
+   return -height*std::log((center + width/2 - z)/(center - width/2 - z));
  }
- vector<double> tail_coefficients(long order_min, long order_max) const {
+ vector<double> tail_coefficients(long order_min, long order_max, bool multiply_by_e = false) const {
   vector<double> data(order_max - order_min + 1);
 
   double e1 = center - width/2, e2 = center + width/2;
-  double e1n = 1, e2n = 1;
+  double e1n, e2n;
+  int denom_shift;
+  if(multiply_by_e) { e1n = e1; e2n = e2; denom_shift = 1; }
+  else              { e1n = 1.0; e2n = 1.0; denom_shift = 0; }
   for(long n = order_min; n <= order_max; ++n) {
    if(n < 1) { data(n-order_min) = 0; continue; }
    e1n *= e1; e2n *= e2;
-   data(n-order_min) = height*(e2n - e1n)/n;
+   data(n-order_min) = height*(e2n - e1n)/(n + denom_shift);
   }
 
   return data;

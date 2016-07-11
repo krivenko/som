@@ -30,9 +30,9 @@ namespace som {
 using namespace triqs::arrays;
 using namespace triqs::gfs;
 
-// Kernel: fermionic GF, Matsubara frequencies
-template<> class kernel<FermionGf,imfreq> :
-           public kernel_base<kernel<FermionGf,imfreq>, array<dcomplex,1>> {
+// Kernel: bosonic correlator, Matsubara frequencies
+template<> class kernel<BosonCorr,imfreq> :
+           public kernel_base<kernel<BosonCorr,imfreq>, array<dcomplex,1>> {
 
 public:
 
@@ -52,12 +52,16 @@ public:
   double e1 = rect.center - rect.width/2;
   double e2 = rect.center + rect.width/2;
 
-  for(auto iw : mesh)
-   res(iw.index()) = rect.height * std::log((dcomplex(iw) - e1) / (dcomplex(iw) - e2));
+  auto it = std::begin(mesh);
+  res(it->index()) = rect.height * rect.width / M_PI; // \Omega = 0
+  for(++it; it != std::end(mesh); ++it) {
+   auto iw = dcomplex(*it);
+   res(it->index()) = (rect.height/M_PI) * (rect.width + iw * std::log((iw - e2) / (iw - e1)));
+  }
  }
 
  friend std::ostream & operator<<(std::ostream & os, kernel const& kern) {
-  os << "A(\\epsilon) -> G(i\\omega), ";
+  os << "A(\\epsilon) -> \\chi(i\\Omega), ";
   os << "\\beta = " << kern.beta << ", " << kern.mesh.size() << " Matsubara frequencies.";
   return os;
  }

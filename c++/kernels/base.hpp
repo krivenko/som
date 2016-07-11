@@ -31,14 +31,14 @@
 namespace som {
 
 // Kinds of observables
-enum observable_kind {FermionGf, Susceptibility, Conductivity};
+enum observable_kind {FermionGf, BosonCorr, BosonCorrSym};
 
 // Statistics of observables
 triqs::gfs::statistic_enum observable_statistics(observable_kind kind) {
  switch(kind) {
   case FermionGf: return triqs::gfs::Fermion;
-  case Susceptibility: return triqs::gfs::Boson;
-  case Conductivity: return triqs::gfs::Boson;
+  case BosonCorr: return triqs::gfs::Boson;
+  case BosonCorrSym: return triqs::gfs::Boson;
  }
 }
 

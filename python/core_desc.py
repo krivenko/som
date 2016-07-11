@@ -22,7 +22,7 @@ using namespace som;
 #include "./converters.hxx"
 """)
 
-module.add_enum("observable_kind", ["FermionGf","Susceptibility","Conductivity"], "som", "Kinds of observables")
+module.add_enum("observable_kind", ["FermionGf","BosonCorr","BosonCorrSym"], "som", "Kinds of observables")
 
 # The class som_core
 c = class_(

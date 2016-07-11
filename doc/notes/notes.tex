@@ -77,7 +77,7 @@ segment,
 
 Integral kernel applied to a rectangle,
 \begin{equation}
-	\hat K(\tau;\omega)*R(c,w,h) = 
+	\hat K(i\omega_n;\omega)*R(c,w,h) = 
 	h \log\left(\frac{i\omega_n - c + w/2}{i\omega_n - c - w/2}\right).
 \end{equation}
 
@@ -137,6 +137,17 @@ In the high-energy region we use the asymptotic form (\ref{il_cosh_series_high})
 	\right\}\right|_{x_0}^z.
 \end{equation}
 
+\subsection{Correlator of boson-like operators at imaginary frequencies}
+\begin{equation}
+\chi(i\Omega_n) = \int\limits_{-\infty}^\infty
+d\epsilon \frac{1}{\pi}\frac{-\epsilon}{i\Omega_n-\epsilon} A(\epsilon).
+\end{equation}
+
+Integral kernel applied to a rectangle,
+\begin{equation}
+\hat K(i\Omega_n;\omega)*R(c,w,h) = 
+\frac{hw}{\pi} + \frac{hi\Omega_n}{\pi}\log\left(\frac{i\Omega_n - c - w/2}{i\Omega_n - c + w/2}\right).
+\end{equation}
 
 \section{Fit quality criterion for complex functions}
 

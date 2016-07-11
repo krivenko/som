@@ -24,6 +24,7 @@
 #include "kernels/fermiongf_imtime.hpp"
 #include "kernels/fermiongf_imfreq.hpp"
 #include "kernels/fermiongf_legendre.hpp"
+#include "kernels/bosoncorr_imfreq.hpp"
 #include "objective_function.hpp"
 #include "fit_quality.hpp"
 #include "solution_worker.hpp"
@@ -91,13 +92,13 @@ som_core::som_core(gf_const_view<imtime> g_tau, gf_const_view<imtime> S_tau,
    set_input_data(make_const_view(g_tau_real), make_const_view(S_tau_real));
   }
   break;
-  case Susceptibility:
+  case BosonCorr:
    // TODO
-   fatal_error("continuation of susceptibilities is not yet implemented");
+   fatal_error("continuation of bosonic correlators is not yet implemented");
    break;
-  case Conductivity:
+  case BosonCorrSym:
    // TODO
-   fatal_error("continuation of conductivity is not yet implemented");
+   fatal_error("continuation of bosonic autocorrelators is not yet implemented");
    break;
   default:
    fatal_error("unknown observable kind " + to_string(kind));
@@ -126,13 +127,20 @@ som_core::som_core(gf_const_view<imfreq> g_iw, gf_const_view<imfreq> S_iw,
    set_input_data(g_iw_pos,S_iw_pos);
   }
   break;
-  case Susceptibility:
+  case BosonCorr: {
+   if(g_iw.domain().statistic != Boson)
+    fatal_error("only bosonic correlators are supported");
+   check_input_gf(g_iw,S_iw);
+   if(!is_gf_real_in_tau(g_iw) || !is_gf_real_in_tau(S_iw))
+    fatal_error("imaginary frequency correlators must correspond to a real \\chi(\\tau)");
+   auto g_iw_pos = positive_freq_view(g_iw);
+   auto S_iw_pos = positive_freq_view(S_iw);
+   check_input_gf(g_iw_pos,S_iw_pos);
+   set_input_data(g_iw_pos,S_iw_pos);
+  }
+  case BosonCorrSym:
    // TODO
-   fatal_error("continuation of susceptibilities is not yet implemented");
-   break;
-  case Conductivity:
-   // TODO
-   fatal_error("continuation of conductivity is not yet implemented");
+   fatal_error("continuation of bosonic autocorrelators is not yet implemented");
    break;
   default:
    fatal_error("unknown observable kind " + to_string(kind));
@@ -159,13 +167,13 @@ som_core::som_core(gf_const_view<legendre> g_l, gf_const_view<legendre> S_l,
     set_input_data(make_const_view(g_l_real),make_const_view(S_l_real));
   }
   break;
-  case Susceptibility:
+  case BosonCorr:
    // TODO
-   fatal_error("continuation of susceptibilities is not yet implemented");
+   fatal_error("continuation of bosonic correlators is not yet implemented");
    break;
-  case Conductivity:
+  case BosonCorrSym:
    // TODO
-   fatal_error("continuation of conductivity is not yet implemented");
+   fatal_error("continuation of bosonic autocorrelators is not yet implemented");
    break;
   default:
    fatal_error("unknown observable kind " + to_string(kind));
@@ -180,7 +188,7 @@ void som_core::run(run_parameters_t const& p) {
 
  params = p;
 
- if((kind == Susceptibility || kind == Conductivity) && params.energy_window.first < 0) {
+ if(kind == BosonCorrSym && params.energy_window.first < 0) {
   params.energy_window.first = 0;
   if(params.verbosity > 0) warning("left boundary of the energy window is reset to 0");
  }
@@ -212,6 +220,7 @@ void som_core::run(run_parameters_t const& p) {
    case EI(FermionGf,mesh_traits<imtime>::index): run_impl<kernel<FermionGf,imtime>>(); break;
    case EI(FermionGf,mesh_traits<imfreq>::index): run_impl<kernel<FermionGf,imfreq>>(); break;
    case EI(FermionGf,mesh_traits<legendre>::index): run_impl<kernel<FermionGf,legendre>>(); break;
+   case EI(BosonCorr,mesh_traits<imfreq>::index): run_impl<kernel<BosonCorr,imfreq>>(); break;
    // TODO
   }
   #undef EI
@@ -481,12 +490,12 @@ void triqs_gf_view_assign_delegation(gf_view<MeshType> g, som_core const& cont) 
    return;
   }
   // TODO
-  case Susceptibility:
-   fatal_error("continuation of susceptibilities is not yet implemented");
+  case BosonCorr:
+   fatal_error("continuation of bosonic correlators is not yet implemented");
    break;
   // TODO
-  case Conductivity:
-   fatal_error("continuation of conductivity is not yet implemented");
+  case BosonCorrSym:
+   fatal_error("continuation of bosonic autocorrelators is not yet implemented");
    break;
   default:
    fatal_error("unknown observable kind " + to_string(cont.kind));
@@ -497,13 +506,22 @@ template<> void triqs_gf_view_assign_delegation<refreq>(gf_view<refreq> g_w, som
  auto gf_dim = cont.results.size();
  check_gf_dim(g_w, gf_dim);
 
+ double prefactor;
+ bool multiply_by_e;
+ switch(cont.kind) {
+  case FermionGf: prefactor = 1.0; multiply_by_e = false; break;
+  case BosonCorr: prefactor = -1.0/M_PI; multiply_by_e = true; break;
+  case BosonCorrSym: fatal_error("continuation of bosonic autocorrelators is not yet implemented");
+  default: fatal_error("unknown observable kind " + to_string(cont.kind));
+ }
+
  g_w() = 0;
  for(int i = 0; i < gf_dim; ++i) {
   auto const& conf = cont.results[i];
   for(auto const& rect : conf) {
-   for(auto e : g_w.mesh()) g_w.data()(e.index(),i,i) += rect.hilbert_transform(double(e));
+   for(auto e : g_w.mesh()) g_w.data()(e.index(),i,i) += prefactor * rect.hilbert_transform(double(e), multiply_by_e);
    auto & tail = g_w.singularity();
-   tail.data()(range(),i,i) += rect.tail_coefficients(tail.order_min(),tail.order_max());
+   tail.data()(range(),i,i) += prefactor * rect.tail_coefficients(tail.order_min(),tail.order_max(), multiply_by_e);
   }
  }
 }
