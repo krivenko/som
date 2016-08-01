@@ -25,8 +25,6 @@
 
 #include "base.hpp"
 
-#warning kernel<BosonCorrSym,imfreq> is not implemented
-
 namespace som {
 
 using namespace triqs::arrays;
@@ -46,13 +44,20 @@ public:
 
  kernel(mesh_type const& mesh) :
   kernel_base(mesh.get_positive_freq().size()), mesh(mesh.get_positive_freq()),
-  beta(mesh.domain().beta) {
-  // TODO
- }
+  beta(mesh.domain().beta) {}
 
  // Apply to a rectangle
  void apply(rectangle const& rect, result_type & res) const {
-  // TODO
+
+  double e1 = rect.center - rect.width/2;
+  double e2 = rect.center + rect.width/2;
+
+  auto it = std::begin(mesh);
+  res(it->index()) = 2 * rect.height * rect.width / M_PI; // \Omega = 0
+  for(++it; it != std::end(mesh); ++it) {
+   auto w = dcomplex(*it).imag();
+   res(it->index()) = (2 * rect.height/M_PI) * (rect.width + w * (std::atan(e1/w) - std::atan(e2/w)));
+  }
  }
 
  friend std::ostream & operator<<(std::ostream & os, kernel const& kern) {
