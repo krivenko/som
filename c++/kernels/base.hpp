@@ -42,6 +42,15 @@ triqs::gfs::statistic_enum observable_statistics(observable_kind kind) {
  }
 }
 
+// Names of observables
+std::string observable_name(observable_kind kind) {
+ switch(kind) {
+  case FermionGf: return "Green's functions";
+  case BosonCorr: return "bosonic correlator";
+  case BosonCorrSym: return "bosonic autocorrelator";
+ }
+}
+
 // Mesh traits
 template<typename MeshType> struct mesh_traits;
 

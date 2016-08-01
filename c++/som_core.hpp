@@ -46,7 +46,7 @@ class som_core {
  cache_index ci;
 
  using input_data_r_t = std::vector<vector<double>>;
- using input_data_c_t = std::vector<vector<std::complex<double>>>;
+ using input_data_c_t = std::vector<vector<dcomplex>>;
 
  template<typename Mesh> using input_data_t = std14::conditional_t<
   std::is_same<Mesh,gf_mesh<imfreq>>::value,input_data_c_t,input_data_r_t>;

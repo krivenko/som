@@ -24,7 +24,12 @@
 #include "kernels/fermiongf_imtime.hpp"
 #include "kernels/fermiongf_imfreq.hpp"
 #include "kernels/fermiongf_legendre.hpp"
+#include "kernels/bosoncorr_imtime.hpp"
 #include "kernels/bosoncorr_imfreq.hpp"
+#include "kernels/bosoncorr_legendre.hpp"
+#include "kernels/bosoncorrsym_imtime.hpp"
+#include "kernels/bosoncorrsym_imfreq.hpp"
+#include "kernels/bosoncorrsym_legendre.hpp"
 #include "objective_function.hpp"
 #include "fit_quality.hpp"
 #include "solution_worker.hpp"
@@ -78,31 +83,17 @@ som_core::som_core(gf_const_view<imtime> g_tau, gf_const_view<imtime> S_tau,
  mesh(g_tau.mesh()), kind(kind), norm(norm),
  rhs(input_data_r_t()), error_bars(input_data_r_t()) {
 
+ if(kind != FermionGf && kind != BosonCorr && kind != BosonCorrSym)
+  fatal_error("unknown observable kind " + to_string(kind));
+
  if(g_tau.domain().statistic != observable_statistics(kind))
   fatal_error("Wrong g_tau statistics for this observable kind");
 
- switch(kind) {
-  case FermionGf: {
-   if(g_tau.domain().statistic != Fermion)
-    fatal_error("only fermionic Green's functions are supported");
-   check_input_gf(g_tau,S_tau);
-   if(!is_gf_real(g_tau) || !is_gf_real(S_tau))
-    fatal_error("imaginary time Green's functions must be real");
-   gf<imtime, matrix_real_valued> g_tau_real = real(g_tau), S_tau_real = real(S_tau);
-   set_input_data(make_const_view(g_tau_real), make_const_view(S_tau_real));
-  }
-  break;
-  case BosonCorr:
-   // TODO
-   fatal_error("continuation of bosonic correlators is not yet implemented");
-   break;
-  case BosonCorrSym:
-   // TODO
-   fatal_error("continuation of bosonic autocorrelators is not yet implemented");
-   break;
-  default:
-   fatal_error("unknown observable kind " + to_string(kind));
- }
+ check_input_gf(g_tau,S_tau);
+ if(!is_gf_real(g_tau) || !is_gf_real(S_tau))
+  fatal_error("imaginary time " + observable_name(kind) + " must be real");
+ gf<imtime, matrix_real_valued> g_tau_real = real(g_tau), S_tau_real = real(S_tau);
+ set_input_data(make_const_view(g_tau_real), make_const_view(S_tau_real));
 }
 
 // Imaginary frequency
@@ -111,40 +102,19 @@ som_core::som_core(gf_const_view<imfreq> g_iw, gf_const_view<imfreq> S_iw,
  mesh(g_iw.mesh()), kind(kind), norm(norm),
  rhs(input_data_c_t()), error_bars(input_data_c_t()) {
 
+ if(kind != FermionGf && kind != BosonCorr && kind != BosonCorrSym)
+  fatal_error("unknown observable kind " + to_string(kind));
+
  if(g_iw.domain().statistic != observable_statistics(kind))
   fatal_error("Wrong g_iw statistics for this observable kind");
 
- switch(kind) {
-  case FermionGf: {
-   if(g_iw.domain().statistic != Fermion)
-    fatal_error("only fermionic Green's functions are supported");
-   check_input_gf(g_iw,S_iw);
-   if(!is_gf_real_in_tau(g_iw) || !is_gf_real_in_tau(S_iw))
-    fatal_error("imaginary frequency Green's functions must correspond to a real G(\\tau)");
-   auto g_iw_pos = positive_freq_view(g_iw);
-   auto S_iw_pos = positive_freq_view(S_iw);
-   check_input_gf(g_iw_pos,S_iw_pos);
-   set_input_data(g_iw_pos,S_iw_pos);
-  }
-  break;
-  case BosonCorr: {
-   if(g_iw.domain().statistic != Boson)
-    fatal_error("only bosonic correlators are supported");
-   check_input_gf(g_iw,S_iw);
-   if(!is_gf_real_in_tau(g_iw) || !is_gf_real_in_tau(S_iw))
-    fatal_error("imaginary frequency correlators must correspond to a real \\chi(\\tau)");
-   auto g_iw_pos = positive_freq_view(g_iw);
-   auto S_iw_pos = positive_freq_view(S_iw);
-   check_input_gf(g_iw_pos,S_iw_pos);
-   set_input_data(g_iw_pos,S_iw_pos);
-  }
-  case BosonCorrSym:
-   // TODO
-   fatal_error("continuation of bosonic autocorrelators is not yet implemented");
-   break;
-  default:
-   fatal_error("unknown observable kind " + to_string(kind));
- }
+ check_input_gf(g_iw,S_iw);
+ if(!is_gf_real_in_tau(g_iw) || !is_gf_real_in_tau(S_iw))
+  fatal_error("imaginary frequency " + observable_name(kind) + " must be real in \\tau-domain");
+ auto g_iw_pos = positive_freq_view(g_iw);
+ auto S_iw_pos = positive_freq_view(S_iw);
+ check_input_gf(g_iw_pos,S_iw_pos);
+ set_input_data(g_iw_pos,S_iw_pos);
 }
 
 // Legendre coefficients
@@ -153,31 +123,17 @@ som_core::som_core(gf_const_view<legendre> g_l, gf_const_view<legendre> S_l,
  mesh(g_l.mesh()), kind(kind), norm(norm),
  rhs(input_data_r_t()), error_bars(input_data_r_t()) {
 
- if(g_l.domain().statistic != observable_statistics(kind))
-    fatal_error("Wrong g_l statistics for this observable kind");
+ if(kind != FermionGf && kind != BosonCorr && kind != BosonCorrSym)
+  fatal_error("unknown observable kind " + to_string(kind));
 
- switch(kind) {
-  case FermionGf: {
-   if(g_l.domain().statistic != Fermion)
-    fatal_error("only fermionic Green's functions are supported");
-   check_input_gf(g_l,S_l);
-   if(!is_gf_real(g_l) || !is_gf_real(S_l))
-    fatal_error("Legendre Green's functions must be real");
-    gf<legendre, matrix_real_valued> g_l_real = real(g_l), S_l_real = real(S_l);
-    set_input_data(make_const_view(g_l_real),make_const_view(S_l_real));
-  }
-  break;
-  case BosonCorr:
-   // TODO
-   fatal_error("continuation of bosonic correlators is not yet implemented");
-   break;
-  case BosonCorrSym:
-   // TODO
-   fatal_error("continuation of bosonic autocorrelators is not yet implemented");
-   break;
-  default:
-   fatal_error("unknown observable kind " + to_string(kind));
- }
+ if(g_l.domain().statistic != observable_statistics(kind))
+  fatal_error("Wrong g_l statistics for this observable kind");
+
+ check_input_gf(g_l,S_l);
+ if(!is_gf_real(g_l) || !is_gf_real(S_l))
+  fatal_error("Legendre " + observable_name(kind) + " must be real");
+ gf<legendre, matrix_real_valued> g_l_real = real(g_l), S_l_real = real(S_l);
+ set_input_data(make_const_view(g_l_real), make_const_view(S_l_real));
 }
 
 ///////////
@@ -213,17 +169,19 @@ void som_core::run(run_parameters_t const& p) {
  triqs::signal_handler::start();
  run_status = 0;
  try {
-  // FIXME: get rid of this macro
-  #define EI(ok, mk) int(ok) + 3 * mk
-
-  switch(EI(kind, mesh.index())) {
-   case EI(FermionGf,mesh_traits<imtime>::index): run_impl<kernel<FermionGf,imtime>>(); break;
-   case EI(FermionGf,mesh_traits<imfreq>::index): run_impl<kernel<FermionGf,imfreq>>(); break;
-   case EI(FermionGf,mesh_traits<legendre>::index): run_impl<kernel<FermionGf,legendre>>(); break;
-   case EI(BosonCorr,mesh_traits<imfreq>::index): run_impl<kernel<BosonCorr,imfreq>>(); break;
-   // TODO
+  #define RUN_IMPL_CASE(ok, mk) case (int(ok) + 3 * mesh_traits<mk>::index): run_impl<kernel<ok,mk>>(); break;
+  switch(int(kind) + 3 * mesh.index()) {
+   RUN_IMPL_CASE(FermionGf,imtime);
+   RUN_IMPL_CASE(FermionGf,imfreq);
+   RUN_IMPL_CASE(FermionGf,legendre);
+   RUN_IMPL_CASE(BosonCorr,imtime);
+   RUN_IMPL_CASE(BosonCorr,imfreq);
+   RUN_IMPL_CASE(BosonCorr,legendre);
+   RUN_IMPL_CASE(BosonCorrSym,imtime);
+   RUN_IMPL_CASE(BosonCorrSym,imfreq);
+   RUN_IMPL_CASE(BosonCorrSym,legendre);
   }
-  #undef EI
+  #undef RUN_IMPL_CASE
  } catch(stopped & e) {
   run_status = e.code;
   triqs::signal_handler::received(true);
@@ -466,7 +424,7 @@ void fill_data(gf_view<imtime> g_tau, int i, vector<double> const& data) {
  g_tau.data()(range(),i,i) = data;
 }
 
-void fill_data(gf_view<imfreq> g_iw, int i, vector<std::complex<double>> const& data) {
+void fill_data(gf_view<imfreq> g_iw, int i, vector<dcomplex> const& data) {
  auto g_positive_freq = positive_freq_view(g_iw);
  g_positive_freq.data()(range(),i,i) = data;
  g_iw = make_gf_from_real_gf(make_const_view(g_positive_freq));
@@ -486,42 +444,51 @@ void triqs_gf_view_assign_delegation(gf_view<MeshType> g, som_core const& cont) 
  switch(cont.kind) {
   case FermionGf: {
    kernel<FermionGf,MeshType> kern(g.mesh());
-   for(int i = 0; i < gf_dim; ++i) fill_data(g, i, kern(cont.results[i]));
+   for(int i : range(gf_dim)) fill_data(g, i, kern(cont.results[i]));
    return;
   }
-  // TODO
-  case BosonCorr:
-   fatal_error("continuation of bosonic correlators is not yet implemented");
-   break;
-  // TODO
-  case BosonCorrSym:
-   fatal_error("continuation of bosonic autocorrelators is not yet implemented");
-   break;
+  case BosonCorr: {
+   kernel<BosonCorr,MeshType> kern(g.mesh());
+   for(int i : range(gf_dim)) fill_data(g, i, kern(cont.results[i]));
+   return;
+  }
+  case BosonCorrSym: {
+   kernel<BosonCorrSym,MeshType> kern(g.mesh());
+   for(int i : range(gf_dim)) fill_data(g, i, kern(cont.results[i]));
+   return;
+  }
   default:
    fatal_error("unknown observable kind " + to_string(cont.kind));
  }
 }
 
 template<> void triqs_gf_view_assign_delegation<refreq>(gf_view<refreq> g_w, som_core const& cont) {
+
+ bool bosoncorr = cont.kind == BosonCorr || cont.kind == BosonCorrSym;
+ if(cont.kind != FermionGf && !bosoncorr) fatal_error("unknown observable kind " + to_string(cont.kind));
  auto gf_dim = cont.results.size();
  check_gf_dim(g_w, gf_dim);
 
- double prefactor;
- bool multiply_by_e;
- switch(cont.kind) {
-  case FermionGf: prefactor = 1.0; multiply_by_e = false; break;
-  case BosonCorr: prefactor = -1.0/M_PI; multiply_by_e = true; break;
-  case BosonCorrSym: fatal_error("continuation of bosonic autocorrelators is not yet implemented");
-  default: fatal_error("unknown observable kind " + to_string(cont.kind));
- }
-
  g_w() = 0;
- for(int i = 0; i < gf_dim; ++i) {
+ auto & tail = g_w.singularity();
+
+ for(int i : range(gf_dim)) {
   auto const& conf = cont.results[i];
   for(auto const& rect : conf) {
-   for(auto e : g_w.mesh()) g_w.data()(e.index(),i,i) += prefactor * rect.hilbert_transform(double(e), multiply_by_e);
-   auto & tail = g_w.singularity();
-   tail.data()(range(),i,i) += prefactor * rect.tail_coefficients(tail.order_min(),tail.order_max(), multiply_by_e);
+   for(auto e : g_w.mesh()) g_w.data()(e.index(),i,i) += rect.hilbert_transform(double(e), bosoncorr);
+   tail.data()(range(),i,i) += rect.tail_coefficients(tail.order_min(),tail.order_max(), bosoncorr);
+
+   if(cont.kind == BosonCorrSym) {
+    // Add a reflected rectangle
+    rectangle reflected_rect(-rect.center, rect.width, rect.height, const_cast<som_core&>(cont).ci);
+    for(auto e : g_w.mesh()) g_w.data()(e.index(),i,i) += reflected_rect.hilbert_transform(double(e), true);
+    tail.data()(range(),i,i) += reflected_rect.tail_coefficients(tail.order_min(),tail.order_max(), true);
+   }
+  }
+
+  if(bosoncorr) {
+   g_w.data()(range(),i,i) *= -1.0/M_PI;
+   tail.data()(range(),i,i) *= -1.0/M_PI;
   }
  }
 }

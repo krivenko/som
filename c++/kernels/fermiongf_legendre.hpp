@@ -129,7 +129,7 @@ public:
  using mesh_type = gf_mesh<legendre>;
 
  const double beta;    // Inverse temperature
- const mesh_type mesh; // Matsubara frequency mesh
+ const mesh_type mesh; // Legendre coefficients mesh
 
  kernel(mesh_type const& mesh) :
   kernel_base(mesh.size()), mesh(mesh), beta(mesh.domain().beta) {
@@ -152,7 +152,7 @@ public:
  }
 
  friend std::ostream & operator<<(std::ostream & os, kernel const& kern) {
-  os << "A(\\epsilon) -> G_l, ";
+  os << "A(\\epsilon) -> G(l), ";
   os << "\\beta = " << kern.beta << ", " << kern.mesh.size() << " Legendre coefficients.";
   return os;
  }
