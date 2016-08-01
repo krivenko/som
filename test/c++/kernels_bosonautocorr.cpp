@@ -21,7 +21,7 @@
 #include <vector>
 #include <triqs/test_tools/arrays.hpp>
 
-#include "kernels/bosoncorrsym_imfreq.hpp"
+#include "kernels/bosonautocorr_imfreq.hpp"
 
 using namespace som;
 using namespace triqs::gfs;
@@ -34,11 +34,11 @@ configuration conf({{1.30000001, 2.6, 0.3,ci},
                     {5.3, 2.6, 0.6,ci},
                     {6.0, 2.6, 0.7,ci}},ci);
 
-TEST(BosonCorrSym, imfreq) {
+TEST(BosonAutoCorr, imfreq) {
 
  double beta = 1;
  gf_mesh<imfreq> mesh(beta,Boson,5);
- kernel<BosonCorrSym,imfreq> kern(mesh);
+ kernel<BosonAutoCorr,imfreq> kern(mesh);
  ci.invalidate_all();
 
  std::vector<vector<dcomplex>> ref = {

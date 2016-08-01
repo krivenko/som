@@ -20,35 +20,31 @@
  ******************************************************************************/
 #pragma once
 
-#include <vector>
 #include <cmath>
-#include <boost/math/special_functions/bessel.hpp>
 #include <triqs/gfs.hpp>
 #include <triqs/utility/numeric_ops.hpp>
 
 #include "base.hpp"
 #include "../spline.hpp"
-#include "../polynomial.hpp"
-#include "../simpson.hpp"
 
-#warning kernel<BosonCorrSym,legendre> is not implemented
+#warning kernel<BosonAutoCorr,imtime> is not implemented
 
 namespace som {
 
 using namespace triqs::arrays;
 using namespace triqs::gfs;
 
-// Kernel: fermionic GF, Legendre basis
-template<> class kernel<BosonCorrSym,legendre> :
-           public kernel_base<kernel<BosonCorrSym,legendre>, array<double,1>> {
+// Kernel: bosonic correlator, imaginary time
+template<> class kernel<BosonAutoCorr,imtime> :
+           public kernel_base<kernel<BosonAutoCorr,imtime>, array<double,1>> {
 
 public:
 
  using result_type = array<double,1>;
- using mesh_type = gf_mesh<legendre>;
+ using mesh_type = gf_mesh<imtime>;
 
- const double beta;    // Inverse temperature
- const mesh_type mesh; // Legendre coefficients mesh
+ const double beta;          // Inverse temperature
+ const mesh_type mesh;       // Matsubara time mesh
 
  kernel(mesh_type const& mesh) :
   kernel_base(mesh.size()), mesh(mesh), beta(mesh.domain().beta) {
@@ -61,8 +57,8 @@ public:
  }
 
  friend std::ostream & operator<<(std::ostream & os, kernel const& kern) {
-  os << "A(\\epsilon) -> \\chi_\\{sym}(l), ";
-  os << "\\beta = " << kern.beta << ", " << kern.mesh.size() << " Legendre coefficients.";
+  os << "A(\\epsilon) -> \\chi_\\{sym}(\\tau), ";
+  os << "\\beta = " << kern.beta << ", " << kern.mesh.size() << " \\tau-points.";
   return os;
  }
 

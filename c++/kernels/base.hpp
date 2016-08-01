@@ -31,14 +31,14 @@
 namespace som {
 
 // Kinds of observables
-enum observable_kind {FermionGf, BosonCorr, BosonCorrSym};
+enum observable_kind {FermionGf, BosonCorr, BosonAutoCorr};
 
 // Statistics of observables
 triqs::gfs::statistic_enum observable_statistics(observable_kind kind) {
  switch(kind) {
   case FermionGf: return triqs::gfs::Fermion;
   case BosonCorr: return triqs::gfs::Boson;
-  case BosonCorrSym: return triqs::gfs::Boson;
+  case BosonAutoCorr: return triqs::gfs::Boson;
  }
 }
 
@@ -47,7 +47,7 @@ std::string observable_name(observable_kind kind) {
  switch(kind) {
   case FermionGf: return "Green's functions";
   case BosonCorr: return "bosonic correlator";
-  case BosonCorrSym: return "bosonic autocorrelator";
+  case BosonAutoCorr: return "bosonic autocorrelator";
  }
 }
 

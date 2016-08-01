@@ -27,9 +27,9 @@
 #include "kernels/bosoncorr_imtime.hpp"
 #include "kernels/bosoncorr_imfreq.hpp"
 #include "kernels/bosoncorr_legendre.hpp"
-#include "kernels/bosoncorrsym_imtime.hpp"
-#include "kernels/bosoncorrsym_imfreq.hpp"
-#include "kernels/bosoncorrsym_legendre.hpp"
+#include "kernels/bosonautocorr_imtime.hpp"
+#include "kernels/bosonautocorr_imfreq.hpp"
+#include "kernels/bosonautocorr_legendre.hpp"
 #include "objective_function.hpp"
 #include "fit_quality.hpp"
 #include "solution_worker.hpp"
@@ -83,7 +83,7 @@ som_core::som_core(gf_const_view<imtime> g_tau, gf_const_view<imtime> S_tau,
  mesh(g_tau.mesh()), kind(kind), norm(norm),
  rhs(input_data_r_t()), error_bars(input_data_r_t()) {
 
- if(kind != FermionGf && kind != BosonCorr && kind != BosonCorrSym)
+ if(kind != FermionGf && kind != BosonCorr && kind != BosonAutoCorr)
   fatal_error("unknown observable kind " + to_string(kind));
 
  if(g_tau.domain().statistic != observable_statistics(kind))
@@ -102,7 +102,7 @@ som_core::som_core(gf_const_view<imfreq> g_iw, gf_const_view<imfreq> S_iw,
  mesh(g_iw.mesh()), kind(kind), norm(norm),
  rhs(input_data_c_t()), error_bars(input_data_c_t()) {
 
- if(kind != FermionGf && kind != BosonCorr && kind != BosonCorrSym)
+ if(kind != FermionGf && kind != BosonCorr && kind != BosonAutoCorr)
   fatal_error("unknown observable kind " + to_string(kind));
 
  if(g_iw.domain().statistic != observable_statistics(kind))
@@ -123,7 +123,7 @@ som_core::som_core(gf_const_view<legendre> g_l, gf_const_view<legendre> S_l,
  mesh(g_l.mesh()), kind(kind), norm(norm),
  rhs(input_data_r_t()), error_bars(input_data_r_t()) {
 
- if(kind != FermionGf && kind != BosonCorr && kind != BosonCorrSym)
+ if(kind != FermionGf && kind != BosonCorr && kind != BosonAutoCorr)
   fatal_error("unknown observable kind " + to_string(kind));
 
  if(g_l.domain().statistic != observable_statistics(kind))
@@ -144,7 +144,7 @@ void som_core::run(run_parameters_t const& p) {
 
  params = p;
 
- if(kind == BosonCorrSym && params.energy_window.first < 0) {
+ if(kind == BosonAutoCorr && params.energy_window.first < 0) {
   params.energy_window.first = 0;
   if(params.verbosity > 0) warning("left boundary of the energy window is reset to 0");
  }
@@ -177,9 +177,9 @@ void som_core::run(run_parameters_t const& p) {
    RUN_IMPL_CASE(BosonCorr,imtime);
    RUN_IMPL_CASE(BosonCorr,imfreq);
    RUN_IMPL_CASE(BosonCorr,legendre);
-   RUN_IMPL_CASE(BosonCorrSym,imtime);
-   RUN_IMPL_CASE(BosonCorrSym,imfreq);
-   RUN_IMPL_CASE(BosonCorrSym,legendre);
+   RUN_IMPL_CASE(BosonAutoCorr,imtime);
+   RUN_IMPL_CASE(BosonAutoCorr,imfreq);
+   RUN_IMPL_CASE(BosonAutoCorr,legendre);
   }
   #undef RUN_IMPL_CASE
  } catch(stopped & e) {
@@ -452,8 +452,8 @@ void triqs_gf_view_assign_delegation(gf_view<MeshType> g, som_core const& cont) 
    for(int i : range(gf_dim)) fill_data(g, i, kern(cont.results[i]));
    return;
   }
-  case BosonCorrSym: {
-   kernel<BosonCorrSym,MeshType> kern(g.mesh());
+  case BosonAutoCorr: {
+   kernel<BosonAutoCorr,MeshType> kern(g.mesh());
    for(int i : range(gf_dim)) fill_data(g, i, kern(cont.results[i]));
    return;
   }
@@ -464,7 +464,7 @@ void triqs_gf_view_assign_delegation(gf_view<MeshType> g, som_core const& cont) 
 
 template<> void triqs_gf_view_assign_delegation<refreq>(gf_view<refreq> g_w, som_core const& cont) {
 
- bool bosoncorr = cont.kind == BosonCorr || cont.kind == BosonCorrSym;
+ bool bosoncorr = cont.kind == BosonCorr || cont.kind == BosonAutoCorr;
  if(cont.kind != FermionGf && !bosoncorr) fatal_error("unknown observable kind " + to_string(cont.kind));
  auto gf_dim = cont.results.size();
  check_gf_dim(g_w, gf_dim);
@@ -478,7 +478,7 @@ template<> void triqs_gf_view_assign_delegation<refreq>(gf_view<refreq> g_w, som
    for(auto e : g_w.mesh()) g_w.data()(e.index(),i,i) += rect.hilbert_transform(double(e), bosoncorr);
    tail.data()(range(),i,i) += rect.tail_coefficients(tail.order_min(),tail.order_max(), bosoncorr);
 
-   if(cont.kind == BosonCorrSym) {
+   if(cont.kind == BosonAutoCorr) {
     // Add a reflected rectangle
     rectangle reflected_rect(-rect.center, rect.width, rect.height, const_cast<som_core&>(cont).ci);
     for(auto e : g_w.mesh()) g_w.data()(e.index(),i,i) += reflected_rect.hilbert_transform(double(e), true);

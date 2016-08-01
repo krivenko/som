@@ -31,8 +31,8 @@ using namespace triqs::arrays;
 using namespace triqs::gfs;
 
 // Kernel: bosonic correlator, Matsubara frequencies
-template<> class kernel<BosonCorrSym,imfreq> :
-           public kernel_base<kernel<BosonCorrSym,imfreq>, array<dcomplex,1>> {
+template<> class kernel<BosonAutoCorr,imfreq> :
+           public kernel_base<kernel<BosonAutoCorr,imfreq>, array<dcomplex,1>> {
 
 public:
 
