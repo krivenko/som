@@ -50,16 +50,26 @@ auto adaptive_simpson(F f, X x_min, X x_max, X eps) -> decltype(f(x_min)*x_min) 
  return adaptive_simpson_impl(f, x_min, x_max, eps, simpson(f, x_min, x_max));
 }
 
-// Compute F(X_i) = \int_{x_min}^X f(x) dx, X_i = x_min, ..., x_max
+// Compute
+// (1) F(X_i) =  \int_{x_min}^{X_i} f(x) dx, X_i = x_min, ..., x_max, if var_lower = false
+// (2) F(X_i) = -\int_{X_i}^{x_max} f(x) dx, X_i = x_min, ..., x_max, if var_lower = true
 template<typename X, typename F>
-auto primitive(F f, X x_min, X x_max, int N, X eps) -> triqs::arrays::array<decltype(f(x_min)*x_min),1> {
+auto primitive(F f, X x_min, X x_max, int N, X eps, bool var_lower = false) -> triqs::arrays::array<decltype(f(x_min)*x_min),1> {
  using res_type = decltype(f(x_min)*x_min);
  triqs::arrays::array<res_type,1> res(N);
- res(0) = res_type{};
  auto h = (x_max - x_min)/(N-1);
- for(int i = 0; i < N-1; ++i) {
-  auto a = i*h, b = (i+1)*h;
-  res(i+1) = res(i) + adaptive_simpson(f, a, b, eps);
+ if(var_lower) {
+  res(N-1) = res_type{};
+  for(int i = N-1; i > 0; --i) {
+   auto a = x_min + (i-1)*h, b = x_min + i*h;
+   res(i-1) = res(i) - adaptive_simpson(f, a, b, eps);
+  }
+ } else {
+  res(0) = res_type{};
+  for(int i = 0; i < N-1; ++i) {
+   auto a = x_min + i*h, b = x_min + (i+1)*h;
+   res(i+1) = res(i) + adaptive_simpson(f, a, b, eps);
+  }
  }
  return res;
 }

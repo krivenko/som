@@ -40,4 +40,15 @@ TEST(simpson, sin_inv_x) {
  EXPECT_NEAR(0.162985567, adaptive_simpson(f, 0.01, 1.0, 1e-10), 1e-9);
 }
 
+TEST(simpson, primitive) {
+ auto f = [](double x){ return x*x; };
+ triqs::arrays::array<double,1> ref(11);
+
+ assign_foreach(ref, [](int i){ double y = 0.1+0.1*i; return y*y*y/3 - 0.001/3; });
+ EXPECT_ARRAY_NEAR(ref, primitive(f, 0.1, 1.1, 11, 1e-10, false), 1e-10);
+
+ assign_foreach(ref, [](int i){ double y = -1.1+0.1*i; return y*y*y/3 + 0.001/3; });
+ EXPECT_ARRAY_NEAR(ref, primitive(f, -1.1, -0.1, 11, 1e-10, true), 1e-10);
+}
+
 MAKE_MAIN;
