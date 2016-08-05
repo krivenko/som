@@ -1,6 +1,8 @@
 \documentclass[]{article}
 \usepackage{amsmath}
 \usepackage{graphicx}
+\usepackage[bookmarks]{hyperref}
+\usepackage[a4paper, total={7in, 8in}]{geometry}
 
 \newcommand{\intt}{\ensuremath{\int\limits_0^\beta}\ d\tau}
 \DeclareMathOperator{\atan}{atan}
@@ -17,7 +19,9 @@ This document is a diverse collection of notes, explaining various details of th
 It is supposed to serve as an addition to the original paper by Andrey S. Mishchenko (see \verb|som.pdf|).
 
 \section{Supported integral kernels}
+\label{kernels}
 \subsection{Fermionic thermal Green's function in imaginary time}
+\label{fermiongf_imtime}
 
 \begin{equation}
 	G(\tau) = -\int\limits_{-\infty}^\infty
@@ -26,50 +30,82 @@ It is supposed to serve as an addition to the original paper by Andrey S. Mishch
 
 Integral kernel applied to a rectangle,
 \begin{equation}
-	\hat K(\tau;\omega)*R(c,w,h) = \left\{ 
-	\begin{array}{ll}
-	h(\Lambda_0(c + w/2) - \Lambda_0(c - w/2)), & \tau = 0 \\
-	h(\Lambda_0(w/2 - c) - \Lambda_0(-w/2-c)), & \tau = \beta \\
-	h(\Lambda(\tau;c + w/2) - \Lambda(\tau;c - w/2)), & \mathrm{otherwise}
-	\end{array}\right.
+	\hat K(\tau;\omega)*R(c,w,h) =
+	h(\Lambda(\tau;c+w/2) - \Lambda(\tau;c-w/2)),
 \end{equation}
 \begin{equation}
-	\Lambda_0(\Omega) = \left\{ 
-	\begin{array}{ll}
-	-\frac{1}{\beta}\log(1 + e^{\beta\Omega}), & \Omega < 0 \\
-	-\frac{1}{\beta}\log(1 + e^{-\beta\Omega}) - \Omega, & \Omega \ge 0
-	\end{array}\right.
+	\Lambda(\tau;\Omega) = -\frac{1}{\beta}
+	\int\limits_0^{\beta\Omega}\frac{e^{-(\tau/\beta)x}}{1+e^{-x}}dx.
+\end{equation}
+The integral on the right hand side is analytically doable only for
+a few values of $\alpha=\tau/\beta$, namely $\alpha=0,1/2,1$.
+For all other $\alpha\in(0;1)$, it has to be done numerically and approximated using a cubic spline interpolation. The spline interpolation
+would be easy to construct if the integrand were localized near $x=0$ for
+all $\alpha$. However, this is not the case. The integrand develops
+a long ``tail'' on the positive/negative half-axis as $\alpha$ approaches
+0/1 respectively. The length of this tail scales as $\alpha^{-1}$ (or $(1-\alpha)^{-1}$), which would require an excessively large number of
+spline knots in order to construct a reliable approximation.
+
+The issue is solved by subtracting a tail contribution $t_\alpha(x)$ from the integrand, such that the difference is well localized, and an integral of $t_\alpha(x)$ is trivial.
+\begin{equation}
+	\Lambda(\tau;\Omega) = -\frac{1}{\beta} \left[
+	\theta(-\Omega)S^-_\alpha(\beta\Omega) +
+	\theta(\Omega)S^+_\alpha(\beta\Omega) +
+	T_\alpha(\beta\Omega)
+	\right],
 \end{equation}
 \begin{equation}
-	\Lambda(\tau;\Omega) = \left\{
-	\begin{array}{ll}
-	\sum_{n=0}^\infty\frac{-\beta}{[\beta(2n+1)-\tau][\beta(2n+2)-\tau]},
-	& \Omega = 0 \\
-	\sum_{n=0}^\infty\frac{(-1)^{n+1}e^{\Omega(\beta(n+1)-\tau)}}{\beta(n+1)-\tau},
-	& \Omega < 0 \\
-	-\frac{\pi}{\beta \sin(\pi\tau/\beta)}
-	-\sum_{n=0}^\infty\frac{(-1)^{n+1}e^{-\Omega(\beta n +\tau)}}{\beta n+\tau},
-	& \Omega > 0 \\
-	\end{array}
-	\right.
+	S^-_\alpha(z) = -\int\limits_z^0
+	\left[\frac{e^{-\alpha x}}{1+e^{-x}} - t_\alpha(x)
+	\right] dx,\quad
+	S^+_\alpha(z) = \int\limits_0^z
+	\left[\frac{e^{-\alpha x}}{1+e^{-x}} - t_\alpha(x)
+	\right] dx,
 \end{equation}
 \begin{equation}
-	\Lambda(\beta/2;\Omega) = \left\{
-	\begin{array}{ll}
-	-\frac{\pi}{2\beta},& \Omega = 0 \\
-	-\frac{2}{\beta}\atan(\exp(\Omega\beta/2)),& \Omega < 0 \\
-	\frac{1}{\beta}[2\atan(\exp(-\Omega\beta/2)) - \pi]& \Omega > 0 \\
-	\end{array}
-	\right.
-\end{equation}
-Infinite sums in the definition of $\Lambda(\tau;\Omega)$ are calculated for each $\tau$-point $G(\tau)$ is given on, and for a regular set of $\Omega$-points (a point $\tau = \beta/2$ is treated specially, since the respective series converges very slowly). A cubic spline interpolation in the $\Omega$-direction is then constructed for the sake of performance. $\Lambda(\tau;\Omega)$ approaches its known $\Omega\to-\infty$ and $\Omega\to+\infty$ limits exponentially, so that one can use the following interpolation
-segment,
-\begin{equation}
-	\Omega \in [\frac{\log[tolerance\cdot(1-\tau/\beta)]}{\beta-\tau};
-				\frac{\log[tolerance\cdot(\tau/\beta)]}{-\tau}].
+	T_\alpha(z) = \int\limits_0^z t_\alpha(x) dx.
 \end{equation}
 
+The integrals $S^-_\alpha(z)$ and $S^+_\alpha(z)$ are precomputed on
+a mesh with a fixed number of points, and provide input data for
+spline construction. Limits of the meshes are $\alpha$-independent,
+\begin{equation}
+	S^-_\alpha(z): z\in[-x_0,0], \quad
+	S^+_\alpha(z): z\in[0;x_0], \quad
+	x_0 = -2\log(\mathtt{tolerance}).
+\end{equation}
+$x_0$ is chosen for the least localized case of $\alpha=1/2$.
+We need two different splines (functions $S^\pm_\alpha(z)$) for positive and negative $z$ because the integrand is discontinuous (except for $\alpha=1/2$).
+
+The tail contributions $t_\alpha(x)$ and all related quantities we use are
+summarized in a table below.
+
+\newcommand{\auxsum}[1]{\ensuremath{\sum_{n=0}^\infty(-1)^n\frac{e^{#1z}}{#1}}}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+$\alpha$ & $t_\alpha(x)$ & $T_\alpha(z)$ & $S_\alpha^-(z)$ & $S_\alpha^+(z)$\\
+\hline
+$0$ & $\theta(x)$ & $\theta(z)z$ & 
+$\log(1+e^{z})-\log(2)$ & $\log(1+e^{-z}) - \log(2)$ \\
+\hline
+$(0;1/2)$ & $\theta(x)e^{-\alpha x}$ & $\theta(z)\frac{e^{-\alpha z}-1}{-\alpha}$ &
+$\auxsum{(n+1-\alpha)}-\Psi(1-\alpha)$ & $-\auxsum{-(n+1+\alpha)}-\Psi(1+\alpha)$ \\
+\hline
+$1/2$ & $0$ & $0$ & $2\atan(e^{z/2})-\pi/2$ & $-2\atan(e^{-z/2})+\pi/2$ \\
+\hline
+$(1/2;1)$ & $\theta(-x)e^{(1-\alpha)x}$ & $\theta(-z)\frac{e^{(1-\alpha)z}-1}{1-\alpha}$ & $-\auxsum{(n+2-\alpha)}+\Psi(2-\alpha)$ & $\auxsum{-(n+\alpha)}+\Psi(\alpha)$ \\
+\hline
+$1$ & $\theta(-x)$ & $\theta(-z)z$ & 
+$-\log(1+e^z) + \log(2)$ & $-\log(1+e^{-z}) + \log(2)$ \\
+\hline
+\end{tabular}
+\end{center}
+
+All series found in the table are rapidly convergent, $\Psi(z) = \frac{1}{2}[\psi(\frac{1+z}{2}) - \psi(\frac{z}{2})]$, $\psi(z)$ is the digamma function.
+
 \subsection{Fermionic thermal Green's function at imaginary frequencies}
+\label{fermiongf_imfreq}
 \begin{equation}
 	G(i\omega_n) = \int\limits_{-\infty}^\infty
 	d\epsilon \frac{1}{i\omega_n-\epsilon} A(\epsilon).
@@ -82,6 +118,7 @@ Integral kernel applied to a rectangle,
 \end{equation}
 
 \subsection{Fermionic thermal Green's function in Legendre polynomial basis}
+\label{fermiongf_legendre}
 \begin{equation}
 	G(\ell) = -\int\limits_{-\infty}^\infty
 	d\epsilon \frac{\beta\sqrt{2\ell+1}(-\mathrm{sgn}(\epsilon))^\ell i_{\ell}(\beta|\epsilon|/2)}
@@ -138,6 +175,7 @@ In the high-energy region we use the asymptotic form (\ref{il_cosh_series_high})
 \end{equation}
 
 \subsection{Correlator of boson-like operators at imaginary frequencies}
+\label{bosoncorr_imfreq}
 \begin{equation}
 \chi(i\Omega_n) = \int\limits_{-\infty}^\infty
 d\epsilon \frac{1}{\pi}\frac{-\epsilon}{i\Omega_n-\epsilon} A(\epsilon).
@@ -150,6 +188,7 @@ Integral kernel applied to a rectangle,
 \end{equation}
 
 \subsection{Autocorrelator of a boson-like operator at imaginary frequencies}
+\label{bosonautocorr_imfreq}
 \begin{equation}
 \chi(i\Omega_n) = \int\limits_0^\infty
 d\epsilon \frac{1}{\pi}\frac{2\epsilon^2}{\Omega_n^2+\epsilon^2} A(\epsilon).
@@ -164,6 +203,7 @@ Integral kernel applied to a rectangle,
 \end{equation}
 
 \section{Fit quality criterion for complex functions}
+\label{fit_quality}
 
 In section 4.1 Mishchenko introduces a special quantity $\kappa$, which characterizes the fit quality of a given particular solution
 $A(\omega)$ (eq. 55).
@@ -181,6 +221,7 @@ Our generalization consists in a replacement
 According to the modified definition, two adjacent values of $\Delta$ are considered anti-correlated, if the complex phase shift between them exceeds $\pm\pi/2$. In the case of real-valued quantities the phase shift is always either 0, or $\pi$.
 
 \section{Probability density function for the parameter change}
+\label{prob_function}
 
 Section 3.4 of \verb|som.pdf| contains a dubious expression for the probability
 density function $\mathcal{P}\sim (\max(|\delta\xi_\mathrm{min}|, |\delta\xi_\mathrm{max}|)/|\delta\xi|)^\gamma$, where $\gamma\gg1$. It is

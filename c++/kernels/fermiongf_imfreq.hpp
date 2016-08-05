@@ -40,7 +40,7 @@ public:
  using mesh_type = gf_mesh<imfreq>;
 
  const double beta;          // Inverse temperature
- const mesh_type mesh; // Matsubara frequency mesh
+ const mesh_type mesh;       // Matsubara frequency mesh
 
  kernel(mesh_type const& mesh) :
   kernel_base(mesh.get_positive_freq().size()), mesh(mesh.get_positive_freq()),

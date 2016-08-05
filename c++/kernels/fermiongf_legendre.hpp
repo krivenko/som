@@ -41,7 +41,7 @@ template<> class kernel<FermionGf,legendre> :
            public kernel_base<kernel<FermionGf,legendre>, array<double,1>> {
 
  // Tolerance levels for function evaluation
- static constexpr double tolerance = 1e-13;
+ static constexpr double tolerance = 1e-14;
  // Number of energy points for spline interpolation
  static constexpr int n_spline_knots = 15001;
  // Starting low-energy/high-energy boundary value for l=0

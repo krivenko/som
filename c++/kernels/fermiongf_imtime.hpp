@@ -20,9 +20,10 @@
  ******************************************************************************/
 #pragma once
 
+#include <vector>
 #include <cmath>
 #include <triqs/gfs.hpp>
-#include <triqs/utility/numeric_ops.hpp>
+#include <boost/math/special_functions/digamma.hpp>
 
 #include "base.hpp"
 #include "../spline.hpp"
@@ -36,25 +37,146 @@ using namespace triqs::gfs;
 template<> class kernel<FermionGf,imtime> :
            public kernel_base<kernel<FermionGf,imtime>, array<double,1>> {
 
- // Tolerance levels for function evaluation
- static constexpr double tolerance = 1e-11;
- // Number of energy points for Lambda_tau_not0 interpolation
- static constexpr int n_spline_knots = 10001;
-
- // Integrated kernel \Lambda(\tau=0,\Omega)
- inline double Lambda_tau_0(double Omega) const {
-  double x = beta*Omega;
-  return (Omega < 0) ? (-std::log1p(std::exp(x))     )/beta :
-                       (-std::log1p(std::exp(-x)) - x)/beta;
- }
-
- // Spline interpolation of the integrated kernel \Lambda(\tau!=0,\Omega)
- std::vector<regular_spline> Lambda_tau_not0;
-
 public:
 
  using result_type = array<double,1>;
  using mesh_type = gf_mesh<imtime>;
+
+private:
+
+ // Integrated kernel \Lambda(\alpha,x)
+ struct evaluator {
+  // Tolerance levels for function evaluation
+  static constexpr double tolerance = 1e-14;
+  // Number of x points for Lambda interpolation
+  static constexpr int n_spline_knots = 10001;
+
+  // Spline interpolations SI^-(x) and SI^+(x)
+  regular_spline spline_m, spline_p;
+
+  // \alpha = \tau / \beta
+  double alpha;
+
+  // Value of \alpha
+  // zero: \alpha = 0
+  // small: \alpha \in (0;1/2)
+  // half: \alpha = 1/2
+  // big: \alpha \in (1/2;1)
+  // one: \alpha = 1
+  enum {zero, small, half, big, one} alpha_case;
+
+  // Coefficient of the tail function
+  double tail_coeff;
+
+  // S(x) = \sum_0^{+\infty} \frac{(-1)^n \exp(d(n) x)}{d(n)}
+  template<typename F> static double aux_sum(F && d, double x) {
+   using triqs::utility::is_zero;
+   double val = 0;
+   for(int n = 0;;++n) {
+    double dd = d(n);
+    double t = (n % 2 ? -1 : 1) * std::exp(dd*x) / dd;
+    if(is_zero(t, tolerance)) break;
+    val += t;
+   }
+   return val;
+  }
+
+  evaluator(mesh_type const& mesh, mesh_type::mesh_point_t const& tau) {
+   using std::exp;
+   using std::expm1;
+   using std::log;
+   using std::log1p;
+   using std::atan;
+   using boost::math::digamma;
+
+   // Limit for spline interpolation
+   static double x0 = -2*std::log(tolerance);
+
+   int i = tau.index();
+   int s = mesh.size();
+   double beta = mesh.domain().beta;
+   alpha = double(tau) / beta;
+   double dx = x0 / (n_spline_knots - 1);
+
+   vector<double> spline_m_knots(n_spline_knots), spline_p_knots(n_spline_knots);
+
+   if(i < s/2) {             // \alpha < 1/2
+    if(i == 0) {             // \alpha = 0
+     alpha_case = zero;
+     assign_foreach(spline_m_knots, [dx](int i){ return log1p(exp(-x0 + dx*i)) - log(2.0); });
+     assign_foreach(spline_p_knots, [dx](int i){ return log1p(exp(-dx*i)) - log(2.0); });
+     tail_coeff = -1/beta;
+    } else {                 // \alpha \in (0;1/2)
+     alpha_case = small;
+     // Fill spline_m_knots
+     double shift = 0.5*(digamma(1-0.5*alpha) - digamma(0.5-0.5*alpha));
+     for(int xi : range(0, n_spline_knots-1)) {
+      double x = -x0+dx*xi;
+      spline_m_knots[xi] = aux_sum([this](int n){return n+1-alpha; }, x) - shift;
+     }
+     spline_m_knots[n_spline_knots-1] = 0;
+     // Fill spline_p_knots
+     shift = 0.5*(digamma(1+0.5*alpha) - digamma(0.5+0.5*alpha));
+     spline_p_knots[0] = 0;
+     for(int xi : range(1, n_spline_knots)) {
+      double x = dx*xi;
+      spline_p_knots[xi] = -aux_sum([this](int n){return -(n+1+alpha); }, x) - shift;
+     }
+     tail_coeff = 1/(beta * alpha);
+    }
+   } else if(i >= s - s/2) { // \alpha > 1/2
+    if(i == s-1) {           // \alpha = 1
+     alpha_case = one;
+     assign_foreach(spline_m_knots, [dx](int xi){ return -log1p(exp(-x0 + dx*xi)) + log(2.0); });
+     assign_foreach(spline_p_knots, [dx](int xi){ return -log1p(exp(-dx*xi)) + log(2.0); });
+     tail_coeff = -1/beta;
+    } else {                 // \alpha \in (1/2;1)
+     alpha_case = big;
+     // Fill spline_m_knots
+     double shift = 0.5*(digamma(1.5-0.5*alpha) - digamma(1-0.5*alpha));
+     for(int xi : range(0, n_spline_knots-1)) {
+      double x = -x0+dx*xi;
+      spline_m_knots[xi] = -aux_sum([this](int n){return n+2-alpha; }, x) + shift;
+     }
+     spline_m_knots[n_spline_knots-1] = 0;
+     // Fill spline_p_knots
+     shift = 0.5*(digamma(0.5+0.5*alpha) - digamma(0.5*alpha));
+     spline_p_knots[0] = 0;
+     for(int xi : range(1, n_spline_knots)) {
+      double x = dx*xi;
+      spline_p_knots[xi] = aux_sum([this](int n){return -(n+alpha); }, x) + shift;
+     }
+     tail_coeff = -1/(beta * (1-alpha));
+    }
+   } else {                  // \alpha = 1/2
+    alpha_case = half;
+    assign_foreach(spline_m_knots, [dx](int xi){ return 2*atan(exp(0.5*(-x0+dx*xi))) - M_PI/2; });
+    assign_foreach(spline_p_knots, [dx](int xi){ return -2*atan(exp(-0.5*(dx*xi))) + M_PI/2; });
+   }
+
+   spline_m_knots /= -beta; spline_p_knots /= -beta;
+   spline_m = regular_spline(-x0, .0, spline_m_knots);
+   spline_p = regular_spline( .0, x0, spline_p_knots);
+  }
+
+  double operator()(double x) const {
+   using std::expm1;
+   switch(alpha_case) {
+    case zero: return (x > 0 ? spline_p(x) + tail_coeff * x : spline_m(x));
+    case small: return (x > 0 ? spline_p(x) + tail_coeff * expm1(-alpha*x) : spline_m(x));
+    case half: return (x > 0 ? spline_p(x) : spline_m(x));
+    case big: return (x >= 0 ? spline_p(x) : spline_m(x) + tail_coeff * expm1((1-alpha)*x));
+    case one: return (x >= 0 ? spline_p(x) : spline_m(x) + tail_coeff * x);
+    default: TRIQS_RUNTIME_ERROR << "Internal error: invalid alpha_case";
+   }
+  }
+
+ };
+
+ // List of integrated kernels for all \alpha
+ std::vector<evaluator> lambdas;
+
+public:
 
  const double beta;          // Inverse temperature
  const mesh_type mesh;       // Matsubara time mesh
@@ -62,81 +184,20 @@ public:
  kernel(mesh_type const& mesh) :
   kernel_base(mesh.size()), mesh(mesh), beta(mesh.domain().beta) {
 
-  Lambda_tau_not0.reserve(mesh.size()-2);
-  for(int itau = 1; itau < mesh.size()-1; ++itau) {
-   bool beta_half = (mesh.size()%2) && (itau == mesh.size() / 2);
-   double alpha = mesh[itau] / beta;
-   // Estimated limits of interpolation segment
-   double Omega_min = (std::log(tolerance) + std::log(1-alpha)) / (1-alpha) / beta;
-   double Omega_max = (std::log(tolerance) + std::log(alpha)) / (-alpha) / beta;
-   double dOmega = (Omega_max - Omega_min) / (n_spline_knots - 1);
-
-   // Integrated kernel \Lambda(\tau,\Omega=+\infty)
-   double Lambda_inf = -M_PI/(beta * std::sin(M_PI * alpha));
-
-   // Evaluate \Lambda(\tau,\Omega) to construct spline
-   vector<double> values(n_spline_knots);
-   for(int i = 0; i < n_spline_knots; ++i) {
-    double Omega = Omega_min + i*dOmega;
-    double val = 0;
-    using triqs::utility::is_zero;
-    if(Omega > 0) {
-     if(beta_half) {
-      values[i] = (2*std::atan(std::exp(-Omega*beta/2)) - M_PI)/beta;
-      continue;
-     }
-     for(int n = 0;;++n) {
-      double z = beta*(n + alpha);
-      double t = (n % 2 ? 1 : -1) * std::exp(-Omega*z)/z;
-      if(is_zero(t,tolerance)) break;
-      val += t;
-     }
-     values[i] = Lambda_inf - val;
-    } else if(Omega < 0) {
-     if(beta_half) {
-      values[i] = -(2/beta)*std::atan(std::exp(Omega*beta/2));
-      continue;
-     }
-     for(int n = 0; ; ++n) {
-      double z = beta*((n+1) - alpha);
-      double t = (n % 2 ? 1 : -1) * std::exp(Omega*z)/z;
-      if(is_zero(t,tolerance)) break;
-      val += t;
-     }
-     values[i] = val;
-    } else { // Omega == 0
-     if(beta_half) {
-      values[i] = -M_PI/(2*beta);
-      continue;
-     }
-     for(int n = 0; ; ++n) {
-      double z = beta*((2*n+1) - alpha);
-      double t = -beta / (z * (z + beta));
-      if(is_zero(t,tolerance)) break;
-      val += t;
-     }
-    values[i] = val;
-    }
-   }
-   Lambda_tau_not0.push_back(regular_spline(Omega_min, Omega_max, values));
-  }
+  lambdas.reserve(mesh.size());
+  for(auto tau : mesh) lambdas.emplace_back(mesh, tau);
  }
 
  // Apply to a rectangle
  void apply(rectangle const& rect, result_type & res) const {
 
-  double e1 = rect.center - rect.width/2;
-  double e2 = rect.center + rect.width/2;
+  double x1 = beta*(rect.center - rect.width/2);
+  double x2 = beta*(rect.center + rect.width/2);
 
-  // (kernel * rect)(\tau = 0)
-  res(0) = rect.height * (Lambda_tau_0(e2) - Lambda_tau_0(e1));
-  // (kernel * rect)(0 < \tau < \beta)
-  for(int itau = 1; itau < mesh.size()-1; ++itau) {
-   auto const& l = Lambda_tau_not0[itau-1];
-   res(itau) = rect.height * (l(e2) - l(e1));
+  for(auto tau : mesh) {
+   auto const& lambda = lambdas[tau.index()];
+   res(tau.index()) = rect.height * (lambda(x2) - lambda(x1));
   }
-  // (kernel * rect)(\tau = \beta)
-  res(mesh.size()-1) = rect.height * (Lambda_tau_0(-e1) - Lambda_tau_0(-e2));
  }
 
  friend std::ostream & operator<<(std::ostream & os, kernel const& kern) {

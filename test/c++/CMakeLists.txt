@@ -15,4 +15,5 @@ foreach(filename ${test_sources})
 endforeach()
 
 # Copy h5 files with input data
-file(COPY solution_worker.ref.h5 DESTINATION .)
+file(GLOB h5_files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.h5)
+file(COPY ${h5_files} DESTINATION .)
