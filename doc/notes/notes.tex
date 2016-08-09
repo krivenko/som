@@ -142,7 +142,7 @@ These difficulties urge us to use a combined evaluation scheme. The scheme is ba
 	\frac{i_\ell(x)}{\cosh(x)} =
 	\frac{e^x}{e^x+e^{-x}}\sum_{k=0}^\ell(-1)^k
 		\frac{a_k(\ell+1/2)}{x^{k+1}} +
-	\frac{e^{-x}}{e^x+e^{-x}}\sum_{k=0}^\ell(-1)^{n+1}
+	\frac{e^{-x}}{e^x+e^{-x}}\sum_{k=0}^\ell(-1)^{\ell+1}
 		\frac{a_k(\ell+1/2)}{x^{k+1}},
 \end{equation}
 where $a_k(\ell+1/2)$ are coefficients of the Bessel polynomials,
@@ -173,6 +173,71 @@ In the high-energy region we use the asymptotic form (\ref{il_cosh_series_high})
 		\sum_{k=1}^\ell (-1)^{k+1}\frac{a_k(\ell+1/2)}{x^k k}
 	\right\}\right|_{x_0}^z.
 \end{equation}
+
+\subsection{Correlator of boson-like operators in imaginary time}
+\label{bosoncorr_imtime}
+\begin{equation}
+	\chi(\tau) = \int\limits_{-\infty}^\infty \frac{d\epsilon}{\pi}
+	\frac{\epsilon e^{-\tau\epsilon}}{1-e^{-\beta\epsilon}} A(\epsilon).
+\end{equation}
+
+Integral kernel applied to a rectangle,
+\begin{equation}
+\hat K(\tau;\omega)*R(c,w,h) =
+h(\Lambda(\tau;c+w/2) - \Lambda(\tau;c-w/2)),
+\end{equation}
+\begin{equation}
+\Lambda(\tau;\Omega) = \frac{1}{\pi\beta^2}
+\int\limits_0^{\beta\Omega}\frac{xe^{-(\tau/\beta)x}}{1-e^{-x}}dx.
+\end{equation}
+
+Here we employ a tail subtraction technique analogous to that of paragraph
+\ref{fermiongf_imtime}. All notations remain similar.
+
+\begin{equation}
+	\Lambda(\tau;\Omega) = \frac{1}{\pi\beta^2} \left[
+	\theta(-\Omega)S^-_\alpha(\beta\Omega) +
+	\theta(\Omega)S^+_\alpha(\beta\Omega) +
+	T_\alpha(\beta\Omega)
+	\right],
+\end{equation}
+\begin{equation}
+	S^-_\alpha(z) = -\int\limits_z^0
+	\left[\frac{xe^{-\alpha x}}{1-e^{-x}} - t_\alpha(x)
+	\right] dx,\quad
+	S^+_\alpha(z) = \int\limits_0^z
+	\left[\frac{xe^{-\alpha x}}{1-e^{-x}} - t_\alpha(x)
+	\right] dx,
+\end{equation}
+\begin{equation}
+	T_\alpha(z) = \int\limits_0^z t_\alpha(x) dx.
+\end{equation}
+
+\newcommand{\dilog}{\ensuremath{\mathrm{Li}_2}}
+\begin{center}
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		$\alpha$ & $t_\alpha(x)$ & $T_\alpha(z)$ & $S_\alpha^-(z)$ & $S_\alpha^+(z)$\\
+		\hline
+		$0$ & $\theta(x)x$ & $\theta(z)z^2/2$ &
+		$-\pi^2/6+z\log(1-e^z)+\dilog(e^z)$ & $\pi^2/6+z\log(1-e^{-z})-\dilog(e^{-z})$ \\
+		\hline
+		$(0;1/2)$ & & & & \\
+		\hline
+		$1/2$ & $0$ & $0$ & $\begin{aligned}-\pi^2/2+z\log(\tanh(-z/4))-\\-\dilog(e^z)+4\dilog(e^{z/2})\end{aligned}$ &
+		$\begin{aligned}\pi^2/2+z\log(\tanh(z/4))+\\+\dilog(e^{-z})-4\dilog(e^{-z/2})\end{aligned}$ \\
+		\hline
+		$(1/2;1)$ & & & & \\
+		\hline
+		$1$ & $\theta(-x)(-x)$ & $\theta(-z)(-z^2/2)$ &
+		$-\pi^2/6+z\log(1-e^z)+\dilog(e^z)$ & $\pi^2/6+z\log(1-e^{-z})-\dilog(e^{-z})$ \\
+		\hline
+	\end{tabular}
+\end{center}
+
+Factor $x$ in the kernel tend to strengthen its delocalization, so
+it makes sense to choose $x_0$ (boundary of the spline interpolation region)
+a bit larger, for instance, $x_0=-2.3\log(\mathtt{tol})$.
 
 \subsection{Correlator of boson-like operators at imaginary frequencies}
 \label{bosoncorr_imfreq}
