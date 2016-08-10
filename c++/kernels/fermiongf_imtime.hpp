@@ -68,7 +68,7 @@ private:
   // Coefficient of the tail function
   double tail_coeff;
 
-  // S(x) = \sum_0^{+\infty} \frac{(-1)^n \exp(d(n) x)}{d(n)}
+  // S(x) = \sum_{n=0}^{+\infty} \frac{(-1)^n \exp(d(n) x)}{d(n)}
   template<typename F> static double aux_sum(F && d, double x) {
    using triqs::utility::is_zero;
    double val = 0;
@@ -90,7 +90,7 @@ private:
    using boost::math::digamma;
 
    // Limit for spline interpolation
-   static double x0 = -2*std::log(tolerance);
+   static const double x0 = -2*std::log(tolerance);
 
    int i = tau.index();
    int s = mesh.size();
@@ -103,8 +103,8 @@ private:
    if(i < s/2) {             // \alpha < 1/2
     if(i == 0) {             // \alpha = 0
      alpha_case = zero;
-     assign_foreach(spline_m_knots, [dx](int i){ return log1p(exp(-x0 + dx*i)) - log(2.0); });
-     assign_foreach(spline_p_knots, [dx](int i){ return log1p(exp(-dx*i)) - log(2.0); });
+     assign_foreach(spline_m_knots, [dx](int xi){ return log1p(exp(-x0 + dx*xi)) - log(2.0); });
+     assign_foreach(spline_p_knots, [dx](int xi){ return log1p(exp(-dx*xi)) - log(2.0); });
      tail_coeff = -1/beta;
     } else {                 // \alpha \in (0;1/2)
      alpha_case = small;

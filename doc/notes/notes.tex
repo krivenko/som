@@ -215,6 +215,7 @@ Here we employ a tail subtraction technique analogous to that of paragraph
 
 \newcommand{\dilog}{\ensuremath{\mathrm{Li}_2}}
 \begin{center}
+	\footnotesize
 	\begin{tabular}{|c|c|c|c|c|}
 		\hline
 		$\alpha$ & $t_\alpha(x)$ & $T_\alpha(z)$ & $S_\alpha^-(z)$ & $S_\alpha^+(z)$\\
@@ -222,18 +223,29 @@ Here we employ a tail subtraction technique analogous to that of paragraph
 		$0$ & $\theta(x)x$ & $\theta(z)z^2/2$ &
 		$-\pi^2/6+z\log(1-e^z)+\dilog(e^z)$ & $\pi^2/6+z\log(1-e^{-z})-\dilog(e^{-z})$ \\
 		\hline
-		$(0;1/2)$ & & & & \\
+		$(0;1/2)$ & $\theta(x)xe^{-\alpha x}$ &
+		$\theta(z)\frac{1-e^{-\alpha z}(1+z\alpha)}{\alpha^2}$ &
+		$\begin{aligned}\sum_{n=0}^\infty\frac{e^{(n+1-\alpha)z}[1-z(n+1-\alpha)]}{(n+1-\alpha)^2}
+		-\\-\psi^{(1)}(1-\alpha)\end{aligned}$ & $\begin{aligned}-\sum_{n=0}^\infty\frac{e^{-(n+1+\alpha)z}[1+z(n+1+\alpha)]}{(n+1+\alpha)^2}
+		+\\+\psi^{(1)}(1+\alpha)\end{aligned}$ \\
 		\hline
 		$1/2$ & $0$ & $0$ & $\begin{aligned}-\pi^2/2+z\log(\tanh(-z/4))-\\-\dilog(e^z)+4\dilog(e^{z/2})\end{aligned}$ &
 		$\begin{aligned}\pi^2/2+z\log(\tanh(z/4))+\\+\dilog(e^{-z})-4\dilog(e^{-z/2})\end{aligned}$ \\
 		\hline
-		$(1/2;1)$ & & & & \\
+		$(1/2;1)$ & $\theta(-x)(-x)e^{(1-\alpha)x}$ &
+		$\theta(-z)\frac{e^{(1-\alpha)z}(1-z(1-\alpha))-1}{(1-\alpha)^2}$ &
+		$\begin{aligned}\sum_{n=0}^\infty\frac{e^{(n+2-\alpha)z}[1-z(n+2-\alpha)]}{(n+2-\alpha)^2}
+		-\\-\psi^{(1)}(2-\alpha)\end{aligned}$ & $\begin{aligned}-\sum_{n=0}^\infty\frac{e^{-(n+\alpha)z}[1+z(n+\alpha)]}{(n+\alpha)^2}
+		+\\+\psi^{(1)}(\alpha)\end{aligned}$ \\
 		\hline
 		$1$ & $\theta(-x)(-x)$ & $\theta(-z)(-z^2/2)$ &
 		$-\pi^2/6+z\log(1-e^z)+\dilog(e^z)$ & $\pi^2/6+z\log(1-e^{-z})-\dilog(e^{-z})$ \\
 		\hline
 	\end{tabular}
 \end{center}
+
+All series found in the table are rapidly convergent, $\dilog(z)$ is the dilogarithm (Spence's function),
+$\psi^{(1)}(z) = \frac{d^2}{dz^2}\log\Gamma(z)$ is the trigamma function.
 
 Factor $x$ in the kernel tend to strengthen its delocalization, so
 it makes sense to choose $x_0$ (boundary of the spline interpolation region)

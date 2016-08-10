@@ -28,6 +28,9 @@ set(CMAKE_INSTALL_PREFIX ${TRIQS_PATH})
 message(STATUS "TRIQS : Adding compilation flags detected by the library (C++11/14, libc++, etc...) ")
 add_definitions(${TRIQS_CXX_DEFINITIONS})
 
+# We need at least Boost 1.58 (Math Toolkit 2.2.0) for trigamma()
+find_package(Boost 1.58 REQUIRED)
+
 # Detect MPI
 find_package(MPI)
 
