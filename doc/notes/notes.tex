@@ -264,6 +264,50 @@ Integral kernel applied to a rectangle,
 \frac{hw}{\pi} + \frac{hi\Omega_n}{\pi}\log\left(\frac{i\Omega_n - c - w/2}{i\Omega_n - c + w/2}\right).
 \end{equation}
 
+\subsection{Correlator of boson-like operators in Legendre polynomial basis}
+\label{bosoncorr_legendre}
+\begin{equation}
+	\chi(\ell) = \int\limits_{-\infty}^\infty
+	\frac{d\epsilon}{\pi}
+	\frac{\beta\epsilon\sqrt{2\ell+1}(-\mathrm{sgn}(\epsilon))^\ell i_{\ell}(\beta|\epsilon|/2)}
+	{2\sinh(\beta\epsilon/2)} A(\epsilon).
+\end{equation}
+
+Integral kernel applied to a rectangle,
+\begin{equation}
+	\hat K(\ell;\omega)*R(c,w,h) = h (\Lambda(\ell;c+w/2) - \Lambda(\ell;c-w/2))
+\end{equation}
+\begin{equation}
+	\Lambda(\ell;\Omega) = -(-\mathrm{sgn}(\Omega))^{\ell+1}
+	\frac{2\sqrt{2\ell+1}}{\pi\beta}
+	\int_0^{|\Omega|\beta/2} \frac{i_\ell(x) x}{\sinh(x)} dx
+\end{equation}
+
+Once again, we apply the combined evaluation scheme described in
+\ref{fermiongf_legendre}. An explicit expression for the integrand reads
+\begin{equation}\label{il_x_sinh_series}
+	\frac{i_\ell(x) x}{\sinh(x)} =
+	\frac{e^x}{e^x-e^{-x}}\sum_{k=0}^\ell(-1)^k
+	\frac{a_k(\ell+1/2)}{x^k} +
+	\frac{e^{-x}}{e^x-e^{-x}}\sum_{k=0}^\ell(-1)^{\ell+1}
+	\frac{a_k(\ell+1/2)}{x^k}.
+\end{equation}
+Its high-frequency asymptotics is
+\begin{equation}
+	\frac{i_\ell(x) x}{\sinh(x)} \approx
+		\sum_{k=0}^\ell(-1)^k \frac{a_k(\ell+1/2)}{x^k}.
+\end{equation}
+
+Integral $F^<(z) \equiv \int_0^z \frac{i_\ell(x)x}{\sinh(x)} dx$ is done numerically,
+and replaced by a cubic spline. For $z>x_0$ we have to add a tail contribution,
+\begin{equation}
+F^>(z)|_{z>x_0} = F^<(x_0) +
+\left.\left\{
+x - \frac{\ell(\ell+1)}{2}\log(x) +
+\sum_{k=1}^{\ell-1} (-1)^k\frac{a_{k+1}(\ell+1/2)}{x^k k}
+\right\}\right|_{x_0}^z.
+\end{equation}
+
 \subsection{Autocorrelator of a boson-like operator at imaginary frequencies}
 \label{bosonautocorr_imfreq}
 \begin{equation}

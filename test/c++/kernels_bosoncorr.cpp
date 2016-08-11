@@ -77,4 +77,26 @@ TEST(BosonCorr, imfreq) {
  }
 }
 
+TEST(BosonCorr, legendre) {
+
+ h5::file file("bosoncorr_legendre.h5", H5F_ACC_RDWR);
+
+ configuration conf(ci);
+ h5_read(file, "rects", conf, ci);
+ vector<double> beta;
+ h5_read(file, "beta", beta);
+
+ for(double b : beta) {
+  array<double,2> results;
+  h5_read(file, "results/beta" + std::to_string(int(b)), results);
+
+  gf_mesh<legendre> mesh(b, Boson, second_dim(results));
+  kernel<BosonCorr,legendre> kern(mesh);
+  ci.invalidate_all();
+
+  for(int i : range(conf.size()))
+   EXPECT_TRUE(array_are_close(results(i,range()), kern(conf[i]), 1e-10));
+ }
+}
+
 MAKE_MAIN;
