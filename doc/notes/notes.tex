@@ -157,7 +157,7 @@ For large $x$ (high-frequency region) the integrand can be approximated as
 		\sum_{k=0}^\ell(-1)^k \frac{a_k(\ell+1/2)}{x^{k+1}}.
 \end{equation}
 
-For each $\ell$ the boundary value $x_0$ between the low- and high- frequency regions is found by a direct evaluation of (\ref{il_cosh_series}) and (\ref{il_cosh_series_high}). $x_0\approx15$ for $\ell=0$ (discrepancy on the level of $10^{-13}$) and grows as $\ell^2$ for higher $\ell$.
+For each $\ell$ the boundary value $x_0$ between the low- and high- frequency regions is found by a direct evaluation of (\ref{il_cosh_series}) and (\ref{il_cosh_series_high}). $x_0\approx15$ for $\ell=0$ (discrepancy on the level of $10^{-13}$) and grows as $(\mathrm{const}+\ell)^2$ for higher $\ell$.
 
 In the low-energy region we do the integral $F^<(z) \equiv \int_0^z \frac{i_\ell(x)}{\cosh(x)} dx$ on a fixed $z$-mesh, $z\in[0;x_0]$, using the adaptive Simpson's method. Results of the integrations are used to construct a cubic spline interpolation of $F^<(z)$.
 

@@ -75,7 +75,8 @@ template<> class kernel<FermionGf,legendre> :
    auto integrand = [l](double x) {
     if(x==0) return (l==0 ? 1.0 : 0.0);
     auto val = boost::math::cyl_bessel_i(l+0.5, x);
-    val *= std::sqrt(M_PI/(2*x)) / std::cosh(x);
+    double expmx = std::exp(-x);
+    val *= std::sqrt(M_PI/(2*x)) * (2*expmx/(1 + expmx*expmx));
     return val;
    };
 
