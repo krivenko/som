@@ -28,28 +28,29 @@ using namespace triqs::gfs;
 using triqs::arrays::vector;
 
 cache_index ci;
-configuration conf({{1.30000001, 2.6, 0.3,ci},
-                    {2.7, 2.6, 0.4,ci},
-                    {3.5, 2.6, 0.5,ci},
-                    {5.3, 2.6, 0.6,ci},
-                    {6.0, 2.6, 0.7,ci}},ci);
 
 TEST(BosonAutoCorr, imfreq) {
 
- double beta = 1;
- gf_mesh<imfreq> mesh(beta,Boson,5);
- kernel<BosonAutoCorr,imfreq> kern(mesh);
- ci.invalidate_all();
+ h5::file file("bosonautocorr_imfreq.h5", H5F_ACC_RDWR);
 
- std::vector<vector<dcomplex>> ref = {
-  {0.4965634224467141,0.025745261602540856,0.006909053409302071,0.003113715066794663,0.0017601271165260985},
-  {0.6620845632622854,0.10580309418218788,0.03098652585148805,0.014235964352031234,0.008103960398589181},
-  {0.8276057040778567,0.1964752722001335,0.06138600338250142,0.028643275964017088,0.016400184502754774},
-  {0.9931268448934282,0.4097515593832911,0.1509977093598627,0.07371801378520859,0.042957411554051944},
-  {1.158647985708999,0.5485863422424838,0.2158177138361782,0.10755230455854847,0.06319925550919453}
- };
+ configuration conf(ci);
+ h5_read(file, "rects", conf, ci);
+ vector<double> beta;
+ h5_read(file, "beta", beta);
 
- for(int i = 0; i < conf.size(); ++i) EXPECT_TRUE(array_are_close(ref[i],kern(conf[i]),1e-6));
+ for(double b : beta) {
+  array<double,2> results_re, results_im;
+  h5_read(file, "results/beta" + std::to_string(int(b)) + "/re", results_re);
+  h5_read(file, "results/beta" + std::to_string(int(b)) + "/im", results_im);
+  array<dcomplex,2> results = results_re + 1_j*results_im;
+
+  gf_mesh<imfreq> mesh(b, Boson, second_dim(results));
+  kernel<BosonAutoCorr,imfreq> kern(mesh);
+  ci.invalidate_all();
+
+  for(int i : range(conf.size()))
+   EXPECT_TRUE(array_are_close(results(i,range()), kern(conf[i]), 1e-10));
+ }
 }
 
 MAKE_MAIN;
