@@ -38,6 +38,7 @@ public:
 
  using result_type = array<dcomplex,1>;
  using mesh_type = gf_mesh<imfreq>;
+ constexpr static observable_kind kind = BosonAutoCorr;
 
  const double beta;          // Inverse temperature
  const mesh_type mesh; // Matsubara frequency mesh

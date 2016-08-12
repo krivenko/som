@@ -42,6 +42,7 @@ public:
 
  using result_type = array<double,1>;
  using mesh_type = gf_mesh<imtime>;
+ constexpr static observable_kind kind = BosonAutoCorr;
 
  const double beta;          // Inverse temperature
  const mesh_type mesh;       // Matsubara time mesh
