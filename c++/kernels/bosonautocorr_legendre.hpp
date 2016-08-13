@@ -160,7 +160,7 @@ public:
  }
 
  friend std::ostream & operator<<(std::ostream & os, kernel const& kern) {
-  os << "A(\\epsilon) -> \\chi_\\{sym}(l), ";
+  os << "A(\\epsilon) -> \\chi_{sym}(l), ";
   os << "\\beta = " << kern.beta << ", " << kern.mesh.size() << " Legendre coefficients.";
   return os;
  }

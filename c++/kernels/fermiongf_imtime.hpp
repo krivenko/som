@@ -52,7 +52,7 @@ private:
   // Number of x points for Lambda interpolation
   static constexpr int n_spline_knots = 10001;
 
-  // Spline interpolations SI^-(x) and SI^+(x)
+  // Spline interpolations S^-(x) and S^+(x)
   regular_spline spline_m, spline_p;
 
   // \alpha = \tau / \beta

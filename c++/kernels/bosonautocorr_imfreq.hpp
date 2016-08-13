@@ -62,7 +62,7 @@ public:
  }
 
  friend std::ostream & operator<<(std::ostream & os, kernel const& kern) {
-  os << "A(\\epsilon) -> \\chi_\\{sym}(i\\Omega), ";
+  os << "A(\\epsilon) -> \\chi_{sym}(i\\Omega), ";
   os << "\\beta = " << kern.beta << ", " << kern.mesh.size() << " Matsubara frequencies.";
   return os;
  }

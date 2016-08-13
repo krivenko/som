@@ -308,6 +308,72 @@ x - \frac{\ell(\ell+1)}{2}\log(x) +
 \right\}\right|_{x_0}^z.
 \end{equation}
 
+\subsection{Autocorrelator of a boson-like operator in imaginary time}
+\label{bosonautocorr_imtime}
+\begin{equation}
+\chi(\tau) = \int\limits_{-\infty}^\infty \frac{d\epsilon}{\pi}
+\frac{\epsilon (e^{-\tau\epsilon}+e^{-(\beta-\tau)\epsilon})}
+{1-e^{-\beta\epsilon}} A(\epsilon).
+\end{equation}
+
+Integral kernel applied to a rectangle,
+\begin{equation}
+\hat K(\tau;\omega)*R(c,w,h) =
+h(\Lambda(\tau;c+w/2) - \Lambda(\tau;c-w/2)),
+\end{equation}
+\begin{equation}
+\Lambda(\tau;\Omega) = \frac{1}{\pi\beta^2}
+\int\limits_0^{\beta\Omega}\frac{x(e^{-(\tau/\beta)x}+e^{-(1-\tau/\beta)x})}
+{1-e^{-x}}dx.
+\end{equation}
+This integral is obtained from the one of paragraph \ref{bosoncorr_imtime}
+as a result of $\tau$-symmetrization (sum of $\Lambda$ for $\alpha$ and $1-\alpha$).
+Thanks to this fact, it is enough to consider only 3 $\alpha$-cases,
+\begin{itemize}
+	\item $\alpha=0,1$;
+	\item $\alpha=1/2$;
+	\item $\alpha\in(0;1/2)\cup(1/2;1)$.
+\end{itemize}
+Furthermore, the upper integration limit can now be only positive, which
+eliminates the need in two cubic splines.
+
+\begin{equation}
+\Lambda(\tau;\Omega) = \frac{1}{\pi\beta^2} \left[
+S_\alpha(\beta\Omega) + T_\alpha(\beta\Omega) \right],
+\end{equation}
+\begin{equation}
+S_\alpha(z) = \int\limits_0^z
+\left[\frac{x(e^{-\alpha x}+e^{-(1-\alpha)x})}{1-e^{-x}} - t_\alpha(x)
+\right] dx, \quad
+T_\alpha(z) = \int\limits_0^z t_\alpha(x) dx.
+\end{equation}
+
+\begin{center}
+	\footnotesize
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		$\alpha$ & $t_\alpha(x)$ & $T_\alpha(z)$ & $S_\alpha(z)$ \\
+		\hline
+		$0,1$ & $x(1+e^{-x})$ & $1+z^2/2-e^{-z}(1+z)$ &
+		$-1+\pi^2/3+2z\log(1-e^{-z})-2\dilog(e^{-z})+e^{-z}(1+z)$ \\
+		\hline
+		$(0;1/2)\cup(1/2;1)$ & $x(e^{-\alpha x}+e^{-(1-\alpha)x})$ &
+		$\begin{array}{c}\frac{1-e^{-\alpha z}(1+z\alpha)}{\alpha^2}+\\+
+		\frac{1-e^{-(1-\alpha) z}(1+z(1-\alpha))}{(1-\alpha)^2}\end{array}$ &$\begin{aligned}-\sum_{n=0}^\infty\frac{e^{-(n+1+\alpha)z}[1+z(n+1+\alpha)]}
+		{(n+1+\alpha)^2} +\psi^{(1)}(1+\alpha) -\\
+		-\sum_{n=0}^\infty\frac{e^{-(n+2-\alpha)z}[1+z(n+2-\alpha)]}
+		{(n+2-\alpha)^2} +\psi^{(1)}(2-\alpha)\end{aligned}$ \\
+		\hline
+		$1/2$ & $2xe^{-x/2}$ & $4(2-e^{-z/2}(2+z))$ &
+		$\begin{aligned}-8+\pi^2+4e^{-z/2}(2+z)+2z\log\tanh(z/4)-\\
+		-8\dilog(e^{-z/2})+2\dilog(e^{-z})\end{aligned}$ \\
+		\hline
+	\end{tabular}
+\end{center}
+
+All series found in the table are rapidly convergent, $\dilog(z)$ is the dilogarithm (Spence's function),
+$\psi^{(1)}(z) = \frac{d^2}{dz^2}\log\Gamma(z)$ is the trigamma function.
+
 \subsection{Autocorrelator of a boson-like operator at imaginary frequencies}
 \label{bosonautocorr_imfreq}
 \begin{equation}

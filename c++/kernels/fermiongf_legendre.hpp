@@ -91,6 +91,7 @@ template<> class kernel<FermionGf,legendre> :
    using triqs::utility::is_zero;
    while(!is_zero(integrand(x0)-integrand_tail(1/x0), tolerance))
     x0 += x0_step;
+   std::cout << l << "\t" << x0 << std::endl;
 
    // Fill high_energy_pol
    vector<double> int_tail_coeffs(l+1);
