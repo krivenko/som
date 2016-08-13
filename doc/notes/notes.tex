@@ -323,6 +323,36 @@ Integral kernel applied to a rectangle,
 \right).
 \end{equation}
 
+\subsection{Autocorrelator of a boson-like operator in Legendre polynomial basis}
+\label{bosonautocorr_legendre}
+\begin{equation}
+	\chi(\ell) = \left\{
+		\begin{array}{ll}
+		\int\limits_0^\infty
+		\frac{d\epsilon}{\pi}
+		\frac{\beta\epsilon\sqrt{2\ell+1} i_{\ell}(\beta\epsilon/2)}
+		{\sinh(\beta\epsilon/2)} A(\epsilon), &\ell\ \mathrm{ even},\\
+		0, &\ell\ \mathrm{odd}. 
+	\end{array}\right.
+\end{equation}
+
+Integral kernel applied to a rectangle,
+\begin{equation}
+	\hat K(\ell;\omega)*R(c,w,h) = \left\{
+	\begin{array}{ll}
+	h(\Lambda(\ell;c+w/2)-\Lambda(\ell;c-w/2)), &\ell\ \mathrm{ even},\\
+	0, &\ell\ \mathrm{odd}. 
+	\end{array}\right.	
+\end{equation}
+\begin{equation}
+	\Lambda(\ell;\Omega) =
+	\frac{4\sqrt{2\ell+1}}{\pi\beta}
+	\int_0^{\Omega\beta/2} \frac{i_\ell(x) x}{\sinh(x)} dx.
+\end{equation}
+
+See paragraph \ref{bosoncorr_legendre} for a description of how the integral on
+the right hand side is evaluated.
+
 \section{Fit quality criterion for complex functions}
 \label{fit_quality}
 
