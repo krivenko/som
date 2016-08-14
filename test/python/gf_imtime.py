@@ -53,6 +53,7 @@ g_w = GfReFreq(window = (-6.0,6.0), n_points = 1200, indices = g_tau.indices)
 g_w << cont
 
 if mpi.is_master_node():
+#    del arch
 #    with HDFArchive('gf_imtime.ref.h5', 'a') as arch:
 #        arch['g_rec_tau'] = g_rec_tau
 #        arch['g_w'] = g_w
