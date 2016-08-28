@@ -1,8 +1,6 @@
 # load triqs helper to set up tests
 find_package(TriqsTest)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../c++ ${TRIQS_INCLUDE_ALL})
-
 # Simple tests
 file(GLOB test_sources RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
 
@@ -17,3 +15,5 @@ endforeach()
 # Copy h5 files with input data
 file(GLOB h5_files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.h5)
 file(COPY ${h5_files} DESTINATION .)
+
+add_subdirectory(numerics)

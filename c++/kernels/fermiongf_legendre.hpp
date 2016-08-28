@@ -64,7 +64,7 @@ template<> class kernel<FermionGf,legendre> :
  struct evaluator {
   double x0;                        // Boundary between low-energy and high-energy regions
   regular_spline low_energy_spline; // Spline approximation on [0;x0]
-  polynomial high_energy_pol;       // Polynomial approximation on ]x0;\infty[
+  polynomial<> high_energy_pol;     // Polynomial approximation on ]x0;\infty[
   double low_energy_x0;             // low_energy_spline(x0)
   double high_energy_x0;            // log(x0) + high_energy_pol(1/x0)
   double sqrt_pref;                 // sqrt(2*l+1) prefactor
@@ -84,7 +84,7 @@ template<> class kernel<FermionGf,legendre> :
    tail_coeffs[0] = 0;
    for(int k = 0; k <= l; ++k)
     tail_coeffs[k+1] = (k%2 ? -1 : 1) * make_a(k,l);
-   polynomial integrand_tail(tail_coeffs);
+   polynomial<> integrand_tail(tail_coeffs);
 
    // Search for the low-energy/high-energy boundary
    x0 = x0_start;
@@ -96,7 +96,7 @@ template<> class kernel<FermionGf,legendre> :
    vector<double> int_tail_coeffs(l+1);
    int_tail_coeffs[0] = 0;
    for(int k = 1; k <= l; ++k) int_tail_coeffs[k] = -tail_coeffs[k+1]/k;
-   high_energy_pol = polynomial(int_tail_coeffs);
+   high_energy_pol = polynomial<>(int_tail_coeffs);
 
    // Fill low_energy_spline
    auto spline_knots = primitive(integrand, .0, x0, n_spline_knots, tolerance);
