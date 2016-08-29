@@ -26,7 +26,7 @@
 #include <boost/math/special_functions/digamma.hpp>
 
 #include "base.hpp"
-#include "../spline.hpp"
+#include "../numerics/spline.hpp"
 
 namespace som {
 

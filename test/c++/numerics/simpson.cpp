@@ -22,7 +22,7 @@
 
 #include <cmath>
 
-#include "simpson.hpp"
+#include "numerics/simpson.hpp"
 
 using namespace som;
 using namespace std;

@@ -26,8 +26,8 @@
 #include <boost/math/special_functions/trigamma.hpp>
 
 #include "base.hpp"
-#include "../spline.hpp"
-#include "../dilog.hpp"
+#include "../numerics/spline.hpp"
+#include "../numerics/dilog.hpp"
 
 namespace som {
 

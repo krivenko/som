@@ -21,7 +21,7 @@
 #include <triqs/test_tools/arrays.hpp>
 #include <cmath>
 
-#include "dilog.hpp"
+#include "numerics/dilog.hpp"
 
 using std::log;
 using som::dilog;

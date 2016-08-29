@@ -22,7 +22,7 @@
 #include <cmath>
 
 #define TRIQS_ARRAYS_ENFORCE_BOUNDCHECK
-#include "spline.hpp"
+#include "numerics/spline.hpp"
 
 using std::exp;
 using std::sin;

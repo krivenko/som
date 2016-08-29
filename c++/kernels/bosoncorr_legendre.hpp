@@ -27,9 +27,9 @@
 #include <triqs/utility/numeric_ops.hpp>
 
 #include "base.hpp"
-#include "../spline.hpp"
-#include "../polynomial.hpp"
-#include "../simpson.hpp"
+#include "../numerics/spline.hpp"
+#include "../numerics/polynomial.hpp"
+#include "../numerics/simpson.hpp"
 
 namespace som {
 

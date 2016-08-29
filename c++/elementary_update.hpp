@@ -26,7 +26,7 @@
 #include <triqs/mc_tools.hpp>
 #include <triqs/utility/numeric_ops.hpp>
 
-#include "expabs_distribution.hpp"
+#include "numerics/expabs_distribution.hpp"
 #include "config_update.hpp"
 
 namespace som {
