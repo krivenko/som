@@ -94,9 +94,11 @@ template<> class kernel<BosonAutoCorr,legendre> :
     x0 += x0_step;
 
    // Fill high_energy_pol
-   vector<double> int_tail_coeffs(l+1);
-   int_tail_coeffs[0] = 0;
-   for(int k = 1; k <= l-1; ++k) int_tail_coeffs[k] = -tail_coeffs[k+1]/k;
+   vector<double> int_tail_coeffs(l);
+   if(l>0) {
+    int_tail_coeffs[0] = 0;
+    for(int k = 1; k <= l-1; ++k) int_tail_coeffs[k] = -tail_coeffs[k+1]/k;
+   }
    high_energy_pol = polynomial<>(int_tail_coeffs);
 
    // Fill low_energy_spline
