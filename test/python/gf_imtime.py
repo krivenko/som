@@ -37,6 +37,7 @@ cont = Som(g_tau, S_tau, kind = "FermionGf")
 
 run_params = {'energy_window' : (-5,5)}
 run_params['verbosity'] = 3
+run_params['random_seed'] = 34788 + 928374 * mpi.rank
 run_params['adjust_f'] =  False
 run_params['adjust_l'] = False
 run_params['t'] = 100

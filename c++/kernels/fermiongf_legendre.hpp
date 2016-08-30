@@ -74,10 +74,8 @@ template<> class kernel<FermionGf,legendre> :
    // Integrand, i_l(x) / cosh(x)
    auto integrand = [l](double x) {
     if(x==0) return (l==0 ? 1.0 : 0.0);
-    auto val = boost::math::cyl_bessel_i(l+0.5, x);
-    double expmx = std::exp(-x);
-    val *= std::sqrt(M_PI/(2*x)) * (2*expmx/(1 + expmx*expmx));
-    return val;
+    double val = boost::math::cyl_bessel_i(l+0.5, x);
+    return val * std::sqrt(M_PI/(2*x)) / std::cosh(x);
    };
 
    vector<double> tail_coeffs(l+2);
@@ -89,8 +87,13 @@ template<> class kernel<FermionGf,legendre> :
    // Search for the low-energy/high-energy boundary
    x0 = x0_start;
    using triqs::utility::is_zero;
-   while(!is_zero(integrand(x0)-integrand_tail(1/x0), tolerance))
+   while(!is_zero(integrand(x0)-integrand_tail(1/x0), tolerance)) {
     x0 += x0_step;
+    // http://en.cppreference.com/w/cpp/numeric/math/cosh
+    if(x0 >= 710)
+     TRIQS_RUNTIME_ERROR << "kernel<FermionGf,legendre>: l = " << l
+                         << " is too large and may cause numerical overflows.";
+   }
 
    // Fill high_energy_pol
    vector<double> int_tail_coeffs(l+1);
