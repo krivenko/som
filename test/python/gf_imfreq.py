@@ -54,11 +54,12 @@ g_w = GfReFreq(window = (-6.0,6.0), n_points = 1200, indices = g_iw.indices)
 g_w << cont
 
 if mpi.is_master_node():
+#    del arch
 #    with HDFArchive('gf_imfreq.ref.h5', 'a') as arch:
 #        arch['g_rec_iw'] = g_rec_iw
 #        arch['g_w'] = g_w
 #        arch['histograms'] = cont.histograms
     assert_gfs_are_close(g_rec_iw, arch['g_rec_iw'])
-    assert_gfs_are_close(g_w, arch['g_w'], 6e-4)
+    assert_gfs_are_close(g_w, arch['g_w'], 1e-5)
     assert_arrays_are_close(cont.histograms[0].data, arch['histograms'][0].data)
     assert_arrays_are_close(cont.histograms[1].data, arch['histograms'][1].data)
