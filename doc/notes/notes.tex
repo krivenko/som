@@ -419,6 +419,81 @@ Integral kernel applied to a rectangle,
 See paragraph \ref{bosoncorr_legendre} for a description of how the integral on
 the right hand side is evaluated.
 
+\subsection{Zero temperature correlator in imaginary time}
+\label{zerotemp_imtime}
+\begin{equation}
+	G(\tau) = -\int\limits_0^\infty
+	d\epsilon\ e^{-\tau\epsilon} A(\epsilon), \quad
+	\tau\in[0;\tau_{max}]
+\end{equation}
+
+Integral kernel applied to a rectangle,
+\begin{equation}
+	\hat K(\tau;\omega)*R(c,w,h) =  \left\{
+	\begin{array}{ll}
+		-hw, &\tau=0,\\
+		\frac{h}{\tau}(e^{-\tau(c+w/2)}-e^{-\tau(c-w/2)}) ,&\mathrm{otherwise}.
+	\end{array}\right.
+\end{equation}
+
+\subsection{Zero temperature correlator at imaginary frequencies}
+\label{zerotemp_imfreq}
+\begin{equation}
+	G(i\omega_n) = \int\limits_0^\infty
+	d\epsilon \frac{1}{i\omega_n-\epsilon} A(\epsilon).
+\end{equation}
+
+Imaginary frequency values $\omega_n$ are arbitrary here, with a restriction that
+$\omega_0 = 0$ is not included in the case of fermionic correlators.
+
+Integral kernel applied to a rectangle,
+\begin{equation}
+\hat K(i\omega_n;\omega)*R(c,w,h) =
+h \log\left(\frac{i\omega_n - c + w/2}{i\omega_n - c - w/2}\right).
+\end{equation}
+
+\subsection{Zero temperature correlator in Legendre polynomial basis}
+\label{zerotemp_legendre}
+\begin{equation}
+	G(\ell) =
+	\int\limits_0^\infty d\epsilon
+	\tau_{max}(-1)^{\ell+1}\sqrt{2\ell+1}
+	i_{\ell}\left(\frac{\epsilon\tau_{max}}{2}\right)
+	\exp\left(-\frac{\epsilon\tau_{max}}{2}\right) A(\epsilon).
+\end{equation}
+
+Integral kernel applied to a rectangle,
+\begin{equation}
+	\hat K(\ell;\omega)*R(c,w,h) = h (\Lambda(\ell;c+w/2) - \Lambda(\ell;c-w/2)),
+\end{equation}
+\begin{equation}
+	\Lambda(\ell;\Omega) = (-1)^{\ell+1}\sqrt{2\ell+1}
+	\int_0^{\Omega\tau_{max}/2} 2e^{-x} i_\ell(x) dx.
+\end{equation}
+
+Once again, we apply the combined evaluation scheme described in
+\ref{fermiongf_legendre}. An explicit expression for the integrand reads
+\begin{equation}\label{il_x_exp_series}
+	2e^{-x} i_\ell(x) =
+	\sum_{k=0}^\ell(-1)^k
+	\frac{a_k(\ell+1/2)}{x^k} +
+	e^{-2x}\sum_{k=0}^\ell(-1)^{\ell+1}
+	\frac{a_k(\ell+1/2)}{x^k}.
+\end{equation}
+Its high-frequency asymptotics is
+\begin{equation}
+	2e^{-x} i_\ell(x) \approx
+	\sum_{k=0}^\ell(-1)^k \frac{a_k(\ell+1/2)}{x^k}.
+\end{equation}
+
+Integral $F^<(z) \equiv \int_0^z 2 e^{-x} i_\ell(x) dx$ is done numerically,
+and replaced by a cubic spline. For $z>x_0$ we have to add a tail contribution,
+\begin{equation}
+F^>(z)|_{z>x_0} = F^<(x_0) + \left.\left\{
+\log(x) + \sum_{k=1}^\ell (-1)^{k+1}\frac{a_k(\ell+1/2)}{x^k k}
+\right\}\right|_{x_0}^z.
+\end{equation}
+
 \section{Fit quality criterion for complex functions}
 \label{fit_quality}
 

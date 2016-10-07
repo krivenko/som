@@ -30,6 +30,9 @@
 #include "kernels/bosonautocorr_imtime.hpp"
 #include "kernels/bosonautocorr_imfreq.hpp"
 #include "kernels/bosonautocorr_legendre.hpp"
+#include "kernels/zerotemp_imtime.hpp"
+#include "kernels/zerotemp_imfreq.hpp"
+#include "kernels/zerotemp_legendre.hpp"
 #include "objective_function.hpp"
 #include "fit_quality.hpp"
 #include "solution_worker.hpp"
@@ -73,6 +76,30 @@ void som_core::set_input_data(gf_const_view<GfOpts...> g, gf_const_view<GfOpts..
  histograms.resize(gf_dim);
 }
 
+template<typename MeshType> void check_gf_dim(gf_const_view<MeshType> g, int expected_dim) {
+ auto shape = get_target_shape(g);
+ if(shape[0] != expected_dim || shape[1] != expected_dim)
+  fatal_error("expected a " + mesh_traits<MeshType>::name()
+              + " Green's function with matrix dimensions "
+              + to_string(expected_dim) + "x" + to_string(expected_dim));
+}
+template<typename MeshType> void check_gf_dim(gf_view<MeshType> g, int expected_dim) {
+ check_gf_dim(make_const_view(g), expected_dim);
+}
+
+template<typename MeshType> void check_gf_stat(gf_const_view<MeshType> g,
+                                               triqs::gfs::statistic_enum expected_stat) {
+ if(g.domain().statistic != expected_stat)
+  fatal_error("expected a " + mesh_traits<MeshType>::name()
+              + " Green's function with "
+              + (expected_stat == Fermion ? "fermionic" : "bosonic")
+              + " statistics");
+}
+template<typename MeshType> void check_gf_stat(gf_view<MeshType> g,
+                                               triqs::gfs::statistic_enum expected_stat) {
+ return check_gf_stat(make_const_view(g), expected_stat);
+}
+
 //////////////////
 // Constructors //
 //////////////////
@@ -83,11 +110,10 @@ som_core::som_core(gf_const_view<imtime> g_tau, gf_const_view<imtime> S_tau,
  mesh(g_tau.mesh()), kind(kind), norm(norm),
  rhs(input_data_r_t()), error_bars(input_data_r_t()) {
 
- if(kind != FermionGf && kind != BosonCorr && kind != BosonAutoCorr)
+ if(kind != FermionGf && kind != BosonCorr && kind != BosonAutoCorr && kind != ZeroTemp)
   fatal_error("unknown observable kind " + to_string(kind));
 
- if(g_tau.domain().statistic != observable_statistics(kind))
-  fatal_error("Wrong g_tau statistics for this observable kind");
+ if(kind != ZeroTemp) check_gf_stat(g_tau, observable_statistics(kind));
 
  check_input_gf(g_tau,S_tau);
  if(!is_gf_real(g_tau) || !is_gf_real(S_tau))
@@ -102,11 +128,10 @@ som_core::som_core(gf_const_view<imfreq> g_iw, gf_const_view<imfreq> S_iw,
  mesh(g_iw.mesh()), kind(kind), norm(norm),
  rhs(input_data_c_t()), error_bars(input_data_c_t()) {
 
- if(kind != FermionGf && kind != BosonCorr && kind != BosonAutoCorr)
+ if(kind != FermionGf && kind != BosonCorr && kind != BosonAutoCorr && kind != ZeroTemp)
   fatal_error("unknown observable kind " + to_string(kind));
 
- if(g_iw.domain().statistic != observable_statistics(kind))
-  fatal_error("Wrong g_iw statistics for this observable kind");
+ if(kind != ZeroTemp) check_gf_stat(g_iw, observable_statistics(kind));
 
  check_input_gf(g_iw,S_iw);
  if(!is_gf_real_in_tau(g_iw) || !is_gf_real_in_tau(S_iw))
@@ -123,11 +148,10 @@ som_core::som_core(gf_const_view<legendre> g_l, gf_const_view<legendre> S_l,
  mesh(g_l.mesh()), kind(kind), norm(norm),
  rhs(input_data_r_t()), error_bars(input_data_r_t()) {
 
- if(kind != FermionGf && kind != BosonCorr && kind != BosonAutoCorr)
+ if(kind != FermionGf && kind != BosonCorr && kind != BosonAutoCorr && kind != ZeroTemp)
   fatal_error("unknown observable kind " + to_string(kind));
 
- if(g_l.domain().statistic != observable_statistics(kind))
-  fatal_error("Wrong g_l statistics for this observable kind");
+ if(kind != ZeroTemp) check_gf_stat(g_l, observable_statistics(kind));
 
  check_input_gf(g_l,S_l);
  if(!is_gf_real(g_l) || !is_gf_real(S_l))
@@ -144,7 +168,7 @@ void som_core::run(run_parameters_t const& p) {
 
  params = p;
 
- if(kind == BosonAutoCorr && params.energy_window.first < 0) {
+ if((kind == BosonAutoCorr || kind == ZeroTemp) && params.energy_window.first < 0) {
   params.energy_window.first = 0;
   if(params.verbosity > 0) warning("left boundary of the energy window is reset to 0");
  }
@@ -404,22 +428,6 @@ som_core::~som_core() {
 // triqs_gf_view_assign_delegation() //
 ///////////////////////////////////////
 
-template<typename MeshType> void check_gf_dim(gf_view<MeshType> g, int expected_dim) {
- auto shape = get_target_shape(g);
- if(shape[0] != expected_dim || shape[1] != expected_dim)
-  fatal_error("expected a " + mesh_traits<MeshType>::name()
-              + " Green's function with matrix dimensions "
-              + to_string(expected_dim) + "x" + to_string(expected_dim));
-}
-
-template<typename MeshType> void check_gf_stat(gf_view<MeshType> g, triqs::gfs::statistic_enum expected_stat) {
- if(g.domain().statistic != expected_stat)
-  fatal_error("expected a " + mesh_traits<MeshType>::name()
-              + " Green's function with "
-              + (expected_stat == Fermion ? "fermionic" : "bosonic")
-              + " statistics");
-}
-
 void fill_data(gf_view<imtime> g_tau, int i, vector<double> const& data) {
  g_tau.data()(range(),i,i) = data;
 }
@@ -438,7 +446,7 @@ template<typename MeshType>
 void triqs_gf_view_assign_delegation(gf_view<MeshType> g, som_core const& cont) {
  auto gf_dim = cont.results.size();
  check_gf_dim(g, gf_dim);
- check_gf_stat(g, observable_statistics(cont.kind));
+ if(cont.kind != ZeroTemp) check_gf_stat(g, observable_statistics(cont.kind));
 
  g() = 0;
  switch(cont.kind) {
@@ -457,6 +465,11 @@ void triqs_gf_view_assign_delegation(gf_view<MeshType> g, som_core const& cont) 
    for(int i : range(gf_dim)) fill_data(g, i, kern(cont.results[i]));
    return;
   }
+  case ZeroTemp: {
+   kernel<ZeroTemp,MeshType> kern(g.mesh());
+   for(int i : range(gf_dim)) fill_data(g, i, kern(cont.results[i]));
+   return;
+  }
   default:
    fatal_error("unknown observable kind " + to_string(cont.kind));
  }
@@ -465,7 +478,8 @@ void triqs_gf_view_assign_delegation(gf_view<MeshType> g, som_core const& cont) 
 template<> void triqs_gf_view_assign_delegation<refreq>(gf_view<refreq> g_w, som_core const& cont) {
 
  bool bosoncorr = cont.kind == BosonCorr || cont.kind == BosonAutoCorr;
- if(cont.kind != FermionGf && !bosoncorr) fatal_error("unknown observable kind " + to_string(cont.kind));
+ if(cont.kind != FermionGf && !bosoncorr && cont.kind != ZeroTemp)
+  fatal_error("unknown observable kind " + to_string(cont.kind));
  auto gf_dim = cont.results.size();
  check_gf_dim(g_w, gf_dim);
 

@@ -152,3 +152,44 @@ The correlator of a real frequency is reconstructed according to
         d\epsilon' \frac{\epsilon' A(-\epsilon')}{\epsilon' - \epsilon - i0} +
         \frac{1}{\pi}\int\limits_0^\infty
         d\epsilon' \frac{\epsilon' A(\epsilon')}{\epsilon' - \epsilon - i0}.
+
+Correlation function at zero temperature
+----------------------------------------
+
+:math:`A(\epsilon) = -(1/\pi)\Im G(\epsilon)` is the spectral function to be found.
+
+Enabled when `Som()` object is constucted with `kind = "ZeroTemp"`.
+
+- In imaginary time, :math:`G(\tau)`, :math:`\tau\in[0;\tau_{max}]`
+
+    .. math::
+        G(\tau) = -\int\limits_0^\infty
+        d\epsilon\ e^{-\tau\epsilon} A(\epsilon).
+
+- At Matsubara frequencies, :math:`G(i\omega_n)`, where :math:`\omega_n = (2n+1)\pi/\tau_{max}`
+  for fermionic correlation functions and :math:`\omega_n = 2n\pi/\tau_{max}` for bosonic.
+
+    .. math::
+         G(i\omega_n) = \int\limits_0^\infty
+         d\epsilon \frac{1}{i\omega_n-\epsilon} A(\epsilon).
+
+- In Legendre polynomial basis, :math:`G(\ell)`
+
+    .. math::
+        G(\ell) = \int\limits_0^\infty
+        d\epsilon \tau_{max}(-1)^{\ell+1}\sqrt{2\ell+1}
+        i_{\ell}\left(\frac{\epsilon\tau_{max}}{2}\right)
+        \exp\left(-\frac{\epsilon\tau_{max}}{2}\right) A(\epsilon),
+
+    where :math:`i_\ell(x)` is the modified spherical Bessel function of the first kind.
+
+Norm of a solution :math:`A(\epsilon)` is defined as
+
+    .. math::
+         N = \int\limits_0^\infty d\epsilon A(\epsilon).
+
+The correlation function of a real frequency is reconstructed according to
+
+    .. math::
+         G(\epsilon) = -\int\limits_0^\infty
+         d\epsilon' \frac{A(\epsilon')}{\epsilon' - \epsilon - i0}.
