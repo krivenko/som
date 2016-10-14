@@ -142,7 +142,7 @@ public:
 namespace triqs { namespace mpi {
 
 template<> inline MPI_Datatype mpi_datatype<som::rectangle::pod_t>() {
- bool type_committed = false;
+ static bool type_committed = false;
  static MPI_Datatype dt;
  if(!type_committed) {
   int blocklengths[] = {1,1,1};
