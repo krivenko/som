@@ -1,5 +1,6 @@
 chi_filename = "chi.h5"
 chi_ed_filename = "chi.ed.h5"
+som_filename = "som.h5"
 
 gf_struct = {'up':[0], 'dn':[0]}
 
@@ -18,3 +19,9 @@ V   = [0.3,0.5,0.7,0.8,0.6,0.4]
 n_iw = 1024
 n_tau = 1001
 n_l = 50
+
+# Parameters of Som.run()
+som_params = {}
+som_params['adjust_f'] = True
+som_params['adjust_l'] = True
+som_params['t'] = 1000
