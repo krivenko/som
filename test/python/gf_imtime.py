@@ -29,11 +29,7 @@ arch = HDFArchive('gf_imtime.ref.h5', 'r')
 
 g_tau = arch['g_tau']
 
-S_tau = g_tau.copy()
-S_tau.data[:,0,0] = 1.0
-S_tau.data[:,1,1] = 1.0
-
-cont = Som(g_tau, S_tau, kind = "FermionGf")
+cont = Som(g_tau, kind = "FermionGf")
 
 run_params = {'energy_window' : (-5,5)}
 run_params['verbosity'] = 3

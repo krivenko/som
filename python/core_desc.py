@@ -44,10 +44,13 @@ c.add_method("""void run (**som::run_parameters_t)""",
              release_GIL_and_enable_signal = True,
              doc = open('parameters.rst', 'r').read())
 
-c.add_call(signature = "void(gf_view<refreq> g_w)", calling_pattern = "triqs_gf_view_assign_delegation(g_w, self_c)")
-c.add_call(signature = "void(gf_view<imtime> g_tau)", calling_pattern = "triqs_gf_view_assign_delegation(g_tau, self_c)")
-c.add_call(signature = "void(gf_view<imfreq> g_iw)", calling_pattern = "triqs_gf_view_assign_delegation(g_iw, self_c)")
-c.add_call(signature = "void(gf_view<legendre> g_l)", calling_pattern = "triqs_gf_view_assign_delegation(g_l, self_c)")
+lshift = pyfunction(name = '__lshift__', arity = 2)
+lshift.add_overload(calling_pattern = '() =', signature = '(gf_view<refreq> g_w, som::som_core s)')
+lshift.add_overload(calling_pattern = '() =', signature = '(gf_view<imtime> g_tau, som::som_core s)')
+lshift.add_overload(calling_pattern = '() =', signature = '(gf_view<imfreq> g_iw, som::som_core s)')
+lshift.add_overload(calling_pattern = '() =', signature = '(gf_view<legendre> g_l, som::som_core s)')
+lshift.treat_as_inplace = True
+c.number_protocol['lshift'] = lshift
 
 c.add_property(name = "last_run_parameters",
                getter = cfunction("som::run_parameters_t get_last_run_parameters ()"),

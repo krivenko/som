@@ -33,6 +33,3 @@ class Som(SomCore):
             s = g.copy()
             s.data[:,Ellipsis] = np.eye(s.target_shape[0])
         SomCore.__init__(self, g, s, kind, norm)
-
-    def __rlshift__(self, g):
-        SomCore.__call__(self, g)

@@ -29,11 +29,7 @@ arch = HDFArchive('gf_imfreq.ref.h5', 'r')
 
 g_iw = arch['g_iw']
 
-S_iw = g_iw.copy()
-S_iw.data[:,0,0] = 1.0
-S_iw.data[:,1,1] = 1.0
-
-cont = Som(g_iw, S_iw, kind = "FermionGf")
+cont = Som(g_iw, kind = "FermionGf")
 
 run_params = {'energy_window' : (-5,5)}
 run_params['verbosity'] = 3

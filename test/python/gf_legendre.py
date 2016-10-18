@@ -29,11 +29,7 @@ arch = HDFArchive('gf_legendre.ref.h5', 'r')
 
 g_l = arch['g_l']
 
-S_l = g_l.copy()
-S_l.data[:,0,0] = 1.0
-S_l.data[:,1,1] = 1.0
-
-cont = Som(g_l, S_l, kind = "FermionGf")
+cont = Som(g_l, kind = "FermionGf")
 
 run_params = {'energy_window' : (-5,5)}
 run_params['verbosity'] = 3
