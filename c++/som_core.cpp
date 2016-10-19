@@ -100,14 +100,23 @@ template<typename MeshType> void check_gf_stat(gf_view<MeshType> g,
  return check_gf_stat(make_const_view(g), expected_stat);
 }
 
+vector<double> make_default_norms(vector<double> const& norms, int dim) {
+ if(norms.size() != 0) return norms;
+ else {
+  vector<double> def_norms(dim);
+  def_norms() = 1.0;
+  return def_norms;
+ }
+}
+
 //////////////////
 // Constructors //
 //////////////////
 
 // Imaginary time
 som_core::som_core(gf_const_view<imtime> g_tau, gf_const_view<imtime> S_tau,
-                   observable_kind kind, double norm) :
- mesh(g_tau.mesh()), kind(kind), norm(norm),
+                   observable_kind kind, vector<double> const& norms) :
+ mesh(g_tau.mesh()), kind(kind), norms(make_default_norms(norms,get_target_shape(g_tau)[0])),
  rhs(input_data_r_t()), error_bars(input_data_r_t()) {
 
  if(kind != FermionGf && kind != BosonCorr && kind != BosonAutoCorr && kind != ZeroTemp)
@@ -124,8 +133,8 @@ som_core::som_core(gf_const_view<imtime> g_tau, gf_const_view<imtime> S_tau,
 
 // Imaginary frequency
 som_core::som_core(gf_const_view<imfreq> g_iw, gf_const_view<imfreq> S_iw,
-                   observable_kind kind, double norm) :
- mesh(g_iw.mesh()), kind(kind), norm(norm),
+                   observable_kind kind, vector<double> const& norms) :
+ mesh(g_iw.mesh()), kind(kind), norms(make_default_norms(norms,get_target_shape(g_iw)[0])),
  rhs(input_data_c_t()), error_bars(input_data_c_t()) {
 
  if(kind != FermionGf && kind != BosonCorr && kind != BosonAutoCorr && kind != ZeroTemp)
@@ -144,8 +153,8 @@ som_core::som_core(gf_const_view<imfreq> g_iw, gf_const_view<imfreq> S_iw,
 
 // Legendre coefficients
 som_core::som_core(gf_const_view<legendre> g_l, gf_const_view<legendre> S_l,
-                   observable_kind kind, double norm) :
- mesh(g_l.mesh()), kind(kind), norm(norm),
+                   observable_kind kind, vector<double> const& norms) :
+ mesh(g_l.mesh()), kind(kind), norms(make_default_norms(norms,get_target_shape(g_l)[0])),
  rhs(input_data_r_t()), error_bars(input_data_r_t()) {
 
  if(kind != FermionGf && kind != BosonCorr && kind != BosonAutoCorr && kind != ZeroTemp)
@@ -236,9 +245,10 @@ template<typename KernelType> void som_core::run_impl() {
 
   auto const& rhs_ = (input_data_t<mesh_t> const&) rhs;
   auto const& error_bars_ = (input_data_t<mesh_t> const&) error_bars;
+  double norm = norms[i];
 
-  int F = params.adjust_f ? adjust_f(kernel,rhs_[i],error_bars_[i],stop_callback) : params.f;
-  results[i] = accumulate(kernel,rhs_[i],error_bars_[i],histograms[i],stop_callback,F);
+  int F = params.adjust_f ? adjust_f(kernel,rhs_[i],error_bars_[i],norm,stop_callback) : params.f;
+  results[i] = accumulate(kernel,rhs_[i],error_bars_[i],norm,histograms[i],stop_callback,F);
  }
 
  ci.invalidate_all();
@@ -247,6 +257,7 @@ template<typename KernelType> void som_core::run_impl() {
 template<typename KernelType> int som_core::adjust_f(KernelType const& kern,
  typename KernelType::result_type rhs_,
  typename KernelType::result_type error_bars_,
+ double norm,
  std::function<bool()> const& stop_callback) {
 
  if(params.verbosity >= 1) {
@@ -310,6 +321,7 @@ template<typename KernelType> int som_core::adjust_f(KernelType const& kern,
 template<typename KernelType> configuration som_core::accumulate(KernelType const& kern,
  typename KernelType::result_type rhs_,
  typename KernelType::result_type error_bars_,
+ double norm,
  histogram & hist,
  std::function<bool()> const& stop_callback,
  int F) {

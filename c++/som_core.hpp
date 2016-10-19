@@ -67,8 +67,8 @@ class som_core {
  // Mesh of the input functions
  variant<gf_mesh<imtime>, gf_mesh<imfreq>, gf_mesh<legendre>> mesh;
 
- // Norm of the solution to be found
- double norm;
+ // Norms of the solutions to be found (one number per diagonal matrix element of g)
+ vector<double> norms;
 
  // Parameters of the last call to run()
  run_parameters_t params;
@@ -94,6 +94,7 @@ class som_core {
   KernelType const& kern,
   typename KernelType::result_type rhs_,
   typename KernelType::result_type error_bars_,
+  double norm,
   std::function<bool()> const& stop_callback);
 
  // Accumulate solutions
@@ -101,6 +102,7 @@ class som_core {
   KernelType const& kern,
   typename KernelType::result_type rhs_,
   typename KernelType::result_type error_bars_,
+  double norm,
   histogram & hist,
   std::function<bool()> const& stop_callback,
   int F);
@@ -109,13 +111,13 @@ public:
 
  /// Construct on imaginary-time quantities
  som_core(gf_const_view<imtime> g_tau, gf_const_view<imtime> S_tau,
-          observable_kind kind = FermionGf, double norm = 1.0);
+          observable_kind kind = FermionGf, vector<double> const& norms = {});
  /// Construct on imaginary-frequency quantities
  som_core(gf_const_view<imfreq> g_iw, gf_const_view<imfreq> S_iw,
-          observable_kind kind = FermionGf, double norm = 1.0);
+          observable_kind kind = FermionGf, vector<double> const& norms = {});
  /// Construct on quantities in Legendre polynomial basis
  som_core(gf_const_view<legendre> g_l, gf_const_view<legendre> S_l,
-          observable_kind kind = FermionGf, double norm = 1.0);
+          observable_kind kind = FermionGf, vector<double> const& norms = {});
 
  /// Destructor
  ~som_core();

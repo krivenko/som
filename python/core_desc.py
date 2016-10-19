@@ -31,13 +31,13 @@ c = class_(
         doc = r"Main class of SOM", # doc of the C++ class
 )
 
-c.add_constructor("""(gf_view<imtime> g_tau, gf_view<imtime> S_tau, som::observable_kind kind = FermionGf, double norm = 1.0)""",
+c.add_constructor("""(gf_view<imtime> g_tau, gf_view<imtime> S_tau, som::observable_kind kind = FermionGf, vector<double> norms = {})""",
                   doc = """Construct on imaginary-time quantities """)
 
-c.add_constructor("""(gf_view<imfreq> g_iw, gf_view<imfreq> S_iw, som::observable_kind kind = FermionGf, double norm = 1.0)""",
+c.add_constructor("""(gf_view<imfreq> g_iw, gf_view<imfreq> S_iw, som::observable_kind kind = FermionGf, vector<double> norms = {})""",
                   doc = """Construct on imaginary-frequency quantities """)
 
-c.add_constructor("""(gf_view<legendre> g_l, gf_view<legendre> S_l, som::observable_kind kind = FermionGf, double norm = 1.0)""",
+c.add_constructor("""(gf_view<legendre> g_l, gf_view<legendre> S_l, som::observable_kind kind = FermionGf, vector<double> norms = {})""",
                   doc = """Construct on quantities in Legendre polynomial basis """)
 
 c.add_method("""void run (**som::run_parameters_t)""",

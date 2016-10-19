@@ -28,8 +28,10 @@ import numpy as np
 class Som(SomCore):
     """Stochastic Optimization Method"""
 
-    def __init__(self, g, s = None, kind = "FermionGf", norm = 1.0):
+    def __init__(self, g, s = None, kind = "FermionGf", norms = np.array([])):
         if s is None:
             s = g.copy()
             s.data[:,Ellipsis] = np.eye(s.target_shape[0])
-        SomCore.__init__(self, g, s, kind, norm)
+        if isinstance(norms,float) or isinstance(norms,int):
+            norms = norms * np.ones((g.target_shape[0],))
+        SomCore.__init__(self, g, s, kind, norms)
