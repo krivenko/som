@@ -189,9 +189,9 @@ public:
 
   configuration conf(ci);
   for(int i = 0; i < init_config_size; ++i) {
-   double center = rng(energy_window.first, energy_window.second);
+   double center = rng(energy_window.first+width_min/2, energy_window.second-width_min/2);
    double width = rng(width_min, std::min(2*(center-energy_window.first), 2*(energy_window.second-center)));
-   double height = rng(weight_min/width, norm/width);
+   double height = rng(init_config_size*weight_min/width, norm/width);
    conf.insert({center,width,height,ci});
   }
   conf.normalize(norm);
@@ -199,6 +199,8 @@ public:
 #ifdef EXT_DEBUG
   std::cerr << "Generated configuration (size = " << conf.size() << ", norm = " << conf.norm() << "):" << std::endl;
   std::cerr << conf << std::endl;
+
+  for(auto const& r : conf) assert(r.norm() >= weight_min);
 #endif
 
   run(conf);
