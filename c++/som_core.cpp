@@ -202,8 +202,8 @@ void som_core::run(run_parameters_t const& p) {
  triqs::signal_handler::start();
  run_status = 0;
  try {
-  #define RUN_IMPL_CASE(ok, mk) case (int(ok) + 3 * mesh_traits<mk>::index): run_impl<kernel<ok,mk>>(); break;
-  switch(int(kind) + 3 * mesh.index()) {
+  #define RUN_IMPL_CASE(ok, mk) case (int(ok) + 4 * mesh_traits<mk>::index): run_impl<kernel<ok,mk>>(); break;
+  switch(int(kind) + 4 * mesh.index()) {
    RUN_IMPL_CASE(FermionGf,imtime);
    RUN_IMPL_CASE(FermionGf,imfreq);
    RUN_IMPL_CASE(FermionGf,legendre);
@@ -213,6 +213,9 @@ void som_core::run(run_parameters_t const& p) {
    RUN_IMPL_CASE(BosonAutoCorr,imtime);
    RUN_IMPL_CASE(BosonAutoCorr,imfreq);
    RUN_IMPL_CASE(BosonAutoCorr,legendre);
+   RUN_IMPL_CASE(ZeroTemp,imtime);
+   RUN_IMPL_CASE(ZeroTemp,imfreq);
+   RUN_IMPL_CASE(ZeroTemp,legendre);
   }
   #undef RUN_IMPL_CASE
  } catch(stopped & e) {

@@ -39,8 +39,8 @@ triqs::gfs::statistic_enum observable_statistics(observable_kind kind) {
   case FermionGf: return triqs::gfs::Fermion;
   case BosonCorr: return triqs::gfs::Boson;
   case BosonAutoCorr: return triqs::gfs::Boson;
-  // Can be either of the two (should always be ignored)
-  case ZeroTemp: return triqs::gfs::Fermion;
+  default: TRIQS_RUNTIME_ERROR <<
+      "observable_statistics: Statistics is undefined for this observable kind";
  }
 }
 
