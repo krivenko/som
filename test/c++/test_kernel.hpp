@@ -69,7 +69,9 @@ void test_kernel(std::string const& filename, cache_index & ci, double tolerance
 
   std::string group_name = "results/beta" + std::to_string(int(b));
   auto results = h5_read_mathematica_array<array<scalar_t,2>>(file, group_name);
-  mesh_t mesh(b, observable_statistics(KernelType::kind), second_dim(results));
+  mesh_t mesh(b,
+              KernelType::kind == ZeroTemp ? Fermion : observable_statistics(KernelType::kind),
+              second_dim(results));
   KernelType kern(mesh);
   ci.invalidate_all();
 
