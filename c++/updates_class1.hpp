@@ -34,8 +34,8 @@ template<typename KernelType> class update_shift : public elementary_update<Kern
 public:
 
  update_shift(mc_data<KernelType> & data, random_generator & rng, cache_index & ci,
-              std::pair<double,double> energy_window) :
-  elementary_update<KernelType>(data, rng, ci),
+              std::pair<double,double> energy_window, double width_min, double weight_min) :
+  INIT_EU_BASE(data,rng,ci,width_min,weight_min),
   energy_window(energy_window)
  {}
 
@@ -94,8 +94,8 @@ template<typename KernelType> class update_change_width : public elementary_upda
 public:
 
  update_change_width(mc_data<KernelType> & data, random_generator & rng, cache_index & ci,
-                   std::pair<double,double> energy_window, double width_min) :
-  elementary_update<KernelType>(data, rng, ci),
+                   std::pair<double,double> energy_window, double width_min, double weight_min) :
+  INIT_EU_BASE(data,rng,ci,width_min,weight_min),
   energy_window(energy_window), width_min(width_min)
  {}
 
@@ -153,8 +153,8 @@ template<typename KernelType> class update_change_weight2 : public elementary_up
 public:
 
  update_change_weight2(mc_data<KernelType> & data, random_generator & rng, cache_index & ci,
-                     double weight_min) :
-  elementary_update<KernelType>(data, rng, ci),
+                       double width_min, double weight_min) :
+  INIT_EU_BASE(data,rng,ci,width_min,weight_min),
   weight_min(weight_min)
  {}
 
@@ -179,7 +179,7 @@ public:
   auto const& rect2 = eu::data.temp_conf[t2];
 
   double dh1_min = weight_min / rect1.width - rect1.height;
-  double dh1_max = (rect2.width * rect2.height - weight_min) / rect1.width;
+  double dh1_max = (rect2.norm() - weight_min) / rect1.width;
   double dh1 = eu::generate_parameter_change(dh1_min, dh1_max);
   if(dh1 == 0) return 0;
 

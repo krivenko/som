@@ -39,7 +39,7 @@ public:
 
  update_insert(mc_data<KernelType> & data, random_generator & rng, cache_index & ci,
                    std::pair<double,double> energy_window, double width_min, double weight_min, int max_rects)  :
-  elementary_update<KernelType>(data, rng, ci),
+  INIT_EU_BASE(data,rng,ci,width_min,weight_min),
   energy_window(energy_window), width_min(width_min), weight_min(weight_min),
   cnew_min(energy_window.first + width_min/2), cnew_max(energy_window.second - width_min/2),
   max_rects(max_rects)
@@ -66,30 +66,31 @@ public:
   std::cerr << "Selected rectangle: " << rect << " [" << t << "]" << std::endl;
 #endif
 
-  double snew_max = rect.norm() - weight_min;
-  if(snew_max <= 0) {
+  if(rect.norm() <= 2*weight_min) {
 #ifdef EXT_DEBUG
-  std::cerr << "Selected rectangle is too small" << std::endl;
+   std::cerr << "Selected rectangle is too small" << std::endl;
 #endif
    return 0;
   }
+
+  double snew_max = rect.norm() - weight_min;
 
   double cnew = eu::rng(cnew_min, cnew_max);
   double w_max = 2*std::min(energy_window.second - cnew, cnew - energy_window.first);
   double wnew = eu::rng(width_min, w_max);
 
-  double snew = eu::generate_parameter_change(width_min, snew_max);
+  double snew = eu::generate_parameter_change(weight_min, snew_max);
   double hnew = snew / wnew;
 
   eu::update[eu::full].change_rectangle(t, {rect.center, rect.width, rect.height - snew / rect.width, eu::ci});
   eu::update[eu::full].add_rectangle({cnew, wnew, hnew, eu::ci});
 
-  if(snew / 2 < width_min) { // We cannot optimize w.r.t. snew in this case
+  if(snew / 2 < weight_min) { // We cannot optimize w.r.t. snew in this case
    eu::new_objf_value[eu::full] = eu::data.objf(eu::update[eu::full]);
    eu::selected_parameter_change = eu::full;
 
 #ifdef EXT_DEBUG
-  std::cerr << "snew_min = " << width_min << ", snew_max = " << snew_max
+  std::cerr << "snew_min = " << weight_min << ", snew_max = " << snew_max
             << ", snew = " << snew << std::endl;
 #endif
   } else {
@@ -99,7 +100,7 @@ public:
    auto snew_opt = eu::optimize_parameter_change(snew, width_min, snew_max);
 
 #ifdef EXT_DEBUG
-  std::cerr << "snew_min = " << width_min << ", snew_max = " << snew_max
+  std::cerr << "snew_min = " << weight_min << ", snew_max = " << snew_max
             << ", snew = " << snew << ", snew_opt = " << snew_opt.second << std::endl;
 #endif
 
@@ -135,8 +136,8 @@ template<typename KernelType> class update_remove_shift : public elementary_upda
 public:
 
  update_remove_shift(mc_data<KernelType> & data, random_generator & rng, cache_index & ci,
-                     std::pair<double,double> energy_window) :
-  elementary_update<KernelType>(data, rng, ci),
+                     std::pair<double,double> energy_window, double width_min, double weight_min) :
+  INIT_EU_BASE(data,rng,ci,width_min,weight_min),
   energy_window(energy_window)
  {}
 
@@ -203,6 +204,7 @@ template<typename KernelType> class update_split_shift : public elementary_updat
 
  std::pair<double,double> energy_window;
  double width_min;
+ double weight_min;
  int max_rects;
 
  using eu = elementary_update<KernelType>;
@@ -210,9 +212,9 @@ template<typename KernelType> class update_split_shift : public elementary_updat
 public:
 
  update_split_shift(mc_data<KernelType> & data, random_generator & rng, cache_index & ci,
-                   std::pair<double,double> energy_window, double width_min, int max_rects) :
-  elementary_update<KernelType>(data, rng, ci),
-  energy_window(energy_window), width_min(width_min), max_rects(max_rects)
+                   std::pair<double,double> energy_window, double width_min, double weight_min, int max_rects) :
+  INIT_EU_BASE(data,rng,ci,width_min,weight_min),
+  energy_window(energy_window), width_min(width_min), weight_min(weight_min), max_rects(max_rects)
  {}
 
  double attempt() {
@@ -236,14 +238,22 @@ public:
 #ifdef EXT_DEBUG
   std::cerr << "Selected rectangle: " << rect << " [" << t << "]" << std::endl;
 #endif
-  if(rect.width <= width_min) {
+  if(rect.width <= 2*width_min) {
 #ifdef EXT_DEBUG
-   std::cerr << "Rectangle is too narrow" << std::endl;
+   std::cerr << "Selected rectangle is too narrow" << std::endl;
+#endif
+   return 0;
+  }
+  if(rect.norm() <= 2*weight_min) {
+#ifdef EXT_DEBUG
+   std::cerr << "Selected rectangle is too small" << std::endl;
 #endif
    return 0;
   }
 
-  double w1 = eu::rng(width_min, rect.width - width_min);
+  double w_min = std::max(width_min, weight_min/rect.height);
+  double w_max = std::min(rect.width - width_min, rect.width - weight_min/rect.height);
+  double w1 = eu::rng(w_min, w_max);
   double w2 = rect.width - w1;
   double c1 = rect.center - rect.width/2 + w1/2;
   double c2 = rect.center + rect.width/2 - w2/2;
@@ -326,8 +336,8 @@ template<typename KernelType> class update_glue_shift : public elementary_update
 public:
 
  update_glue_shift(mc_data<KernelType> & data, random_generator & rng, cache_index & ci,
-                   std::pair<double,double> energy_window) :
-  elementary_update<KernelType>(data, rng, ci),
+                   std::pair<double,double> energy_window, double width_min, double weight_min) :
+  INIT_EU_BASE(data,rng,ci,width_min,weight_min),
   energy_window(energy_window)
  {}
 

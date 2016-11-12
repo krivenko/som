@@ -134,19 +134,19 @@ public:
   weight_min(params.min_rect_weight * norm) {
 
   // Add all elementary updates
-  mc.add_move(update_shift<KernelType>(data, mc.get_rng(), ci, energy_window),
+  mc.add_move(update_shift<KernelType>(data, mc.get_rng(), ci, energy_window, width_min, weight_min),
               "update_shift", 1.0);
-  mc.add_move(update_change_width<KernelType>(data, mc.get_rng(), ci, energy_window, width_min),
+  mc.add_move(update_change_width<KernelType>(data, mc.get_rng(), ci, energy_window, width_min, weight_min),
               "update_change_width", 1.0);
-  mc.add_move(update_change_weight2<KernelType>(data, mc.get_rng(), ci, weight_min),
+  mc.add_move(update_change_weight2<KernelType>(data, mc.get_rng(), ci, width_min, weight_min),
               "update_change_weight2", 1.0);
   mc.add_move(update_insert<KernelType>(data, mc.get_rng(), ci, energy_window, width_min, weight_min, params.max_rects),
               "update_insert", 1.0);
-  mc.add_move(update_remove_shift<KernelType>(data, mc.get_rng(), ci, energy_window),
+  mc.add_move(update_remove_shift<KernelType>(data, mc.get_rng(), ci, energy_window, width_min, weight_min),
               "update_remove_shift", 1.0);
-  mc.add_move(update_split_shift<KernelType>(data, mc.get_rng(), ci, energy_window, width_min, params.max_rects),
+  mc.add_move(update_split_shift<KernelType>(data, mc.get_rng(), ci, energy_window, width_min, weight_min, params.max_rects),
               "update_split_shift", 1.0);
-  mc.add_move(update_glue_shift<KernelType>(data, mc.get_rng(), ci, energy_window),
+  mc.add_move(update_glue_shift<KernelType>(data, mc.get_rng(), ci, energy_window, width_min, weight_min),
               "update_glue_shift", 1.0);
 
   // Reset temporary configuration to global_conf after each global update

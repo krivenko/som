@@ -45,6 +45,11 @@ protected:
  cache_index & ci;
  KernelType const& kern;
 
+#ifdef EXT_DEBUG
+ double width_min;
+ double weight_min;
+#endif
+
  // Generate change of a parameter :math:`\delta\xi` (see Sec. 3.4)
  expabs_distribution<random_generator> generate_parameter_change;
 
@@ -97,7 +102,14 @@ protected:
 
 public:
 
+
+#ifdef EXT_DEBUG
+ elementary_update(mc_data<KernelType> & data, random_generator & rng, cache_index & ci,
+                   double width_min, double weight_min) :
+  width_min(width_min), weight_min(weight_min),
+#else
  elementary_update(mc_data<KernelType> & data, random_generator & rng, cache_index & ci) :
+#endif
   data(data), rng(rng), ci(ci), kern(data.objf.get_kernel()), generate_parameter_change(rng, data.gamma),
   update{config_update(data.temp_conf,ci), config_update(data.temp_conf,ci), config_update(data.temp_conf,ci)},
   new_objf_value{0,0,0}
@@ -118,13 +130,19 @@ public:
   update[opt].reset();
 
 #ifdef EXT_DEBUG
-    std::cerr << "* Elementary update accepted" << std::endl;
-    std::cerr << "Temporary configuration: size = " << data.temp_conf.size()
-              << ", norm = " << data.temp_conf.norm()
-              << ", D = " << data.temp_objf_value << std::endl;
-    using triqs::utility::is_zero;
-    if(!is_zero(data.temp_conf.norm() - data.global_conf.norm(), 1e-10))
-     TRIQS_RUNTIME_ERROR << "Elementary update has changed norm of the solution!";
+   std::cerr << "* Elementary update accepted" << std::endl;
+   std::cerr << "Temporary configuration: size = " << data.temp_conf.size()
+             << ", norm = " << data.temp_conf.norm()
+             << ", D = " << data.temp_objf_value << std::endl;
+   using triqs::utility::is_zero;
+   if(!is_zero(data.temp_conf.norm() - data.global_conf.norm(), 1e-10))
+    TRIQS_RUNTIME_ERROR << "Elementary update has changed norm of the solution!";
+
+   for(auto & r : data.temp_conf) {
+    if(r.norm() < weight_min) TRIQS_RUNTIME_ERROR << "Rectangle is too small: " << r;
+    if(r.width < width_min) TRIQS_RUNTIME_ERROR << "Rectangle is too narrow: " << r;
+    if(r.height < 0) TRIQS_RUNTIME_ERROR << "Rectangle with negative height: " << r;
+   }
 #endif
 
   // Copy this temporary configuration to the globally selected configuration
@@ -172,5 +190,13 @@ public:
  }
 
 };
+
+#ifdef EXT_DEBUG
+#define INIT_EU_BASE(data,rng,ci,width_min,weight_min) \
+        elementary_update<KernelType>(data, rng, ci, width_min, weight_min)
+#else
+#define INIT_EU_BASE(data,rng,ci,width_min,weight_min) \
+        elementary_update<KernelType>(data, rng, ci)
+#endif
 
 }
