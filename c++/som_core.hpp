@@ -135,6 +135,9 @@ public:
  template<typename MeshType>
  friend void triqs_gf_view_assign_delegation(gf_view<MeshType> g, som_core const& cont);
 
+ /// Accumulated solutions
+ std::vector<configuration> const& get_solutions() const { return results; }
+
  /// Accumulated objective function histograms
  std::vector<histogram> const& get_histograms() const { return histograms; }
 

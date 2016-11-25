@@ -15,6 +15,7 @@ module.add_include("som_core.hpp")
 # Add here anything to add in the C++ code at the start, e.g. namespace using
 module.add_preamble("""
 #include <triqs/python_tools/converters/pair.hpp>
+#include <triqs/python_tools/converters/tuple.hpp>
 #include <triqs/python_tools/converters/vector.hpp>
 using namespace triqs::gfs;
 using namespace triqs::statistics;
@@ -59,6 +60,16 @@ c.add_property(name = "last_run_parameters",
 c.add_property(name = "run_status",
                getter = cfunction("int get_run_status ()"),
                doc = """Status of the run on exit """)
+
+solutions_cp = """
+auto const& solutions = self_c.get_solutions();
+std::vector<std::vector<std::tuple<double,double,double>>> result;
+for(auto const& sol : solutions) result.emplace_back(sol.begin(), sol.end());
+"""
+c.add_property(name = "solutions",
+               getter = cfunction(signature = "std::vector<std::vector<std::tuple<double,double,double>>>()",
+                                  calling_pattern = solutions_cp),
+               doc = """Accumulated solutions as lists of rectangle parameter tuples (center,width,height)""")
 
 c.add_property(name = "histograms",
                getter = cfunction("std::vector<histogram> get_histograms ()"),

@@ -93,10 +93,10 @@ public:
 
  std::complex<double> hilbert_transform(std::complex<double> z, bool multiply_by_e = false) const {
   if(multiply_by_e)
-   // -\int_{c-w/2}^{c+w/2} d\epsilon' \frac{\epsilon'}{\epsilon' - \epsilon - i0}
+   // -h \int_{c-w/2}^{c+w/2} d\epsilon' \frac{\epsilon'}{\epsilon' - \epsilon - i0}
    return -height*(width + z*std::log((center + width/2 - z)/(center - width/2 - z)));
   else
-   // -\int_{c-w/2}^{c+w/2} d\epsilon' \frac{1}{\epsilon' - \epsilon - i0}
+   // -h \int_{c-w/2}^{c+w/2} d\epsilon' \frac{1}{\epsilon' - \epsilon - i0}
    return -height*std::log((center + width/2 - z)/(center - width/2 - z));
  }
  vector<double> tail_coefficients(long order_min, long order_max, bool multiply_by_e = false) const {
@@ -134,6 +134,11 @@ public:
   pod_t() = default;
   pod_t(rectangle const& r) : center(r.center), width(r.width), height(r.height) {}
  };
+
+ // Convert to tuple (center,width,height)
+ operator std::tuple<double,double,double>() const {
+  return std::make_tuple(center,width,height);
+ }
 
 };
 
