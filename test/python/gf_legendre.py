@@ -22,7 +22,7 @@
 from pytriqs.gf.local import *
 from pytriqs.archive import HDFArchive
 import pytriqs.utility.mpi as mpi
-from triqs_som.som import Som
+from pytriqs.applications.analytical_continuation.som import Som
 from pytriqs.utility.comparison_tests import *
 
 arch = HDFArchive('gf_legendre.ref.h5', 'r')

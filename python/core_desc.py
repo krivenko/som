@@ -1,9 +1,10 @@
 # Generated automatically using the command :
-# c++2py.py ../c++/som_core.hpp --compiler_options=-DCACHE_SIZE=0x10000 -p -m som -o som --appname triqs_som --moduledoc "The Stochastic Optimization Method"
+# c++2py.py ../c++/som_core.hpp --compiler_options=-DCACHE_SIZE=0x10000 -p -mpytriqs.applications.analytical_continuation.som.core -o core --moduledoc "The Stochastic Optimization Method"
 from wrap_generator import *
 
 # The module
-module = module_(full_name = "core", doc = "The Stochastic Optimization Method", app_name = "triqs_som")
+module = module_(full_name = "pytriqs.applications.analytical_continuation.som.core",
+                 doc = "The Stochastic Optimization Method")
 
 # All the triqs C++/Python modules
 module.use_module('gf', 'triqs')

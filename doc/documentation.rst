@@ -1,4 +1,4 @@
-.. module:: triqs_som.som
+.. module:: pytriqs.applications.analytical_continuation.som
 
 .. _documentation:
 

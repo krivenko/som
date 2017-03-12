@@ -1,6 +1,6 @@
 # start configuration
 cmake_minimum_required(VERSION 2.8)
-project(triqs_som CXX)
+project(som CXX)
 set(CMAKE_BUILD_TYPE Release)
 
 # Version number of the application

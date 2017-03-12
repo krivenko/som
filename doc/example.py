@@ -4,7 +4,7 @@ from pytriqs.archive import HDFArchive
 import pytriqs.utility.mpi as mpi
 
 # Import main SOM class
-from triqs_som.som import Som
+from pytriqs.applications.analytical_continuation.som import Som
 
 n_tau = 500                 # Number of tau-slices for the input GF
 

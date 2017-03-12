@@ -2,7 +2,7 @@ from pytriqs.gf.local import *
 from pytriqs.gf.local.descriptors import *
 from pytriqs.archive import HDFArchive
 import pytriqs.utility.mpi as mpi
-from triqs_som.som import Som
+from pytriqs.applications.analytical_continuation.som import Som
 import numpy as np
 import time
 

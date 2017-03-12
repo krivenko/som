@@ -1,7 +1,7 @@
 from pytriqs.gf.local import *
 from pytriqs.archive import HDFArchive
 import pytriqs.utility.mpi as mpi
-from triqs_som.som import Som
+from pytriqs.applications.analytical_continuation.som import Som
 
 from sys import argv
 from params import *
