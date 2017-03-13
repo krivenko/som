@@ -20,9 +20,12 @@
  ******************************************************************************/
 #pragma once
 
+#include <utility>
 #include <string>
 #include <vector>
 #include <iostream>
+#include <boost/preprocessor/seq/size.hpp>
+#include <boost/preprocessor/seq/enum.hpp>
 
 #include "../rectangle.hpp"
 #include "../configuration.hpp"
@@ -31,7 +34,15 @@
 namespace som {
 
 // Kinds of observables
-enum observable_kind {FermionGf, BosonCorr, BosonAutoCorr, ZeroTemp};
+#define ALL_OBSERVABLES (FermionGf)(BosonCorr)(BosonAutoCorr)(ZeroTemp)
+
+enum observable_kind : unsigned int {BOOST_PP_SEQ_ENUM(ALL_OBSERVABLES)};
+constexpr const unsigned int n_observable_kinds = BOOST_PP_SEQ_SIZE(ALL_OBSERVABLES);
+
+// Is statistics defined for this observable?
+bool is_stat_relevant(observable_kind kind) {
+ return kind != ZeroTemp;
+}
 
 // Statistics of observables
 triqs::gfs::statistic_enum observable_statistics(observable_kind kind) {
@@ -53,6 +64,47 @@ std::string observable_name(observable_kind kind) {
   case ZeroTemp: return "correlator at zero temperature";
  }
 }
+
+// Widest energy windows for observables
+std::pair<double,double> max_energy_window(observable_kind kind) {
+ switch(kind) {
+  case FermionGf: return std::make_pair(-HUGE_VAL,HUGE_VAL);
+  case BosonCorr: return std::make_pair(-HUGE_VAL,HUGE_VAL);
+  case BosonAutoCorr: return std::make_pair(0,HUGE_VAL);
+  case ZeroTemp: return std::make_pair(0,HUGE_VAL);
+ }
+}
+
+// Construct a real-frequency GF from a configuration
+void back_transform(observable_kind kind,
+                    configuration const& conf,
+                    cache_index & ci,
+                    triqs::gfs::gf_view<triqs::gfs::refreq,triqs::gfs::scalar_valued> g_w) {
+ bool bosoncorr = kind == BosonCorr || kind == BosonAutoCorr;
+
+ g_w() = 0;
+ auto & tail = g_w.singularity();
+
+ for(auto const& rect : conf) {
+  for(auto e : g_w.mesh()) g_w.data()(e.index()) += rect.hilbert_transform(double(e), bosoncorr);
+  tail.data()(range(),0,0) += rect.tail_coefficients(tail.order_min(),tail.order_max(), bosoncorr);
+
+  if(kind == BosonAutoCorr) {
+   // Add a reflected rectangle
+   rectangle reflected_rect(-rect.center, rect.width, rect.height, ci);
+   for(auto e : g_w.mesh()) g_w.data()(e.index()) += reflected_rect.hilbert_transform(double(e), true);
+   tail.data()(range(),0,0) += reflected_rect.tail_coefficients(tail.order_min(),tail.order_max(), true);
+  }
+
+  if(bosoncorr) {
+   g_w.data() *= -1.0/M_PI;
+   tail.data() *= -1.0/M_PI;
+  }
+ }
+}
+
+// All meshes used with input data containers
+#define ALL_INPUT_MESHES (imtime)(imfreq)(legendre)
 
 // Mesh traits
 template<typename MeshType> struct mesh_traits;

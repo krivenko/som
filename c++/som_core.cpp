@@ -19,6 +19,8 @@
  *
  ******************************************************************************/
 #include <limits>
+#include <boost/preprocessor/seq/for_each.hpp>
+#include <boost/preprocessor/seq/for_each_product.hpp>
 
 #include "som_core.hpp"
 #include "kernels/fermiongf_imtime.hpp"
@@ -119,10 +121,7 @@ som_core::som_core(gf_const_view<imtime> g_tau, gf_const_view<imtime> S_tau,
  mesh(g_tau.mesh()), kind(kind), norms(make_default_norms(norms,get_target_shape(g_tau)[0])),
  rhs(input_data_r_t()), error_bars(input_data_r_t()) {
 
- if(kind != FermionGf && kind != BosonCorr && kind != BosonAutoCorr && kind != ZeroTemp)
-  fatal_error("unknown observable kind " + to_string(kind));
-
- if(kind != ZeroTemp) check_gf_stat(g_tau, observable_statistics(kind));
+ if(is_stat_relevant(kind)) check_gf_stat(g_tau, observable_statistics(kind));
 
  check_input_gf(g_tau,S_tau);
  if(!is_gf_real(g_tau) || !is_gf_real(S_tau))
@@ -137,10 +136,7 @@ som_core::som_core(gf_const_view<imfreq> g_iw, gf_const_view<imfreq> S_iw,
  mesh(g_iw.mesh()), kind(kind), norms(make_default_norms(norms,get_target_shape(g_iw)[0])),
  rhs(input_data_c_t()), error_bars(input_data_c_t()) {
 
- if(kind != FermionGf && kind != BosonCorr && kind != BosonAutoCorr && kind != ZeroTemp)
-  fatal_error("unknown observable kind " + to_string(kind));
-
- if(kind != ZeroTemp) check_gf_stat(g_iw, observable_statistics(kind));
+ if(is_stat_relevant(kind)) check_gf_stat(g_iw, observable_statistics(kind));
 
  check_input_gf(g_iw,S_iw);
  if(!is_gf_real_in_tau(g_iw) || !is_gf_real_in_tau(S_iw))
@@ -157,10 +153,7 @@ som_core::som_core(gf_const_view<legendre> g_l, gf_const_view<legendre> S_l,
  mesh(g_l.mesh()), kind(kind), norms(make_default_norms(norms,get_target_shape(g_l)[0])),
  rhs(input_data_r_t()), error_bars(input_data_r_t()) {
 
- if(kind != FermionGf && kind != BosonCorr && kind != BosonAutoCorr && kind != ZeroTemp)
-  fatal_error("unknown observable kind " + to_string(kind));
-
- if(kind != ZeroTemp) check_gf_stat(g_l, observable_statistics(kind));
+ if(is_stat_relevant(kind)) check_gf_stat(g_l, observable_statistics(kind));
 
  check_input_gf(g_l,S_l);
  if(!is_gf_real(g_l) || !is_gf_real(S_l))
@@ -177,9 +170,17 @@ void som_core::run(run_parameters_t const& p) {
 
  params = p;
 
- if((kind == BosonAutoCorr || kind == ZeroTemp) && params.energy_window.first < 0) {
-  params.energy_window.first = 0;
-  if(params.verbosity > 0) warning("left boundary of the energy window is reset to 0");
+ double e_min, e_max;
+ std::tie(e_min,e_max) = max_energy_window(kind);
+ if(params.energy_window.first < e_min) {
+  params.energy_window.first = e_min;
+  if(params.verbosity > 0)
+   warning("left boundary of the energy window is reset to " + std::to_string(e_min));
+ }
+ if(params.energy_window.second > e_max) {
+  params.energy_window.second = e_max;
+  if(params.verbosity > 0)
+   warning("right boundary of the energy window is reset to " + std::to_string(e_max));
  }
 
  if(params.energy_window.first >= params.energy_window.second)
@@ -202,20 +203,12 @@ void som_core::run(run_parameters_t const& p) {
  triqs::signal_handler::start();
  run_status = 0;
  try {
-  #define RUN_IMPL_CASE(ok, mk) case (int(ok) + 4 * mesh_traits<mk>::index): run_impl<kernel<ok,mk>>(); break;
-  switch(int(kind) + 4 * mesh.index()) {
-   RUN_IMPL_CASE(FermionGf,imtime);
-   RUN_IMPL_CASE(FermionGf,imfreq);
-   RUN_IMPL_CASE(FermionGf,legendre);
-   RUN_IMPL_CASE(BosonCorr,imtime);
-   RUN_IMPL_CASE(BosonCorr,imfreq);
-   RUN_IMPL_CASE(BosonCorr,legendre);
-   RUN_IMPL_CASE(BosonAutoCorr,imtime);
-   RUN_IMPL_CASE(BosonAutoCorr,imfreq);
-   RUN_IMPL_CASE(BosonAutoCorr,legendre);
-   RUN_IMPL_CASE(ZeroTemp,imtime);
-   RUN_IMPL_CASE(ZeroTemp,imfreq);
-   RUN_IMPL_CASE(ZeroTemp,legendre);
+  #define RUN_IMPL_CASE(r, okmk)                                              \
+   case (int(BOOST_PP_SEQ_ELEM(0,okmk)) +                                     \
+         n_observable_kinds * mesh_traits<BOOST_PP_SEQ_ELEM(1,okmk)>::index): \
+         run_impl<kernel<BOOST_PP_SEQ_ENUM(okmk)>>(); break;
+  switch(int(kind) + n_observable_kinds * mesh.index()) {
+   BOOST_PP_SEQ_FOR_EACH_PRODUCT(RUN_IMPL_CASE, (ALL_OBSERVABLES)(ALL_INPUT_MESHES))
   }
   #undef RUN_IMPL_CASE
  } catch(stopped & e) {
@@ -461,65 +454,30 @@ template<typename MeshType>
 void triqs_gf_view_assign_delegation(gf_view<MeshType> g, som_core const& cont) {
  auto gf_dim = cont.results.size();
  check_gf_dim(g, gf_dim);
- if(cont.kind != ZeroTemp) check_gf_stat(g, observable_statistics(cont.kind));
+ if(is_stat_relevant(cont.kind)) check_gf_stat(g, observable_statistics(cont.kind));
 
  g() = 0;
- switch(cont.kind) {
-  case FermionGf: {
-   kernel<FermionGf,MeshType> kern(g.mesh());
-   for(int i : range(gf_dim)) fill_data(g, i, kern(cont.results[i]));
-   return;
-  }
-  case BosonCorr: {
-   kernel<BosonCorr,MeshType> kern(g.mesh());
-   for(int i : range(gf_dim)) fill_data(g, i, kern(cont.results[i]));
-   return;
-  }
-  case BosonAutoCorr: {
-   kernel<BosonAutoCorr,MeshType> kern(g.mesh());
-   for(int i : range(gf_dim)) fill_data(g, i, kern(cont.results[i]));
-   return;
-  }
-  case ZeroTemp: {
-   kernel<ZeroTemp,MeshType> kern(g.mesh());
-   for(int i : range(gf_dim)) fill_data(g, i, kern(cont.results[i]));
-   return;
-  }
-  default:
-   fatal_error("unknown observable kind " + to_string(cont.kind));
+#define FILL_DATA_CASE(r, data, ok)                                  \
+ case ok: {                                                          \
+  kernel<ok,MeshType> kern(g.mesh());                                \
+  for(int i : range(gf_dim)) fill_data(g, i, kern(cont.results[i])); \
+  return;                                                            \
  }
+ switch(cont.kind) {
+  BOOST_PP_SEQ_FOR_EACH(FILL_DATA_CASE, _, ALL_OBSERVABLES)
+  default: fatal_error("unknown observable kind " + to_string(cont.kind));
+ }
+#undef FILL_DATA_CASE
 }
 
 template<> void triqs_gf_view_assign_delegation<refreq>(gf_view<refreq> g_w, som_core const& cont) {
-
- bool bosoncorr = cont.kind == BosonCorr || cont.kind == BosonAutoCorr;
- if(cont.kind != FermionGf && !bosoncorr && cont.kind != ZeroTemp)
-  fatal_error("unknown observable kind " + to_string(cont.kind));
  auto gf_dim = cont.results.size();
  check_gf_dim(g_w, gf_dim);
-
- g_w() = 0;
- auto & tail = g_w.singularity();
-
- for(int i : range(gf_dim)) {
-  auto const& conf = cont.results[i];
-  for(auto const& rect : conf) {
-   for(auto e : g_w.mesh()) g_w.data()(e.index(),i,i) += rect.hilbert_transform(double(e), bosoncorr);
-   tail.data()(range(),i,i) += rect.tail_coefficients(tail.order_min(),tail.order_max(), bosoncorr);
-
-   if(cont.kind == BosonAutoCorr) {
-    // Add a reflected rectangle
-    rectangle reflected_rect(-rect.center, rect.width, rect.height, const_cast<som_core&>(cont).ci);
-    for(auto e : g_w.mesh()) g_w.data()(e.index(),i,i) += reflected_rect.hilbert_transform(double(e), true);
-    tail.data()(range(),i,i) += reflected_rect.tail_coefficients(tail.order_min(),tail.order_max(), true);
-   }
-  }
-
-  if(bosoncorr) {
-   g_w.data()(range(),i,i) *= -1.0/M_PI;
-   tail.data()(range(),i,i) *= -1.0/M_PI;
-  }
- }
+ for(int i : range(gf_dim))
+  back_transform(cont.kind,
+                 cont.results[i],
+                 const_cast<som_core&>(cont).ci,
+                 slice_target_to_scalar(g_w, i, i));
 }
 
 template void triqs_gf_view_assign_delegation<imtime>(gf_view<imtime>, som_core const&);
