@@ -2,7 +2,7 @@ SOM: Stochastic Optimization Method for Analytic Continuation
 
 http://hp.physnet.uni-hamburg.de/krivenko/som/
 
-Copyright (C) 2016 by I. Krivenko
+Copyright (C) 2016-2017 by I. Krivenko
 
 This program is an optimized implementation of an analytic continuation
 method proposed by Andrey S. Mishchenko. A detailed description of

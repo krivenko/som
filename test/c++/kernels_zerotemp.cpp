@@ -2,7 +2,7 @@
  *
  * SOM: Stochastic Optimization Method for Analytic Continuation
  *
- * Copyright (C) 2016 by I. Krivenko
+ * Copyright (C) 2016-2017 by I. Krivenko
  *
  * SOM is free software: you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
