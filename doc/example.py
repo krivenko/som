@@ -36,6 +36,13 @@ S = g_input.copy()
 S.data[:] = 1.0
 
 # Construct a SOM object
+#
+# Valid observable kinds are 'FermionGf', 'BosonCorr', 'BosonAutoCorr' and 'ZeroTemp'
+#
+# Expected norms of spectral functions can be passed to the constructor as
+# norms = numpy.array([norm_1, norm_2, ..., norm_N]), where N is the matrix
+# dimension of g_input (only diagonal elements will be continued). All norms
+# are set to 1.0 by default.
 cont = Som(g_input, S, kind = "FermionGf")
 
 # Run!

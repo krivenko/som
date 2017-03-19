@@ -41,8 +41,3 @@ heights.
 on the Bayesian statistical inference (MaxEnt) or Padé approximants. Its primary design goal is
 the ability to resolve fine spectral features, rather than giving a quick insight into general shape
 of the spectrum.*
-
-.. warning::
-
-    The code is still of alpha-quality. All its parts are subject to change, including the Python API.
-    Be critical about obtained results and cross-check with other analytic continuation tools when possible.
