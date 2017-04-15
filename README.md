@@ -1,6 +1,6 @@
 SOM: Stochastic Optimization Method for Analytic Continuation
 
-http://hp.physnet.uni-hamburg.de/krivenko/som/
+http://krivenko.github.io/som/
 
 Copyright (C) 2016-2017 by I. Krivenko
 
