@@ -1,7 +1,8 @@
-# Import some TRIQS modules
+# Import some TRIQS modules and NumPy
 from pytriqs.gf.local import *
 from pytriqs.archive import HDFArchive
 import pytriqs.utility.mpi as mpi
+import numpy
 
 # Import main SOM class
 from pytriqs.applications.analytical_continuation.som import Som
@@ -16,19 +17,21 @@ energy_window = (-4.0,4.0)  # Energy window to search the solution in
 run_params = {'energy_window' : energy_window}
 # Verbosity level
 run_params['verbosity'] = 3
-# Adjust the number of global updates
-run_params['adjust_f'] = True
-# Adjust the number of particular solutions to be accumulated
-run_params['adjust_l'] = True
+# Number of particular solutions to accumulate
+run_params['l'] = 1000
+# Number of global updates
+run_params['f'] = 500
 # Number of local updates per global update
-run_params['t'] = 500
+run_params['t'] = 200
 # Accumulate histogram of the objective function values
 run_params['make_histograms'] = True
 
-# Read G_tau from archive
+# Read G(\tau) from archive
+# Could be G(i\omega_n) or G_l as well.
 g_tau = HDFArchive('example.h5', 'r')['g_tau']
+# g_tau stored in example.h5 has a dense mesh with 10001 slices
 
-# Prepare input data: reduce the number of \tau-slices
+# Prepare input data: reduce the number of \tau-slices from 10001 to n_tau
 g_input = rebinning_tau(g_tau, n_tau)
 
 # Set the weight function S to a constant (all points of g_tau are equally important)
@@ -37,13 +40,22 @@ S.data[:] = 1.0
 
 # Construct a SOM object
 #
-# Valid observable kinds are 'FermionGf', 'BosonCorr', 'BosonAutoCorr' and 'ZeroTemp'
-#
 # Expected norms of spectral functions can be passed to the constructor as
 # norms = numpy.array([norm_1, norm_2, ..., norm_N]), where N is the matrix
 # dimension of g_input (only diagonal elements will be continued). All norms
 # are set to 1.0 by default.
-cont = Som(g_input, S, kind = "FermionGf")
+cont = Som(g_input, S, kind = "FermionGf", norms = numpy.array([1.0, 1.0]))
+
+# It is also possible to continue a self-energy function as long as it does not
+# contain a static Hartree-Fock contribution (decays to 0 at \omega\to\infty).
+# In this case norms must be computed separately as first spectral moments of
+# the self-energy.
+#
+# For derivation of spectral moments see for instance
+#
+# "Interpolating self-energy of the infinite-dimensional Hubbard model:
+# Modifying the iterative perturbation theory"
+# M. Potthoff, T. Wegner, and W. Nolting, Phys. Rev. B 55, 16132 (1997)
 
 # Run!
 cont.run(**run_params)

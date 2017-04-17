@@ -1,6 +1,6 @@
 
-Example of use
-==============
+Example: Fermionic Green's function or self-energy
+==================================================
 
 Run analytical continuation
 ---------------------------
@@ -12,13 +12,13 @@ Download input file :download:`example.h5`.
 Plot input and reconstructed imaginary-time GF's
 ------------------------------------------------
 
-.. plot:: plot_g_tau.py
+.. plot:: examples/fermiongf/plot_g_tau.py
     :include-source:
     :scale: 100
 
 Plot the spectral function
 --------------------------
 
-.. plot:: plot_g_w.py
+.. plot:: examples/fermiongf/plot_g_w.py
     :include-source:
     :scale: 100
