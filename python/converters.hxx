@@ -59,7 +59,7 @@ template <> struct py_converter<run_parameters_t> {
   _get_optional(dic, "verbosity"          , res.verbosity             ,((triqs::mpi::communicator().rank()==0)?2:0));
   _get_optional(dic, "t"                  , res.t                     ,1000);
   _get_optional(dic, "f"                  , res.f                     ,100);
-  _get_optional(dic, "adjust_f"           , res.adjust_f              ,true);
+  _get_optional(dic, "adjust_f"           , res.adjust_f              ,false);
   _get_optional(dic, "l"                  , res.l                     ,500);
   _get_optional(dic, "adjust_l"           , res.adjust_l              ,false);
   _get_optional(dic, "make_histograms"    , res.make_histograms       ,false);

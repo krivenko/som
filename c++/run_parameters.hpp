@@ -50,7 +50,7 @@ struct run_parameters_t {
  int f = 100;
 
  /// Adjust the number of global updates automatically.
- bool adjust_f = true;
+ bool adjust_f = false;
 
  /// Number of particular solutions used in the final accumulation (:math:`L`);
  /// ignored if `adjust_l = True`.
