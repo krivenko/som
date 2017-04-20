@@ -43,7 +43,7 @@ struct run_parameters_t {
  int verbosity = ((triqs::mpi::communicator().rank() == 0) ? 2 : 0); // silence the slave nodes
 
  /// Number of elementary updates per global update (:math:`T`).
- int t = 1000;
+ int t = 50;
 
  /// Number of global updates (:math:`F`);
  /// ignored if `adjust_f = True`.
@@ -54,7 +54,7 @@ struct run_parameters_t {
 
  /// Number of particular solutions used in the final accumulation (:math:`L`);
  /// ignored if `adjust_l = True`.
- int l = 500;
+ int l = 2000;
 
  /// Adjust the number of solutions used in the final accumulation.
  bool adjust_l = false;

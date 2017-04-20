@@ -18,11 +18,11 @@ run_params = {'energy_window' : energy_window}
 # Verbosity level
 run_params['verbosity'] = 3
 # Number of particular solutions to accumulate
-run_params['l'] = 1000
+run_params['l'] = 2000
 # Number of global updates
-run_params['f'] = 500
+run_params['f'] = 100
 # Number of local updates per global update
-run_params['t'] = 200
+run_params['t'] = 50
 # Accumulate histogram of the objective function values
 run_params['make_histograms'] = True
 
@@ -58,6 +58,7 @@ cont = Som(g_input, S, kind = "FermionGf", norms = numpy.array([1.0, 1.0]))
 # M. Potthoff, T. Wegner, and W. Nolting, Phys. Rev. B 55, 16132 (1997)
 
 # Run!
+# Takes 5-10 minutes on 16 cores ...
 cont.run(**run_params)
 
 # Evaluate the solution on an energy mesh
