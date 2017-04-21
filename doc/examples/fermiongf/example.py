@@ -46,17 +46,6 @@ S.data[:] = 1.0
 # are set to 1.0 by default.
 cont = Som(g_input, S, kind = "FermionGf", norms = numpy.array([1.0, 1.0]))
 
-# It is also possible to continue a self-energy function as long as it does not
-# contain a static Hartree-Fock contribution (decays to 0 at \omega\to\infty).
-# In this case norms must be computed separately as first spectral moments of
-# the self-energy.
-#
-# For derivation of spectral moments see for instance
-#
-# "Interpolating self-energy of the infinite-dimensional Hubbard model:
-# Modifying the iterative perturbation theory"
-# M. Potthoff, T. Wegner, and W. Nolting, Phys. Rev. B 55, 16132 (1997)
-
 # Run!
 # Takes 5-10 minutes on 16 cores ...
 cont.run(**run_params)
