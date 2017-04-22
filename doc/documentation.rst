@@ -66,7 +66,7 @@ the Legendre basis coefficients). Nonetheless, a typical script will the followi
 
   Currently supported observable kinds are `FermionGf` (fermionic Green's function
   or self-energy), `BosonCorr` (correlator of a boson-like operator with its Hermitian
-  conjugate), `BosonAutoCorr` (correlator of a boson-like operator with itself), and
+  conjugate), `BosonAutoCorr` (correlator of a Hermitian operator with itself), and
   `ZeroTemp` (correlator computed in Matsubara formalism but at zero temperature).
   Refer to ':ref:`kernels`' for a detailed description of the implemented observable kinds.
 

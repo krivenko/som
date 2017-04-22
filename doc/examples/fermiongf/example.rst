@@ -1,3 +1,4 @@
+.. _example_fermiongf:
 
 Example: Fermionic Green's function or self-energy
 ==================================================

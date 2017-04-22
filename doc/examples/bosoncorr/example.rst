@@ -1,3 +1,4 @@
+.. _example_bosoncorr:
 
 Example: Correlator of boson-like operators
 ===========================================
@@ -26,7 +27,7 @@ is non-negative but not necessarily symmetric.
 
 .. warning::
 
-    When :math:`\hat A = \hat B` (for instance, in case of charge or longitudinal magnetic
+    When :math:`\hat O = \hat O^\dagger` (for instance, in case of charge or longitudinal magnetic
     susceptibility), it is strongly recommended to use `BosonAutoCorr` observable kind instead.
 
 Run analytical continuation

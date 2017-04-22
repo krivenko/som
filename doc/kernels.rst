@@ -103,7 +103,7 @@ Enabled when `Som()` object is constucted with `kind = "BosonAutoCorr"`.
 case, namely :math:`A(\epsilon) = \Im\chi(\epsilon)/\epsilon`, where
 
     .. math::
-        \chi(\epsilon) = \int\limits_{-\infty}^\infty dt\ e^{i\epsilon t}\chi_(t),\quad
+        \chi(\epsilon) = \int\limits_{-\infty}^\infty dt\ e^{i\epsilon t}\chi(t),\quad
         \chi(t) = i\theta(t)\langle[\hat O(t),\hat O(0)]\rangle.
 
 Expressions in this section imply that :math:`A(-\epsilon) = -A(\epsilon)`, and, therefore,

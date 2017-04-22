@@ -1,3 +1,4 @@
+.. _issues:
 
 Reporting issues
 ================
