@@ -95,11 +95,11 @@ void back_transform(observable_kind kind,
    for(auto e : g_w.mesh()) g_w.data()(e.index()) += reflected_rect.hilbert_transform(double(e), true);
    tail.data()(range(),0,0) += reflected_rect.tail_coefficients(tail.order_min(),tail.order_max(), true);
   }
+ }
 
-  if(bosoncorr) {
-   g_w.data() *= -1.0/M_PI;
-   tail.data() *= -1.0/M_PI;
-  }
+ if(bosoncorr) {
+  g_w.data() *= -1.0/M_PI;
+  tail.data() *= -1.0/M_PI;
  }
 }
 
