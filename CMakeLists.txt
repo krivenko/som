@@ -4,7 +4,7 @@ project(som CXX)
 set(CMAKE_BUILD_TYPE Release)
 
 # Version number of the application
-set(SOM_VERSION "1.0")
+set(SOM_VERSION "1.1")
 message(STATUS "Configuring SOM version ${SOM_VERSION}")
 
 # Append triqs installed files to the cmake load path
