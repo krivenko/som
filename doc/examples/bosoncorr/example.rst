@@ -3,7 +3,7 @@
 Example: Correlator of boson-like operators
 ===========================================
 
-Observable kind: `BosonCorr`.
+Observable kind: :ref:`BosonCorr <bosoncorr>`.
 
 A general correlation function of boson-like operators :math:`\hat O` and :math:`\hat O^\dagger`
 is defined as

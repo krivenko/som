@@ -3,7 +3,7 @@
 Example: Autocorrelator of a Hermitian operator
 ===============================================
 
-Observable kind: `BosonAutoCorr`.
+Observable kind: :ref:`BosonAutoCorr <bosonautocorr>`.
 
 Correlator of a Hermitian operator with itself.
 

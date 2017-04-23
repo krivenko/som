@@ -7,6 +7,8 @@ Supported integral kernels
 
     :math:`\beta` denotes the inverse temperature in all equations below.
 
+.. _fermiongf:
+
 Fermionic thermal Green's function
 ----------------------------------
 
@@ -48,6 +50,8 @@ The retared Green's function of a real frequency is reconstructed according to
     .. math::
         G^\mathrm{ret}(\epsilon) = -\int\limits_{-\infty}^\infty
         d\epsilon' \frac{A(\epsilon')}{\epsilon' - \epsilon - i0}.
+
+.. _bosoncorr:
 
 Correlator of boson-like operators
 ----------------------------------
@@ -93,6 +97,8 @@ The correlator of a real frequency is reconstructed according to
     .. math::
         \chi(\epsilon) = \frac{1}{\pi}\int\limits_{-\infty}^\infty
         d\epsilon' \frac{\epsilon' A(\epsilon')}{\epsilon' - \epsilon - i0}.
+
+.. _bosonautocorr:
 
 Autocorrelator of a boson-like operator
 ---------------------------------------
@@ -152,6 +158,8 @@ The correlator of a real frequency is reconstructed according to
         d\epsilon' \frac{\epsilon' A(-\epsilon')}{\epsilon' - \epsilon - i0} +
         \frac{1}{\pi}\int\limits_0^\infty
         d\epsilon' \frac{\epsilon' A(\epsilon')}{\epsilon' - \epsilon - i0}.
+
+.. _zerotemp:
 
 Correlation function at zero temperature
 ----------------------------------------

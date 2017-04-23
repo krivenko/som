@@ -3,7 +3,7 @@
 Example: Matsubara correlator at zero temperature
 =================================================
 
-Observable kind: `ZeroTemp`.
+Observable kind: :ref:`ZeroTemp <zerotemp>`.
 
 Formally speaking, the imaginary time segment :math:`\tau\in[0;\beta)`
 turns into an infinite interval as :math:`\beta\to\infty`. Similarly,

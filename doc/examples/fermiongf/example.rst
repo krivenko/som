@@ -3,7 +3,7 @@
 Example: Fermionic Green's function or self-energy
 ==================================================
 
-Observable kind: `FermionGf`.
+Observable kind: :ref:`FermionGf <fermiongf>`.
 
 .. note::
 

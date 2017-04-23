@@ -64,10 +64,11 @@ the Legendre basis coefficients). Nonetheless, a typical script will the followi
   `GfImTime`, `GfImFreq` or `GfLegendre`), defined on the same mesh and having
   the same target shape.
 
-  Currently supported observable kinds are `FermionGf` (fermionic Green's function
-  or self-energy), `BosonCorr` (correlator of a boson-like operator with its Hermitian
-  conjugate), `BosonAutoCorr` (correlator of a Hermitian operator with itself), and
-  `ZeroTemp` (correlator computed in Matsubara formalism but at zero temperature).
+  Currently supported observable kinds are :ref:`FermionGf <fermiongf>` (fermionic Green's
+  function or self-energy), :ref:`BosonCorr <bosoncorr>` (correlator of a boson-like operator
+  with its Hermitian conjugate), :ref:`BosonAutoCorr <bosonautocorr>` (correlator of a
+  Hermitian operator with itself), and :ref:`ZeroTemp <zerotemp>` (correlator computed in
+  Matsubara formalism but at zero temperature).
   Refer to ':ref:`kernels`' for a detailed description of the implemented observable kinds.
 
   If target shape of `inp` is bigger than 1x1, SOM will only construct analytical
