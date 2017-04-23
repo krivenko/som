@@ -11,13 +11,16 @@ Main parameters
 +-----------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
 | verbosity       | int           | 2 on MPI rank 0, 0 otherwise. | Verbosity level (max level - 3).                                                                         |
 +-----------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| t               | int           | 1000                          | Number of elementary updates per global update (:math:`T`).                                              |
+| t               | int           | 50                            | Number of elementary updates per global update (:math:`T`).                                              |
+|                 |               |                               | Bigger values make the algorithm more ergodic.                                                           |
 +-----------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
 | f               | int           | 100                           | Number of global updates (:math:`F`); ignored if `adjust_f = True`.                                      |
+|                 |               |                               | Bigger values make the algorithm more ergodic.                                                           |
 +-----------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
 | adjust_f        | bool          | False                         | Adjust the number of global updates automatically.                                                       |
 +-----------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| l               | int           | 500                           | Number of particular solutions used in the final accumulation (:math:`L`); ignored if `adjust_l = True`. |
+| l               | int           | 2000                          | Number of particular solutions used in the final accumulation (:math:`L`); ignored if `adjust_l = True`. |
+|                 |               |                               | Bigger values reduce noise in the final solution / make it smoother.                                     |
 +-----------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
 | adjust_l        | bool          | False                         | Adjust the number of solutions used in the final accumulation.                                           |
 +-----------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+

@@ -115,9 +115,12 @@ the Legendre basis coefficients). Nonetheless, a typical script will the followi
         run_params['adjust_f'] = False
 
         # Number of global updates per particular solution
+        # Bigger values improve ergodicity of the Markov chain algorithm
+        # (computation time scales linearly with 'f')
         run_params['f'] = 200
 
         # Number of local updates per global update
+        # Has a similar effect on the algorithm as 'f', and scales linearly too.
         run_params['t'] = 500
 
         # Accumulate histogram of the objective function values,
