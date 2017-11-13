@@ -5,7 +5,7 @@ cache: bundler
 
 compiler:
   - gcc
-  - clang
+#  - clang
 
 branches:
   only:
@@ -13,7 +13,7 @@ branches:
 
 before_install:
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y                                      # GCC 5
-  - sudo add-apt-repository 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-4.0 main' -y # Clang 4.0
+  - sudo add-apt-repository 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-4.0 main' -y # libclang 4.0
   - sudo add-apt-repository ppa:kzemek/boost -y                                                 # Boost 1.58
   - sudo apt-get update
   - sudo apt-get install -y --allow-unauthenticated gcc-5 g++-5
@@ -56,7 +56,6 @@ script:
   - |
     cmake ../som \
     -DCMAKE_BUILD_TYPE=Debug \
-    -DCMAKE_C_COMPILER=/usr/bin/${CC} \
     -DCMAKE_CXX_COMPILER=/usr/bin/${CXX} \
     -DTRIQS_PATH=$TRAVIS_BUILD_DIR/../installed \
     -DBUILD_DOC=ON
