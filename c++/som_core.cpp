@@ -422,16 +422,6 @@ template<typename KernelType> configuration som_core::accumulate(KernelType cons
  return sol_sum;
 }
 
-som_core::~som_core() {
- int n_configs = results.size();
- int n_rects = 0;
- for(auto const& c : results) n_rects += c.size();
- if(n_configs + n_rects != ci.n_used_entries()) TRIQS_RUNTIME_ERROR <<
-  "Detected inconsistency in LHS cache: " <<
-  "n_configs = " << n_configs << ", n_rects = " << n_rects <<
-  ", n_used_entries = " << ci.n_used_entries();
-}
-
 ///////////////////////////////////////
 // triqs_gf_view_assign_delegation() //
 ///////////////////////////////////////
