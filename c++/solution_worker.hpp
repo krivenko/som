@@ -102,7 +102,7 @@ template<typename KernelType> class solution_worker {
  int f;                                      // Number of global updates
  int t;                                      // Number of elementary updates per global update
  mc_generic<double> mc;                      // Markov chain
- std::function<bool()> const& stop_callback; // Stop callback function for mc_generic
+ std::function<bool()> stop_callback;        // Stop callback function for mc_generic
 
  // MC data
  mc_data<KernelType> data;
@@ -121,12 +121,12 @@ public:
                  double norm,
                  cache_index & ci,
                  run_parameters_t const& params,
-                 std::function<bool()> const& stop_callback,
+                 std::function<bool()> stop_callback,
                  int f) :
   verbose_mc(params.verbosity >= 3),
   f(f), t(params.t),
   mc(params.random_name, params.random_seed, 1, verbose_mc ? 3 : 0),
-  stop_callback(stop_callback),
+  stop_callback(std::move(stop_callback)),
   ci(ci), kern(objf.get_kernel()),
   data{objf, {{},ci}, {{},ci}, 0, 0, dist_function(mc.get_rng(), params.t, params.distrib_d_max), params.gamma},
   energy_window(params.energy_window), norm(norm),
