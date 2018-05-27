@@ -32,7 +32,7 @@ script:
   # Build and install TRIQS
   - cd $TRAVIS_BUILD_DIR/..
   - git clone https://github.com/TRIQS/triqs.git triqs
-  - pushd triqs && git checkout master && popd
+  - pushd triqs && git checkout 1.4.2 && popd
   - mkdir installed
   - mkdir triqs.build && pushd triqs.build
   - |
