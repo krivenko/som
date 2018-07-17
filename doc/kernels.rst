@@ -112,7 +112,7 @@ case, namely :math:`A(\epsilon) = \Im\chi(\epsilon)/\epsilon`, where
         \chi(\epsilon) = \int\limits_{-\infty}^\infty dt\ e^{i\epsilon t}\chi(t),\quad
         \chi(t) = i\theta(t)\langle[\hat O(t),\hat O(0)]\rangle.
 
-Expressions in this section imply that :math:`A(-\epsilon) = -A(\epsilon)`, and, therefore,
+Expressions in this section imply that :math:`A(-\epsilon) = A(\epsilon)`, and, therefore,
 it is enough to find the spectral function on the positive energy half-axis only.
 This condition is fulfilled by the dynamical susceptibilities of a form
 :math:`\chi(\tau) = \langle\mathcal{T}\hat O(\tau)\hat O(0)\rangle`, where :math:`\hat O` is
