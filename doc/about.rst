@@ -3,7 +3,7 @@
 Authors
 =======
 
-This analytical continuation program is written by Igor Krivenko (`accompanying paper <https://arxiv.org/abs/1808.00603>`_).
+This analytic continuation program is written by Igor Krivenko (`accompanying paper <https://arxiv.org/abs/1808.00603>`_).
 
 It is based on a method devised by Andrey S. Mishchenko and coauthors.
 
@@ -23,8 +23,6 @@ from the Autumn School "Correlated Electrons: From Models to Materials".
 The Lecture Notes are available free of charge online,
 
     http://www.cond-mat.de/events/correl12/manuscripts/
-
-A copy of the Chapter 14 is included in the source codes (see `doc/notes/som.pdf`).
 
 Acknowledgements
 ================

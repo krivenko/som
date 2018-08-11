@@ -100,7 +100,7 @@ the Legendre basis coefficients). Nonetheless, a typical script will the followi
   These two parameters are required for any simulation. Other useful parameters
   include `verbosity` and setting of the underlying Markov chain algorithm. You
   can find a detailed discussion of the latter in Sections 3 and 4 of
-  :download:`Mishchenko's lecture <notes/som.pdf>`.
+  `Mishchenko's lecture <https://www.cond-mat.de/events/correl12/manuscripts/mishchenko.pdf>`_.
 
   ::
 

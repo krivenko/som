@@ -9,7 +9,7 @@ Installation
 Prerequisite
 -------------------
 
-#. The :ref:`TRIQS <triqslibs:welcome>` toolbox version 1.4 (see :ref:`TRIQS installation instruction <triqslibs:installation>`).
+#. The :ref:`TRIQS <triqslibs:welcome>` toolbox version 1.4.2 (see :ref:`TRIQS installation instruction <triqslibs:installation>`).
    In the following, we will suppose that it is installed in the ``path_to_triqs`` directory.
 
 Installation steps

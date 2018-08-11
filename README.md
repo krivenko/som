@@ -1,4 +1,5 @@
 SOM: Stochastic Optimization Method for Analytic Continuation
+=============================================================
 
 http://krivenko.github.io/som/
 
@@ -11,9 +12,48 @@ method proposed by Andrey S. Mishchenko. A detailed description of
 the method can be found under
 http://www.cond-mat.de/events/correl12/manuscripts/mishchenko.pdf
 
-This project uses the TRIQS library, version 1.4 or newer.
+This project uses the TRIQS library version 1.4.2.
 The TRIQS website is under https://triqs.ipht.cnrs.fr/.
 Start there to learn about TRIQS.
+
+Installation
+------------
+
+Please, refer to http://krivenko.github.io/som/install.html or `doc/install.rst`
+in the source code tree for installation instructions.
+
+Source directory structure
+--------------------------
+
+ * `benchmark` - sets of Python scripts used to benchmark SOM's performance
+   * `chi` - analytic continuation of QMC charge susceptibility
+   * `microgap` - analytic continuation of a model spectrum with a very narrow gap
+   * `semicircle` - analytic continuation of a semi-elliptic spectral function
+   * `triangles` - analytic continuation of a spectrum made of two triangles
+ * `c++` - main directory with C++ source files
+   * `kernels` - C++ header files implementing individual integral kernels
+   * `numerics` - C++ classes/routines for numerical algorithms (splines, Simpson's rule, dilogarithm function, etc)
+ * `CHANGELOG.md` -  a brief list of changes between released versions
+ * `cmake` - auxiliary files used by CMake to build application
+ * `CMakeLists.txt` - main CMake configuration script
+ * `LICENSE.txt` - text of the GNU General Public License
+ * `python` - script files used by TRIQS Python wrapping tool to build the Python module of SOM
+ * `test` - source code of unit tests executed by `make test`
+   * `c++` - C++ unit tests
+   * `CMakeLists.txt` - CMake configuration file for running unit tests
+ * `doc` - documentation
+   * `CMakeLists.txt` - CMake configuration file for building HTML documentation
+   * `examples` - usage examples
+   * `_static` - images used to build the HTML docs
+   * `_templates` - auxiliary files used to build the HTML docs
+   * `conf.py.in` - configuration file for Sphinx documentation generator
+   * `notes` - LaTeX sources of implementation notes and Mathematica notebooks
+ * `README.md` - this file
+ * `.clang-format` - style file for clang-format utility
+ * `.travis.yml` - configuration file for Travis CI continuous integration service
+
+License
+-------
 
 SOM is free software: you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software
