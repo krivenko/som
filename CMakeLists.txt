@@ -1,7 +1,9 @@
 # start configuration
 cmake_minimum_required(VERSION 2.8)
 project(som CXX)
-set(CMAKE_BUILD_TYPE Release)
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif(NOT CMAKE_BUILD_TYPE)
 
 # Version number of the application
 set(SOM_VERSION "1.1")
