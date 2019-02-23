@@ -21,6 +21,7 @@
 #pragma once
 
 #include <limits>
+#include <cmath>
 
 #include <triqs/arrays.hpp>
 #include "triqs/arrays/blas_lapack/gtsv.hpp"
@@ -73,6 +74,7 @@ public:
  }
 
  inline double operator()(double z) const {
+  assert(std::isfinite(z));
   if(z <= x(0)) return y(0);
   else if(z >= x(s-1)) return y(s-1);
   else {
@@ -127,6 +129,7 @@ public:
  }
 
  inline double operator()(double z) const {
+  assert(std::isfinite(z));
   if(z <= x_min) return y(0);
   else if(z >= x_max) return y(s-1);
   else {
