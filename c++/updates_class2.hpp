@@ -374,25 +374,41 @@ public:
 
   eu::update[eu::full].change_rectangle(t1, {c + dc, w, h, eu::ci});
   eu::update[eu::full].remove_rectangle(t2);
-  eu::update[eu::half].change_rectangle(t1, {c + dc/2, w, h, eu::ci});
-  eu::update[eu::half].remove_rectangle(t2);
-
-  auto dc_opt = eu::optimize_parameter_change(dc, dc_min, dc_max);
 
 #ifdef EXT_DEBUG
-  std::cerr << "Selected rectangles: " << rect1 << " [" << t1 << "]"
-            << " and " << rect2 << " [" << t2 << "]" << std::endl;
-  std::cerr << "dc_min = " << dc_min << ", dc_max = " << dc_max
-            << ", dc = " << dc << ", dc_opt = " << dc_opt.second << std::endl;
+   std::cerr << "Selected rectangles: " << rect1 << " [" << t1 << "]"
+             << " and " << rect2 << " [" << t2 << "]" << std::endl;
 #endif
 
-  if(dc_opt.first) {
-   dc = dc_opt.second;
-   eu::update[eu::opt].change_rectangle(t1, {c + dc, w, h, eu::ci});
-   eu::update[eu::opt].remove_rectangle(t2);
-  }
+  if(dc_min * dc_max > 0) { // In this case dc/2 can be outside [dc_min; dc_max]
+   eu::new_objf_value[eu::full] = eu::data.objf(eu::update[eu::full]);
+   eu::selected_parameter_change = eu::full;
 
-  eu::select_parameter_change(dc_opt.first);
+#ifdef EXT_DEBUG
+   std::cerr << "dc_min = " << dc_min << ", dc_max = " << dc_max
+             << ", dc = " << dc << std::endl;
+#endif
+
+
+  } else {
+   eu::update[eu::half].change_rectangle(t1, {c + dc/2, w, h, eu::ci});
+   eu::update[eu::half].remove_rectangle(t2);
+
+   auto dc_opt = eu::optimize_parameter_change(dc, dc_min, dc_max);
+
+#ifdef EXT_DEBUG
+   std::cerr << "dc_min = " << dc_min << ", dc_max = " << dc_max
+             << ", dc = " << dc << ", dc_opt = " << dc_opt.second << std::endl;
+#endif
+
+   if(dc_opt.first) {
+    dc = dc_opt.second;
+    eu::update[eu::opt].change_rectangle(t1, {c + dc, w, h, eu::ci});
+    eu::update[eu::opt].remove_rectangle(t2);
+   }
+
+   eu::select_parameter_change(dc_opt.first);
+  }
 
 #ifdef EXT_DEBUG
   std::cerr << "selected_parameter_change = " << eu::selected_parameter_change << std::endl;
