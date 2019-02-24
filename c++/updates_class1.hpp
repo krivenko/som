@@ -35,7 +35,7 @@ public:
 
  update_shift(mc_data<KernelType> & data, random_generator & rng, cache_index & ci,
               std::pair<double,double> energy_window, double width_min, double weight_min) :
-  INIT_EU_BASE(data,rng,ci,width_min,weight_min),
+  INIT_EU_BASE(data,rng,ci,energy_window,width_min,weight_min),
   energy_window(energy_window)
  {}
 
@@ -95,7 +95,7 @@ public:
 
  update_change_width(mc_data<KernelType> & data, random_generator & rng, cache_index & ci,
                    std::pair<double,double> energy_window, double width_min, double weight_min) :
-  INIT_EU_BASE(data,rng,ci,width_min,weight_min),
+  INIT_EU_BASE(data,rng,ci,energy_window,width_min,weight_min),
   energy_window(energy_window), width_min(width_min)
  {}
 
@@ -153,8 +153,8 @@ template<typename KernelType> class update_change_weight2 : public elementary_up
 public:
 
  update_change_weight2(mc_data<KernelType> & data, random_generator & rng, cache_index & ci,
-                       double width_min, double weight_min) :
-  INIT_EU_BASE(data,rng,ci,width_min,weight_min),
+                       std::pair<double,double> const& energy_window, double width_min, double weight_min) :
+  INIT_EU_BASE(data,rng,ci,energy_window,width_min,weight_min),
   weight_min(weight_min)
  {}
 

@@ -46,6 +46,7 @@ protected:
  KernelType const& kern;
 
 #ifdef EXT_DEBUG
+ std::pair<double,double> energy_window;
  double width_min;
  double weight_min;
 #endif
@@ -105,8 +106,8 @@ public:
 
 #ifdef EXT_DEBUG
  elementary_update(mc_data<KernelType> & data, random_generator & rng, cache_index & ci,
-                   double width_min, double weight_min) :
-  width_min(width_min), weight_min(weight_min),
+                   std::pair<double,double> const& energy_window, double width_min, double weight_min) :
+  energy_window(energy_window), width_min(width_min), weight_min(weight_min),
 #else
  elementary_update(mc_data<KernelType> & data, random_generator & rng, cache_index & ci) :
 #endif
@@ -142,6 +143,8 @@ public:
     if(r.norm() < weight_min) TRIQS_RUNTIME_ERROR << "Rectangle is too small: " << r;
     if(r.width < width_min) TRIQS_RUNTIME_ERROR << "Rectangle is too narrow: " << r;
     if(r.height < 0) TRIQS_RUNTIME_ERROR << "Rectangle with negative height: " << r;
+    if(r.center - r.width/2 < energy_window.first || r.center + r.width/2 > energy_window.second)
+      TRIQS_RUNTIME_ERROR << "Rectangle is not within energy window: " << r;
    }
 #endif
 
@@ -192,10 +195,10 @@ public:
 };
 
 #ifdef EXT_DEBUG
-#define INIT_EU_BASE(data,rng,ci,width_min,weight_min) \
-        elementary_update<KernelType>(data, rng, ci, width_min, weight_min)
+#define INIT_EU_BASE(data,rng,ci,energy_window,width_min,weight_min) \
+        elementary_update<KernelType>(data, rng, ci, energy_window, width_min, weight_min)
 #else
-#define INIT_EU_BASE(data,rng,ci,width_min,weight_min) \
+#define INIT_EU_BASE(data,rng,ci,energy_window,width_min,weight_min) \
         elementary_update<KernelType>(data, rng, ci)
 #endif
 

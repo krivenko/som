@@ -39,7 +39,7 @@ public:
 
  update_insert(mc_data<KernelType> & data, random_generator & rng, cache_index & ci,
                    std::pair<double,double> energy_window, double width_min, double weight_min, int max_rects)  :
-  INIT_EU_BASE(data,rng,ci,width_min,weight_min),
+  INIT_EU_BASE(data,rng,ci,energy_window,width_min,weight_min),
   energy_window(energy_window), width_min(width_min), weight_min(weight_min),
   cnew_min(energy_window.first + width_min/2), cnew_max(energy_window.second - width_min/2),
   max_rects(max_rects)
@@ -137,7 +137,7 @@ public:
 
  update_remove_shift(mc_data<KernelType> & data, random_generator & rng, cache_index & ci,
                      std::pair<double,double> energy_window, double width_min, double weight_min) :
-  INIT_EU_BASE(data,rng,ci,width_min,weight_min),
+  INIT_EU_BASE(data,rng,ci,energy_window,width_min,weight_min),
   energy_window(energy_window)
  {}
 
@@ -213,7 +213,7 @@ public:
 
  update_split_shift(mc_data<KernelType> & data, random_generator & rng, cache_index & ci,
                    std::pair<double,double> energy_window, double width_min, double weight_min, int max_rects) :
-  INIT_EU_BASE(data,rng,ci,width_min,weight_min),
+  INIT_EU_BASE(data,rng,ci,energy_window,width_min,weight_min),
   energy_window(energy_window), width_min(width_min), weight_min(weight_min), max_rects(max_rects)
  {}
 
@@ -337,7 +337,7 @@ public:
 
  update_glue_shift(mc_data<KernelType> & data, random_generator & rng, cache_index & ci,
                    std::pair<double,double> energy_window, double width_min, double weight_min) :
-  INIT_EU_BASE(data,rng,ci,width_min,weight_min),
+  INIT_EU_BASE(data,rng,ci,energy_window,width_min,weight_min),
   energy_window(energy_window)
  {}
 

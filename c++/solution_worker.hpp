@@ -138,7 +138,7 @@ public:
               "update_shift", 1.0);
   mc.add_move(update_change_width<KernelType>(data, mc.get_rng(), ci, energy_window, width_min, weight_min),
               "update_change_width", 1.0);
-  mc.add_move(update_change_weight2<KernelType>(data, mc.get_rng(), ci, width_min, weight_min),
+  mc.add_move(update_change_weight2<KernelType>(data, mc.get_rng(), ci, energy_window, width_min, weight_min),
               "update_change_weight2", 1.0);
   mc.add_move(update_insert<KernelType>(data, mc.get_rng(), ci, energy_window, width_min, weight_min, params.max_rects),
               "update_insert", 1.0);
