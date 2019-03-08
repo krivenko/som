@@ -1,11 +1,13 @@
 SOM: Stochastic Optimization Method for Analytic Continuation
 =============================================================
 
+[![Build Status](https://travis-ci.org/krivenko/som.svg?branch=master)](https://travis-ci.org/krivenko/som)
+
 http://krivenko.github.io/som/
 
 https://arxiv.org/abs/1808.00603
 
-Copyright (C) 2016-2018 by I. Krivenko
+Copyright (C) 2016-2019 by I. Krivenko
 
 This program is an optimized implementation of an analytic continuation
 method proposed by Andrey S. Mishchenko. A detailed description of
