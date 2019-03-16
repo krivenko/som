@@ -5,7 +5,7 @@ SOM: Stochastic Optimization Method for Analytic Continuation
 
 http://krivenko.github.io/som/
 
-https://arxiv.org/abs/1808.00603
+[CPC paper](https://doi.org/10.1016/j.cpc.2019.01.021) [[arXiv:1808.00603](https://arxiv.org/abs/1808.00603)]
 
 Copyright (C) 2016-2019 by I. Krivenko
 

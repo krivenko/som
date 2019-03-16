@@ -3,7 +3,8 @@
 Authors
 =======
 
-This analytic continuation program is written by Igor Krivenko (`accompanying paper <https://arxiv.org/abs/1808.00603>`_).
+This analytic continuation program is written by Igor Krivenko (`accompanying paper <https://doi.org/10.1016/j.cpc.2019.01.021>`_,
+`arXiv:1808.00603 <https://arxiv.org/abs/1808.00603>`_).
 
 It is based on a method devised by Andrey S. Mishchenko and coauthors.
 
