@@ -23,11 +23,11 @@
 # Run SOM simulations with all implemented kernels using synthetic input data
 #
 
-from pytriqs.gf.local import *
-from pytriqs.gf.local.descriptors import *
+from pytriqs.gf import *
+from pytriqs.gf.descriptors import *
 from pytriqs.archive import HDFArchive
 import pytriqs.utility.mpi as mpi
-from pytriqs.applications.analytical_continuation.som import Som
+from som import Som
 from scipy.integrate import quad
 from scipy.special import spherical_in
 import numpy as np
@@ -43,6 +43,7 @@ n_iw = 201
 n_tau = 2001
 n_l = 50
 n_w = 1000
+tail_max_order = 9
 
 g_norms = np.array([0.7, 0.9])
 chi_norms = np.array([1.2, 1.4])
@@ -61,6 +62,7 @@ som_params['make_histograms'] = True
 if mpi.is_master_node():
     arch = HDFArchive('all_kernels.np%d.h5' % mpi.world.size, 'w')
     arch["som_params"] = som_params
+
 #
 # Auxiliary functions
 #
@@ -78,17 +80,19 @@ def run_som_and_save(kind, mesh, g, S, norms, energy_window):
     cont = Som(g, S, kind = kind, norms = norms)
     cont.run(energy_window = energy_window, **som_params)
     g_rec = g.copy()
-    g_rec << cont
+    cont.fill_observable(g_rec)
     g_w = GfReFreq(window = energy_window,
                    n_points = n_w,
                    indices = indices)
-    g_w << cont
+    cont.fill_observable(g_w)
+    tail = cont.compute_tail(tail_max_order)
     if mpi.is_master_node():
         arch[kind].create_group(mesh)
         gr = arch[kind][mesh]
         gr["input"] = g
         gr["rec"] = g_rec
         gr["output"] = g_w
+        gr["output_tail"] = tail
         gr["histograms"] = cont.histograms
         gr["solutions"] = cont.solutions
 
@@ -103,14 +107,12 @@ g_iw = GfImFreq(beta = beta, statistic = "Fermion", n_points = n_iw, indices = i
 g_iw << Function(g_iw_model)
 
 def g_tau_model(tau):
-    tau = tau.real
     kern = lambda e: -np.exp(-tau * e) / (1 + np.exp(-beta*e))
     return np.diag(chi_norms) * quad(lambda e: dos(e, 1) * kern(e), -1, 3, points = [0])[0].real
 g_tau = GfImTime(beta = beta, statistic = "Fermion", n_points = n_tau, indices = indices)
 g_tau << Function(g_tau_model)
 
 def g_l_model(l):
-    l = int(l.real)
     kern = lambda e: -beta * sqrt(2*l+1) *((-np.sign(e)) ** l) * \
                      spherical_in(l, np.abs(e)*beta/2) / (2 * np.cosh(e*beta/2))
     return np.diag(chi_norms) * quad(lambda e: dos(e, 1) * kern(e), -1, 3, points = [0])[0].real
@@ -145,14 +147,12 @@ chi_iw = GfImFreq(beta = beta, statistic = "Boson", n_points = n_iw, indices = i
 chi_iw << Function(chi_iw_model)
 
 def chi_tau_model(tau):
-    tau = tau.real
     kern = lambda e: e * np.exp(-tau * e) / (1 - np.exp(-beta*e)) / np.pi
     return np.diag(chi_norms) * quad(lambda e: dos(e, 1) * kern(e), -1, 3, points = [0])[0].real
 chi_tau = GfImTime(beta = beta, statistic = "Boson", n_points = n_tau, indices = indices)
 chi_tau << Function(chi_tau_model)
 
 def chi_l_model(l):
-    l = int(l.real)
     kern = lambda e: beta * sqrt(2*l+1) * e *((-np.sign(e)) ** l) * \
                      spherical_in(l, np.abs(e)*beta/2) / np.sinh(np.abs(e)*beta/2) / (2*np.pi)
     return np.diag(chi_norms) * quad(lambda e: dos(e, 1) * kern(e), -1, 3, points = [0])[0].real
@@ -187,14 +187,12 @@ chi_auto_iw = GfImFreq(beta = beta, statistic = "Boson", n_points = n_iw, indice
 chi_auto_iw << Function(chi_auto_iw_model)
 
 def chi_auto_tau_model(tau):
-    tau = tau.real
     kern = lambda e: e * (np.exp(-tau * e) + np.exp(-(beta-tau) * e)) / (1 - np.exp(-beta*e)) / np.pi
     return np.diag(chi_auto_norms) * quad(lambda e: 2*dos(e, 0) * kern(e), 0, 2)[0].real
 chi_auto_tau = GfImTime(beta = beta, statistic = "Boson", n_points = n_tau, indices = indices)
 chi_auto_tau << Function(chi_auto_tau_model)
 
 def chi_auto_l_model(l):
-    l = int(l.real)
     kern = lambda e: beta * (1 + (-1) ** l) * sqrt(2*l+1) * e * spherical_in(l, e*beta/2) / np.sinh(e*beta/2) / (2*np.pi)
     return np.diag(chi_auto_norms) * quad(lambda e: 2*dos(e, 0) * kern(e), 0, 2)[0].real
 chi_auto_l = GfLegendre(beta = beta, statistic = "Boson", n_points = n_l, indices = indices)
@@ -230,14 +228,12 @@ g_zt_iw = GfImFreq(beta = beta, n_points = n_iw, indices = indices)
 g_zt_iw << Function(g_zt_iw_model)
 
 def g_zt_tau_model(tau):
-    tau = tau.real
     kern = lambda e: -np.exp(-tau * e)
     return np.diag(g_zt_norms) * quad(lambda e: 2*dos(e, 0) * kern(e), 0, 2)[0].real
 g_zt_tau = GfImTime(beta = beta, n_points = n_tau, indices = indices)
 g_zt_tau << Function(g_zt_tau_model)
 
 def g_zt_l_model(l):
-    l = int(l.real)
     kern = lambda e: beta * ((-1) ** (l+1)) * sqrt(2*l+1) * spherical_in(l, e*beta/2)*np.exp(-e*beta/2)
     return np.diag(g_zt_norms) * quad(lambda e: 2*dos(e, 0) * kern(e), 0, 2)[0].real
 g_zt_l = GfLegendre(beta = beta, n_points = n_l, indices = indices)

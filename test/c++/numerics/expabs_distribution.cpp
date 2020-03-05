@@ -24,7 +24,7 @@
 #include <vector>
 #include <utility>
 
-#include "numerics/expabs_distribution.hpp"
+#include <som/numerics/expabs_distribution.hpp>
 
 using namespace som;
 using namespace triqs::mc_tools;

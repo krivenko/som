@@ -24,7 +24,6 @@
 #include <triqs/h5.hpp>
 #include <triqs/test_tools/arrays.hpp>
 #include <triqs/utility/is_complex.hpp>
-#include <triqs/utility/c14.hpp>
 
 using namespace som;
 using triqs::arrays::vector;
@@ -35,7 +34,7 @@ namespace som {
 
 // h5_read_mathematica_array(), complex arrays
 template<typename ArrayType>
-std14::enable_if_t<is_complex<typename ArrayType::value_type>::value, ArrayType>
+std::enable_if_t<is_complex<typename ArrayType::value_type>::value, ArrayType>
 h5_read_mathematica_array(h5::group g, std::string const& name) {
  array<typename ArrayType::value_type, ArrayType::rank> res_re, res_im;
  h5_read(g, name + "/re", res_re);
@@ -45,7 +44,7 @@ h5_read_mathematica_array(h5::group g, std::string const& name) {
 
 // h5_read_mathematica_array(), real arrays
 template<typename ArrayType>
-std14::enable_if_t<!is_complex<typename ArrayType::value_type>::value, ArrayType>
+std::enable_if_t<!is_complex<typename ArrayType::value_type>::value, ArrayType>
 h5_read_mathematica_array(h5::group g, std::string const& name) {
  ArrayType res;
  h5_read(g, name, res);

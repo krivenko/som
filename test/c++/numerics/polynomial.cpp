@@ -21,7 +21,7 @@
 #include <triqs/test_tools/arrays.hpp>
 #include <sstream>
 
-#include "numerics/polynomial.hpp"
+#include <som/numerics/polynomial.hpp>
 
 using som::polynomial;
 

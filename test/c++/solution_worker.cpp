@@ -21,8 +21,8 @@
 #include <triqs/test_tools/arrays.hpp>
 #include <triqs/h5.hpp>
 
-#include "kernels/fermiongf_imtime.hpp"
-#include "solution_worker.hpp"
+#include <som/kernels/fermiongf_imtime.hpp>
+#include <som/solution_worker.hpp>
 
 using namespace som;
 using namespace triqs::arrays;

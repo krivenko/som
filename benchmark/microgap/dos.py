@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.integrate import quad
-from pytriqs.gf.local.descriptors import Function
+from pytriqs.gf.descriptors import Function
 
 # Theta-function
 Theta = lambda x: 0.5*(np.sign(x) + 1)

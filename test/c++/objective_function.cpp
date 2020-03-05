@@ -23,8 +23,8 @@
 #include <triqs/test_tools/arrays.hpp>
 #include <triqs/gfs.hpp>
 
-#include "kernels/fermiongf_imtime.hpp"
-#include "objective_function.hpp"
+#include <som/kernels/fermiongf_imtime.hpp>
+#include <som/objective_function.hpp>
 
 using namespace som;
 using namespace triqs::arrays;

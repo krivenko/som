@@ -1,8 +1,8 @@
-from pytriqs.gf.local import *
-from pytriqs.gf.local.descriptors import *
+from pytriqs.gf import *
+from pytriqs.gf.descriptors import *
 from pytriqs.archive import HDFArchive
 import pytriqs.utility.mpi as mpi
-from pytriqs.applications.analytical_continuation.som import Som
+from som import Som
 import numpy as np
 import time
 
@@ -13,11 +13,12 @@ indices = [0]
 
 n_tau = 600
 n_w = 1000
+tail_max_order = 9
 
 abs_error = [1e-4]
 
 run_params = {'energy_window' : (-4.0,7.0)}
-run_params['verbosity'] = 3
+run_params['verbosity'] = 2
 run_params['adjust_f'] = True
 run_params['adjust_l'] = True
 run_params['t'] = 500
@@ -54,14 +55,17 @@ for s in abs_error:
         cont.run(**run_params)
         exec_time = time.clock() - start
 
-        g_rec << cont
-        g_w << cont
+        cont.fill_observable(g_rec)
+        cont.fill_observable(g_w)
+        g_tail = cont.compute_tail(tail_max_order)
 
         if mpi.is_master_node():
             abs_err_gr.create_group(name)
             gr = abs_err_gr[name]
+            gr['params'] = cont.last_run_parameters
             gr['exec_time'] = exec_time
             gr['g'] = g
             gr['g_w'] = g_w
             gr['g_rec'] = g_rec
+            gr['g_tail'] = g_tail
             gr['histograms'] = cont.histograms

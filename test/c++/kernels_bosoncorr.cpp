@@ -18,9 +18,9 @@
  * SOM. If not, see <http://www.gnu.org/licenses/>.
  *
  ******************************************************************************/
-#include "kernels/bosoncorr_imtime.hpp"
-#include "kernels/bosoncorr_imfreq.hpp"
-#include "kernels/bosoncorr_legendre.hpp"
+#include <som/kernels/bosoncorr_imtime.hpp>
+#include <som/kernels/bosoncorr_imfreq.hpp>
+#include <som/kernels/bosoncorr_legendre.hpp>
 
 #include "./test_kernel.hpp"
 

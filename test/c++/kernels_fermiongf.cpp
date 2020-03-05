@@ -18,9 +18,9 @@
  * SOM. If not, see <http://www.gnu.org/licenses/>.
  *
  ******************************************************************************/
-#include "kernels/fermiongf_imtime.hpp"
-#include "kernels/fermiongf_imfreq.hpp"
-#include "kernels/fermiongf_legendre.hpp"
+#include <som/kernels/fermiongf_imtime.hpp>
+#include <som/kernels/fermiongf_imfreq.hpp>
+#include <som/kernels/fermiongf_legendre.hpp>
 
 #include "./test_kernel.hpp"
 

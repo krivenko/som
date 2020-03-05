@@ -1,8 +1,8 @@
 # This plotting script is largely based on a work of Malte Harland
 # mharland@physnet.uni-hamburg.de
 
-from pytriqs.gf.local import *
-from pytriqs.gf.local.descriptors import *
+from pytriqs.gf import *
+from pytriqs.gf.descriptors import *
 from pytriqs.archive import HDFArchive
 from pytriqs.statistics.histograms import Histogram
 from matplotlib import pyplot as plt
@@ -20,7 +20,7 @@ def make_ref(g):
 
 def plot_A_w(g_w, g_w_ref, fig):
     ax = fig.add_axes([.1,.55,.85,.4])
-    w_mesh = [w for w in g_w.mesh]
+    w_mesh = [w.real for w in g_w.mesh]
     ax.plot(w_mesh, -g_w.data[:,0,0].imag/np.pi,
             color = 'red', linewidth = 0.6, label = 'SOM')
     ax.plot(w_mesh, -g_w_ref.data[:,0,0].imag/np.pi,
@@ -85,13 +85,13 @@ def make_g_tau_page(gr, s):
     # Plot G(i\tau) and Im G_{rec}(i\tau)
     g_tau = gr['g']
     g_tau_rec = gr['g_rec']
-    tau_mesh = [tau for tau in g_tau.mesh]
+    tau_mesh = [tau.real for tau in g_tau.mesh]
     ax = fig.add_axes([.1,.1,.54,.35])
     ax.plot(tau_mesh, g_tau.data[:,0,0],
             color = 'blue', linewidth = 0.6, label = 'original')
     ax.plot(tau_mesh, g_tau_rec.data[:,0,0],
             color = 'red', linewidth = 0.6, label = 'reconstructed')
-    ax.set_xlim(0, g_tau.beta)
+    ax.set_xlim(0, g_tau.mesh.beta)
     ax.set_ylim(-1, 0)
     ax.set_xlabel("$\\tau$")
     ax.set_ylabel("$G(\\tau)$")
@@ -114,7 +114,7 @@ def make_g_l_page(gr, s):
     # Plot G(\ell) and Im G_{rec}(\ell)
     g_l = gr['g']
     g_l_rec = gr['g_rec']
-    l_mesh = [l for l in g_l.mesh]
+    l_mesh = [l.real for l in g_l.mesh]
     ax = fig.add_axes([.1,.1,.54,.35])
     ax.plot(l_mesh, g_l.data[:,0,0],
             color = 'blue', linewidth = 0.6, label = 'original')

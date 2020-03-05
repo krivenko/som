@@ -20,10 +20,7 @@
  ******************************************************************************/
 #include <triqs/test_tools/arrays.hpp>
 
-#include "configuration.hpp"
-
-#define EXPECT_PRINT(X, Y) {std::stringstream ss; ss << Y; EXPECT_EQ(X,ss.str()); }
-#define ASSERT_PRINT(X, Y) {std::stringstream ss; ss << Y; ASSERT_EQ(X,ss.str()); }
+#include <som/configuration.hpp>
 
 using namespace som;
 

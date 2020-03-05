@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.integrate import quad
-from pytriqs.gf.local.descriptors import Function
+from pytriqs.gf.descriptors import Function
 
 # Integral kernel
 def make_kernel(beta):

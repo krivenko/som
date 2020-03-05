@@ -18,9 +18,9 @@
  * SOM. If not, see <http://www.gnu.org/licenses/>.
  *
  ******************************************************************************/
-#include "kernels/zerotemp_imtime.hpp"
-#include "kernels/zerotemp_imfreq.hpp"
-#include "kernels/zerotemp_legendre.hpp"
+#include <som/kernels/zerotemp_imtime.hpp>
+#include <som/kernels/zerotemp_imfreq.hpp>
+#include <som/kernels/zerotemp_legendre.hpp>
 
 #include "./test_kernel.hpp"
 

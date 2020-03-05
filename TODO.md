@@ -1,7 +1,12 @@
 TODO list for SOM 2.0
 =====================
 
-* Port codebase to TRIQS 2.x ([issue #5](https://github.com/krivenko/som/issues/5)).
+* Update documentation (CMake scripts and contents).
+* Run sanitizers on the code.
+* Update .clang-format and reformat sources.
+* Split 'som_core.cpp' into smaller parts.
+* Update Travis CI configuration.
+* Check if the Debian package build is usable.
 * Implement the solution quality assessment technique proposed in Phys. Rev. B **95**, 014102 (2017).
 * Add the anomalous Green's function kernels, as defined in CPC **215**, 149-155 (2017).
 * Add an option to resume accumulation of particular solutions.
