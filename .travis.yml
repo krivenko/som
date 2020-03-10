@@ -13,14 +13,45 @@ branches:
     - master
     - travis
 
+addons:
+  apt:
+    update: true
+    sources:
+    - sourceline: 'ppa:ubuntu-toolchain-r/test'                                     # GCC 5
+    - sourceline: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-4.0 main'  # Clang/libclang 4.0
+      key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
+    - sourceline: 'ppa:kzemek/boost'                                                # Boost 1.58
+    packages:
+    - gcc-5
+    - g++-5
+    - clang-4.0
+    - libboost1.58-dev
+    - libgfortran3
+    - gfortran
+    - openmpi-bin
+    - openmpi-common
+    - openmpi-doc
+    - libopenmpi-dev
+    - libblas-dev
+    - libfftw3-dev
+    - libgmp-dev
+    - hdf5-tools
+    - libhdf5-serial-dev
+    - python-h5py
+    - python-dev
+    - python-numpy
+    - python-scipy
+    - python-matplotlib
+    - ipython
+    - python-mpi4py
+    - python-mako
+    - python-sphinx
+    - libclang-4.0-dev
+    - python-clang-4.0
+    - libjs-mathjax
+
 before_install:
-  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y                                      # GCC 5
-  - sudo add-apt-repository 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-4.0 main' -y # Clang/libclang 4.0
-  - sudo add-apt-repository ppa:kzemek/boost -y                                                 # Boost 1.58
-  - sudo apt-get update
-  - sudo apt-get install -y --allow-unauthenticated gcc-5 g++-5
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
-  - sudo apt-get install -y --allow-unauthenticated clang-4.0 libboost1.58-dev libgfortran3 gfortran openmpi-bin openmpi-common openmpi-doc libopenmpi-dev libblas-dev liblapack-dev libfftw3-dev libgmp-dev hdf5-tools libhdf5-serial-dev python-h5py python-dev python-numpy python-scipy python-matplotlib ipython python-mpi4py python-mako python-sphinx libclang-4.0-dev python-clang-4.0 libjs-mathjax
   - sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-4.0 60 --slave /usr/bin/clang++ clang++ /usr/bin/clang++-4.0
 
 install: true
