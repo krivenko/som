@@ -112,6 +112,9 @@ chi_iw  = GfImFreq(beta = beta, indices = [0,1], n_points = n_iw, statistic = "B
 chi_l   = GfLegendre(beta = beta, indices = [0,1], n_points = n_l, statistic = "Boson")
 chi_w   = GfReFreq(window = w_window, indices = [0,1], n_points = n_w)
 
+for chi in (chi_tau, chi_iw, chi_w):
+    chi.tail.zero()
+
 for sn1, sn2 in product(spin_names,spin_names):
     print "Computing chi_%s_%s" %(sn1,sn2)
     g_terms = []
@@ -177,11 +180,12 @@ for sn1, sn2 in product(spin_names,spin_names):
 
     # Set tails
     for chi in (chi_tau, chi_iw, chi_w):
-        chi.tail.zero()
         chi.tail[1][chi_index1,chi_index2] = sum(map(lambda t: t[1], g_terms))
         chi.tail[2][chi_index1,chi_index2] = sum(map(lambda t: t[1]*t[0], g_terms))
         chi.tail[3][chi_index1,chi_index2] = sum(map(lambda t: t[1]*t[0]*t[0], g_terms))
-        chi.tail.mask.fill(3)
+
+for chi in (chi_tau, chi_iw, chi_w):
+    chi.tail.mask.fill(3)
 
 with HDFArchive(chi_ed_filename,'w') as arch:
     arch['energies'] = energies
