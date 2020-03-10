@@ -1,5 +1,5 @@
 language: cpp
-sudo: required
+os: linux
 dist: trusty
 group: deprecated-2017Q4
 cache: bundler
@@ -25,7 +25,7 @@ before_install:
 
 install: true
 
-script:
+before_script:
   # Stop on first error
   - set -e
 
@@ -54,6 +54,7 @@ script:
   - make install
   - popd
 
+script:
   # Build SOM
   - mkdir som.build && pushd som.build
   - |
