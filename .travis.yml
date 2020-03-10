@@ -11,17 +11,17 @@ compiler:
 branches:
   only:
     - master
+    - travis
 
 before_install:
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y                                      # GCC 5
-  - sudo add-apt-repository 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-4.0 main' -y # libclang 4.0
+  - sudo add-apt-repository 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-4.0 main' -y # Clang/libclang 4.0
   - sudo add-apt-repository ppa:kzemek/boost -y                                                 # Boost 1.58
   - sudo apt-get update
   - sudo apt-get install -y --allow-unauthenticated gcc-5 g++-5
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
-  # cpp2doc is broken with libclang 3.9, therefore a newer version is required
-  - sudo apt-get install -y --allow-unauthenticated libboost1.58-dev libgfortran3 gfortran openmpi-bin openmpi-common openmpi-doc libopenmpi-dev libblas-dev liblapack-dev libfftw3-dev libgmp-dev hdf5-tools libhdf5-serial-dev python-h5py python-dev python-numpy python-scipy python-matplotlib ipython python-mpi4py python-mako python-sphinx libclang-4.0-dev python-clang-4.0 libjs-mathjax
-  - sudo update-alternatives --install /usr/bin/clang clang /usr/local/clang-3.9.0/bin/clang 60 --slave /usr/bin/clang++ clang++ /usr/local/clang-3.9.0/bin/clang++
+  - sudo apt-get install -y --allow-unauthenticated clang-4.0 libboost1.58-dev libgfortran3 gfortran openmpi-bin openmpi-common openmpi-doc libopenmpi-dev libblas-dev liblapack-dev libfftw3-dev libgmp-dev hdf5-tools libhdf5-serial-dev python-h5py python-dev python-numpy python-scipy python-matplotlib ipython python-mpi4py python-mako python-sphinx libclang-4.0-dev python-clang-4.0 libjs-mathjax
+  - sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-4.0 60 --slave /usr/bin/clang++ clang++ /usr/bin/clang++-4.0
 
 install: true
 
@@ -33,19 +33,21 @@ script:
   - cd $TRAVIS_BUILD_DIR/..
   - git clone https://github.com/TRIQS/triqs.git triqs
   - pushd triqs && git checkout 1.4.2 && popd
+  # Delete problematic lines from TRIQS docs that make older versions of Clang segfault
+  - sed -i -e '15,32d' triqs/doc/reference/gfs/c++/gf_block_0.cpp
   - mkdir installed
   - mkdir triqs.build && pushd triqs.build
   - |
-    cmake ../triqs \
-    -DCMAKE_BUILD_TYPE=Debug \
-    -DCMAKE_INSTALL_PREFIX=$TRAVIS_BUILD_DIR/../installed \
-    -DCMAKE_C_COMPILER=/usr/bin/${CC} \
-    -DCMAKE_CXX_COMPILER=/usr/bin/${CXX} \
-    -DPYTHON_INTERPRETER=/usr/bin/python \
-    -DTRIQS_LIBCLANG_LOCATION=/usr/lib/x86_64-linux-gnu/libclang-4.0.so.1 \
-    -DPython_use_mpi4py=ON \
-    -DSphinx_Math_Generator_MathJax=ON \
-    -DMATHJAX_PATH=/usr/share/javascript/mathjax \
+    cmake ../triqs                                                          \
+    -DCMAKE_BUILD_TYPE=Debug                                                \
+    -DCMAKE_INSTALL_PREFIX=$TRAVIS_BUILD_DIR/../installed                   \
+    -DCMAKE_C_COMPILER=/usr/bin/${CC}                                       \
+    -DCMAKE_CXX_COMPILER=/usr/bin/${CXX}                                    \
+    -DPYTHON_INTERPRETER=/usr/bin/python                                    \
+    -DTRIQS_LIBCLANG_LOCATION=/usr/lib/x86_64-linux-gnu/libclang-4.0.so.1   \
+    -DPython_use_mpi4py=ON                                                  \
+    -DSphinx_Math_Generator_MathJax=ON                                      \
+    -DMATHJAX_PATH=/usr/share/javascript/mathjax                            \
     -DBuild_Documentation=ON
   - make -j3
   - make test
@@ -55,10 +57,10 @@ script:
   # Build SOM
   - mkdir som.build && pushd som.build
   - |
-    cmake ../som \
-    -DCMAKE_BUILD_TYPE=Debug \
-    -DCMAKE_CXX_COMPILER=/usr/bin/${CXX} \
-    -DTRIQS_PATH=$TRAVIS_BUILD_DIR/../installed \
+    cmake ../som                                                            \
+    -DCMAKE_BUILD_TYPE=Debug                                                \
+    -DCMAKE_CXX_COMPILER=/usr/bin/${CXX}                                    \
+    -DTRIQS_PATH=$TRAVIS_BUILD_DIR/../installed                             \
     -DBUILD_DOC=ON
   - make -j3
   - make test
