@@ -15,7 +15,7 @@ the method can be found under
 http://www.cond-mat.de/events/correl12/manuscripts/mishchenko.pdf
 
 This project uses the TRIQS library version 1.4.2.
-The TRIQS website is under https://triqs.ipht.cnrs.fr/.
+The TRIQS website is under https://triqs.github.io/triqs/.
 Start there to learn about TRIQS.
 
 Installation

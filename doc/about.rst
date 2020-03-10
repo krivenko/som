@@ -43,12 +43,12 @@ TRIQS
 It is highly recommended to get familiar with basic usage of the TRIQS library,
 before starting to work with this program.
 
-https://triqs.ipht.cnrs.fr/
+https://triqs.github.io/
 
 Here is a simple tutorial showing how to manipulate Green's Function objects of TRIQS
 in Python scripts,
 
-https://triqs.ipht.cnrs.fr/1.4/tutorials/gfs/gfs_tutorial_python.html
+https://triqs.github.io/triqs/1.4/tutorials/gfs/gfs_tutorial_python.html
 
 License
 =======

@@ -93,7 +93,26 @@ script:
     -DCMAKE_BUILD_TYPE=Debug                                                \
     -DCMAKE_CXX_COMPILER=/usr/bin/${CXX}                                    \
     -DTRIQS_PATH=$TRAVIS_BUILD_DIR/../installed                             \
+    -DTRIQS_INVENTORY_DIR="https://triqs.github.io/triqs/1.4/"              \
     -DBUILD_DOC=ON
   - make -j3
   - make test
   - make install
+  # Prepare docs for deployment
+  - cd $TRAVIS_BUILD_DIR/../som.build
+  - |
+    find doc/html -name "*.html"                                            \
+    -type f -exec sed -i 's/\/usr\/share\/javascript\/mathjax/\/som\/mathjax/g' {} \;
+  - cp -r /usr/share/javascript/mathjax doc/html/mathjax
+  - touch doc/html/.nojekyll
+
+deploy:
+  # Publish documentation
+  provider: pages
+  cleanup: false
+  token: $GITHUB_TOKEN
+  keep_history: false
+  local_dir: $TRAVIS_BUILD_DIR/../som.build/doc/html
+  on:
+    branch: master
+    condition: "$CC = clang"

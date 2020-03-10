@@ -28,7 +28,7 @@ html_theme = 'triqs'
 html_theme_path = ['@TRIQS_THEMES_PATH@']
 html_show_sphinx = False
 html_context = {'header_title': 'SOM',
-                'header_subtitle': 'An analytic continuation program based on the <a class="triqs" style="font-size: 12px" href="https://triqs.ipht.cnrs.fr">TRIQS</a> library',
+                'header_subtitle': 'An analytic continuation program based on the <a class="triqs" style="font-size: 12px" href="https://triqs.github.io/">TRIQS</a> library',
                 'header_links': [['Install', 'install'],
                                  ['Documentation', 'documentation'],
                                  ['Issues', 'issues'],
