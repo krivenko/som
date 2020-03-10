@@ -92,7 +92,7 @@ for sn in spin_names:
         coeff = -beta / (2 * np.cosh(x))
         sph_in_array = sph_in(len(g_l.mesh)-1,abs(x))[0]
         for l in g_l.mesh:
-            l = l.real
+            l = int(l.real)
             g_l.data[l,:,:] += res * coeff*np.sqrt(2*l+1)*((-np.sign(x))**l)*sph_in_array[l]
 
         # g_w
@@ -166,7 +166,7 @@ for sn1, sn2 in product(spin_names,spin_names):
             coeff = -beta / (2 * np.sinh(x))
             sph_in_array = sph_in(len(g_l.mesh)-1,abs(x))[0]
             for l in g_l.mesh:
-                l = l.real
+                l = int(l.real)
                 chi_l.data[l,chi_index1,chi_index2] += res * coeff*np.sqrt(2*l+1)*((-np.sign(x))**l)*sph_in_array[l]
 
         # chi_w
