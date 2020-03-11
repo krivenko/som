@@ -2,13 +2,14 @@ from pytriqs.gf.local import *
 from pytriqs.archive import HDFArchive
 import pytriqs.utility.mpi as mpi
 from pytriqs.applications.analytical_continuation.som import Som
+import numpy as np
 
 from sys import argv
 from params import *
 
 
 # Fixed parameters for Som.run()
-som_params['verbosity'] = 3
+som_params['verbosity'] = 2
 som_params['make_histograms'] = True
 
 kind, mesh = argv[1:]
@@ -27,8 +28,12 @@ elif kind == 'BosonCorr' or kind == 'BosonAutoCorr':
     if mesh != 'legendre':
         chi = arch['chi_' + mesh_suffix]
     else:
-        chi = GfLegendre(beta = beta, indices = [0,1], n_points = n_l)
+        chi = GfLegendre(beta = beta,
+                         statistic = "Boson",
+                         indices = [0,1],
+                         n_points = n_l)
         chi << MatsubaraToLegendre(arch['chi_iw'])
+    chi.data[:] = chi.data.real
     chi_w = arch_ed['chi_w'].copy()
     n_w = len(chi_w.mesh)
     energy_window = (chi_w.mesh.omega_min, chi_w.mesh.omega_max)
@@ -66,11 +71,12 @@ else:
     chi_w = arch_ed['chi_w'].copy()
 
     chi_iw = arch['chi_iw']
-    norms = np.pi * np.array([chi_iw.data[n_iw-1,0,0],chi_iw.data[n_iw-1,1,1]])
+    norms = np.pi * np.array([chi_iw.data[n_iw-1,0,0].real,
+                              chi_iw.data[n_iw-1,1,1].real])
     if kind == "BosonAutoCorr": norms = norms / 2
 
     # Construct a SOM object
-    cont = Som(g_block, kind = kind, norms = norms)
+    cont = Som(chi, kind = kind, norms = norms)
     # Run!
     cont.run(**som_params)
 
@@ -79,7 +85,7 @@ else:
 
     if mpi.is_master_node():
         with HDFArchive(som_filename,'a') as arch_som:
-            gr = {BosonCorr : 'chi_', BosonAutoCorr : 'chi_auto_'}[kind] + mesh_suffix
+            gr = {"BosonCorr" : 'chi_', "BosonAutoCorr" : 'chi_auto_'}[kind] + mesh_suffix
             if gr not in arch_som: arch_som.create_group(gr)
             arch_som[gr]['chi'] = chi
             arch_som[gr]['chi_rec'] = chi_rec
