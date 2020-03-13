@@ -62,6 +62,7 @@ std::string observable_name(observable_kind kind) {
   case BosonCorr: return "bosonic correlator";
   case BosonAutoCorr: return "bosonic autocorrelator";
   case ZeroTemp: return "correlator at zero temperature";
+  default: TRIQS_RUNTIME_ERROR << "observable_name: Invalid observable kind";
  }
 }
 
@@ -72,6 +73,7 @@ std::pair<double,double> max_energy_window(observable_kind kind) {
   case BosonCorr: return std::make_pair(-HUGE_VAL,HUGE_VAL);
   case BosonAutoCorr: return std::make_pair(0,HUGE_VAL);
   case ZeroTemp: return std::make_pair(0,HUGE_VAL);
+  default: TRIQS_RUNTIME_ERROR << "max_energy_window: Invalid observable kind";
  }
 }
 
