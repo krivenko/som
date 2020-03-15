@@ -6,7 +6,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif(NOT CMAKE_BUILD_TYPE)
 
 # Version number of the application
-set(SOM_VERSION "1.1")
+set(SOM_VERSION "1.2")
 message(STATUS "Configuring SOM version ${SOM_VERSION}")
 
 # Append triqs installed files to the cmake load path
