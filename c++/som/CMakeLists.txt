@@ -1,15 +1,38 @@
+################################################################################
+#
+# SOM: Stochastic Optimization Method for Analytic Continuation
+#
+# Copyright (C) 2016-2020 Igor Krivenko <igor.s.krivenko@gmail.com>
+#
+# SOM is free software: you can redistribute it and/or modify it under the
+# terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# SOM is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# SOM. If not, see <http://www.gnu.org/licenses/>.
+#
+################################################################################
+
 # Find all .cpp files in the current directory
 file(GLOB cpp_sources RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
 
 # Set up compilation of those files into a shared library
-add_library(som_c STATIC ${cpp_sources})
+add_library(som_c ${cpp_sources})
 
 # Link against TRIQS and enable warnings
 target_link_libraries(som_c PUBLIC triqs PRIVATE project_warnings)
 
 # Configure compilation
 target_compile_options(som_c PUBLIC -fPIC)
-target_include_directories(som_c PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/c++>)
+target_include_directories(som_c PUBLIC
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/c++>
+)
 target_compile_definitions(som_c PUBLIC
   SOM_GIT_HASH=${PROJECT_GIT_HASH}
   TRIQS_GIT_HASH=${TRIQS_GIT_HASH}
@@ -19,11 +42,16 @@ target_compile_definitions(som_c PUBLIC
 
 # Install library and headers
 install(TARGETS som_c EXPORT som-targets DESTINATION lib)
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} DESTINATION include FILES_MATCHING PATTERN "*.hpp")
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  DESTINATION include
+  FILES_MATCHING PATTERN "*.hpp"
+)
 
 # ========= Static Analyzer Checks ==========
 
-option(ANALYZE_SOURCES OFF "Run static analyzer checks if found (clang-tidy, cppcheck)")
+option(ANALYZE_SOURCES
+  "Run static analyzer checks if found (clang-tidy, cppcheck)" OFF
+)
 if(ANALYZE_SOURCES)
 
   # Locate static analyzer tools
@@ -33,9 +61,11 @@ if(ANALYZE_SOURCES)
   # Run clang-tidy if found
   if(CLANG_TIDY_EXECUTABLE)
     message(STATUS "clang-tidy found: ${CLANG_TIDY_EXECUTABLE}")
-    set_target_properties(som_c PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_EXECUTABLE}")
+    set_target_properties(som_c PROPERTIES
+                          CXX_CLANG_TIDY "${CLANG_TIDY_EXECUTABLE}")
   else()
-    message(STATUS "clang-tidy not found in $PATH. Please consider installing clang-tidy for additional checks!")
+    message(STATUS "clang-tidy not found in $PATH. \
+            Please consider installing clang-tidy for additional checks!")
   endif()
 
   # Run cppcheck if found
@@ -50,19 +80,19 @@ if(ANALYZE_SOURCES)
     --verbose
     --force
     --quiet
-    ${sources}
+    ${cpp_sources}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
   else()
-    message(STATUS "cppcheck not found in $PATH. Please consider installing cppcheck for additional checks!")
+    message(STATUS "cppcheck not found in $PATH. \
+            Please consider installing cppcheck for additional checks!")
   endif()
 
 endif()
 
-
 # ========= Dynamic Analyzer Checks ==========
 
-option(ASAN OFF "Compile library and executables with LLVM Address Sanitizer")
-option(UBSAN OFF "Compile library and executables with LLVM Undefined Behavior Sanitizer")
+option(ASAN "Compile library with LLVM Address Sanitizer" OFF)
+option(UBSAN "Compile library with LLVM Undefined Behavior Sanitizer" OFF)
 
 if(ASAN)
   if(NOT TARGET asan)

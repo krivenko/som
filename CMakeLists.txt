@@ -1,4 +1,4 @@
-##############################################################################
+################################################################################
 #
 # SOM: Stochastic Optimization Method for Analytic Continuation
 #
@@ -17,7 +17,10 @@
 # You should have received a copy of the GNU General Public License along with
 # SOM. If not, see <http://www.gnu.org/licenses/>.
 #
-##############################################################################
+################################################################################
+
+# CMake scripts are based on the 'app4triqs' TRIQS application skeleton.
+# See https://github.com/TRIQS/app4triqs for more details.
 
 cmake_minimum_required(VERSION 3.0.2 FATAL_ERROR)
 
@@ -46,12 +49,15 @@ message(STATUS "${PROJECT_NAME} version : ${PROJECT_VERSION}")
 message(STATUS "${PROJECT_NAME} Git hash: ${PROJECT_GIT_HASH}")
 
 # Default Install directory to TRIQS_ROOT if not given or invalid.
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT OR (NOT IS_ABSOLUTE ${CMAKE_INSTALL_PREFIX}))
-  message(STATUS "No install prefix given (or invalid). Defaulting to TRIQS_ROOT")
-  set(CMAKE_INSTALL_PREFIX ${TRIQS_ROOT} CACHE PATH "default install path" FORCE)
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT OR
+   (NOT IS_ABSOLUTE ${CMAKE_INSTALL_PREFIX}))
+  message(STATUS
+          "No install prefix given (or invalid). Defaulting to TRIQS_ROOT")
+  set(CMAKE_INSTALL_PREFIX ${TRIQS_ROOT}
+      CACHE PATH "Default install path" FORCE)
   set(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT FALSE)
 endif()
-message(STATUS "-------- CMAKE_INSTALL_PREFIX: ${CMAKE_INSTALL_PREFIX} --------")
+message(STATUS "CMAKE_INSTALL_PREFIX: ${CMAKE_INSTALL_PREFIX}")
 
 #########################
 # External dependencies #
@@ -71,7 +77,7 @@ find_package(MPI)
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Type of build" FORCE)
 endif()
-message(STATUS "-------- CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE} --------")
+message(STATUS "CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 
 set(CACHE_SIZE 0x4000 CACHE STRING "Size of the cache to store computed LHS")
 add_definitions(-DCACHE_SIZE=${CACHE_SIZE})
@@ -133,7 +139,8 @@ if(TRIQS_WITH_PYTHON_SUPPORT)
   #option(Build_Documentation "Build documentation" OFF)
   #if(Build_Documentation AND NOT IS_SUBPROJECT)
   #  if(NOT TRIQS_WITH_DOCUMENTATION)
-  #    message(WARNING "TRIQS was installed without documentation! Cannot build documentation.")
+  #    message(WARNING "TRIQS was installed without documentation! \
+  #             Cannot build documentation.")
   #  else()
   #    message(STATUS "Documentation Build enabled")
   #    add_subdirectory(doc)
@@ -141,7 +148,7 @@ if(TRIQS_WITH_PYTHON_SUPPORT)
   #endif()
 else()
   message(WARNING "TRIQS was installed without Python support. "
-                  "Cannot build the Python Interface and Documentation.")
+                  "Cannot build the Python interface and documentation.")
 endif()
 
 # Additional configuration files
@@ -150,6 +157,7 @@ add_subdirectory(share)
 ##################
 # Debian Package #
 ##################
+
 option(BUILD_DEBIAN_PACKAGE "Build a deb package" OFF)
 if(BUILD_DEBIAN_PACKAGE AND NOT IS_SUBPROJECT)
   if(NOT CMAKE_INSTALL_PREFIX STREQUAL "/usr")
@@ -167,4 +175,3 @@ if(BUILD_DEBIAN_PACKAGE AND NOT IS_SUBPROJECT)
   set(CPACK_DEBIAN_PACKAGE_GENERATE_SHLIBS ON)
   include(CPack)
 endif()
-
