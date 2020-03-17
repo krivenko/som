@@ -20,53 +20,36 @@
  ******************************************************************************/
 #pragma once
 
-#include <cmath>
+#include <complex>
+#include <iostream>
+
+#include <triqs/arrays.hpp>
 #include <triqs/gfs.hpp>
 
 #include "base.hpp"
 
 namespace som {
 
-using namespace triqs::arrays;
-using namespace triqs::gfs;
-
 // Kernel: bosonic correlator, Matsubara frequencies
-template<> class kernel<BosonCorr,imfreq> :
-           public kernel_base<kernel<BosonCorr,imfreq>, array<dcomplex,1>> {
+template <>
+class kernel<BosonCorr, triqs::gfs::imfreq>
+   : public kernel_base<kernel<BosonCorr, triqs::gfs::imfreq>,
+                        triqs::arrays::array<std::complex<double>, 1>> {
 
 public:
+  using result_type = triqs::arrays::array<std::complex<double>, 1>;
+  using mesh_type = triqs::gfs::gf_mesh<triqs::gfs::imfreq>;
+  constexpr static observable_kind kind = BosonCorr;
 
- using result_type = array<dcomplex,1>;
- using mesh_type = gf_mesh<imfreq>;
- constexpr static observable_kind kind = BosonCorr;
+  const double beta;    // Inverse temperature
+  const mesh_type mesh; // Matsubara frequency mesh
 
- const double beta;          // Inverse temperature
- const mesh_type mesh;       // Matsubara frequency mesh
+  explicit kernel(mesh_type const& mesh);
 
- kernel(mesh_type const& mesh) :
-  kernel_base(mesh.get_positive_freq().size()), beta(mesh.domain().beta),
-  mesh(mesh.get_positive_freq()) {}
+  // Apply to a rectangle
+  void apply(rectangle const& rect, result_type& res) const;
 
- // Apply to a rectangle
- void apply(rectangle const& rect, result_type & res) const {
-
-  double e1 = rect.center - rect.width/2;
-  double e2 = rect.center + rect.width/2;
-
-  auto it = std::begin(mesh);
-  res((*it).linear_index()) = rect.height * rect.width / M_PI; // \Omega = 0
-  for(++it; it != std::end(mesh); ++it) {
-   auto iw = dcomplex(*it);
-   res((*it).linear_index()) = (rect.height/M_PI) * (rect.width + iw * std::log((iw - e2) / (iw - e1)));
-  }
- }
-
- friend std::ostream & operator<<(std::ostream & os, kernel const& kern) {
-  os << "A(\\epsilon) -> \\chi(i\\Omega), ";
-  os << "\\beta = " << kern.beta << ", " << kern.mesh.size() << " Matsubara frequencies.";
-  return os;
- }
-
+  friend std::ostream& operator<<(std::ostream& os, kernel const& kern);
 };
 
-}
+} // namespace som

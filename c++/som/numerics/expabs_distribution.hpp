@@ -26,28 +26,27 @@ namespace som {
 
 // This function object returns a real random number x from [x_min; x_max[
 // distributed as P(x) = N exp(-gamma*|x|/max(|x_min|,|x_max|))
-template<typename RNG> class expabs_distribution {
+template <typename RNG> class expabs_distribution {
 
- RNG & rng;
- const double gamma;
+  RNG& rng;
+  const double gamma;
 
 public:
+  expabs_distribution(RNG& rng, double gamma) : rng(rng), gamma(gamma) {}
 
- expabs_distribution(RNG & rng, double gamma) : rng(rng), gamma(gamma) {}
+  double operator()(double x_min, double x_max) const {
+    double x_min_abs = std::abs(x_min);
+    double x_max_abs = std::abs(x_max);
+    double L = std::max(x_min_abs, x_max_abs);
+    double gL = gamma / L;
 
- double operator()(double x_min, double x_max) const {
-  double x_min_abs = std::abs(x_min);
-  double x_max_abs = std::abs(x_max);
-  double L = std::max(x_min_abs, x_max_abs);
-  double gL = gamma / L;
+    double x = rng();
 
-  double x = rng();
+    double f = (1 - x) * std::copysign(std::expm1(-gL * x_min_abs), x_min) +
+               x * std::copysign(std::expm1(-gL * x_max_abs), x_max);
 
-  double f = (1-x) * std::copysign(std::expm1(-gL * x_min_abs), x_min) +
-                 x * std::copysign(std::expm1(-gL * x_max_abs), x_max);
-
-  return std::copysign(std::log1p(-std::abs(f)) / gL, f);
- }
+    return std::copysign(std::log1p(-std::abs(f)) / gL, f);
+  }
 };
 
-}
+} // namespace som

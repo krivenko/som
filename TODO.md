@@ -2,9 +2,7 @@ TODO list for SOM 2.0
 =====================
 
 * Update documentation (CMake scripts and contents).
-* Run sanitizers on the code.
-* Update .clang-format and reformat sources.
-* Split 'som_core.cpp' into smaller parts.
+* Extend 'polynomial' unit test (all combinations of template arguments).
 * Update Travis CI configuration.
 * Check if the Debian package build is usable.
 * Implement the solution quality assessment technique proposed in Phys. Rev. B **95**, 014102 (2017).

@@ -18,22 +18,24 @@
  * SOM. If not, see <http://www.gnu.org/licenses/>.
  *
  ******************************************************************************/
-#include <som/kernels/bosoncorr_imtime.hpp>
 #include <som/kernels/bosoncorr_imfreq.hpp>
+#include <som/kernels/bosoncorr_imtime.hpp>
 #include <som/kernels/bosoncorr_legendre.hpp>
 
 #include "./test_kernel.hpp"
 
+using namespace triqs::gfs;
+
 cache_index ci;
 
 TEST(BosonCorr, imtime) {
- test_kernel<kernel<BosonCorr,imtime>>("bosoncorr_imtime.h5", ci, 1e-10);
+  test_kernel<kernel<BosonCorr, imtime>>("bosoncorr_imtime.h5", ci, 1e-10);
 }
 TEST(BosonCorr, imfreq) {
- test_kernel<kernel<BosonCorr,imfreq>>("bosoncorr_imfreq.h5", ci, 1e-10);
+  test_kernel<kernel<BosonCorr, imfreq>>("bosoncorr_imfreq.h5", ci, 1e-10);
 }
 TEST(BosonCorr, legendre) {
- test_kernel<kernel<BosonCorr,legendre>>("bosoncorr_legendre.h5", ci, 1e-10);
+  test_kernel<kernel<BosonCorr, legendre>>("bosoncorr_legendre.h5", ci, 1e-10);
 }
 
 MAKE_MAIN;

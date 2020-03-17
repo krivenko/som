@@ -24,13 +24,14 @@ file(GLOB_RECURSE all_tests RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
 
 foreach(test ${all_tests})
   get_filename_component(test_name ${test} NAME_WE)
+  set(test_name "test.${test_name}")
   get_filename_component(test_dir ${test} DIRECTORY)
   add_executable(${test_name} ${test})
   set_property(TARGET ${test_name} PROPERTY
                RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${test_dir})
   target_include_directories(${test_name} PUBLIC
                              $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/c++>)
-  target_link_libraries(${test_name} triqs gtest_main)
+  target_link_libraries(${test_name} som_c gtest_main project_warnings)
   add_test(NAME ${test_name} COMMAND ${test_name}
            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${test_dir})
   # Run clang-tidy if found

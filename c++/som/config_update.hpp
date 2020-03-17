@@ -22,11 +22,10 @@
 #pragma once
 
 #include <vector>
-#include <utility>
-#include <triqs/utility/exceptions.hpp>
 
-#include "configuration.hpp"
 #include "cache_index.hpp"
+#include "configuration.hpp"
+#include "rectangle.hpp"
 
 #define CHECK_CONFIG_UPDATE_OPERATIONS
 
@@ -35,106 +34,48 @@ namespace som {
 // Object to hold a (proposed) update to a configuration
 struct config_update {
 
- // configuration this update will be applied to
- configuration & conf;
+  // configuration this update will be applied to
+  configuration& conf;
 
- // List of indices of changed rectangles
- // 0 <= index < INT_MAX: replace rectangle at index
- // index == INT_MAX: add rectangle
- // index < 0: remove rectanle at -index.
- std::vector<int> changed_indices;
- // New rectangles (for insertions and chages)
- std::vector<rectangle> new_rects;
+  // List of indices of changed rectangles
+  // 0 <= index < INT_MAX: replace rectangle at index
+  // index == INT_MAX: add rectangle
+  // index < 0: remove rectanle at -index.
+  std::vector<int> changed_indices;
+  // New rectangles (for insertions and chages)
+  std::vector<rectangle> new_rects;
 
- // Reference to the cache index and id within the cache
- // Every new config_update object, including copies, aquire a new
- // cache entry descriptor, which is then released in the destructor.
- // Methods reset() and *_rectangle() will invalidate the cache entry.
- cache_index & ci;
- int cache_id;
+  // Reference to the cache index and id within the cache
+  // Every new config_update object, including copies, acquire a new
+  // cache entry descriptor, which is then released in the destructor.
+  // Methods reset() and *_rectangle() will invalidate the cache entry.
+  cache_index& ci;
+  int cache_id;
 
- config_update(configuration & conf, cache_index & ci) :
-  conf(conf), ci(ci), cache_id(ci.aquire()) {
-  changed_indices.reserve(2);
-  new_rects.reserve(2);
- }
- config_update(config_update const& cu) :
-  conf(cu.conf), changed_indices(cu.changed_indices), new_rects(cu.new_rects),
-  ci(cu.ci), cache_id(ci.aquire()) {}
- config_update(config_update && cu) noexcept :
-  conf(cu.conf), changed_indices(cu.changed_indices), new_rects(cu.new_rects),
-  ci(cu.ci), cache_id(ci.aquire()) {}
- config_update & operator=(config_update const&) = delete;
- config_update & operator=(config_update &&) = delete;
- ~config_update() { ci.decref(cache_id); }
+  config_update(configuration& conf, cache_index& ci);
+  config_update(config_update const& cu);
+  config_update(config_update&& cu) noexcept;
+  config_update& operator=(config_update const&) = delete;
+  config_update& operator=(config_update&&) = delete;
+  ~config_update();
 
- void add_rectangle(rectangle const& r) {
-  changed_indices.push_back(INT_MAX);
-  new_rects.push_back(r);
-  ci[cache_id].valid = false;
- }
- void add_rectangle(rectangle && r) {
-  changed_indices.push_back(INT_MAX);
-  new_rects.push_back(std::move(r));
-  ci[cache_id].valid = false;
- }
+  void add_rectangle(rectangle const& r);
+  void add_rectangle(rectangle&& r);
 
- void remove_rectangle(int index) {
-  changed_indices.push_back(-index-1);
-  ci[cache_id].valid = false;
- }
+  void remove_rectangle(int index);
 
- void change_rectangle(int index, rectangle const& r) {
-  changed_indices.push_back(index);
-  new_rects.push_back(r);
-  ci[cache_id].valid = false;
- }
- void change_rectangle(int index, rectangle && r) {
-  changed_indices.push_back(index);
-  new_rects.push_back(std::move(r));
-  ci[cache_id].valid = false;
- }
+  void change_rectangle(int index, rectangle const& r);
+  void change_rectangle(int index, rectangle&& r);
 
- // access the base configuration
- configuration const& get_config() const { return conf; }
+  // Access the base configuration
+  [[nodiscard]] configuration const& get_config() const { return conf; }
 
- void reset() {
-  changed_indices.clear();
-  new_rects.clear();
-  ci[cache_id].valid = false;
- }
+  void reset();
 
- void apply() {
-#ifdef CHECK_CONFIG_UPDATE_OPERATIONS
-  if(changed_indices.size() > 2)
-   TRIQS_RUNTIME_ERROR << "config_update: only 2 operations in a row are allowed";
-#endif
-  auto rect_it = std::begin(new_rects);
-  for(auto index : changed_indices) {
-   if(index == INT_MAX) { // add rectangle
-    conf.insert(*rect_it);
-    ++rect_it;
-   } else if(index < 0) { // remove rectangle
-#ifdef CHECK_CONFIG_UPDATE_OPERATIONS
-  if(-index-1 >= conf.size())
-   TRIQS_RUNTIME_ERROR << "config_update (remove): index out of range, index = " << -index-1;
-#endif
-    conf.remove(-index-1);
-   } else { // change rectangle
-#ifdef CHECK_CONFIG_UPDATE_OPERATIONS
-  if(index >= conf.size())
-   TRIQS_RUNTIME_ERROR << "config_update (change): index out of range, index = " << index;
-#endif
-    conf.replace(index, *rect_it);
-    ++rect_it;
-   }
-  }
-  ci[conf.cache_id].valid = false;
-  reset();
- }
+  void apply();
 
- int size() const { return changed_indices.size(); }
- operator bool() { return changed_indices.size() > 0; }
+  [[nodiscard]] size_t size() const { return changed_indices.size(); }
+  operator bool() { return changed_indices.size() > 0; }
 };
 
-}
+} // namespace som

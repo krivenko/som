@@ -38,6 +38,7 @@ macro(add_cppcheck_command test_name src)
       --enable=warning,style,performance,portability
       --std=c++17
       --template=gcc
+      --inline-suppr
       --verbose
       --quiet
       ${src}
@@ -45,7 +46,8 @@ macro(add_cppcheck_command test_name src)
 endmacro()
 
 foreach(test ${all_tests})
-  get_filename_component(test_name ${test} NAME_WE)
+  get_filename_component(test_name "${test}" NAME_WE)
+  set(test_name "test.${test_name}")
   get_filename_component(test_dir ${test} DIRECTORY)
   add_executable(${test_name} ${test})
   set_property(TARGET ${test_name} PROPERTY

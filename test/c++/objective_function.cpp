@@ -20,8 +20,8 @@
  ******************************************************************************/
 #include <vector>
 
-#include <triqs/test_tools/arrays.hpp>
 #include <triqs/gfs.hpp>
+#include <triqs/test_tools/arrays.hpp>
 
 #include <som/kernels/fermiongf_imtime.hpp>
 #include <som/objective_function.hpp>
@@ -32,123 +32,123 @@ using namespace triqs::gfs;
 
 const double beta = 2;
 cache_index ci;
-std::vector<rectangle> rects {{-2,2.6,0.3,ci},
-                              {1.3,2.6,0.6,ci},
-                              {-0.5,2.6,0.5,ci},
-                              {2,2.6,0.7,ci}};
+std::vector<rectangle> rects{{-2, 2.6, 0.3, ci},
+                             {1.3, 2.6, 0.6, ci},
+                             {-0.5, 2.6, 0.5, ci},
+                             {2, 2.6, 0.7, ci}};
 
-gf_mesh<imtime> mesh(beta,Fermion,11);
+gf_mesh<imtime> mesh(beta, Fermion, 11);
 
-array<double,1> GF() {
- array<double,1> res(mesh.size());
- for(auto pt : mesh) {
-  int i = pt.index();
-  double tau = double(pt);
-  res(i) = -0.5*(std::exp(-tau*1.3)/(1 + std::exp(-beta*1.3)) +
-                 std::exp(tau*0.7)/(1 + std::exp(beta*0.7)));
- }
- return res;
+array<double, 1> GF() {
+  array<double, 1> res(mesh.size());
+  for(auto pt : mesh) {
+    size_t i = pt.linear_index();
+    auto tau = double(pt);
+    res(i) = -0.5 * (std::exp(-tau * 1.3) / (1 + std::exp(-beta * 1.3)) +
+                     std::exp(tau * 0.7) / (1 + std::exp(beta * 0.7)));
+  }
+  return res;
 }
 
-array<double,1> S() {
- array<double,1> res(mesh.size());
- for(auto pt : mesh) {
-  int i = pt.index();
-  double tau = double(pt);
-  res(i) = 0.05*std::exp(-std::abs(tau - 0.5*beta));
- }
- return res;
+array<double, 1> S() {
+  array<double, 1> res(mesh.size());
+  for(auto pt : mesh) {
+    size_t i = pt.linear_index();
+    auto tau = double(pt);
+    res(i) = 0.05 * std::exp(-std::abs(tau - 0.5 * beta));
+  }
+  return res;
 }
 
 auto g = GF();
 auto s = S();
 
-kernel<FermionGf,imtime> kern(mesh);
+kernel<FermionGf, imtime> kern(mesh);
 
-objective_function<kernel<FermionGf,imtime>> of(kern, g, s);
+objective_function<kernel<FermionGf, imtime>> of(kern, g, s);
 
-TEST(objective_function,Change) {
- configuration conf({rects[0],rects[2]},ci);
+TEST(objective_function, Change) {
+  configuration conf({rects[0], rects[2]}, ci);
 
- EXPECT_NEAR(172.784,of(conf),1e-3);
+  EXPECT_NEAR(172.784, of(conf), 1e-3);
 
- config_update cu(conf,ci);
- cu.change_rectangle(1, rects[3]);
- EXPECT_NEAR(167.785,of(cu),1e-3);
+  config_update cu(conf, ci);
+  cu.change_rectangle(1, rects[3]);
+  EXPECT_NEAR(167.785, of(cu), 1e-3);
 
- cu.reset();
- EXPECT_NEAR(172.784,of(cu),1e-3);
- cu.change_rectangle(0,rects[1]);
- EXPECT_NEAR(301.098,of(cu),1e-3);
+  cu.reset();
+  EXPECT_NEAR(172.784, of(cu), 1e-3);
+  cu.change_rectangle(0, rects[1]);
+  EXPECT_NEAR(301.098, of(cu), 1e-3);
 
- cu.apply();
- of.get_kernel().cache_copy(cu, conf);
- EXPECT_NEAR(301.098,of(conf),1e-3);
+  cu.apply();
+  of.get_kernel().cache_copy(cu, conf);
+  EXPECT_NEAR(301.098, of(conf), 1e-3);
 }
 
-TEST(objective_function,Add) {
- configuration conf({rects[0],rects[1]},ci);
+TEST(objective_function, Add) {
+  configuration conf({rects[0], rects[1]}, ci);
 
- EXPECT_NEAR(173.149,of(conf),1e-3);
+  EXPECT_NEAR(173.149, of(conf), 1e-3);
 
- config_update cu(conf,ci);
- cu.add_rectangle(rects[2]);
- EXPECT_NEAR(400.832,of(cu),1e-3);
+  config_update cu(conf, ci);
+  cu.add_rectangle(rects[2]);
+  EXPECT_NEAR(400.832, of(cu), 1e-3);
 
- cu.reset();
- EXPECT_NEAR(173.149,of(cu),1e-3);
- cu.add_rectangle(rects[3]);
- EXPECT_NEAR(405.862,of(cu),1e-3);
+  cu.reset();
+  EXPECT_NEAR(173.149, of(cu), 1e-3);
+  cu.add_rectangle(rects[3]);
+  EXPECT_NEAR(405.862, of(cu), 1e-3);
 
- cu.apply();
- of.get_kernel().cache_copy(cu, conf);
- EXPECT_NEAR(405.862,of(conf),1e-3);
+  cu.apply();
+  of.get_kernel().cache_copy(cu, conf);
+  EXPECT_NEAR(405.862, of(conf), 1e-3);
 }
 
-TEST(objective_function,Remove) {
- configuration conf({rects[0],rects[1],rects[2]},ci);
+TEST(objective_function, Remove) {
+  configuration conf({rects[0], rects[1], rects[2]}, ci);
 
- EXPECT_NEAR(400.832,of(conf),1e-3);
+  EXPECT_NEAR(400.832, of(conf), 1e-3);
 
- config_update cu(conf,ci);
- cu.remove_rectangle(1);
- EXPECT_NEAR(172.784,of(cu),1e-3);
+  config_update cu(conf, ci);
+  cu.remove_rectangle(1);
+  EXPECT_NEAR(172.784, of(cu), 1e-3);
 
- cu.reset();
- EXPECT_NEAR(400.832,of(cu),1e-3);
- cu.remove_rectangle(2);
- EXPECT_NEAR(173.149,of(cu),1e-3);
+  cu.reset();
+  EXPECT_NEAR(400.832, of(cu), 1e-3);
+  cu.remove_rectangle(2);
+  EXPECT_NEAR(173.149, of(cu), 1e-3);
 
- cu.apply();
- of.get_kernel().cache_copy(cu, conf);
- EXPECT_NEAR(173.149,of(conf),1e-3);
+  cu.apply();
+  of.get_kernel().cache_copy(cu, conf);
+  EXPECT_NEAR(173.149, of(conf), 1e-3);
 }
 
 
-TEST(objective_function,Multiple) {
- configuration conf({rects[0],rects[1]},ci);
+TEST(objective_function, Multiple) {
+  configuration conf({rects[0], rects[1]}, ci);
 
- EXPECT_NEAR(173.149,of(conf),1e-3);
+  EXPECT_NEAR(173.149, of(conf), 1e-3);
 
- config_update cu(conf,ci);
- cu.add_rectangle(rects[3]);
- cu.change_rectangle(1,rects[2]);
- EXPECT_NEAR(395.468,of(cu),1e-3);
+  config_update cu(conf, ci);
+  cu.add_rectangle(rects[3]);
+  cu.change_rectangle(1, rects[2]);
+  EXPECT_NEAR(395.468, of(cu), 1e-3);
 
- cu.reset();
- EXPECT_NEAR(173.149,of(cu),1e-3);
- cu.change_rectangle(1,rects[2]);
- cu.remove_rectangle(0);
- EXPECT_NEAR(79.8879,of(cu),1e-3);
+  cu.reset();
+  EXPECT_NEAR(173.149, of(cu), 1e-3);
+  cu.change_rectangle(1, rects[2]);
+  cu.remove_rectangle(0);
+  EXPECT_NEAR(79.8879, of(cu), 1e-3);
 
- cu.apply();
- of.get_kernel().cache_copy(cu, conf);
- EXPECT_NEAR(79.8879,of(conf),1e-3);
- cu.add_rectangle(rects[3]);
- cu.change_rectangle(0,rects[0]);
- EXPECT_NEAR(167.785,of(cu),1e-3);
- cu.apply();
- EXPECT_NEAR(167.785,of(conf),1e-3);
+  cu.apply();
+  of.get_kernel().cache_copy(cu, conf);
+  EXPECT_NEAR(79.8879, of(conf), 1e-3);
+  cu.add_rectangle(rects[3]);
+  cu.change_rectangle(0, rects[0]);
+  EXPECT_NEAR(167.785, of(cu), 1e-3);
+  cu.apply();
+  EXPECT_NEAR(167.785, of(conf), 1e-3);
 }
 
 MAKE_MAIN;

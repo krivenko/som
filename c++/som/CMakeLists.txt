@@ -19,8 +19,8 @@
 #
 ################################################################################
 
-# Find all .cpp files in the current directory
-file(GLOB cpp_sources RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
+# Find all .cpp files in subdirectories
+file(GLOB_RECURSE cpp_sources RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
 
 # Set up compilation of those files into a shared library
 add_library(som_c ${cpp_sources})
@@ -61,8 +61,14 @@ if(ANALYZE_SOURCES)
   # Run clang-tidy if found
   if(CLANG_TIDY_EXECUTABLE)
     message(STATUS "clang-tidy found: ${CLANG_TIDY_EXECUTABLE}")
-    set_target_properties(som_c PROPERTIES
-                          CXX_CLANG_TIDY "${CLANG_TIDY_EXECUTABLE}")
+    if(${CMAKE_VERSION} VERSION_LESS 3.6.0)
+      message(WARNING
+              "Static analysis with clang-tidy requires CMake 3.6 or newer")
+      unset(CLANG_TIDY_EXECUTABLE)
+    else()
+      set_target_properties(som_c PROPERTIES
+                            CXX_CLANG_TIDY "${CLANG_TIDY_EXECUTABLE}")
+    endif()
   else()
     message(STATUS "clang-tidy not found in $PATH. \
             Please consider installing clang-tidy for additional checks!")
@@ -72,16 +78,17 @@ if(ANALYZE_SOURCES)
   if(CPPCHECK_EXECUTABLE)
     message(STATUS "cppcheck found: ${CPPCHECK_EXECUTABLE}")
     add_custom_command(
-  TARGET som_c
-  COMMAND ${CPPCHECK_EXECUTABLE}
-    --enable=warning,style,performance,portability
-    --std=c++17
-    --template=gcc
-    --verbose
-    --force
-    --quiet
-    ${cpp_sources}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+      TARGET som_c
+      COMMAND ${CPPCHECK_EXECUTABLE}
+        --enable=warning,style,performance,portability
+        --std=c++17
+        --template=gcc
+        --inline-suppr
+        --verbose
+        --force
+        --quiet
+        ${cpp_sources}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
   else()
     message(STATUS "cppcheck not found in $PATH. \
             Please consider installing cppcheck for additional checks!")

@@ -20,169 +20,100 @@
  ******************************************************************************/
 #pragma once
 
+#include <complex>
+#include <initializer_list>
 #include <iostream>
-#include <algorithm>
+
 #include <boost/operators.hpp>
+
 #include <triqs/arrays/vector.hpp>
-#include <triqs/utility/numeric_ops.hpp>
 
 namespace som {
 
-using triqs::arrays::vector;
-using triqs::arrays::range;
-
 // AutoLowerDegree: call try_lower_degree() after every non-const operation
-template<typename CoeffType = double, bool AutoLowerDegree = false>
-class polynomial : boost::operators<polynomial<CoeffType,AutoLowerDegree>> {
+template <typename CoeffType = double, bool AutoLowerDegree = false>
+class polynomial : boost::operators<polynomial<CoeffType, AutoLowerDegree>> {
 
- // Coefficients of the polynomiall; the constant term goes first
- vector<CoeffType> coeffs;
+  // Coefficients of the polynomial; the constant term goes first
+  using coeffs_type = triqs::arrays::vector<CoeffType>;
+  coeffs_type coeffs_;
 
- constexpr static double auto_lower_degree_tolerance = 1e-16;
+  constexpr static double auto_lower_degree_tolerance = 1e-16;
 
 public:
+  polynomial(coeffs_type coeffs = {});
+  explicit polynomial(std::initializer_list<CoeffType> const& coeffs);
 
- polynomial(vector<CoeffType> const& coeffs = {}) : coeffs(coeffs) {
-  if(AutoLowerDegree) try_lower_degree();
- }
-
- polynomial(std::initializer_list<CoeffType> const& coeffs) : coeffs(coeffs) {
-  if(AutoLowerDegree) try_lower_degree();
- }
-
- // Evaluation using Horner's rule
- template<typename ArgType>
- decltype(CoeffType{}*ArgType{}) operator()(ArgType x) const {
-  decltype(CoeffType{}*ArgType{}) b = 0;
-  for(int i = coeffs.size()-1; i>=0; --i) b = b*x + coeffs[i];
-  return b;
- }
-
- int size() const { return coeffs.size(); }
- int degree() const { return size() - 1; }
-
- CoeffType  operator[](int n) const { return coeffs[n]; }
- CoeffType& operator[](int n) { return coeffs[n]; }
-
- bool operator==(const polynomial& p) const {
-  if(coeffs.size() == 0) return p.coeffs.size() == 0;
-  return coeffs == p.coeffs;
- }
-
- polynomial & operator+=(polynomial const& p) {
-  int s1 = coeffs.size(), s2 = p.coeffs.size();
-  if(s1 > s2)
-   coeffs(range(s2)) += p.coeffs;
-  else if(s1 < s2) {
-   vector<CoeffType> tmp(p.coeffs);
-   tmp(range(s1)) += coeffs;
-   swap(coeffs, tmp);
-  } else // coeffs.size() == p.coeffs.size()
-   coeffs += p.coeffs;
-  if(AutoLowerDegree) try_lower_degree();
-  return *this;
- }
-
- polynomial & operator-=(polynomial const& p) {
-  int s1 = coeffs.size(), s2 = p.coeffs.size();
-  if(s1 > s2)
-   coeffs(range(s2)) -= p.coeffs;
-  else if(s1 < s2) {
-   vector<CoeffType> tmp(-p.coeffs);
-   tmp(range(s1)) += coeffs;
-   swap(coeffs, tmp);
-  } else // coeffs.size() == p.coeffs.size()
-   coeffs -= p.coeffs;
-  if(AutoLowerDegree) try_lower_degree();
-  return *this;
- }
-
- polynomial & operator*=(polynomial const& p) {
-  int s1 = coeffs.size(), s2 = p.coeffs.size();
-  if(s1 == 0 || s2 == 0) {
-   coeffs.resize(0);
-   return *this;
+  // Evaluation using Horner's rule
+  template <typename ArgType>
+  inline auto operator()(ArgType x) const -> decltype(CoeffType{} * ArgType{}) {
+    decltype(CoeffType{} * ArgType{}) b = 0;
+    for(int i = coeffs_.size() - 1; i >= 0; --i) b = b * x + coeffs_[i];
+    return b;
   }
 
-  vector<CoeffType> tmp(coeffs);
-  coeffs.resize(s1 + s2 - 1);
-  coeffs() = CoeffType{};
-  for(int n = 0; n < s1; ++n)
-  for(int m = 0; m < s2; ++m) {
-   coeffs(n+m) += tmp(n)*p.coeffs(m);
+  [[nodiscard]] coeffs_type const& coeffs() const { return coeffs_; }
+  [[nodiscard]] coeffs_type& coeffs() { return coeffs_; }
+  [[nodiscard]] int size() const { return coeffs_.size(); }
+  [[nodiscard]] int degree() const { return size() - 1; }
+
+  CoeffType operator[](int n) const { return coeffs_[n]; }
+  CoeffType& operator[](int n) { return coeffs_[n]; }
+
+  bool operator==(const polynomial& p) const {
+    if(coeffs_.size() == 0) return p.coeffs_.size() == 0;
+    return coeffs_ == p.coeffs_;
   }
-  if(AutoLowerDegree) try_lower_degree();
-  return *this;
- }
 
- polynomial & operator*=(CoeffType const& a) {
-  int s = coeffs.size();
-  if(s == 0) {
-   coeffs.resize(0);
-   return *this;
+  polynomial& operator+=(polynomial const& p);
+  polynomial& operator-=(polynomial const& p);
+  polynomial& operator*=(polynomial const& p);
+  polynomial& operator*=(CoeffType const& a);
+  friend polynomial operator*(polynomial const& p, CoeffType const& a) {
+    polynomial res(p);
+    res *= a;
+    return res;
   }
-  coeffs *= a;
-  if(AutoLowerDegree) try_lower_degree();
-  return *this;
- }
- friend polynomial operator*(polynomial const& p, CoeffType const& a) {
-  polynomial res(p); res *= a; return res;
- }
- friend polynomial operator*(CoeffType const& a, polynomial const& p) {
-  polynomial res(p); res *= a; return res;
- }
+  friend polynomial operator*(CoeffType const& a, polynomial const& p) {
+    polynomial res(p);
+    res *= a;
+    return res;
+  }
 
- friend polynomial derivative(polynomial const& p) {
-  int s = p.size();
-  if(s == 0) return {};
+  bool try_lower_degree(double tolerance = auto_lower_degree_tolerance);
 
-  polynomial res;
-  res.coeffs.resize(s-1);
-  for(int n = 0; n < s-1; ++n)
-   res.coeffs(n) = p.coeffs(n+1) * CoeffType(n+1);
-  return res;
- }
-
- friend polynomial antiderivative(polynomial const& p) {
-  int s = p.size();
-  if(s == 0) return {};
-
-  polynomial res;
-  res.coeffs.resize(s+1);
-  res.coeffs(0) = CoeffType{};
-  for(int n = 1; n < s+1; ++n)
-   res.coeffs(n) = p.coeffs(n-1) / CoeffType(n);
-  return res;
- }
-
- bool try_lower_degree(double tolerance = auto_lower_degree_tolerance) {
-  using triqs::utility::is_zero;
-
-  int n = coeffs.size() - 1;
-  for(; n >= 0 && is_zero(coeffs[n], tolerance); --n);
-  if(n != coeffs.size() - 1) {
-   coeffs = coeffs(range(n+1));
-   return true;
-  } else
-   return false;
- }
-
- friend std::ostream & operator<<(std::ostream & os, polynomial const& p) {
-  if(p.size() == 0)
-   os << "0";
-  else
-   for(int n = 0; n < p.size(); ++n) {
-    os << p.coeffs[n];
-    switch(n) {
-     case 0: break;
-     case 1: os << "*x"; break;
-     default: os << "*x^" << n; break;
-    }
-    if(n < p.size()-1) os << " + ";
-   }
-  return os;
- }
-
+  friend std::ostream& operator<<(std::ostream& os, polynomial const& p) {
+    if(p.size() == 0)
+      os << "0";
+    else
+      for(int n = 0; n < p.size(); ++n) {
+        os << p.coeffs_[n];
+        switch(n) {
+          case 0: break;
+          case 1: os << "*x"; break;
+          default: os << "*x^" << n; break;
+        }
+        if(n < p.size() - 1) os << " + ";
+      }
+    return os;
+  }
 };
 
-}
+extern template class polynomial<double, true>;
+extern template class polynomial<double, false>;
+extern template class polynomial<std::complex<double>, true>;
+extern template class polynomial<std::complex<double>, false>;
+
+// derivative()
+
+template <typename CoeffType, bool AutoLowerDegree>
+polynomial<CoeffType, AutoLowerDegree>
+derivative(polynomial<CoeffType, AutoLowerDegree> const& p);
+
+// antiderivative()
+
+template <typename CoeffType, bool AutoLowerDegree>
+polynomial<CoeffType, AutoLowerDegree>
+antiderivative(polynomial<CoeffType, AutoLowerDegree> const& p);
+
+} // namespace som

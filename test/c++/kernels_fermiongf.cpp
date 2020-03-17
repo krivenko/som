@@ -18,22 +18,24 @@
  * SOM. If not, see <http://www.gnu.org/licenses/>.
  *
  ******************************************************************************/
-#include <som/kernels/fermiongf_imtime.hpp>
 #include <som/kernels/fermiongf_imfreq.hpp>
+#include <som/kernels/fermiongf_imtime.hpp>
 #include <som/kernels/fermiongf_legendre.hpp>
 
 #include "./test_kernel.hpp"
 
+using namespace triqs::gfs;
+
 cache_index ci;
 
 TEST(FermionGf, imtime) {
- test_kernel<kernel<FermionGf,imtime>>("fermiongf_imtime.h5", ci, 1e-10);
+  test_kernel<kernel<FermionGf, imtime>>("fermiongf_imtime.h5", ci, 1e-10);
 }
 TEST(FermionGf, imfreq) {
- test_kernel<kernel<FermionGf,imfreq>>("fermiongf_imfreq.h5", ci, 1e-10);
+  test_kernel<kernel<FermionGf, imfreq>>("fermiongf_imfreq.h5", ci, 1e-10);
 }
 TEST(FermionGf, legendre) {
- test_kernel<kernel<FermionGf,legendre>>("fermiongf_legendre.h5", ci, 1e-10);
+  test_kernel<kernel<FermionGf, legendre>>("fermiongf_legendre.h5", ci, 1e-10);
 }
 
 MAKE_MAIN;

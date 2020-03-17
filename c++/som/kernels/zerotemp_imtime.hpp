@@ -20,54 +20,38 @@
  ******************************************************************************/
 #pragma once
 
-#include <cmath>
+#include <iostream>
+#include <vector>
+
+#include <triqs/arrays.hpp>
 #include <triqs/gfs.hpp>
+
+#include "../numerics/spline.hpp"
 
 #include "base.hpp"
 
 namespace som {
 
-using namespace triqs::arrays;
-using namespace triqs::gfs;
-
 // Kernel: zero temperature GF, imaginary time
-template<> class kernel<ZeroTemp,imtime> :
-           public kernel_base<kernel<ZeroTemp,imtime>, array<double,1>> {
+template <>
+class kernel<ZeroTemp, triqs::gfs::imtime>
+   : public kernel_base<kernel<ZeroTemp, triqs::gfs::imtime>,
+                        triqs::arrays::array<double, 1>> {
 
 public:
+  using result_type = triqs::arrays::array<double, 1>;
+  using mesh_type = triqs::gfs::gf_mesh<triqs::gfs::imtime>;
+  constexpr static observable_kind kind = ZeroTemp;
 
- using result_type = array<double,1>;
- using mesh_type = gf_mesh<imtime>;
- constexpr static observable_kind kind = ZeroTemp;
+  const double beta = HUGE_VAL; // Inverse temperature (infinity)
+  const mesh_type mesh;         // Matsubara time mesh
 
- const double beta = HUGE_VAL; // Inverse temperature (infinity)
- const mesh_type mesh;         // Matsubara time mesh
+  explicit kernel(mesh_type const& mesh);
 
- kernel(mesh_type const& mesh) :
-  kernel_base(mesh.size()), mesh(mesh) {}
+  // Apply to a rectangle
+  void apply(rectangle const& rect, result_type& res) const;
 
- // Apply to a rectangle
- void apply(rectangle const& rect, result_type & res) const {
-
-  double e1 = rect.center - rect.width/2;
-  double e2 = rect.center + rect.width/2;
-
-  auto it = mesh.begin();
-  res(0) = -rect.height * rect.width;
-  for(++it; it != mesh.end(); ++it) {
-   auto tau = double(*it);
-   res((*it).linear_index()) = rect.height * (std::exp(-tau*e2) - std::exp(-tau*e1)) / tau;
-  }
- }
-
- friend std::ostream & operator<<(std::ostream & os, kernel const& kern) {
-  os << "A(\\epsilon) -> G_{T=0}(\\tau), ";
-  os << "Statistics = " << (kern.mesh.domain().statistic == Fermion ? "Fermion" : "Boson") << ", "
-     << "\\tau_{max} = " << kern.mesh.domain().beta << ", "
-     << kern.mesh.size() << " Matsubara frequencies.";
-  return os;
- }
-
+  friend std::ostream& operator<<(std::ostream& os, kernel const& kern);
 };
 
-}
+} // namespace som

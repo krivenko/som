@@ -20,126 +20,138 @@
  ******************************************************************************/
 #pragma once
 
+#include <complex>
 #include <vector>
 
+#include <mpi/mpi.hpp>
 #include <triqs/arrays/vector.hpp>
 #include <triqs/gfs.hpp>
-#include <triqs/utility/variant.hpp>
-#include <mpi/mpi.hpp>
 #include <triqs/statistics/histograms.hpp>
+#include <triqs/utility/variant.hpp>
 
-#include "run_parameters.hpp"
 #include "configuration.hpp"
-#include "kernels/base.hpp"
+#include "kernels/observables.hpp"
+#include "run_parameters.hpp"
 
 namespace som {
 
-using namespace triqs::arrays;
-using namespace triqs::gfs;
-using triqs::statistics::histogram;
-
 class som_core {
 
- // LHS cache index
- // Must be sure this object is destroyed after all other members
- cache_index ci;
+  // LHS cache index
+  // Must be sure this object is destroyed after all other members
+  cache_index ci;
 
- using input_data_r_t = std::vector<vector<double>>;
- using input_data_c_t = std::vector<vector<dcomplex>>;
+  using input_data_r_t = std::vector<triqs::arrays::vector<double>>;
+  using input_data_c_t =
+      std::vector<triqs::arrays::vector<std::complex<double>>>;
 
- template<typename Mesh> using input_data_t = std::conditional_t<
-  std::is_same<Mesh,gf_mesh<imfreq>>::value,input_data_c_t,input_data_r_t>;
+  template <typename Mesh>
+  using input_data_t = std::conditional_t<
+      std::is_same<Mesh, triqs::gfs::gf_mesh<triqs::gfs::imfreq>>::value,
+      input_data_c_t, input_data_r_t>;
 
- // Kind of the observable, GF/Susceptibility/Conductivity
- observable_kind kind;
+  // Kind of the observable, GF/Susceptibility/Conductivity
+  observable_kind kind;
 
- // Mesh of the input functions
- std::variant<gf_mesh<imtime>, gf_mesh<imfreq>, gf_mesh<legendre>> mesh;
+  // Mesh of the input functions
+  std::variant<triqs::gfs::gf_mesh<triqs::gfs::imtime>,
+               triqs::gfs::gf_mesh<triqs::gfs::imfreq>,
+               triqs::gfs::gf_mesh<triqs::gfs::legendre>>
+      mesh;
 
- // The right-hand side of the Fredholm integral equation
- // One vector per diagonal matrix element of the Green's function
- std::variant<input_data_r_t,input_data_c_t> rhs;
- // Error bars of the RHS, see eq. 30
- // One vector per diagonal matrix element of the Green's function
- std::variant<input_data_r_t,input_data_c_t> error_bars;
+  // The right-hand side of the Fredholm integral equation
+  // One vector per diagonal matrix element of the Green's function
+  std::variant<input_data_r_t, input_data_c_t> rhs;
+  // Error bars of the RHS, see eq. 30
+  // One vector per diagonal matrix element of the Green's function
+  std::variant<input_data_r_t, input_data_c_t> error_bars;
 
- // Norms of the solutions to be found (one number per diagonal matrix element of g)
- vector<double> norms;
+  // Norms of the solutions to be found (one number per diagonal matrix element
+  // of g)
+  triqs::arrays::vector<double> norms;
 
- // Resulting configurations
- std::vector<configuration> results;
+  // Resulting configurations
+  std::vector<configuration> results;
 
- // Parameters of the last call to run()
- run_parameters_t params;
+  // Parameters of the last call to run()
+  run_parameters_t params;
 
- // Status of the run upon exit: 0 for clean termination, > 0 otherwise.
- int run_status = 0;
+  // Status of the run upon exit: 0 for clean termination, > 0 otherwise.
+  int run_status = 0;
 
- // MPI communicator
- mpi::communicator comm;
+  // MPI communicator
+  mpi::communicator comm;
 
- // Objective function histograms
- std::vector<histogram> histograms;
+  // Objective function histograms
+  std::vector<triqs::statistics::histogram> histograms;
 
- // Fill rhs and error_bars
- template<typename... GfOpts>
- void set_input_data(gf_const_view<GfOpts...> g, gf_const_view<GfOpts...> S);
+  // Fill rhs and error_bars
+  template <typename... GfOpts>
+  void set_input_data(triqs::gfs::gf_const_view<GfOpts...> g,
+                      triqs::gfs::gf_const_view<GfOpts...> S);
 
- // Run the main part of the algorithm
- template<typename KernelType> void run_impl();
+  // Run the main part of the algorithm
+  template <typename KernelType> void run_impl();
 
- // Adjust the number of global updates (F)
- template<typename KernelType> int adjust_f(
-  KernelType const& kern,
-  typename KernelType::result_type rhs_,
-  typename KernelType::result_type error_bars_,
-  double norm,
-  std::function<bool()> const& stop_callback);
+  // Adjust the number of global updates (F)
+  template <typename KernelType>
+  int adjust_f(KernelType const& kern, typename KernelType::result_type rhs_,
+               typename KernelType::result_type error_bars_, double norm,
+               std::function<bool()> const& stop_callback);
 
- // Accumulate solutions
- template<typename KernelType> configuration accumulate(
-  KernelType const& kern,
-  typename KernelType::result_type rhs_,
-  typename KernelType::result_type error_bars_,
-  double norm,
-  histogram & hist,
-  std::function<bool()> const& stop_callback,
-  int F);
+  // Accumulate solutions
+  template <typename KernelType>
+  configuration accumulate(KernelType const& kern,
+                           typename KernelType::result_type rhs_,
+                           typename KernelType::result_type error_bars_,
+                           double norm, triqs::statistics::histogram& hist,
+                           std::function<bool()> const& stop_callback, int F);
 
 public:
+  /// Construct on imaginary-time quantities
+  som_core(triqs::gfs::gf_const_view<triqs::gfs::imtime> g_tau,
+           triqs::gfs::gf_const_view<triqs::gfs::imtime> S_tau,
+           observable_kind kind = FermionGf,
+           triqs::arrays::vector<double> const& norms = {});
+  /// Construct on imaginary-frequency quantities
+  som_core(triqs::gfs::gf_const_view<triqs::gfs::imfreq> g_iw,
+           triqs::gfs::gf_const_view<triqs::gfs::imfreq> S_iw,
+           observable_kind kind = FermionGf,
+           triqs::arrays::vector<double> const& norms = {});
+  /// Construct on quantities in Legendre polynomial basis
+  som_core(triqs::gfs::gf_const_view<triqs::gfs::legendre> g_l,
+           triqs::gfs::gf_const_view<triqs::gfs::legendre> S_l,
+           observable_kind kind = FermionGf,
+           triqs::arrays::vector<double> const& norms = {});
 
- /// Construct on imaginary-time quantities
- som_core(gf_const_view<imtime> g_tau, gf_const_view<imtime> S_tau,
-          observable_kind kind = FermionGf, vector<double> const& norms = {});
- /// Construct on imaginary-frequency quantities
- som_core(gf_const_view<imfreq> g_iw, gf_const_view<imfreq> S_iw,
-          observable_kind kind = FermionGf, vector<double> const& norms = {});
- /// Construct on quantities in Legendre polynomial basis
- som_core(gf_const_view<legendre> g_l, gf_const_view<legendre> S_l,
-          observable_kind kind = FermionGf, vector<double> const& norms = {});
+  // Wrap the parameters as a dictionary in python with c++2py
+  TRIQS_WRAP_ARG_AS_DICT void run(run_parameters_t const& p);
 
- TRIQS_WRAP_ARG_AS_DICT // Wrap the parameters as a dictionary in python with c++2py
- void run(run_parameters_t const& p);
+  /// Set of parameters used in the last call to run()
+  run_parameters_t get_last_run_parameters() const { return params; }
 
- /// Set of parameters used in the last call to run()
- run_parameters_t get_last_run_parameters() const { return params; }
+  /// Status of the run on exit
+  int get_run_status() const { return run_status; }
 
- /// Status of the run on exit
- int get_run_status() const { return run_status; }
+  /// Fill a Green's function using the calculated spectra
+  template <typename MeshType>
+  friend void triqs_gf_view_assign_delegation(triqs::gfs::gf_view<MeshType> g,
+                                              som_core const& cont);
 
- /// Fill a Green's function using the calculated spectra
- template<typename MeshType>
- friend void triqs_gf_view_assign_delegation(gf_view<MeshType> g, som_core const& cont);
+  /// Compute GF tail coefficients using the calculated spectra
+  [[nodiscard]] triqs::arrays::array<std::complex<double>, 3>
+  compute_tail(int max_order) const;
 
- /// Compute GF tail coefficients using the calculated spectra
- triqs::arrays::array<dcomplex, 3> compute_tail(int max_order) const;
+  /// Accumulated solutions
+  [[nodiscard]] std::vector<configuration> const& get_solutions() const {
+    return results;
+  }
 
- /// Accumulated solutions
- std::vector<configuration> const& get_solutions() const { return results; }
-
- /// Accumulated objective function histograms
- std::vector<histogram> const& get_histograms() const { return histograms; }
-
+  /// Accumulated objective function histograms
+  [[nodiscard]] std::vector<triqs::statistics::histogram> const&
+  get_histograms() const {
+    return histograms;
+  }
 };
 
-}
+} // namespace som

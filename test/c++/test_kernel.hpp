@@ -26,57 +26,62 @@
 #include <triqs/utility/is_complex.hpp>
 
 using namespace som;
-using triqs::arrays::vector;
-using triqs::arrays::array;
 using triqs::is_complex;
+using triqs::arrays::array;
+using triqs::arrays::vector;
 
 namespace som {
 
 // h5_read_mathematica_array(), complex arrays
-template<typename ArrayType>
+template <typename ArrayType>
 std::enable_if_t<is_complex<typename ArrayType::value_type>::value, ArrayType>
-h5_read_mathematica_array(h5::group g, std::string const& name) {
- array<typename ArrayType::value_type, ArrayType::rank> res_re, res_im;
- h5_read(g, name + "/re", res_re);
- h5_read(g, name + "/im", res_im);
- return res_re + 1_j*res_im;
+h5_read_mathematica_array(triqs::h5::group g, std::string const& name) {
+  array<typename ArrayType::value_type, ArrayType::rank> res_re, res_im;
+  h5_read(g, name + "/re", res_re);
+  h5_read(g, name + "/im", res_im);
+  return res_re + 1_j * res_im;
 }
 
 // h5_read_mathematica_array(), real arrays
-template<typename ArrayType>
+template <typename ArrayType>
 std::enable_if_t<!is_complex<typename ArrayType::value_type>::value, ArrayType>
-h5_read_mathematica_array(h5::group g, std::string const& name) {
- ArrayType res;
- h5_read(g, name, res);
- return res;
+h5_read_mathematica_array(triqs::h5::group g, std::string const& name) {
+  ArrayType res;
+  h5_read(g, name, res);
+  return res;
 }
 
 // test_kernel()
-template<typename KernelType>
-void test_kernel(std::string const& filename, cache_index & ci, double tolerance) {
+template <typename KernelType>
+void test_kernel(std::string const& filename, cache_index& ci,
+                 double tolerance) {
 
- h5::file file(filename, H5F_ACC_RDONLY);
+  triqs::h5::file file(filename, H5F_ACC_RDONLY);
 
- configuration conf(ci);
- h5_read(file, "rects", conf, ci);
- vector<double> beta;
- h5_read(file, "beta", beta);
+  configuration conf(ci);
+  h5_read(file, "rects", conf, ci);
+  vector<double> beta;
+  h5_read(file, "beta", beta);
 
- for(double b : beta) {
-  using mesh_t = typename KernelType::mesh_type;
-  using scalar_t = typename KernelType::result_type::value_type;
+  for(double b : beta) {
+    using mesh_t = typename KernelType::mesh_type;
+    using scalar_t = typename KernelType::result_type::value_type;
 
-  std::string group_name = "results/beta" + std::to_string(int(b));
-  auto results = h5_read_mathematica_array<array<scalar_t,2>>(file, group_name);
-  mesh_t mesh(b,
-              KernelType::kind == ZeroTemp ? Fermion : observable_statistics(KernelType::kind),
-              second_dim(results));
-  KernelType kern(mesh);
-  ci.invalidate_all();
+    std::string group_name = "results/beta" + std::to_string(int(b));
+    auto results =
+        h5_read_mathematica_array<array<scalar_t, 2>>(file, group_name);
+    mesh_t mesh(b,
+                KernelType::kind == ZeroTemp
+                    ? triqs::gfs::Fermion
+                    : observable_statistics(KernelType::kind),
+                second_dim(results));
+    KernelType kern(mesh);
+    ci.invalidate_all();
 
-  for(int i : range(conf.size()))
-   EXPECT_TRUE(array_are_close(results(i,range()), kern(conf[i]), tolerance));
- }
+    for(int i : range(conf.size()))
+      EXPECT_TRUE(
+          array_are_close(results(i, range()), kern(conf[i]), tolerance));
+  }
 }
 
-}
+} // namespace som

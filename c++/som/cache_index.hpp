@@ -20,85 +20,65 @@
  ******************************************************************************/
 #pragma once
 
-#include <vector>
 #include <stack>
-#include <utility>
+#include <vector>
 
 namespace som {
 
-// cache_index establishes connection between rectangles/configurations/configuration updates
-// and the internal LHS cache stored inside kernel_base.
+// cache_index establishes connection between
+// rectangles/configurations/configuration updates and the internal LHS cache
+// stored inside kernel_base.
 //
 // See rectangle.hpp, configuration.hpp and config_update.hpp for details
 // on how the respective classes interact with this object
 class cache_index {
 
 public:
-
- // Descriptor of a cache entry
- struct entry {
-  int refcount = 0;   // number of references to the respective cache entry
-  bool valid = false; // is the respective cache entry valid?
- };
+  // Descriptor of a cache entry
+  struct entry {
+    int refcount = 0;   // number of references to the respective cache entry
+    bool valid = false; // is the respective cache entry valid?
+  };
 
 private:
+  // Cache entry descriptors
+  std::vector<entry> entries;
+  // Pool of descriptors not referenced by any objects
+  std::stack<int> spare_ids;
 
- std::vector<entry> entries; // Cache entry descriptors
- std::stack<int> spare_ids;  // Pool of descriptors not referenced by any objects
-
- void extend() {
-  int cap = entries.size();
-  int new_cap = cap + CACHE_SIZE;
-#ifdef EXT_DEBUG
-  std::cerr << "Extending LHS cache from "
-            << cap << " to " << new_cap << " entries." << std::endl;
-#endif
-  entries.reserve(new_cap);
-  for(int id = cap; id < new_cap; ++id) {
-   entries.emplace_back();
-   spare_ids.push(new_cap - 1 + cap - id);
-  }
- }
+  void extend();
 
 public:
+  // Constructor
+  cache_index() { extend(); }
 
- // Constructor
- cache_index() { extend(); }
+  // Acquire ownership over a free cache entry
+  int acquire();
 
- // Aquire ownership over a free cache entry
- inline int aquire() {
-  if(spare_ids.empty()) extend();
-  int id = spare_ids.top();
-  spare_ids.pop();
-  auto & e = entries[id];
-  ++e.refcount;
-  e.valid = false;
-  return id;
- }
+  // Increase reference count for cache entry id
+  inline void incref(int id) { ++entries[id].refcount; }
 
- // Increase reference count for cache entry id
- inline void incref(int id) { ++entries[id].refcount; }
+  // Decrease reference count
+  inline void decref(int id) {
+    auto& e = entries[id];
+    --e.refcount;
+    if(e.refcount == 0) spare_ids.push(id);
+  }
 
- // Decrease reference count
- inline void decref(int id) {
-  auto & e = entries[id];
-  --e.refcount;
-  if(e.refcount == 0) spare_ids.push(id);
- }
+  // Access to entries
+  inline entry& operator[](int id) { return entries[id]; }
+  inline entry const& operator[](int id) const { return entries[id]; }
 
- // Access to entries
- inline entry & operator[](int id) { return entries[id]; }
- inline entry const& operator[](int id) const { return entries[id]; }
+  // Current size of the index
+  [[nodiscard]] inline std::size_t size() const { return entries.size(); }
 
- // Current size of the index
- inline std::size_t size() const { return entries.size(); }
+  // Mark all cache entries as invalid
+  void invalidate_all();
 
- // Mark all cache entries as invalid
- void invalidate_all() { for(auto & h : entries) h.valid = false; }
-
- // Number of currently used cache entries
- int n_used_entries() const { return entries.size() - spare_ids.size(); }
-
+  // Number of currently used cache entries
+  [[nodiscard]] std::size_t n_used_entries() const {
+    return entries.size() - spare_ids.size();
+  }
 };
 
-}
+} // namespace som
