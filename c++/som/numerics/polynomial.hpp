@@ -41,6 +41,9 @@ class polynomial : boost::operators<polynomial<CoeffType, AutoLowerDegree>> {
   constexpr static double auto_lower_degree_tolerance = 1e-16;
 
 public:
+  using coeff_type = CoeffType;
+  static constexpr bool auto_lower_degree = AutoLowerDegree;
+
   polynomial(coeffs_type coeffs = {});
   explicit polynomial(std::initializer_list<CoeffType> const& coeffs);
 
