@@ -120,7 +120,6 @@ public:
              bool all = false,
              MPI_Op = MPI_SUM // NOLINT(cppcoreguidelines-pro-type-cstyle-cast)
   ) {
-    assert(op == MPI_SUM);
     if(comm.size() == 1) return c;
     configuration res(c.ci);
 

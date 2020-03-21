@@ -1,7 +1,6 @@
 TODO list for SOM 2.0
 =====================
 
-* Update Travis CI configuration.
 * Check if the Debian package build is usable.
 * Implement the solution quality assessment technique proposed in Phys. Rev. B **95**, 014102 (2017).
 * Add the anomalous Green's function kernels, as defined in CPC **215**, 149-155 (2017).
