@@ -1,4 +1,4 @@
-from pytriqs.gf.local import *
+from pytriqs.gf import *
 from pytriqs.archive import HDFArchive
 from matplotlib import pyplot as plt
 from pytriqs.plot.mpl_interface import oplot

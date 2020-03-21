@@ -1,15 +1,16 @@
 # Import some TRIQS modules and NumPy
-from pytriqs.gf.local import *
+from pytriqs.gf import *
 from pytriqs.archive import HDFArchive
 import pytriqs.utility.mpi as mpi
 import numpy
 
 # Import main SOM class
-from pytriqs.applications.analytical_continuation.som import Som
+from som import Som
 
 n_w = 1001               # Number of energy slices for the solution
 energy_window = (0,10.0) # Energy window to search the solution in
                          # The window must entirely lie on the positive half-axis
+tail_max_order = 5       # Maximum high energy expansion order to be computed
 
 # Parameters for Som.run()
 run_params = {'energy_window' : energy_window}
@@ -43,11 +44,14 @@ cont.run(**run_params)
 # Evaluate the solution on an energy mesh
 # NB: we can use *any* energy window at this point, not necessarily that from run_params
 g_w = GfReFreq(window = (0,10.0), n_points = n_w, indices = [0])
-g_w << cont
+cont.fill_observable(g_w)
 
 # G(i\omega_n) reconstructed from the solution
 g_rec_tau = g_tau.copy()
-g_rec_tau << cont
+cont.fill_observable(g_rec_tau)
+
+# Compute tail coefficients
+tail = cont.compute_tail(tail_max_order)
 
 # On master node, save results to an archive
 if mpi.is_master_node():
@@ -55,4 +59,5 @@ if mpi.is_master_node():
         ar['g_tau'] = g_tau
         ar['g_rec_tau'] = g_rec_tau
         ar['g_w'] = g_w
+        ar['tail'] = tail
         ar['histograms'] = cont.histograms

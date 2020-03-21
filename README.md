@@ -14,7 +14,7 @@ method proposed by Andrey S. Mishchenko. A detailed description of
 the method can be found under
 http://www.cond-mat.de/events/correl12/manuscripts/mishchenko.pdf
 
-This project uses the TRIQS library version 1.4.2.
+This project uses the TRIQS library version 2.2.x (SOM versions prior to 2.0 were based on TRIQS 1.4.2).
 The TRIQS website is under https://triqs.github.io/triqs/.
 Start there to learn about TRIQS.
 
@@ -28,7 +28,7 @@ Source directory structure
 --------------------------
 
  * `benchmark` - sets of Python scripts used to benchmark SOM's performance
-   * `chi` - analytic continuation of QMC charge susceptibility
+   * `all_kernels` - analytic continuation problems with all implemented integral kernels
    * `microgap` - analytic continuation of a model spectrum with a very narrow gap
    * `semicircle` - analytic continuation of a semi-elliptic spectral function
    * `triangles` - analytic continuation of a spectrum made of two triangles
@@ -52,6 +52,7 @@ Source directory structure
    * `notes` - LaTeX sources of implementation notes and Mathematica notebooks
  * `README.md` - this file
  * `.clang-format` - style file for clang-format utility
+ * `.clang-tidy` - configuration file for clang-tidy 'linter' tool
  * `.travis.yml` - configuration file for Travis CI continuous integration service
 
 License

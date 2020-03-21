@@ -1,17 +1,17 @@
 # Import some TRIQS modules and NumPy
-from pytriqs.gf.local import *
+from pytriqs.gf import *
 from pytriqs.archive import HDFArchive
 import pytriqs.utility.mpi as mpi
 import numpy
 
 # Import main SOM class
-from pytriqs.applications.analytical_continuation.som import Som
+from som import Som
 
 n_tau = 500                 # Number of tau-slices for the input GF
 
 n_w = 801                   # Number of energy slices for the solution
 energy_window = (-4.0,4.0)  # Energy window to search the solution in
-
+tail_max_order = 5          # Maximum high energy expansion order to be computed
 
 # Parameters for Som.run()
 run_params = {'energy_window' : energy_window}
@@ -28,6 +28,7 @@ run_params['make_histograms'] = True
 
 # Read G(\tau) from archive
 # Could be G(i\omega_n) or G_l as well.
+
 g_tau = HDFArchive('example.h5', 'r')['g_tau']
 # g_tau stored in example.h5 has a dense mesh with 10001 slices
 
@@ -53,11 +54,14 @@ cont.run(**run_params)
 # Evaluate the solution on an energy mesh
 # NB: we can use *any* energy window at this point, not necessarily that from run_params
 g_w = GfReFreq(window = (-5.0,5.0), n_points = n_w, indices = [0,1])
-g_w << cont
+cont.fill_observable(g_w)
 
 # G(\tau) reconstructed from the solution
 g_rec_tau = g_input.copy()
-g_rec_tau << cont
+cont.fill_observable(g_rec_tau)
+
+# Compute tail coefficients
+tail = cont.compute_tail(tail_max_order)
 
 # On master node, save results to an archive
 if mpi.is_master_node():
@@ -65,4 +69,5 @@ if mpi.is_master_node():
         ar['g_tau'] = g_tau
         ar['g_rec_tau'] = g_rec_tau
         ar['g_w'] = g_w
+        ar['tail'] = tail
         ar['histograms'] = cont.histograms

@@ -48,7 +48,7 @@ https://triqs.github.io/
 Here is a simple tutorial showing how to manipulate Green's Function objects of TRIQS
 in Python scripts,
 
-https://triqs.github.io/triqs/1.4/tutorials/gfs/gfs_tutorial_python.html
+https://triqs.github.io/triqs/2.2.x/userguide/gfs/gfs_tutorial_python.html
 
 License
 =======

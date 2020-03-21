@@ -134,18 +134,17 @@ if(TRIQS_WITH_PYTHON_SUPPORT)
   # Python interface
   add_subdirectory(python/som)
 
-  # FIXME
   # Build the documentation
-  #option(Build_Documentation "Build documentation" OFF)
-  #if(Build_Documentation AND NOT IS_SUBPROJECT)
-  #  if(NOT TRIQS_WITH_DOCUMENTATION)
-  #    message(WARNING "TRIQS was installed without documentation! \
-  #             Cannot build documentation.")
-  #  else()
-  #    message(STATUS "Documentation Build enabled")
-  #    add_subdirectory(doc)
-  #  endif()
-  #endif()
+  option(Build_Documentation "Build documentation" OFF)
+  if(Build_Documentation AND NOT IS_SUBPROJECT)
+    if(NOT TRIQS_WITH_DOCUMENTATION)
+      message(WARNING "TRIQS was installed without documentation! \
+              Cannot build documentation.")
+    else()
+      message(STATUS "Documentation Build enabled")
+      add_subdirectory(doc)
+    endif()
+  endif()
 else()
   message(WARNING "TRIQS was installed without Python support. "
                   "Cannot build the Python interface and documentation.")

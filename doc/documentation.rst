@@ -18,14 +18,14 @@ Documentation
 Running SOM to analytically continue input data requires writing a simple Python script.
 Details of the script will vary depending on the physical quantity to be continued, and
 its representation (function of imaginary time, Matsubara frequencies, or a list of
-the Legendre basis coefficients). Nonetheless, a typical script will the following basic parts.
+Legendre basis coefficients). Nonetheless, a typical script will the following basic parts.
 
 * Import TRIQS and SOM Python modules.
 
   ::
 
         # Green's function containers
-        from pytriqs.gf.local import *
+        from pytriqs.gf import *
         # HDFArchive interface to .h5 files
         from pytriqs.archive import HDFArchive
         # HDF5 archives must be modified only by one MPI rank.
@@ -33,7 +33,7 @@ the Legendre basis coefficients). Nonetheless, a typical script will the followi
         from pytriqs.utility.mpi import is_master_node
 
         # Main SOM class
-        from pytriqs.applications.analytical_continuation.som import Som
+        from som import Som
 
 * *Optional:* Load input data from an HDF5 archive.
 
@@ -150,15 +150,20 @@ the Legendre basis coefficients). Nonetheless, a typical script will the followi
         # list((rect_center,rect_width,rect_height))
 
         # Evaluate the solution on a frequency mesh.
-        # The tail coefficients will be written into f_w too.
         #
         # NB: we can use *any* energy window at this point, not necessarily that from run_params
         f_w = GfReFreq(window = (-5.0, 5.0), n_points = 1000, indices = inp.indices)
-        f_w << cont
+        cont.fill_observable(f_w)
 
         # Imaginary time/frequency/Legendre data reconstructed from the solution
         rec = inp.copy()
-        rec << cont
+        cont.fill_observable(rec)
+
+        # The high frequency expansion (tail) coefficients up to order 'max_order'
+        # can be computed by method 'compute_tail()' and returned as a 3-dimensional
+        # complex NumPy array. The first index of the array is the zero-based expansion order.
+        tail = cont.compute_tail(5) # max_order = 5
+
 
   It is neccessary (but not enough) to have `rec` close to `inp` to ensure correctness
   of the solution.
@@ -173,6 +178,7 @@ the Legendre basis coefficients). Nonetheless, a typical script will the followi
                 ar['inp'] = inp
                 ar['f_w'] = f_w
                 ar['rec'] = rec
+                ar['tail'] = tail
                 # Save histograms for further analysis
                 ar['histograms'] = cont.histograms
 
