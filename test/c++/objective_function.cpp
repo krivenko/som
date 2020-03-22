@@ -151,4 +151,4 @@ TEST(objective_function, Multiple) {
   EXPECT_NEAR(167.785, of(conf), 1e-3);
 }
 
-MAKE_MAIN;
+MAKE_MAIN

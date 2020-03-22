@@ -203,8 +203,8 @@ double update_change_weight2<KernelType>::attempt() {
   return eu::transition_probability();
 }
 
-INSTANTIATE_CLASS_FOR_EACH_KERNEL(update_shift);
-INSTANTIATE_CLASS_FOR_EACH_KERNEL(update_change_width);
-INSTANTIATE_CLASS_FOR_EACH_KERNEL(update_change_weight2);
+INSTANTIATE_CLASS_FOR_EACH_KERNEL(update_shift)
+INSTANTIATE_CLASS_FOR_EACH_KERNEL(update_change_width)
+INSTANTIATE_CLASS_FOR_EACH_KERNEL(update_change_weight2)
 
 } // namespace som

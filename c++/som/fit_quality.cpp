@@ -53,6 +53,6 @@ double fit_quality<KernelType>::operator()(configuration const& c) const {
   return kappa;
 }
 
-INSTANTIATE_CLASS_FOR_EACH_KERNEL(fit_quality);
+INSTANTIATE_CLASS_FOR_EACH_KERNEL(fit_quality)
 
 } // namespace som

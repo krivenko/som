@@ -100,4 +100,4 @@ TEST(spline, regular_spline) {
   EXPECT_ARRAY_NEAR(result, ref, 1e-13);
 }
 
-MAKE_MAIN;
+MAKE_MAIN

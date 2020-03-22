@@ -66,4 +66,4 @@ TEST(configuration, normalize) {
   ASSERT_PRINT(conf2_str, conf2);
 }
 
-MAKE_MAIN;
+MAKE_MAIN

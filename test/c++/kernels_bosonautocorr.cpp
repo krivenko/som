@@ -41,4 +41,4 @@ TEST(BosonAutoCorr, legendre) {
                                                1e-9);
 }
 
-MAKE_MAIN;
+MAKE_MAIN

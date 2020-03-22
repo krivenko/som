@@ -227,6 +227,6 @@ void solution_worker<KernelType>::reset_temp_conf() {
   data.Z.reset();
 }
 
-INSTANTIATE_CLASS_FOR_EACH_KERNEL(solution_worker);
+INSTANTIATE_CLASS_FOR_EACH_KERNEL(solution_worker)
 
 } // namespace som

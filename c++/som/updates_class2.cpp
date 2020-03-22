@@ -395,9 +395,9 @@ template <typename KernelType> double update_glue_shift<KernelType>::attempt() {
   return eu::transition_probability();
 }
 
-INSTANTIATE_CLASS_FOR_EACH_KERNEL(update_insert);
-INSTANTIATE_CLASS_FOR_EACH_KERNEL(update_remove_shift);
-INSTANTIATE_CLASS_FOR_EACH_KERNEL(update_split_shift);
-INSTANTIATE_CLASS_FOR_EACH_KERNEL(update_glue_shift);
+INSTANTIATE_CLASS_FOR_EACH_KERNEL(update_insert)
+INSTANTIATE_CLASS_FOR_EACH_KERNEL(update_remove_shift)
+INSTANTIATE_CLASS_FOR_EACH_KERNEL(update_split_shift)
+INSTANTIATE_CLASS_FOR_EACH_KERNEL(update_glue_shift)
 
 } // namespace som

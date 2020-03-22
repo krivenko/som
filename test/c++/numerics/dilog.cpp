@@ -50,4 +50,4 @@ TEST(dilog, real) {
   EXPECT_CLOSE(-12.23875517731494, dilog(-100));
 }
 
-MAKE_MAIN;
+MAKE_MAIN

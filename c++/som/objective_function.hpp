@@ -48,6 +48,6 @@ public:
   [[nodiscard]] KernelType const& get_kernel() const { return kern; }
 };
 
-EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL(objective_function);
+EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL(objective_function)
 
 } // namespace som

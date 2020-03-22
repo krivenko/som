@@ -157,9 +157,9 @@ public:
   double attempt();
 };
 
-EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL(update_insert);
-EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL(update_remove_shift);
-EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL(update_split_shift);
-EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL(update_glue_shift);
+EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL(update_insert)
+EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL(update_remove_shift)
+EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL(update_split_shift)
+EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL(update_glue_shift)
 
 } // namespace som

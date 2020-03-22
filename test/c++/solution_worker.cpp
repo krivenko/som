@@ -98,4 +98,4 @@ TEST(solution_worker, StartConfig) {
   EXPECT_EQ(solution_ref, solution);
 }
 
-MAKE_MAIN;
+MAKE_MAIN

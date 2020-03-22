@@ -115,8 +115,8 @@ public:
   double attempt();
 };
 
-EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL(update_shift);
-EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL(update_change_width);
-EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL(update_change_weight2);
+EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL(update_shift)
+EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL(update_change_width)
+EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL(update_change_weight2)
 
 } // namespace som

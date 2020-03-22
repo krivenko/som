@@ -43,6 +43,6 @@ objective_function<KernelType>::operator()(config_update const& cu) const {
   return sum(abs((rhs - kern(cu)) / error_bars));
 }
 
-INSTANTIATE_CLASS_FOR_EACH_KERNEL(objective_function);
+INSTANTIATE_CLASS_FOR_EACH_KERNEL(objective_function)
 
 } // namespace som

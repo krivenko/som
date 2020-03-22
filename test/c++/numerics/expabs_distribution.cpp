@@ -99,4 +99,4 @@ TEST(expabs_distribution, main) {
   }
 }
 
-MAKE_MAIN;
+MAKE_MAIN

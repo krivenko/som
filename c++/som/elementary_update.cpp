@@ -196,6 +196,6 @@ template <typename KernelType> void elementary_update<KernelType>::reject() {
   ++data.Z;
 }
 
-INSTANTIATE_CLASS_FOR_EACH_KERNEL(elementary_update);
+INSTANTIATE_CLASS_FOR_EACH_KERNEL(elementary_update)
 
 } // namespace som

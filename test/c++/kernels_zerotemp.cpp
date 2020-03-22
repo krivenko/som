@@ -38,4 +38,4 @@ TEST(FermionGf, legendre) {
   test_kernel<kernel<ZeroTemp, legendre>>("zerotemp_legendre.h5", ci, 1e-10);
 }
 
-MAKE_MAIN;
+MAKE_MAIN

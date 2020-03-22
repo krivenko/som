@@ -57,4 +57,4 @@ TEST(simpson, primitive) {
   EXPECT_ARRAY_NEAR(ref, primitive(f, -1.1, -0.1, 11, 1e-10, true), 1e-10);
 }
 
-MAKE_MAIN;
+MAKE_MAIN

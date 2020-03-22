@@ -131,6 +131,6 @@ private:
   void reset_temp_conf();
 };
 
-EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL(solution_worker);
+EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL(solution_worker)
 
 } // namespace som

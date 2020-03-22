@@ -91,6 +91,6 @@ public:
   void reject();
 };
 
-EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL(elementary_update);
+EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL(elementary_update)
 
 } // namespace som
