@@ -508,7 +508,8 @@ void triqs_gf_view_assign_delegation<refreq>(gf_view<refreq> g_w,
   check_gf_dim(g_w, gf_dim);
   for(int i : range(gf_dim))
     back_transform(cont.kind, cont.results[i], const_cast<som_core&>(cont).ci,
-                   slice_target_to_scalar(g_w, i, i));
+                   slice_target_to_scalar(g_w, i, i),
+                   const_cast<som_core&>(cont).comm);
 }
 
 template void triqs_gf_view_assign_delegation<imtime>(gf_view<imtime>,
@@ -526,8 +527,9 @@ triqs::arrays::array<dcomplex, 3> som_core::compute_tail(int max_order) const {
   auto gf_dim = results.size();
   triqs::arrays::array<dcomplex, 3> tail(max_order + 1, gf_dim, gf_dim);
   for(int i : range(gf_dim))
-    tail(range(), i, i) = som::compute_tail(
-        kind, results[i], const_cast<som_core*>(this)->ci, max_order);
+    tail(range(), i, i) =
+        som::compute_tail(kind, results[i], const_cast<som_core*>(this)->ci,
+                          const_cast<som_core*>(this)->comm, max_order);
   return tail;
 }
 

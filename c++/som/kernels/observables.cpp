@@ -64,31 +64,43 @@ std::pair<double, double> max_energy_window(observable_kind kind) {
 
 // Construct a real-frequency GF from a configuration
 void back_transform(observable_kind kind, configuration const& conf,
-                    cache_index& ci, gf_view<refreq, scalar_valued> g_w) {
+                    cache_index& ci, gf_view<refreq, scalar_valued> g_w,
+                    mpi::communicator& comm) {
   bool bosoncorr = kind == BosonCorr || kind == BosonAutoCorr;
 
-  g_w() = 0;
+  array<std::complex<double>, 1> data(g_w.data().shape());
+  data() = 0;
 
+  long rect_index = 0;
   for(auto const& rect : conf) {
+    if((rect_index % comm.size()) != comm.rank()) {
+      ++rect_index;
+      continue;
+    }
+
     for(auto e : g_w.mesh())
-      g_w.data()(e.index()) += rect.hilbert_transform(double(e), bosoncorr);
+      data(e.index()) += rect.hilbert_transform(double(e), bosoncorr);
 
     if(kind == BosonAutoCorr) {
       // Add a reflected rectangle
       rectangle reflected_rect(-rect.center, rect.width, rect.height, ci);
       for(auto e : g_w.mesh())
-        g_w.data()(e.index()) +=
-            reflected_rect.hilbert_transform(double(e), true);
+        data(e.index()) += reflected_rect.hilbert_transform(double(e), true);
     }
+
+    ++rect_index;
   }
 
-  if(bosoncorr) { g_w.data() *= -1.0 / M_PI; }
+  if(bosoncorr) { data *= -1.0 / M_PI; }
+
+  data = mpi::all_reduce(data, comm);
+  g_w.data() = data;
 }
 
 // Compute the GF tail from a configuration
 triqs::arrays::array<std::complex<double>, 1>
 compute_tail(observable_kind kind, configuration const& conf, cache_index& ci,
-             int max_order) {
+             mpi::communicator& comm, int max_order) {
   assert(max_order >= 0);
 
   bool bosoncorr = kind == BosonCorr || kind == BosonAutoCorr;
@@ -96,7 +108,13 @@ compute_tail(observable_kind kind, configuration const& conf, cache_index& ci,
   array<std::complex<double>, 1> tail(max_order + 1);
   tail() = .0;
 
+  long rect_index = 0;
   for(auto const& rect : conf) {
+    if((rect_index % comm.size()) != comm.rank()) {
+      ++rect_index;
+      continue;
+    }
+
     tail += rect.tail_coefficients(0, max_order, bosoncorr);
 
     if(kind == BosonAutoCorr) {
@@ -104,11 +122,13 @@ compute_tail(observable_kind kind, configuration const& conf, cache_index& ci,
       rectangle reflected_rect(-rect.center, rect.width, rect.height, ci);
       tail += reflected_rect.tail_coefficients(0, max_order, true);
     }
+
+    ++rect_index;
   }
 
   if(bosoncorr) tail *= -1.0 / M_PI;
 
-  return tail;
+  return mpi::all_reduce(tail, comm);
 }
 
 } // namespace som

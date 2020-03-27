@@ -27,6 +27,7 @@
 #include <boost/preprocessor/seq/enum.hpp>
 #include <boost/preprocessor/seq/size.hpp>
 
+#include <mpi/mpi.hpp>
 #include <triqs/arrays.hpp>
 #include <triqs/gfs.hpp>
 
@@ -57,11 +58,12 @@ std::pair<double, double> max_energy_window(observable_kind kind);
 // Construct a real-frequency GF from a configuration
 void back_transform(
     observable_kind kind, configuration const& conf, cache_index& ci,
-    triqs::gfs::gf_view<triqs::gfs::refreq, triqs::gfs::scalar_valued> g_w);
+    triqs::gfs::gf_view<triqs::gfs::refreq, triqs::gfs::scalar_valued> g_w,
+    mpi::communicator& comm);
 
 // Compute the GF tail from a configuration
 triqs::arrays::array<std::complex<double>, 1>
 compute_tail(observable_kind kind, configuration const& conf, cache_index& ci,
-             int max_order);
+             mpi::communicator& comm, int max_order);
 
 } // namespace som
