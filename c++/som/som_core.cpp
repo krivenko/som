@@ -73,7 +73,6 @@ void som_core::set_input_data(gf_const_view<GfOpts...> g,
     error_bars_.emplace_back(S.data()(range(), i, i));
     results.emplace_back(ci);
   }
-  histograms.resize(gf_dim);
 }
 
 template <typename MeshType>
@@ -252,6 +251,10 @@ template <typename KernelType> void som_core::run_impl() {
     std::cout << "Kernel: " << kernel << std::endl;
   }
 
+  // Prepare container for histograms
+  if(params.make_histograms)
+    histograms.emplace(std::vector<histogram>(results.size()));
+
   // Find solution for each component of GF
   for(int i = 0; i < results.size(); ++i) {
     if(params.verbosity > 0)
@@ -261,12 +264,13 @@ template <typename KernelType> void som_core::run_impl() {
     auto const& rhs_ = (input_data_t<mesh_t> const&)rhs;
     auto const& error_bars_ = (input_data_t<mesh_t> const&)error_bars;
     double norm = norms[i];
+    histogram * hist = (histograms ? &((*histograms)[i]) : nullptr);
 
     int F = params.adjust_f
                 ? adjust_f(kernel, rhs_[i], error_bars_[i], norm, stop_callback)
                 : params.f;
     results[i] = accumulate(kernel, rhs_[i], error_bars_[i], norm,
-                            histograms[i], stop_callback, F);
+                            hist, stop_callback, F);
   }
 
   ci.invalidate_all();
@@ -347,7 +351,7 @@ template <typename KernelType>
 configuration som_core::accumulate(KernelType const& kern,
                                    typename KernelType::result_type rhs_,
                                    typename KernelType::result_type error_bars_,
-                                   double norm, histogram& hist,
+                                   double norm, histogram* hist,
                                    std::function<bool()> const& stop_callback,
                                    int F) {
 
@@ -438,14 +442,14 @@ configuration som_core::accumulate(KernelType const& kern,
     std::cout << "Summing up good solutions ..." << std::endl;
   }
 
-  if(params.make_histograms)
-    hist = histogram(objf_min, objf_min * params.hist_max, params.hist_n_bins);
+  if(hist)
+    *hist = histogram(objf_min, objf_min * params.hist_max, params.hist_n_bins);
 
   configuration sol_sum(ci);
 
   // Rank-local stage of summation
   for(auto const& s : solutions) {
-    if(params.make_histograms) hist << s.second;
+    if(hist) *hist << s.second;
     // Pick only good solutions
     if(s.second / objf_min <= params.adjust_l_good_d) sol_sum += s.first;
   }
@@ -454,7 +458,7 @@ configuration som_core::accumulate(KernelType const& kern,
   // Sum over all processes
   sol_sum = mpi_reduce(sol_sum, comm, 0, true);
 
-  if(params.make_histograms) hist = mpi_reduce(hist, comm, 0, true);
+  if(hist) *hist = mpi_reduce(*hist, comm, 0, true);
 
   if(params.verbosity >= 1) std::cout << "Done" << std::endl;
 

@@ -34,6 +34,7 @@ module.add_include("som/som_core.hpp")
 
 # Add here anything to add in the C++ code at the start, e.g. namespace using
 module.add_preamble("""
+#include <cpp2py/converters/optional.hpp>
 #include <cpp2py/converters/pair.hpp>
 #include <cpp2py/converters/tuple.hpp>
 #include <cpp2py/converters/vector.hpp>
@@ -292,7 +293,7 @@ c.add_property(name = "solutions",
                doc = """Accumulated solutions as lists of rectangle parameter tuples (center,width,height)""")
 
 c.add_property(name = "histograms",
-               getter = cfunction("std::vector<histogram> get_histograms ()"),
+               getter = cfunction(signature = "std::optional<std::vector<histogram>> get_histograms ()"),
                doc = """Accumulated objective function histograms""")
 
 c.add_method("triqs::arrays::array<dcomplex, 3> compute_tail(int max_order)",

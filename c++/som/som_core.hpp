@@ -21,6 +21,7 @@
 #pragma once
 
 #include <complex>
+#include <optional>
 #include <vector>
 
 #include <mpi/mpi.hpp>
@@ -83,7 +84,7 @@ class som_core {
   mpi::communicator comm;
 
   // Objective function histograms
-  std::vector<triqs::statistics::histogram> histograms;
+  std::optional<std::vector<triqs::statistics::histogram>> histograms;
 
   // Fill rhs and error_bars
   template <typename... GfOpts>
@@ -104,7 +105,7 @@ class som_core {
   configuration accumulate(KernelType const& kern,
                            typename KernelType::result_type rhs_,
                            typename KernelType::result_type error_bars_,
-                           double norm, triqs::statistics::histogram& hist,
+                           double norm, triqs::statistics::histogram* hist,
                            std::function<bool()> const& stop_callback, int F);
 
 public:
@@ -148,8 +149,8 @@ public:
   }
 
   /// Accumulated objective function histograms
-  [[nodiscard]] std::vector<triqs::statistics::histogram> const&
-  get_histograms() const {
+  [[nodiscard]] std::optional<std::vector<triqs::statistics::histogram>> const&
+  get_histograms() {
     return histograms;
   }
 };
