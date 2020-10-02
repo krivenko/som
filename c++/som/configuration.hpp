@@ -26,7 +26,7 @@
 
 #include <mpi/mpi.hpp>
 #include <mpi/vector.hpp>
-#include <triqs/h5.hpp>
+#include <h5/h5.hpp>
 
 #include "cache_index.hpp"
 #include "rectangle.hpp"
@@ -135,9 +135,9 @@ public:
   friend std::string get_triqs_hdf5_data_scheme(configuration const&) {
     return "SomConfiguration";
   }
-  friend void h5_write(triqs::h5::group gr, std::string const& name,
+  friend void h5_write(h5::group gr, std::string const& name,
                        configuration const& c);
-  friend void h5_read(triqs::h5::group gr, std::string const& name,
+  friend void h5_read(h5::group gr, std::string const& name,
                       configuration& c, cache_index& ci_);
 };
 

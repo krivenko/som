@@ -23,11 +23,11 @@ from cpp2py.wrap_generator import *
 
 # The module
 module = module_(full_name = "som_core",
-                 doc = "The Stochastic Optimization Method",
+                 doc = r"The Stochastic Optimization Method",
                  app_name = "som")
 
 # Imports
-module.add_imports('pytriqs.gf', 'pytriqs.statistics.histograms')
+module.add_imports('triqs.gf', 'triqs.statistics.histograms')
 
 # Main som_core include
 module.add_include("som/som_core.hpp")

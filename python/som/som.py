@@ -22,7 +22,7 @@
 Main module of SOM
 """
 
-from som_core import SomCore
+from .som_core import SomCore
 import numpy as np
 
 class Som(SomCore):

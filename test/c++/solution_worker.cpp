@@ -18,7 +18,7 @@
  * SOM. If not, see <http://www.gnu.org/licenses/>.
  *
  ******************************************************************************/
-#include <triqs/h5.hpp>
+#include <h5/h5.hpp>
 #include <triqs/test_tools/arrays.hpp>
 
 #include <som/kernels/fermiongf_imtime.hpp>
@@ -35,7 +35,7 @@ array<double, 1> g_tau, s_tau;
 
 struct Env : public ::testing::Environment {
   virtual void SetUp() override {
-    triqs::h5::file arch("solution_worker.ref.h5", H5F_ACC_RDONLY);
+    h5::file arch("solution_worker.ref.h5", 'r');
 
     h5_read(arch, "beta", beta);
     h5_read(arch, "g_tau", g_tau);
@@ -66,7 +66,7 @@ TEST(solution_worker, RandomConfig) {
   auto solution = worker(10);
 
   configuration solution_ref(ci);
-  triqs::h5::file arch("solution_worker.ref.h5", H5F_ACC_RDONLY);
+  h5::file arch("solution_worker.ref.h5", 'r');
   h5_read(arch, "RandomConfig_output", solution_ref, ci);
 
   EXPECT_EQ(solution_ref, solution);
@@ -86,7 +86,7 @@ TEST(solution_worker, StartConfig) {
   solution_worker<kernel<FermionGf, imtime>> worker(of, 1.0, ci, params,
                                                     clock_callback(-1), 10);
 
-  triqs::h5::file arch("solution_worker.ref.h5", H5F_ACC_RDONLY);
+  h5::file arch("solution_worker.ref.h5", 'r');
   configuration init_config(ci);
   h5_read(arch, "StartConfig_input", init_config, ci);
 

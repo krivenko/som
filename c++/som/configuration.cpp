@@ -139,7 +139,7 @@ std::ostream& operator<<(std::ostream& os, configuration const& c) {
   return os;
 }
 
-void h5_write(triqs::h5::group gr, std::string const& name,
+void h5_write(h5::group gr, std::string const& name,
               configuration const& c) {
   using triqs::arrays::array;
   array<double, 2> data(c.size(), 3);
@@ -148,11 +148,10 @@ void h5_write(triqs::h5::group gr, std::string const& name,
         array<double, 1>{c[i].center, c[i].width, c[i].height};
   h5_write(gr, name, data);
   auto ds = gr.open_dataset(name);
-  h5_write_attribute(ds, "TRIQS_HDF5_data_scheme",
-                     get_triqs_hdf5_data_scheme(c));
+  h5_write_attribute(ds, "Format", get_triqs_hdf5_data_scheme(c));
 }
 
-void h5_read(triqs::h5::group gr, std::string const& name, configuration& c,
+void h5_read(h5::group gr, std::string const& name, configuration& c,
              cache_index& ci_) {
   triqs::arrays::array<double, 2> data;
   h5_read(gr, name, data);

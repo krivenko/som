@@ -21,7 +21,7 @@
 #pragma once
 
 #include <string>
-#include <triqs/h5.hpp>
+#include <h5/h5.hpp>
 #include <triqs/test_tools/arrays.hpp>
 #include <triqs/utility/is_complex.hpp>
 
@@ -35,17 +35,17 @@ namespace som {
 // h5_read_mathematica_array(), complex arrays
 template <typename ArrayType>
 std::enable_if_t<is_complex<typename ArrayType::value_type>::value, ArrayType>
-h5_read_mathematica_array(triqs::h5::group g, std::string const& name) {
+h5_read_mathematica_array(h5::group g, std::string const& name) {
   array<typename ArrayType::value_type, ArrayType::rank> res_re, res_im;
   h5_read(g, name + "/re", res_re);
   h5_read(g, name + "/im", res_im);
-  return res_re + 1_j * res_im;
+  return res_re + 1i * res_im;
 }
 
 // h5_read_mathematica_array(), real arrays
 template <typename ArrayType>
 std::enable_if_t<!is_complex<typename ArrayType::value_type>::value, ArrayType>
-h5_read_mathematica_array(triqs::h5::group g, std::string const& name) {
+h5_read_mathematica_array(h5::group g, std::string const& name) {
   ArrayType res;
   h5_read(g, name, res);
   return res;
@@ -56,7 +56,7 @@ template <typename KernelType>
 void test_kernel(std::string const& filename, cache_index& ci,
                  double tolerance) {
 
-  triqs::h5::file file(filename, H5F_ACC_RDONLY);
+  h5::file file(filename, 'r');
 
   configuration conf(ci);
   h5_read(file, "rects", conf, ci);

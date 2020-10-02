@@ -240,7 +240,7 @@ template <typename KernelType> void som_core::run_impl() {
   auto stop_callback = triqs::utility::clock_callback(params.max_time);
 
   using mesh_t = typename KernelType::mesh_type;
-  mesh_t const& m = mesh;
+  mesh_t const& m = std::get<mesh_t>(mesh);
 
   if(params.verbosity > 0) {
     std::cout << "Constructing integral kernel... " << std::flush;

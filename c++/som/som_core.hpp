@@ -22,13 +22,13 @@
 
 #include <complex>
 #include <optional>
+#include <variant>
 #include <vector>
 
 #include <mpi/mpi.hpp>
 #include <triqs/arrays/vector.hpp>
 #include <triqs/gfs.hpp>
 #include <triqs/statistics/histograms.hpp>
-#include <triqs/utility/variant.hpp>
 
 #include "configuration.hpp"
 #include "kernels/observables.hpp"

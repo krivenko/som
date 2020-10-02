@@ -1,7 +1,7 @@
-from pytriqs.gf import *
-from pytriqs.archive import HDFArchive
+from h5 import HDFArchive
+from triqs.gf import *
 from matplotlib import pyplot as plt
-from pytriqs.plot.mpl_interface import oplot
+from triqs.plot.mpl_interface import oplot
 
 # Read data from archive
 ar = HDFArchive('results.h5', 'r')

@@ -1,4 +1,4 @@
-.. module:: pytriqs.applications.analytical_continuation.som
+.. module:: som
 
 .. _documentation:
 
@@ -25,12 +25,12 @@ Legendre basis coefficients). Nonetheless, a typical script will the following b
   ::
 
         # Green's function containers
-        from pytriqs.gf import *
+        from triqs.gf import *
         # HDFArchive interface to .h5 files
-        from pytriqs.archive import HDFArchive
+        from h5 import HDFArchive
         # HDF5 archives must be modified only by one MPI rank.
         # is_master_node() checks we are on rank 0.
-        from pytriqs.utility.mpi import is_master_node
+        from triqs.utility.mpi import is_master_node
 
         # Main SOM class
         from som import Som
