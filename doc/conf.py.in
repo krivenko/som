@@ -17,8 +17,8 @@ extensions = ['sphinx.ext.autodoc',
 
 source_suffix = '.rst'
 
-project = u'TRIQS Stochastic Optimization Method'
-copyright = u'2016-2020, Igor Krivenko'
+project = 'TRIQS Stochastic Optimization Method'
+copyright = '2016-2020, Igor Krivenko'
 version = '@SOM_VERSION@'
 
 mathjax_path = "@TRIQS_MATHJAX_PATH@/MathJax.js?config=default"

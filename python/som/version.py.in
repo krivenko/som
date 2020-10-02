@@ -24,7 +24,7 @@ triqs_hash = "@TRIQS_GIT_HASH@"
 som_hash = "@PROJECT_GIT_HASH@"
 
 def show_version():
-  print "\nYou are using the Stochastic Optimization Method version %s\n" % version
+  print("\nYou are using the Stochastic Optimization Method version %s\n" % version)
 
 def show_git_hash():
-  print "\nYou are using the Stochastic Optimization Method git hash %s based on triqs git hash %s\n"%(som_hash, triqs_hash)
+  print("\nYou are using the Stochastic Optimization Method git hash %s based on triqs git hash %s\n"%(som_hash, triqs_hash))

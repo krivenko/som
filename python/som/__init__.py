@@ -23,6 +23,6 @@ SOM: Stochastic Optimization Method for Analytic Continuation
 """
 
 from som_core import SomCore
-from som import Som, count_good_solutions
+from .som import Som, count_good_solutions
 
 __all__ = ['SomCore', 'Som', 'count_good_solutions']
