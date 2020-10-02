@@ -18,7 +18,7 @@ pp = PdfPages('microgap.pdf')
 abs_errors = arch['abs_errors']
 
 def make_ref(g):
-    print "Norm of the reference DOS:", quad(A, e_min, e_max, limit=100)[0].real
+    print("Norm of the reference DOS:", quad(A, e_min, e_max, limit=100)[0].real)
     g << Function(lambda w: -1j*np.pi * A(w.real))
 
 def plot_A_w(g_w, g_w_ref, fig):

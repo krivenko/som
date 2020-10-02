@@ -117,7 +117,7 @@ for kind in ("FermionGf", "BosonCorr", "BosonAutoCorr", "ZeroTemp"):
         tail_mask = gr_old["output/singularity/mask"]
         tail = gr["output_tail"]
         tail_old = gr_old["output/singularity/data"][1:,:,:]
-        for i, j in product(*map(range, tail_mask.shape)):
+        for i, j in product(*list(map(range, tail_mask.shape))):
             m = tail_mask[i, j]+1
             if np.allclose(tail[:m, i, j], tail_old[:, i, j], atol=atol, rtol=0):
                 print("Tail element (%d,%d) matches" % (i,j))
