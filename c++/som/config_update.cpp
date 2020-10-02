@@ -19,7 +19,7 @@
  *
  ******************************************************************************/
 
-#include <cstdint>
+#include <climits>
 #include <utility>
 
 #include <triqs/utility/exceptions.hpp>

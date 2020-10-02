@@ -31,7 +31,7 @@ endforeach()
 
 # Build Python module
 add_cpp2py_module(som_core)
-target_link_libraries(som_core som_c)
+target_link_libraries(som_core som_c triqs_py)
 
 # Install Python modules
 set(PYTHON_LIB_DEST ${TRIQS_PYTHON_LIB_DEST_ROOT}/som)

@@ -1,10 +1,10 @@
 # This plotting script is largely based on a work of Malte Harland
 # mharland@physnet.uni-hamburg.de
 
-from pytriqs.gf import *
-from pytriqs.gf.descriptors import *
-from pytriqs.archive import HDFArchive
-from pytriqs.statistics.histograms import Histogram
+from h5 import HDFArchive
+from triqs.gf import *
+from triqs.gf.descriptors import *
+from triqs.statistics.histograms import Histogram
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 import numpy as np

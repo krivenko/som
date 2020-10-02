@@ -1,7 +1,7 @@
 # Import some TRIQS modules and NumPy
-from pytriqs.gf import *
-from pytriqs.archive import HDFArchive
-import pytriqs.utility.mpi as mpi
+from h5 import HDFArchive
+from triqs.gf import *
+import triqs.utility.mpi as mpi
 import numpy
 
 # Import main SOM class

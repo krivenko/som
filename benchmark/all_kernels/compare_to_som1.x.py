@@ -23,9 +23,9 @@
 # Compare results of this benchmark from SOM 1.x
 #
 
-from pytriqs.gf import *
-from pytriqs.gf.descriptors import *
-from pytriqs.archive import HDFArchive
+from h5 import HDFArchive
+from triqs.gf import *
+from triqs.gf.descriptors import *
 from som import Som
 from scipy.integrate import quad
 import numpy as np

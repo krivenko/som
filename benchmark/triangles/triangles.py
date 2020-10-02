@@ -1,7 +1,7 @@
-from pytriqs.gf import *
-from pytriqs.gf.descriptors import *
-from pytriqs.archive import HDFArchive
-import pytriqs.utility.mpi as mpi
+from h5 import HDFArchive
+from triqs.gf import *
+from triqs.gf.descriptors import *
+import triqs.utility.mpi as mpi
 from som import Som
 import numpy as np
 import time

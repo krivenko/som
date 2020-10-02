@@ -23,10 +23,10 @@
 # Run SOM simulations with all implemented kernels using synthetic input data
 #
 
-from pytriqs.gf import *
-from pytriqs.gf.descriptors import *
-from pytriqs.archive import HDFArchive
-import pytriqs.utility.mpi as mpi
+from h5 import HDFArchive
+from triqs.gf import *
+from triqs.gf.descriptors import *
+import triqs.utility.mpi as mpi
 from som import Som
 from scipy.integrate import quad
 from scipy.special import spherical_in

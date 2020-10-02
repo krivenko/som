@@ -20,6 +20,7 @@
  ******************************************************************************/
 #pragma once
 
+#include <climits>
 #include <utility>
 #include <vector>
 
