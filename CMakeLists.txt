@@ -22,12 +22,14 @@
 # CMake scripts are based on the 'app4triqs' TRIQS application skeleton.
 # See https://github.com/TRIQS/app4triqs for more details.
 
-cmake_minimum_required(VERSION 3.0.2 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.3.2 FATAL_ERROR)
 
-# find_package() should take into account <PackageName>_ROOT
-# CMake variables and environment variables. Requires CMake 3.12 or newer.
+cmake_policy(VERSION 3.3.2)
 if(POLICY CMP0074)
   cmake_policy(SET CMP0074 NEW)
+endif()
+if(POLICY CMP0077)
+  cmake_policy(SET CMP0077 NEW)
 endif()
 
 ##################
@@ -37,11 +39,10 @@ endif()
 project(SOM VERSION 2.0.0 LANGUAGES CXX)
 get_directory_property(IS_SUBPROJECT PARENT_DIRECTORY)
 
-#########################
-# Load TRIQS and CPP2PY #
-#########################
-find_package(TRIQS 2.2 REQUIRED)
-find_package(Cpp2Py 1.6 REQUIRED)
+##############
+# Load TRIQS #
+##############
+find_package(TRIQS 3.0.0 REQUIRED)
 
 # Get the git hash & print status
 triqs_get_git_hash_of_source_dir(PROJECT_GIT_HASH)
