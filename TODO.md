@@ -8,4 +8,5 @@ TODO list for SOM 2.0
 * Add an option to perform the energy mesh projection using binning.
 * Optimize memory consumption during the energy mesh projection phase.
 * Use a more size-efficient HDF5 storage format for particular solutions.
+* Consider adding an option to use a full autocorrelation matrix of the input data.
 * Check if the Debian package build is usable.
