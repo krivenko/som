@@ -50,10 +50,10 @@ for s in abs_error:
 
     for name, g, S, g_rec in (('g_tau',g_tau,S_tau,g_tau_rec),):
 
-        start = time.clock()
+        start = time.perf_counter()
         cont = Som(g, S)
         cont.run(**run_params)
-        exec_time = time.clock() - start
+        exec_time = time.perf_counter() - start
 
         cont.fill_observable(g_rec)
         cont.fill_observable(g_w)
