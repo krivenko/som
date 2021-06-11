@@ -22,6 +22,7 @@
 
 #include <initializer_list>
 #include <iostream>
+#include <string>
 #include <vector>
 
 #include <mpi/mpi.hpp>
@@ -132,13 +133,12 @@ public:
   }
 
   // HDF5
-  friend std::string get_triqs_hdf5_data_scheme(configuration const&) {
-    return "SomConfiguration";
-  }
+  static std::string hdf5_format() { return "SomConfiguration"; }
   friend void h5_write(h5::group gr, std::string const& name,
                        configuration const& c);
   friend void h5_read(h5::group gr, std::string const& name,
                       configuration& c, cache_index& ci_);
+  static configuration h5_read_construct(h5::group gr, std::string const& name);
 };
 
 } // namespace som

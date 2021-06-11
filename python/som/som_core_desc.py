@@ -83,6 +83,7 @@ c = class_(
     py_type = "Configuration",
     c_type = "configuration",
     is_printable = True,
+    hdf5 = True,
     doc = r"Sum of rectangles"
 )
 
