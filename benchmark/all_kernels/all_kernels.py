@@ -23,6 +23,7 @@
 # Run SOM simulations with all implemented kernels using synthetic input data
 #
 
+import time
 from h5 import HDFArchive
 from triqs.gf import *
 from triqs.gf.descriptors import *
@@ -77,6 +78,7 @@ def dos(e, e0):
     return np.sqrt(4 - (e - e0)**2) / (2 * np.pi)
 
 def run_som_and_save(kind, mesh, g, S, norms, energy_window):
+    start_time = time.perf_counter()
     cont = Som(g, S, kind = kind, norms = norms)
     cont.run(energy_window = energy_window, **som_params)
     g_rec = g.copy()
@@ -86,6 +88,8 @@ def run_som_and_save(kind, mesh, g, S, norms, energy_window):
                    indices = indices)
     cont.fill_observable(g_w)
     tail = cont.compute_tail(tail_max_order)
+    elapsed_time = time.perf_counter() - start_time
+    print_master(f"Elapsed time: %f s" % elapsed_time)
     if mpi.is_master_node():
         arch[kind].create_group(mesh)
         gr = arch[kind][mesh]
@@ -95,6 +99,7 @@ def run_som_and_save(kind, mesh, g, S, norms, energy_window):
         gr["output_tail"] = tail
         gr["histograms"] = cont.histograms
         gr["solutions"] = cont.solutions
+        gr["elapsed_time"] = elapsed_time
 
 print_master("=================")
 print_master("FermionGf kernels")
