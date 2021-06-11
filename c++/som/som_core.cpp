@@ -311,7 +311,7 @@ int som_core::adjust_f(KernelType const& kern,
     for(int i = 0; (n_sol = comm.rank() + i * comm.size()) < params.adjust_f_l;
         ++i) {
       if(params.verbosity >= 2) {
-        std::cout << "[Node " << comm.rank()
+        std::cout << "[Rank " << comm.rank()
                   << "] Accumulation of particular solution " << n_sol
                   << std::endl;
       }
@@ -321,7 +321,7 @@ int som_core::adjust_f(KernelType const& kern,
 
       if(kappa > params.adjust_f_kappa) ++l_good;
       if(params.verbosity >= 2) {
-        std::cout << "[Node " << comm.rank() << "] Particular solution "
+        std::cout << "[Rank " << comm.rank() << "] Particular solution "
                   << n_sol << " is "
                   << (kappa > params.adjust_f_kappa ? "" : "not ")
                   << R"(good (\kappa = )" << kappa
@@ -389,7 +389,7 @@ configuration som_core::accumulate(KernelType const& kern,
 
     for(; (n_sol = comm.rank() + i * comm.size()) < n_sol_max; ++i) {
       if(params.verbosity >= 2) {
-        std::cout << "[Node " << comm.rank()
+        std::cout << "[Rank " << comm.rank()
                   << "] Accumulation of particular solution " << n_sol
                   << std::endl;
       }
@@ -401,7 +401,7 @@ configuration som_core::accumulate(KernelType const& kern,
       objf_min = std::min(objf_min, D);
 
       if(params.verbosity >= 2) {
-        std::cout << "[Node " << comm.rank() << "] Solution " << n_sol
+        std::cout << "[Rank " << comm.rank() << "] Solution " << n_sol
                   << ": D = " << D << std::endl;
       }
     }
