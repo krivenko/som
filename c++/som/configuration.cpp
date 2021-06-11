@@ -148,7 +148,7 @@ void h5_write(h5::group gr, std::string const& name,
         array<double, 1>{c[i].center, c[i].width, c[i].height};
   h5_write(gr, name, data);
   auto ds = gr.open_dataset(name);
-  h5_write_attribute(ds, "Format", get_triqs_hdf5_data_scheme(c));
+  write_hdf5_format(ds, c);
 }
 
 void h5_read(h5::group gr, std::string const& name, configuration& c,
@@ -157,6 +157,12 @@ void h5_read(h5::group gr, std::string const& name, configuration& c,
   h5_read(gr, name, data);
   for(int i = 0; i < first_dim(data); ++i)
     c.insert({data(i, 0), data(i, 1), data(i, 2), ci_});
+}
+
+configuration configuration::h5_read_construct(h5::group, std::string const&) {
+  // Making a new configuration object would require a cache_index reference.
+  TRIQS_RUNTIME_ERROR <<
+    "Direct loading of configuration objects is not supported";
 }
 
 } // namespace som
