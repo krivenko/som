@@ -45,13 +45,73 @@ using namespace triqs::statistics;
 using namespace som;
 """)
 
+#
+# Class Rectangle
+#
+
+c = class_(
+    py_type = "Rectangle",
+    c_type = "rectangle",
+    is_printable = True,
+    doc = r"Basis element of a spectral function"
+)
+
+c.add_property(name = "center",
+               getter = cfunction(signature = "double()", calling_pattern = "auto result = self_c.center"),
+               doc = "Center of the rectangle")
+c.add_property(name = "width",
+               getter = cfunction(signature = "double()", calling_pattern = "auto result = self_c.width"),
+               doc = "Width of the rectangle")
+c.add_property(name = "height",
+               getter = cfunction(signature = "double()", calling_pattern = "auto result = self_c.height"),
+               doc = "Height of the rectangle")
+
+c.add_property(name = "norm",
+               getter = cfunction("double norm()"),
+               doc = "Norm (area) of the rectangle")
+
+c.add_call(signature = "double(double x)",
+           doc = "Substitute value 'x' into the rectangle function")
+
+module.add_class(c)
+
+#
+# Class Configuration
+#
+
+c = class_(
+    py_type = "Configuration",
+    c_type = "configuration",
+    is_printable = True,
+    doc = r"Sum of rectangles"
+)
+
+c.add_len(doc = "Number of rectangles in the configuration")
+c.add_getitem(signature = "rectangle(int i)",
+              calling_pattern = """
+                  int len = self_c.size();
+                  if((i < -len) || (i >= len)) CPP2PY_RUNTIME_ERROR << "Rectangle index " << i << " is out of bounds";
+                  auto const& result = self_c[i >= 0 ? i : len + i];
+              """,
+              doc = "Individual rectangle access")
+c.add_iterator()
+
+c.add_property(name = "norm",
+               getter = cfunction("double norm()"),
+               doc = "Norm of the configuration")
+
+module.add_class(c)
+
+#
+# Class SomCore
+#
+
 module.add_enum("observable_kind", ["FermionGf","BosonCorr","BosonAutoCorr","ZeroTemp"], "som", "Kinds of observables")
 
-# The class som_core
 c = class_(
-        py_type = "SomCore",        # name of the python class
-        c_type = "som_core",        # name of the C++ class
-        doc = r"Main class of SOM", # doc of the C++ class
+    py_type = "SomCore",        # name of the python class
+    c_type = "som_core",        # name of the C++ class
+    doc = r"Main class of SOM"  # doc of the C++ class
 )
 
 c.add_constructor("""(gf_view<imtime> g_tau, gf_view<imtime> S_tau, som::observable_kind kind = FermionGf, vector<double> norms = {})""",
@@ -136,7 +196,10 @@ Fine tuning options
 +---------------------+-----------+-------------------------------+-----------------------------------------------------------------------------------------------------+
 """)
 
+#
 # Converter for run_parameters_t
+#
+
 run_params_conv = converter_(
         c_type = "som::run_parameters_t",
         doc = """""",
@@ -269,10 +332,41 @@ run_params_conv.add_member(c_name = "hist_n_bins",
 
 module.add_converter(run_params_conv)
 
+#
+# SomCore.fill_observable()
+#
+
 c.add_method("void fill_observable(gf_view<refreq> g_w)", calling_pattern = "g_w() = self_c")
 c.add_method("void fill_observable(gf_view<imtime> g_tau)", calling_pattern = "g_tau() = self_c")
 c.add_method("void fill_observable(gf_view<imfreq> g_iw)", calling_pattern = "g_iw() = self_c")
 c.add_method("void fill_observable(gf_view<legendre> g_l)", calling_pattern = "g_l() = self_c")
+
+#
+# SomCore.solutions
+#
+
+c.add_property(name = "solutions",
+               getter = cfunction("std::vector<configuration> get_solutions ()"),
+               doc = """Accumulated solutions, one per diagonal matrix element of the observable""")
+
+#
+# SomCore.histograms
+#
+
+c.add_property(name = "histograms",
+               getter = cfunction(signature = "std::optional<std::vector<histogram>> get_histograms ()"),
+               doc = """Accumulated objective function histograms, one per diagonal matrix element of the observable""")
+
+#
+# SomCore.compute_tail()
+#
+
+c.add_method("triqs::arrays::array<dcomplex, 3> compute_tail(int max_order)",
+             doc = """Compute GF tail coefficients using calculated spectra""")
+
+#
+# Other attributes of SomCore
+#
 
 c.add_property(name = "last_run_parameters",
                getter = cfunction("som::run_parameters_t get_last_run_parameters ()"),
@@ -281,23 +375,6 @@ c.add_property(name = "last_run_parameters",
 c.add_property(name = "run_status",
                getter = cfunction("int get_run_status ()"),
                doc = """Status of the run on exit """)
-
-solutions_cp = """
-auto const& solutions = self_c.get_solutions();
-std::vector<std::vector<std::tuple<double,double,double>>> result;
-for(auto const& sol : solutions) result.emplace_back(sol.begin(), sol.end());
-"""
-c.add_property(name = "solutions",
-               getter = cfunction(signature = "std::vector<std::vector<std::tuple<double,double,double>>>()",
-                                  calling_pattern = solutions_cp),
-               doc = """Accumulated solutions as lists of rectangle parameter tuples (center,width,height)""")
-
-c.add_property(name = "histograms",
-               getter = cfunction(signature = "std::optional<std::vector<histogram>> get_histograms ()"),
-               doc = """Accumulated objective function histograms""")
-
-c.add_method("triqs::arrays::array<dcomplex, 3> compute_tail(int max_order)",
-             doc = """Compute GF tail coefficients using calculated spectra""")
 
 module.add_class(c)
 
