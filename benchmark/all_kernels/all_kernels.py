@@ -29,6 +29,7 @@ from triqs.gf import *
 from triqs.gf.descriptors import *
 import triqs.utility.mpi as mpi
 from som import Som
+from som.version import som_hash
 from scipy.integrate import quad
 from scipy.special import spherical_in
 import numpy as np
@@ -63,6 +64,7 @@ som_params['make_histograms'] = True
 if mpi.is_master_node():
     arch = HDFArchive('all_kernels.np%d.h5' % mpi.world.size, 'w')
     arch["som_params"] = som_params
+    arch["som_git_hash"] = som_hash
 
 #
 # Auxiliary functions
