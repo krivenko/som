@@ -59,7 +59,7 @@ void test_kernel(std::string const& filename, cache_index& ci,
   h5::file file(filename, 'r');
 
   configuration conf(ci);
-  h5_read(file, "rects", conf, ci);
+  h5_read(file, "rects", conf);
   vector<double> beta;
   h5_read(file, "beta", beta);
 

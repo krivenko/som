@@ -20,7 +20,9 @@
  ******************************************************************************/
 #pragma once
 
+#include <cassert>
 #include <stack>
+#include <utility>
 #include <vector>
 
 namespace som {
@@ -79,6 +81,57 @@ public:
   [[nodiscard]] std::size_t n_used_entries() const {
     return entries.size() - spare_ids.size();
   }
+};
+
+// Pointer to a cache entry
+struct cache_entry_ptr {
+  cache_index * ci = nullptr; // Cache index the entry is part of
+  int id = 0;                 // ID of the entry
+
+  // Construct a null pointer
+  cache_entry_ptr() = default;
+  // Construct a valid pointer
+  inline cache_entry_ptr(cache_index& ci) : ci(&ci), id(ci.acquire()) {}
+  // Destroy the pointer
+  inline ~cache_entry_ptr() { if(ci) ci->decref(id); }
+  // Copy-constructor
+  inline cache_entry_ptr(cache_entry_ptr const& p) : ci(p.ci), id(p.id) {
+    if(ci) ci->incref(id);
+  }
+  // Move-constructor
+  inline cache_entry_ptr(cache_entry_ptr && p) noexcept : ci(p.ci), id(p.id) {
+    if(ci) ci->incref(id);
+  }
+  // Copy-assignment
+  inline cache_entry_ptr& operator=(cache_entry_ptr const& p) {
+    if(ci) ci->decref(id);
+    ci = p.ci;
+    id = p.id;
+    if(ci) ci->incref(id);
+    return *this;
+  }
+  // Move-assignment
+  inline cache_entry_ptr& operator=(cache_entry_ptr&& p) noexcept {
+    using std::swap;
+    swap(ci, p.ci);
+    swap(id, p.id);
+    return *this;
+  }
+
+  // Dereference this pointer
+  inline cache_index::entry & deref() const {
+    assert(ci);
+    return (*ci)[id];
+  }
+
+  // Dereference 'ci'
+  inline cache_index& get_ci() const {
+    assert(ci);
+    return *ci;
+  }
+
+  // Mark the pointee as invalid
+  inline void invalidate_entry() { if(ci) (*ci)[id].valid = false; }
 };
 
 } // namespace som

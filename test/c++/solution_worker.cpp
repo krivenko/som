@@ -67,7 +67,7 @@ TEST(solution_worker, RandomConfig) {
 
   configuration solution_ref(ci);
   h5::file arch("solution_worker.ref.h5", 'r');
-  h5_read(arch, "RandomConfig_output", solution_ref, ci);
+  h5_read(arch, "RandomConfig_output", solution_ref);
 
   EXPECT_EQ(solution_ref, solution);
 }
@@ -88,12 +88,12 @@ TEST(solution_worker, StartConfig) {
 
   h5::file arch("solution_worker.ref.h5", 'r');
   configuration init_config(ci);
-  h5_read(arch, "StartConfig_input", init_config, ci);
+  h5_read(arch, "StartConfig_input", init_config);
 
   auto solution = worker(init_config);
 
   configuration solution_ref(ci);
-  h5_read(arch, "StartConfig_output", solution_ref, ci);
+  h5_read(arch, "StartConfig_output", solution_ref);
 
   EXPECT_EQ(solution_ref, solution);
 }

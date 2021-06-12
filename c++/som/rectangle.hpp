@@ -37,46 +37,40 @@ struct rectangle {
   double width;  // width
   double height; // height
 
-  // Reference to the cache index and id within the cache
+  // Pointer to the associated cache entry (can be null)
+  //
   // Rectangles are immutable objects, therefore they acquire a new cache entry
-  // descriptor only on construction. Copies inherit the same descriptor, and
+  // descriptor only upon construction. Copies inherit the same ID, and
   // increase the refcount to it. The refcount is decreased by one on
   // destruction. Cache entry bound to an existing rectangle is never
   // invalidated, once the LHS is computed.
-  cache_index& ci;
-  int cache_id;
+  cache_entry_ptr cache_ptr;
 
 public:
+
+  // Construct a new rectangle unbound from a LHS cache
+  inline rectangle(double center, double width, double height)
+     : center(center)
+     , width(width)
+     , height(height)
+     {}
+
+  // Construct a new rectangle and bind it to a new cache entry
   inline rectangle(double center, double width, double height, cache_index& ci)
      : center(center)
      , width(width)
      , height(height)
-     , ci(ci)
-     , cache_id(ci.acquire()) {}
+     , cache_ptr(ci)
+     {}
 
-  inline rectangle(rectangle const& r)
-     : center(r.center)
-     , width(r.width)
-     , height(r.height)
-     , ci(r.ci)
-     , cache_id(r.cache_id) {
-    ci.incref(cache_id);
-  }
-  inline rectangle(rectangle&& r) noexcept
-     : center(r.center)
-     , width(r.width)
-     , height(r.height)
-     , ci(r.ci)
-     , cache_id(r.cache_id) {
-    ci.incref(cache_id);
-  }
+  rectangle(rectangle const& r) = default;
+  rectangle(rectangle&& r) noexcept = default;
+
   inline rectangle& operator=(rectangle const& r) {
-    ci.decref(cache_id);
-    cache_id = r.cache_id;
     center = r.center;
     width = r.width;
     height = r.height;
-    ci.incref(cache_id);
+    cache_ptr = r.cache_ptr;
     return *this;
   }
   inline rectangle& operator=(rectangle&& r) noexcept {
@@ -84,10 +78,9 @@ public:
     swap(center, r.center);
     swap(width, r.width);
     swap(height, r.height);
-    swap(cache_id, r.cache_id);
+    cache_ptr = std::move(r.cache_ptr);
     return *this;
   }
-  inline ~rectangle() { ci.decref(cache_id); }
 
   static constexpr double center_equal_tol = 1e-8;
   static constexpr double width_equal_tol = 1e-8;
@@ -110,7 +103,7 @@ public:
 
   // Multiplication by scalar
   friend rectangle operator*(rectangle const& r, double alpha) {
-    return {r.center, r.width, r.height * alpha, r.ci};
+    return {r.center, r.width, r.height * alpha, r.cache_ptr.get_ci()};
   }
   friend rectangle operator*(double alpha, rectangle const& r) {
     return r * alpha;
