@@ -188,7 +188,7 @@ void solution_worker<KernelType>::run(configuration& conf) {
   kern.cache_swap(data.global_conf, conf);
 
   data.temp_conf = data.global_conf;
-  if(data.global_conf.ci[data.global_conf.cache_id].valid)
+  if(data.global_conf.cache_ptr.deref().valid)
     kern.cache_copy(data.global_conf, data.temp_conf);
   data.temp_objf_value = data.global_objf_value = data.objf(data.global_conf);
 
@@ -213,7 +213,7 @@ void solution_worker<KernelType>::run(configuration& conf) {
 template <typename KernelType>
 void solution_worker<KernelType>::reset_temp_conf() {
   data.temp_conf = data.global_conf;
-  if(data.global_conf.ci[data.global_conf.cache_id].valid)
+  if(data.global_conf.cache_ptr.deref().valid)
     kern.cache_copy(data.global_conf, data.temp_conf);
   data.temp_objf_value = data.global_objf_value;
   kern.cache_copy(data.global_conf, data.temp_conf);

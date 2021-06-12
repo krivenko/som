@@ -31,7 +31,7 @@
 namespace som {
 
 config_update::config_update(configuration& conf, cache_index& ci)
-   : conf(conf), ci(ci), cache_id(ci.acquire()) {
+   : conf(conf), cache_ptr(ci) {
   changed_indices.reserve(2);
   new_rects.reserve(2);
 }
@@ -39,47 +39,48 @@ config_update::config_update(config_update const& cu)
    : conf(cu.conf)
    , changed_indices(cu.changed_indices)
    , new_rects(cu.new_rects)
-   , ci(cu.ci)
-   , cache_id(ci.acquire()) {}
+   , cache_ptr(cu.cache_ptr ?
+               cache_entry_ptr(cu.cache_ptr.get_ci()) :
+               cache_entry_ptr()) {}
 config_update::config_update(config_update&& cu) noexcept
    : conf(cu.conf)
    , changed_indices(cu.changed_indices)
    , new_rects(cu.new_rects)
-   , ci(cu.ci)
-   , cache_id(ci.acquire()) {}
-config_update::~config_update() { ci.decref(cache_id); }
+   , cache_ptr(cu.cache_ptr ?
+               cache_entry_ptr(cu.cache_ptr.get_ci()) :
+               cache_entry_ptr()) {}
 
 void config_update::add_rectangle(rectangle const& r) {
   changed_indices.push_back(INT_MAX);
   new_rects.push_back(r);
-  ci[cache_id].valid = false;
+  cache_ptr.invalidate_entry();
 }
 void config_update::add_rectangle(rectangle&& r) {
   changed_indices.push_back(INT_MAX);
   new_rects.push_back(std::move(r));
-  ci[cache_id].valid = false;
+  cache_ptr.invalidate_entry();
 }
 
 void config_update::remove_rectangle(int index) {
   changed_indices.push_back(-index - 1);
-  ci[cache_id].valid = false;
+  cache_ptr.invalidate_entry();
 }
 
 void config_update::change_rectangle(int index, rectangle const& r) {
   changed_indices.push_back(index);
   new_rects.push_back(r);
-  ci[cache_id].valid = false;
+  cache_ptr.invalidate_entry();
 }
 void config_update::change_rectangle(int index, rectangle&& r) {
   changed_indices.push_back(index);
   new_rects.push_back(std::move(r));
-  ci[cache_id].valid = false;
+  cache_ptr.invalidate_entry();
 }
 
 void config_update::reset() {
   changed_indices.clear();
   new_rects.clear();
-  ci[cache_id].valid = false;
+  cache_ptr.invalidate_entry();
 }
 
 void config_update::apply() {
@@ -111,7 +112,7 @@ void config_update::apply() {
       ++rect_it;
     }
   }
-  ci[conf.cache_id].valid = false;
+  conf.cache_ptr.invalidate_entry();
   reset();
 }
 

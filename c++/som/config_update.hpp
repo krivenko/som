@@ -45,19 +45,18 @@ struct config_update {
   // New rectangles (for insertions and chages)
   std::vector<rectangle> new_rects;
 
-  // Reference to the cache index and id within the cache
+  // Pointer to the associated cache entry
+  //
   // Every new config_update object, including copies, acquire a new
   // cache entry descriptor, which is then released in the destructor.
   // Methods reset() and *_rectangle() will invalidate the cache entry.
-  cache_index& ci;
-  int cache_id;
+  cache_entry_ptr cache_ptr;
 
   config_update(configuration& conf, cache_index& ci);
   config_update(config_update const& cu);
   config_update(config_update&& cu) noexcept;
   config_update& operator=(config_update const&) = delete;
   config_update& operator=(config_update&&) = delete;
-  ~config_update();
 
   void add_rectangle(rectangle const& r);
   void add_rectangle(rectangle&& r);

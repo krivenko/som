@@ -42,39 +42,53 @@ void configuration::remove(int index) {
 
 void configuration::replace(int index, rectangle const& r) { rects[index] = r; }
 
-void configuration::clear() { rects.clear(); }
+void configuration::clear() {
+  cache_ptr.invalidate_entry();
+  rects.clear();
+}
+
+configuration::configuration(std::initializer_list<rectangle> const& l)
+   : rects(l) {
+  rects.reserve(default_max_rects);
+}
 
 configuration::configuration(cache_index& ci, int reserved_rects)
-   : ci(ci), cache_id(ci.acquire()) {
+   : cache_ptr(ci) {
   rects.reserve(reserved_rects);
 }
 
 configuration::configuration(std::initializer_list<rectangle> const& l,
                              cache_index& ci)
-   : rects(l), ci(ci), cache_id(ci.acquire()) {
+   : rects(l), cache_ptr(ci) {
   rects.reserve(default_max_rects);
 }
 
 configuration::configuration(configuration const& c)
-   : rects(c.rects), ci(c.ci), cache_id(ci.acquire()) {}
+   : rects(c.rects),
+  cache_ptr(c.cache_ptr ?
+            cache_entry_ptr(c.cache_ptr.get_ci()) :
+            cache_entry_ptr())
+{}
 
 configuration::configuration(configuration&& c) noexcept
-   : rects(c.rects), ci(c.ci), cache_id(ci.acquire()) {}
+   : rects(std::move(c.rects)),
+  cache_ptr(c.cache_ptr ?
+            cache_entry_ptr(c.cache_ptr.get_ci()) :
+            cache_entry_ptr())
+{}
 
 // cppcheck-suppress operatorEqVarError
 configuration& configuration::operator=(configuration const& c) {
   rects = c.rects;
-  ci[cache_id].valid = false;
+  cache_ptr.invalidate_entry();
   return *this;
 }
 
 configuration& configuration::operator=(configuration&& c) noexcept {
   std::swap(rects, c.rects);
-  ci[cache_id].valid = false;
+  cache_ptr.invalidate_entry();
   return *this;
 }
-
-configuration::~configuration() { ci.decref(cache_id); }
 
 double configuration::norm() const {
   return std::accumulate(
@@ -85,7 +99,7 @@ double configuration::norm() const {
 configuration& configuration::operator+=(configuration const& c) {
   rects.reserve(rects.size() + c.rects.size());
   std::copy(c.rects.begin(), c.rects.end(), std::back_inserter(rects));
-  ci[cache_id].valid = false;
+  cache_ptr.invalidate_entry();
   return *this;
 }
 configuration configuration::operator+(configuration const& c) const {
@@ -100,7 +114,7 @@ configuration& configuration::operator*=(double alpha) {
         << "Cannot multiply a configuration by a negative number " << alpha;
   std::transform(rects.begin(), rects.end(), rects.begin(),
                  [&](rectangle const& r) { return r * alpha; });
-  ci[cache_id].valid = false;
+  cache_ptr.invalidate_entry();
   return *this;
 }
 configuration operator*(configuration const& c, double alpha) {
@@ -123,8 +137,7 @@ void configuration::normalize(double norm) {
       [](double n, rectangle const& r) { return n + r.norm(); });
   std::transform(rects.begin(), rects.end(), rects.begin(),
                  [&](rectangle const& r) { return r * (norm / old_norm); });
-  // Invalidate LHS cache entry
-  ci[cache_id].valid = false;
+  cache_ptr.invalidate_entry();
 }
 
 std::ostream& operator<<(std::ostream& os, configuration const& c) {
@@ -151,12 +164,12 @@ void h5_write(h5::group gr, std::string const& name,
   write_hdf5_format(ds, c);
 }
 
-void h5_read(h5::group gr, std::string const& name, configuration& c,
-             cache_index& ci_) {
+void h5_read(h5::group gr, std::string const& name, configuration& c) {
   triqs::arrays::array<double, 2> data;
   h5_read(gr, name, data);
+  c.clear();
   for(int i = 0; i < first_dim(data); ++i)
-    c.insert({data(i, 0), data(i, 1), data(i, 2), ci_});
+    c.insert({data(i, 0), data(i, 1), data(i, 2), c.cache_ptr.get_ci()});
 }
 
 configuration configuration::h5_read_construct(h5::group, std::string const&) {

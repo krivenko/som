@@ -41,6 +41,11 @@ TEST(configuration, Print) {
   ASSERT_PRINT(conf2_str, conf2);
 }
 
+TEST(configuration, Detached) {
+  configuration conf_det({{-2.0, 2.6, 0.3}, {1.3, 2.6, 0.6}, {2.0, 2.6, 0.7}});
+  ASSERT_PRINT(conf1_str, conf_det);
+}
+
 TEST(configuration, Arithmetics) {
   EXPECT_PRINT(conf1_str + "," + conf2_str, conf1 + conf2);
 

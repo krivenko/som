@@ -41,14 +41,14 @@ struct configuration {
 
   static const int default_max_rects = 70;
 
-  // Reference to the cache index and id within the cache.
+  // Pointer to the associated cache entry (can be null)
+  //
   // Every new configuration object, including copies, acquire a new
   // cache entry descriptor, which is then released in the destructor.
   // Assignments and compound operations *=, += will invalidate the
   // cache entry. One should manually call kernel_base::cache_* methods
   // to update the invalidated entries without a full recomputation
-  cache_index& ci;
-  int cache_id;
+  cache_entry_ptr cache_ptr;
 
 private:
   // Configurations are supposed to be modified
@@ -65,10 +65,12 @@ private:
   // Replace a rectangle
   void replace(int index, rectangle const& r);
 
-  // Remove all rectangles, only for internal use in h5_read
-  void clear();
-
 public:
+
+  // Construct a new configuration unbound from a LHS cache
+  configuration() = default;
+  configuration(std::initializer_list<rectangle> const& l);
+
   explicit configuration(cache_index& ci,
                          int reserved_rects = default_max_rects);
   configuration(std::initializer_list<rectangle> const& l, cache_index& ci);
@@ -76,7 +78,6 @@ public:
   configuration(configuration&& c) noexcept;
   configuration& operator=(configuration const& c);
   configuration& operator=(configuration&& c) noexcept;
-  ~configuration();
 
   // Number of rectangles
   [[nodiscard]] int size() const { return rects.size(); }
@@ -91,6 +92,9 @@ public:
   // Equality
   bool operator==(configuration const& c) const { return rects == c.rects; }
   bool operator!=(configuration const& c) const { return !operator==(c); }
+
+  // Remove all rectangles
+  void clear();
 
   // Sum of configurations: all rectangles from both of them
   configuration& operator+=(configuration const& c);
@@ -122,13 +126,13 @@ public:
              MPI_Op = MPI_SUM // NOLINT(cppcoreguidelines-pro-type-cstyle-cast)
   ) {
     if(comm.size() == 1) return c;
-    configuration res(c.ci);
+    configuration res(c.cache_ptr.get_ci());
 
     std::vector<rectangle::pod_t> pod_rects(std::begin(c), std::end(c));
     pod_rects = mpi_gather(pod_rects, comm, root, all);
 
     for(auto const& r : pod_rects)
-      res.insert({r.center, r.width, r.height, res.ci});
+      res.insert({r.center, r.width, r.height, res.cache_ptr.get_ci()});
     return res;
   }
 
@@ -136,8 +140,7 @@ public:
   static std::string hdf5_format() { return "SomConfiguration"; }
   friend void h5_write(h5::group gr, std::string const& name,
                        configuration const& c);
-  friend void h5_read(h5::group gr, std::string const& name,
-                      configuration& c, cache_index& ci_);
+  friend void h5_read(h5::group gr, std::string const& name, configuration& c);
   static configuration h5_read_construct(h5::group gr, std::string const& name);
 };
 

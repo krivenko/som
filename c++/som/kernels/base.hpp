@@ -42,7 +42,7 @@ template <typename Derived, typename ResultType> class kernel_base {
   // Precomputed LHS values
   mutable std::vector<ResultType> lhs_cache;
 
-  inline void check_cache_size(cache_index const& ci) const {
+  inline void check_cache_size(const cache_index& ci) const {
     if(lhs_cache.size() < ci.size())
       lhs_cache.resize(ci.size(), ResultType(first_dim(lhs_cache[0])));
   }
@@ -55,9 +55,10 @@ public:
   }
 
   inline ResultType const& operator()(rectangle const& rect) const {
-    auto& ce = rect.ci[rect.cache_id];
-    check_cache_size(rect.ci);
-    auto& res = lhs_cache[rect.cache_id];
+    auto const& p = rect.cache_ptr;
+    auto& ce = p.deref();
+    check_cache_size(p.get_ci());
+    auto& res = lhs_cache[p.id];
     // Do we have a precomputed LHS for rectangle r?
     if(!ce.valid) {
       DERIVED->apply(rect, res);
@@ -67,9 +68,10 @@ public:
   }
 
   inline ResultType const& operator()(configuration const& c) const {
-    auto& ce = c.ci[c.cache_id];
-    check_cache_size(c.ci);
-    auto& res = lhs_cache[c.cache_id];
+    auto const& p = c.cache_ptr;
+    auto& ce = p.deref();
+    check_cache_size(p.get_ci());
+    auto& res = lhs_cache[p.id];
     // Do we have a precomputed LHS for configuration c?
     if(!ce.valid) {
       res() = 0;
@@ -82,9 +84,10 @@ public:
   inline ResultType const& operator()(config_update const& cu) const {
     auto const& conf = cu.get_config();
 
-    auto& ce = cu.ci[cu.cache_id];
-    check_cache_size(cu.ci);
-    auto& res = lhs_cache[cu.cache_id];
+    auto const& p = cu.cache_ptr;
+    auto& ce = p.deref();
+    check_cache_size(p.get_ci());
+    auto& res = lhs_cache[p.id];
     // Do we have a precomputed LHS for config_update cu?
     if(!ce.valid) {
       // Cache entry holds the LHS for the *updated configuration*
@@ -113,18 +116,18 @@ public:
   // another object. The destination cache entry will be marked as valid
   template <typename T1, typename T2>
   void cache_copy(T1 const& from, T2 const& to) const {
-    check_cache_size(from.ci);
-    lhs_cache[to.cache_id] = lhs_cache[from.cache_id];
-    to.ci[to.cache_id].valid = true;
+    check_cache_size(from.cache_ptr.get_ci());
+    lhs_cache[to.cache_ptr.id] = lhs_cache[from.cache_ptr.id];
+    to.cache_ptr.deref().valid = true;
   }
 
   // Swap two LHS values each bound to a given object
   // The destination cache entry (second argument) will be marked as valid
   template <typename T1, typename T2>
   void cache_swap(T1 const& from, T2 const& to) const {
-    check_cache_size(from.ci);
-    std::swap(lhs_cache[to.cache_id], lhs_cache[from.cache_id]);
-    to.ci[to.cache_id].valid = true;
+    check_cache_size(from.cache_ptr.get_ci());
+    std::swap(lhs_cache[to.cache_ptr.id], lhs_cache[from.cache_ptr.id]);
+    to.cache_ptr.deref().valid = true;
   }
 };
 
