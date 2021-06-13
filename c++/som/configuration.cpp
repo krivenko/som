@@ -169,13 +169,10 @@ void h5_read(h5::group gr, std::string const& name, configuration& c) {
   h5_read(gr, name, data);
   c.clear();
   for(int i = 0; i < first_dim(data); ++i)
-    c.insert({data(i, 0), data(i, 1), data(i, 2), c.cache_ptr.get_ci()});
-}
-
-configuration configuration::h5_read_construct(h5::group, std::string const&) {
-  // Making a new configuration object would require a cache_index reference.
-  TRIQS_RUNTIME_ERROR <<
-    "Direct loading of configuration objects is not supported";
+    if(c.cache_ptr)
+      c.insert({data(i, 0), data(i, 1), data(i, 2), c.cache_ptr.get_ci()});
+    else
+      c.insert({data(i, 0), data(i, 1), data(i, 2)});
 }
 
 } // namespace som

@@ -85,6 +85,7 @@ for kind in ("FermionGf", "BosonCorr", "BosonAutoCorr", "ZeroTemp"):
                 print("Solution %d: mismatching number of rectangles (%d vs %d)" %
                       (n, len(s), len(s_old)))
             else:
+                s = [(r.center, r.width, r.height) for r in s]
                 if np.allclose(s, s_old, atol=atol, rtol=0):
                     print("Solution %d matches" % n)
                 else:
