@@ -118,6 +118,9 @@ struct cache_entry_ptr {
     return *this;
   }
 
+  // Null pointer?
+  inline operator bool() const { return ci != nullptr; }
+
   // Dereference this pointer
   inline cache_index::entry & deref() const {
     assert(ci);
