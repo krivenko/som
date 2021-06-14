@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Installation &mdash; TRIQS Stochastic Optimization Method  documentation</title>
+    
+    <link rel="stylesheet" href="_static/triqs.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="/som/mathjax/MathJax.js?config=default"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="TRIQS Stochastic Optimization Method  documentation" href="index.html" />
+    <link rel="next" title="Documentation" href="documentation.html" />
+    <link rel="prev" title="Stochastic Optimization Method for Analytic Continuation" href="index.html" />
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+    <script src="_static/cufon-yui.js" type="text/javascript"></script>
+    <script src="_static/spaceman.cufonfonts.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      Cufon.replace('.triqs', { fontFamily: 'spaceman', hover: true }); 
+    </script>
+ 
+    <style type="text/css">
+      table.right { float: right; margin-left: 20px; }
+      table.right td { border: 1px solid #ccc; }
+      
+    </style>
+
+  </head>
+  <body>
+<div class="pageheader">
+  <ul>
+    
+    <li><a href="#">Install</a></li>
+    
+    <li><a href="documentation.html">Documentation</a></li>
+    
+    <li><a href="issues.html">Issues</a></li>
+    
+    <li><a href="about.html">About SOM</a></li>
+    
+  </ul>
+  <div>
+    <h1 style="padding:0; margin: 10px 0 0 0;"><a class="triqs" href="index.html">SOM</a></h1>
+    <span style="font-size: 14px; margin: 0px; padding: 0px;">An analytic continuation program based on the <a class="triqs" style="font-size: 12px" href="https://triqs.github.io/">TRIQS</a> library</span>
+  </div>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="documentation.html" title="Documentation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Stochastic Optimization Method for Analytic Continuation"
+             accesskey="P">previous</a> |</li>
+    <li><a href="index.html">Home</a> &raquo;</li>
+ 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Installation</a><ul>
+<li><a class="reference internal" href="#prerequisite">Prerequisite</a></li>
+<li><a class="reference internal" href="#installation-steps">Installation steps</a></li>
+<li><a class="reference internal" href="#customizing-your-installation-cmake-options">Customizing your installation: CMake options</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Stochastic Optimization Method for Analytic Continuation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="documentation.html"
+                        title="next chapter">Documentation</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/install.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="prerequisite">
+<h2>Prerequisite<a class="headerlink" href="#prerequisite" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>The <a class="reference external" href="https://triqs.github.io/triqs/1.4/index.html#welcome" title="(in TRIQS v1.4)"><em class="xref std std-ref">TRIQS</em></a> toolbox version 1.4.2 (see <a class="reference external" href="https://triqs.github.io/triqs/1.4/install.html#installation" title="(in TRIQS v1.4)"><em class="xref std std-ref">TRIQS installation instruction</em></a>).
+In the following, we will suppose that it is installed in the <tt class="docutils literal"><span class="pre">path_to_triqs</span></tt> directory.</li>
+</ol>
+</div>
+<div class="section" id="installation-steps">
+<h2>Installation steps<a class="headerlink" href="#installation-steps" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">Download the sources of the solver from github:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>git clone https://github.com/krivenko/som.git som.src
+</pre></div>
+</div>
+</li>
+<li><p class="first">Create an empty build directory where you will compile the code:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>mkdir som.build <span class="o">&amp;&amp;</span> <span class="nb">cd </span>som.build
+</pre></div>
+</div>
+</li>
+<li><p class="first">In the build directory call cmake specifying where the TRIQS library is installed:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>cmake -DTRIQS_PATH<span class="o">=</span>path_to_triqs ../som.src
+</pre></div>
+</div>
+</li>
+<li><p class="first">Compile the code, run the tests and install the application:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>make
+<span class="nv">$ </span>make <span class="nb">test</span>
+<span class="nv">$ </span>make install
+</pre></div>
+</div>
+</li>
+</ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Be careful with the cmake command above: set TRIQS_PATH, not CMAKE_INSTALL_PREFIX (this variable is only for the TRIQS library)!</p>
+</div>
+</div>
+<div class="section" id="customizing-your-installation-cmake-options">
+<span id="install-options"></span><h2>Customizing your installation: CMake options<a class="headerlink" href="#customizing-your-installation-cmake-options" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="63%" />
+<col width="38%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Options</th>
+<th class="head">Syntax</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Disable testing (not recommended)</td>
+<td>-DTests=OFF</td>
+</tr>
+<tr class="row-odd"><td>Build the documentation locally</td>
+<td>-DBuild_Documentation=ON</td>
+</tr>
+<tr class="row-even"><td>Initial size of the cache to store computed LHS</td>
+<td>-DCACHE_SIZE=0x4000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="documentation.html" title="Documentation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Stochastic Optimization Method for Analytic Continuation"
+             >previous</a> |</li>
+    <li><a href="index.html">Home</a> &raquo;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2016-2020, Igor Krivenko.
+    </div>
+  </body>
+</html>

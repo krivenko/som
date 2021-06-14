@@ -1,0 +1,305 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Documentation &mdash; TRIQS Stochastic Optimization Method  documentation</title>
+    
+    <link rel="stylesheet" href="_static/triqs.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="/som/mathjax/MathJax.js?config=default"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="TRIQS Stochastic Optimization Method  documentation" href="index.html" />
+    <link rel="next" title="Supported integral kernels" href="kernels.html" />
+    <link rel="prev" title="Installation" href="install.html" />
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+    <script src="_static/cufon-yui.js" type="text/javascript"></script>
+    <script src="_static/spaceman.cufonfonts.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      Cufon.replace('.triqs', { fontFamily: 'spaceman', hover: true }); 
+    </script>
+ 
+    <style type="text/css">
+      table.right { float: right; margin-left: 20px; }
+      table.right td { border: 1px solid #ccc; }
+      
+    </style>
+
+  </head>
+  <body>
+<div class="pageheader">
+  <ul>
+    
+    <li><a href="install.html">Install</a></li>
+    
+    <li><a href="#">Documentation</a></li>
+    
+    <li><a href="issues.html">Issues</a></li>
+    
+    <li><a href="about.html">About SOM</a></li>
+    
+  </ul>
+  <div>
+    <h1 style="padding:0; margin: 10px 0 0 0;"><a class="triqs" href="index.html">SOM</a></h1>
+    <span style="font-size: 14px; margin: 0px; padding: 0px;">An analytic continuation program based on the <a class="triqs" style="font-size: 12px" href="https://triqs.github.io/">TRIQS</a> library</span>
+  </div>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="kernels.html" title="Supported integral kernels"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="install.html" title="Installation"
+             accesskey="P">previous</a> |</li>
+    <li><a href="index.html">Home</a> &raquo;</li>
+ 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="install.html"
+                        title="previous chapter">Installation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="kernels.html"
+                        title="next chapter">Supported integral kernels</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/documentation.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-pytriqs.applications.analytical_continuation.som"></span><div class="section" id="documentation">
+<span id="id1"></span><h1>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="kernels.html">Supported integral kernels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameters.html">run() parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/fermiongf/example.html">Example: Fermionic Green&#8217;s function or self-energy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/bosoncorr/example.html">Example: Correlator of boson-like operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/bosonautocorr/example.html">Example: Autocorrelator of a Hermitian operator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/zerotemp/example.html">Example: Matsubara correlator at zero temperature</a></li>
+</ul>
+</div>
+<p>Running SOM to analytically continue input data requires writing a simple Python script.
+Details of the script will vary depending on the physical quantity to be continued, and
+its representation (function of imaginary time, Matsubara frequencies, or a list of
+the Legendre basis coefficients). Nonetheless, a typical script will the following basic parts.</p>
+<ul>
+<li><p class="first">Import TRIQS and SOM Python modules.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Green&#39;s function containers</span>
+<span class="kn">from</span> <span class="nn">pytriqs.gf.local</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="c"># HDFArchive interface to .h5 files</span>
+<span class="kn">from</span> <span class="nn">pytriqs.archive</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="c"># HDF5 archives must be modified only by one MPI rank.</span>
+<span class="c"># is_master_node() checks we are on rank 0.</span>
+<span class="kn">from</span> <span class="nn">pytriqs.utility.mpi</span> <span class="kn">import</span> <span class="n">is_master_node</span>
+
+<span class="c"># Main SOM class</span>
+<span class="kn">from</span> <span class="nn">pytriqs.applications.analytical_continuation.som</span> <span class="kn">import</span> <span class="n">Som</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><em>Optional:</em> Load input data from an HDF5 archive.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Open an HDF5 file in read-only mode</span>
+<span class="n">arch</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s">&#39;input.h5&#39;</span><span class="p">,</span> <span class="s">&#39;h&#39;</span><span class="p">)</span>
+
+<span class="c"># Read input function</span>
+<span class="n">inp</span> <span class="o">=</span> <span class="n">arch</span><span class="p">[</span><span class="s">&#39;input&#39;</span><span class="p">]</span>
+<span class="c"># Read importance function S</span>
+<span class="n">S</span> <span class="o">=</span> <span class="n">arch</span><span class="p">[</span><span class="s">&#39;S&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>This step can be omitted if the input data comes from a different source.
+For instance, it could be loaded from text files or generated in the very
+same script by a quantum Monte-Carlo impurity solver.</p>
+</li>
+<li><p class="first">Construct <cite>Som</cite> object. Here you must specify the kind of the physical
+observable in question, or equivalently, the integral kernel in the analytical
+continuation equation.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Create Som object</span>
+<span class="n">cont</span> <span class="o">=</span> <span class="n">Som</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">kind</span> <span class="o">=</span> <span class="s">&quot;FermionGf&quot;</span><span class="p">,</span> <span class="n">norms</span> <span class="o">=</span> <span class="n">norms</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><cite>inp</cite> and <cite>S</cite> must be Green&#8217;s function containers of the same type (one of
+<cite>GfImTime</cite>, <cite>GfImFreq</cite> or <cite>GfLegendre</cite>), defined on the same mesh and having
+the same target shape.</p>
+<p>Currently supported observable kinds are <a class="reference internal" href="kernels.html#fermiongf"><em>FermionGf</em></a> (fermionic Green&#8217;s
+function or self-energy), <a class="reference internal" href="kernels.html#bosoncorr"><em>BosonCorr</em></a> (correlator of a boson-like operator
+with its Hermitian conjugate), <a class="reference internal" href="kernels.html#bosonautocorr"><em>BosonAutoCorr</em></a> (correlator of a
+Hermitian operator with itself), and <a class="reference internal" href="kernels.html#zerotemp"><em>ZeroTemp</em></a> (correlator computed in
+Matsubara formalism but at zero temperature).
+Refer to &#8216;<a class="reference internal" href="kernels.html#kernels"><em>Supported integral kernels</em></a>&#8216; for a detailed description of the implemented observable kinds.</p>
+<p>If target shape of <cite>inp</cite> is bigger than 1x1, SOM will only construct analytical
+continuation of the diagonal matrix elements.</p>
+<p><cite>norms</cite> is an optional one-dimensional NumPy array containing expected norms of the
+spectral functions to be found, one positive real number per one diagonal element of <cite>inp</cite>.
+Instead of setting all elements of <cite>norms</cite> to the same constant <cite>x</cite>, one may simply
+pass <cite>norms = x</cite>.
+By default all norms are set to 1, which is correct for the Green&#8217;s functions of
+the fermions. However, adjustments would normally be needed for self-energies and
+bosonic correlators/autocorelators.</p>
+</li>
+<li><p class="first">Set simulation parameters.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Dictionary contaning all run() parameters</span>
+<span class="n">run_params</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="c"># SOM will construct a spectral function within this energy window</span>
+<span class="n">run_params</span><span class="p">[</span><span class="s">&#39;energy_window&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">5.0</span><span class="p">,</span><span class="mf">5.0</span><span class="p">)</span>
+
+<span class="c"># Number of particular solutions to calculate. It controls smoothness of</span>
+<span class="c"># the final solution, and should in practice be chosen from 100-10000 range</span>
+<span class="c"># (computation time scales linearly with it).</span>
+<span class="n">run_params</span><span class="p">[</span><span class="s">&#39;l&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1000</span>
+</pre></div>
+</div>
+<p>These two parameters are required for any simulation. Other useful parameters
+include <cite>verbosity</cite> and setting of the underlying Markov chain algorithm. You
+can find a detailed discussion of the latter in Sections 3 and 4 of
+<a class="reference external" href="https://www.cond-mat.de/events/correl12/manuscripts/mishchenko.pdf">Mishchenko&#8217;s lecture</a>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Set verbosity level to the maximum on MPI rank 0, and silence all other ranks</span>
+<span class="n">run_params</span><span class="p">[</span><span class="s">&#39;verbosity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span> <span class="k">if</span> <span class="n">is_master_node</span><span class="p">()</span> <span class="k">else</span> <span class="mi">0</span>
+
+<span class="c"># Do not auto-adjust the number of particular solutions to accumulate</span>
+<span class="c"># (default and recommended)</span>
+<span class="n">run_params</span><span class="p">[</span><span class="s">&#39;adjust_l&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+
+<span class="c"># Do not auto-adjust the number of global updates (default and recommended)</span>
+<span class="n">run_params</span><span class="p">[</span><span class="s">&#39;adjust_f&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+
+<span class="c"># Number of global updates per particular solution</span>
+<span class="c"># Bigger values improve ergodicity of the Markov chain algorithm</span>
+<span class="c"># (computation time scales linearly with &#39;f&#39;)</span>
+<span class="n">run_params</span><span class="p">[</span><span class="s">&#39;f&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">200</span>
+
+<span class="c"># Number of local updates per global update</span>
+<span class="c"># Has a similar effect on the algorithm as &#39;f&#39;, and scales linearly too.</span>
+<span class="n">run_params</span><span class="p">[</span><span class="s">&#39;t&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">500</span>
+
+<span class="c"># Accumulate histogram of the objective function values,</span>
+<span class="c"># useful to analyse quality of solution</span>
+<span class="n">run_params</span><span class="p">[</span><span class="s">&#39;make_histograms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+</pre></div>
+</div>
+<p>See &#8216;<a class="reference internal" href="parameters.html#parameters"><em>run() parameters</em></a>&#8216; for a full list of accepted parameters.</p>
+</li>
+<li><p class="first">Run simulation.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">cont</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">run_params</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Extract solution and reconstructed input.</p>
+<p>SOM internally represents spectral functions
+as sums of rectangles. This representation is accessible as <cite>cont.solutions</cite>. In most
+cases one is interested in the resulting observable defined on a real frequency mesh.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">sol</span> <span class="o">=</span> <span class="n">cont</span><span class="o">.</span><span class="n">solutions</span>
+<span class="c"># &#39;sol&#39; is now a list of spectral functions, len(sol) == len(inp.indices)</span>
+<span class="c"># Each element of &#39;sol&#39; represents a sum of rectangles; its type is</span>
+<span class="c"># list((rect_center,rect_width,rect_height))</span>
+
+<span class="c"># Evaluate the solution on a frequency mesh.</span>
+<span class="c"># The tail coefficients will be written into f_w too.</span>
+<span class="c">#</span>
+<span class="c"># NB: we can use *any* energy window at this point, not necessarily that from run_params</span>
+<span class="n">f_w</span> <span class="o">=</span> <span class="n">GfReFreq</span><span class="p">(</span><span class="n">window</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">),</span> <span class="n">n_points</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+<span class="n">f_w</span> <span class="o">&lt;&lt;</span> <span class="n">cont</span>
+
+<span class="c"># Imaginary time/frequency/Legendre data reconstructed from the solution</span>
+<span class="n">rec</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">rec</span> <span class="o">&lt;&lt;</span> <span class="n">cont</span>
+</pre></div>
+</div>
+<p>It is neccessary (but not enough) to have <cite>rec</cite> close to <cite>inp</cite> to ensure correctness
+of the solution.</p>
+</li>
+<li><p class="first"><em>Optional:</em> Save results to an HDF5 archive.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># On master node, save results to an archive</span>
+<span class="k">if</span> <span class="n">mpi</span><span class="o">.</span><span class="n">is_master_node</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s">&quot;results.h5&quot;</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ar</span><span class="p">:</span>
+        <span class="n">ar</span><span class="p">[</span><span class="s">&#39;inp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inp</span>
+        <span class="n">ar</span><span class="p">[</span><span class="s">&#39;f_w&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">f_w</span>
+        <span class="n">ar</span><span class="p">[</span><span class="s">&#39;rec&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rec</span>
+        <span class="c"># Save histograms for further analysis</span>
+        <span class="n">ar</span><span class="p">[</span><span class="s">&#39;histograms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cont</span><span class="o">.</span><span class="n">histograms</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p>There are a few <a class="reference internal" href="#documentation"><em>examples</em></a> explaining how to run SOM for specific observable kinds.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="kernels.html" title="Supported integral kernels"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="install.html" title="Installation"
+             >previous</a> |</li>
+    <li><a href="index.html">Home</a> &raquo;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2016-2020, Igor Krivenko.
+    </div>
+  </body>
+</html>
