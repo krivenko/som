@@ -58,23 +58,6 @@ void check_input_gf(gf_const_view<GfOpts...> g, gf_const_view<GfOpts...> S) {
     fatal_error("matrix-valued input quantities must be square");
 }
 
-template <typename... GfOpts>
-void som_core::set_input_data(gf_const_view<GfOpts...> g,
-                              gf_const_view<GfOpts...> S) {
-  using mesh_t = typename gf_const_view<GfOpts...>::mesh_t;
-
-  auto& rhs_ = (input_data_t<mesh_t>&)rhs;
-  auto& error_bars_ = (input_data_t<mesh_t>&)error_bars;
-  auto gf_dim = g.target_shape()[0];
-
-  results.reserve(gf_dim);
-  for(int i = 0; i < gf_dim; ++i) {
-    rhs_.emplace_back(g.data()(range(), i, i));
-    error_bars_.emplace_back(S.data()(range(), i, i));
-    results.emplace_back(ci);
-  }
-}
-
 template <typename MeshType>
 void check_gf_dim(gf_const_view<MeshType> g, int expected_dim) {
   auto shape = g.target_shape();
@@ -89,8 +72,7 @@ void check_gf_dim(gf_view<MeshType> g, int expected_dim) {
 }
 
 template <typename MeshType>
-void check_gf_stat(gf_const_view<MeshType> g,
-                   triqs::gfs::statistic_enum expected_stat) {
+void check_gf_stat(gf_const_view<MeshType> g, statistic_enum expected_stat) {
   if(g.domain().statistic != expected_stat)
     fatal_error("expected a " + mesh_traits<MeshType>::name() +
                 " Green's function with " +
@@ -98,33 +80,42 @@ void check_gf_stat(gf_const_view<MeshType> g,
                 " statistics");
 }
 template <typename MeshType>
-void check_gf_stat(gf_view<MeshType> g,
-                   triqs::gfs::statistic_enum expected_stat) {
+void check_gf_stat(gf_view<MeshType> g, statistic_enum expected_stat) {
   return check_gf_stat(make_const_view(g), expected_stat);
 }
 
-vector<double> make_default_norms(vector<double> const& norms, int dim) {
-  if(norms.size() != 0)
-    return norms;
-  else {
-    vector<double> def_norms(dim);
-    def_norms() = 1.0;
-    return def_norms;
-  }
+//////////////////////
+// som_core::data_t //
+//////////////////////
+
+template <typename Mesh>
+som_core::data_t::data_t(Mesh const& mesh, cache_index & ci) :
+  rhs(input_data_t<Mesh>(mesh.size())),
+  error_bars(input_data_t<Mesh>(mesh.size())),
+  final_solution(ci)
+{}
+
+template <typename... GfOpts>
+void som_core::data_t::init_input(int i,
+                                  gf_const_view<GfOpts...> g,
+                                  gf_const_view<GfOpts...> S,
+                                  double norm_) {
+  norm = norm_;
+  using mesh_t = typename gf_const_view<GfOpts...>::mesh_t;
+  std::get<input_data_t<mesh_t>>(rhs)() = g.data()(range(), i, i);
+  std::get<input_data_t<mesh_t>>(error_bars)() = S.data()(range(), i, i);
 }
 
-//////////////////
-// Constructors //
-//////////////////
+////////////////////////////
+// som_core: Constructors //
+////////////////////////////
 
 // Imaginary time
 som_core::som_core(gf_const_view<imtime> g_tau, gf_const_view<imtime> S_tau,
                    observable_kind kind, vector<double> const& norms)
    : kind(kind)
    , mesh(g_tau.mesh())
-   , rhs(input_data_r_t())
-   , error_bars(input_data_r_t())
-   , norms(make_default_norms(norms, g_tau.target_shape()[0])) {
+   , data(g_tau.target_shape()[0], data_t(g_tau.mesh(), ci)) {
 
   if(is_stat_relevant(kind)) check_gf_stat(g_tau, observable_statistics(kind));
 
@@ -133,7 +124,14 @@ som_core::som_core(gf_const_view<imtime> g_tau, gf_const_view<imtime> S_tau,
     fatal_error("imaginary time " + observable_name(kind) + " must be real");
   gf<imtime, matrix_real_valued> g_tau_real = real(g_tau),
                                  S_tau_real = real(S_tau);
-  set_input_data(make_const_view(g_tau_real), make_const_view(S_tau_real));
+
+  int gf_dim = g_tau.target_shape()[0];
+  for(int i : range(gf_dim)) {
+    data[i].init_input(i,
+                       make_const_view(g_tau_real),
+                       make_const_view(S_tau_real),
+                       norms.size() > 0 ? norms[i] : 1.0);
+  }
 }
 
 // Imaginary frequency
@@ -141,9 +139,7 @@ som_core::som_core(gf_const_view<imfreq> g_iw, gf_const_view<imfreq> S_iw,
                    observable_kind kind, vector<double> const& norms)
    : kind(kind)
    , mesh(g_iw.mesh())
-   , rhs(input_data_c_t())
-   , error_bars(input_data_c_t())
-   , norms(make_default_norms(norms, g_iw.target_shape()[0])) {
+   , data(g_iw.target_shape()[0], data_t(positive_freq_view(g_iw).mesh(), ci)) {
 
   if(is_stat_relevant(kind)) check_gf_stat(g_iw, observable_statistics(kind));
 
@@ -154,7 +150,14 @@ som_core::som_core(gf_const_view<imfreq> g_iw, gf_const_view<imfreq> S_iw,
   auto g_iw_pos = positive_freq_view(g_iw);
   auto S_iw_pos = positive_freq_view(S_iw);
   check_input_gf(g_iw_pos, S_iw_pos);
-  set_input_data(g_iw_pos, S_iw_pos);
+
+  int gf_dim = g_iw_pos.target_shape()[0];
+  for(int i : range(gf_dim)) {
+    data[i].init_input(i,
+                       g_iw_pos,
+                       S_iw_pos,
+                       norms.size() > 0 ? norms[i] : 1.0);
+  }
 }
 
 // Legendre coefficients
@@ -162,9 +165,7 @@ som_core::som_core(gf_const_view<legendre> g_l, gf_const_view<legendre> S_l,
                    observable_kind kind, vector<double> const& norms)
    : kind(kind)
    , mesh(g_l.mesh())
-   , rhs(input_data_r_t())
-   , error_bars(input_data_r_t())
-   , norms(make_default_norms(norms, g_l.target_shape()[0])) {
+   , data(g_l.target_shape()[0], data_t(g_l.mesh(), ci)) {
 
   if(is_stat_relevant(kind)) check_gf_stat(g_l, observable_statistics(kind));
 
@@ -172,17 +173,21 @@ som_core::som_core(gf_const_view<legendre> g_l, gf_const_view<legendre> S_l,
   if(!is_gf_real(g_l) || !is_gf_real(S_l))
     fatal_error("Legendre " + observable_name(kind) + " must be real");
   gf<legendre, matrix_real_valued> g_l_real = real(g_l), S_l_real = real(S_l);
-  set_input_data(make_const_view(g_l_real), make_const_view(S_l_real));
+
+  int gf_dim = g_l_real.target_shape()[0];
+  for(int i : range(gf_dim)) {
+    data[i].init_input(i,
+                       make_const_view(g_l_real),
+                       make_const_view(S_l_real),
+                       norms.size() > 0 ? norms[i] : 1.0);
+  }
 }
 
-///////////
-// run() //
-///////////
+/////////////////////
+// som_core::run() //
+/////////////////////
 
-void som_core::run(run_parameters_t const& p) {
-
-  params = p;
-
+void validate_params(observable_kind kind, run_parameters_t & params) {
   double e_min, e_max;
   std::tie(e_min, e_max) = max_energy_window(kind);
   if(params.energy_window.first < e_min) {
@@ -214,6 +219,12 @@ void som_core::run(run_parameters_t const& p) {
 
   if(params.adjust_l_range.first > params.adjust_l_range.second)
     fatal_error("Wrong adjust_l_range");
+}
+
+void som_core::run(run_parameters_t const& p) {
+
+  params = p;
+  validate_params(kind, params);
 
   triqs::signal_handler::start();
   run_status = 0;
@@ -247,30 +258,36 @@ template <typename KernelType> void som_core::run_impl() {
   }
   KernelType kernel(m);
   if(params.verbosity > 0) {
-    std::cout << "done" << std::endl << std::flush;
+    std::cout << "done" << std::endl;
     std::cout << "Kernel: " << kernel << std::endl;
   }
 
-  // Prepare container for histograms
-  if(params.make_histograms)
-    histograms.emplace(std::vector<histogram>(results.size()));
-
   // Find solution for each component of GF
-  for(int i = 0; i < results.size(); ++i) {
+  for(int i = 0; i < data.size(); ++i) {
+    auto & d = data[i];
+
+    // Prepare histogram
+    if(params.make_histograms)
+      d.histogram = histogram();
+
     if(params.verbosity > 0)
       std::cout << "Running algorithm for observable component [" << i << ","
                 << i << "]" << std::endl;
 
-    auto const& rhs_ = (input_data_t<mesh_t> const&)rhs;
-    auto const& error_bars_ = (input_data_t<mesh_t> const&)error_bars;
-    double norm = norms[i];
-    histogram * hist = (histograms ? &((*histograms)[i]) : nullptr);
+    auto const& rhs = d.get_rhs<mesh_t>();
+    auto const& error_bars = d.get_error_bars<mesh_t>();
 
     int F = params.adjust_f
-                ? adjust_f(kernel, rhs_[i], error_bars_[i], norm, stop_callback)
+                ? adjust_f(kernel, rhs, error_bars, d.norm, stop_callback)
                 : params.f;
-    results[i] = accumulate(kernel, rhs_[i], error_bars_[i], norm,
-                            hist, stop_callback, F);
+
+    d.final_solution = accumulate(kernel,
+                                  rhs,
+                                  error_bars,
+                                  d.norm,
+                                  d.histogram,
+                                  stop_callback,
+                                  F);
   }
 
   ci.invalidate_all();
@@ -278,8 +295,8 @@ template <typename KernelType> void som_core::run_impl() {
 
 template <typename KernelType>
 int som_core::adjust_f(KernelType const& kern,
-                       typename KernelType::result_type rhs_,
-                       typename KernelType::result_type error_bars_,
+                       typename KernelType::result_type const& rhs,
+                       typename KernelType::result_type const& error_bars,
                        double norm,
                        std::function<bool()> const& stop_callback) {
 
@@ -287,8 +304,8 @@ int som_core::adjust_f(KernelType const& kern,
     std::cout << "Adjusting the number of global updates F using "
               << params.adjust_f_l << " particular solutions ..." << std::endl;
   }
-  objective_function<KernelType> of(kern, rhs_, error_bars_);
-  fit_quality<KernelType> fq(kern, rhs_, error_bars_);
+  objective_function<KernelType> of(kern, rhs, error_bars);
+  fit_quality<KernelType> fq(kern, rhs, error_bars);
 
   int F = params.adjust_f_range.first;
 
@@ -349,16 +366,17 @@ int som_core::adjust_f(KernelType const& kern,
 
 template <typename KernelType>
 configuration som_core::accumulate(KernelType const& kern,
-                                   typename KernelType::result_type rhs_,
-                                   typename KernelType::result_type error_bars_,
-                                   double norm, histogram* hist,
+                                   typename KernelType::result_type const& rhs,
+                                   typename KernelType::result_type const& error_bars,
+                                   double norm,
+                                   std::optional<histogram_t> & hist,
                                    std::function<bool()> const& stop_callback,
                                    int F) {
 
   if(params.verbosity >= 1)
     std::cout << "Accumulating particular solutions ..." << std::endl;
 
-  objective_function<KernelType> of(kern, rhs_, error_bars_);
+  objective_function<KernelType> of(kern, rhs, error_bars);
   solution_worker<KernelType> worker(of, norm, ci, params, stop_callback, F);
   auto& rng = worker.get_rng();
 
@@ -486,16 +504,18 @@ void fill_data(gf_view<legendre> g_l, int i, vector<double> const& data) {
 template <typename MeshType>
 void triqs_gf_view_assign_delegation(gf_view<MeshType> g,
                                      som_core const& cont) {
-  auto gf_dim = cont.results.size();
+  auto gf_dim = cont.data.size();
   check_gf_dim(g, gf_dim);
   if(is_stat_relevant(cont.kind))
     check_gf_stat(g, observable_statistics(cont.kind));
 
   g() = 0;
-#define FILL_DATA_CASE(r, data, ok)                                            \
+#define FILL_DATA_CASE(r, d, ok)                                               \
   case ok: {                                                                   \
     kernel<ok, MeshType> kern(g.mesh());                                       \
-    for(int i : range(gf_dim)) fill_data(g, i, kern(cont.results[i]));         \
+    for(int i : range(gf_dim)) {                                               \
+      fill_data(g, i, kern(cont.data[i].final_solution));                      \
+    }                                                                          \
     return;                                                                    \
   }
   switch(cont.kind) {
@@ -508,12 +528,16 @@ void triqs_gf_view_assign_delegation(gf_view<MeshType> g,
 template <>
 void triqs_gf_view_assign_delegation<refreq>(gf_view<refreq> g_w,
                                              som_core const& cont) {
-  auto gf_dim = cont.results.size();
+  auto gf_dim = cont.data.size();
   check_gf_dim(g_w, gf_dim);
-  for(int i : range(gf_dim))
-    back_transform(cont.kind, cont.results[i], const_cast<som_core&>(cont).ci,
+  for(int i : range(gf_dim)) {
+    back_transform(cont.kind,
+                   cont.data[i].final_solution,
+                   const_cast<som_core&>(cont).ci,
                    slice_target_to_scalar(g_w, i, i),
-                   const_cast<som_core&>(cont).comm);
+                   const_cast<som_core&>(cont).comm
+                   );
+  }
 }
 
 template void triqs_gf_view_assign_delegation<imtime>(gf_view<imtime>,
@@ -523,18 +547,56 @@ template void triqs_gf_view_assign_delegation<imfreq>(gf_view<imfreq>,
 template void triqs_gf_view_assign_delegation<legendre>(gf_view<legendre>,
                                                         som_core const&);
 
-////////////////////
-// compute_tail() //
-////////////////////
+//////////////////////////////
+// som_core::compute_tail() //
+//////////////////////////////
 
-triqs::arrays::array<dcomplex, 3> som_core::compute_tail(int max_order) const {
-  auto gf_dim = results.size();
-  triqs::arrays::array<dcomplex, 3> tail(max_order + 1, gf_dim, gf_dim);
-  for(int i : range(gf_dim))
+array<dcomplex, 3> som_core::compute_tail(int max_order) const {
+  auto gf_dim = data.size();
+  array<dcomplex, 3> tail(max_order + 1, gf_dim, gf_dim);
+  for(int i : range(gf_dim)) {
     tail(range(), i, i) =
-        som::compute_tail(kind, results[i], const_cast<som_core*>(this)->ci,
-                          const_cast<som_core*>(this)->comm, max_order);
+        som::compute_tail(kind, data[i].final_solution,
+                          const_cast<som_core*>(this)->ci,
+                          const_cast<som_core*>(this)->comm,
+                          max_order);
+  }
   return tail;
+}
+
+/////////////////////////
+// som_core: Accessors //
+/////////////////////////
+
+configuration const& som_core::get_solution(int i) const {
+  if(i >= data.size())
+    fatal_error("Matrix element index " + to_string(i) + " out of bounds");
+  return data[i].final_solution;
+}
+
+std::vector<configuration> som_core::get_solutions() const {
+  std::vector<configuration> conf;
+  conf.reserve(data.size());
+  for(auto const& d : data)
+    conf.emplace_back(d.final_solution);
+  return conf;
+}
+
+std::optional<histogram> const& som_core::get_histogram(int i) const {
+  if(i >= data.size())
+    fatal_error("Matrix element index " + to_string(i) + " out of bounds");
+  return data[i].histogram;
+}
+
+std::optional<std::vector<histogram>> som_core::get_histograms() const {
+  if(data.back().histogram) {
+    std::vector<histogram> histograms;
+    histograms.reserve(data.size());
+    for(auto const& d : data)
+      histograms.emplace_back(*d.histogram);
+    return std::move(histograms);
+  } else
+    return {};
 }
 
 } // namespace som

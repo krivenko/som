@@ -343,16 +343,24 @@ c.add_method("void fill_observable(gf_view<imfreq> g_iw)", calling_pattern = "g_
 c.add_method("void fill_observable(gf_view<legendre> g_l)", calling_pattern = "g_l() = self_c")
 
 #
-# SomCore.solutions
+# SomCore.solution() and SomCore.solutions
 #
+
+c.add_method(name = "solution",
+             signature = "configuration get_solution (int i)",
+             doc = """Final solution for the i-th diagonal matrix element of the observable""")
 
 c.add_property(name = "solutions",
                getter = cfunction("std::vector<configuration> get_solutions ()"),
-               doc = """Accumulated solutions, one per diagonal matrix element of the observable""")
+               doc = """Final solutions, one per diagonal matrix element of the observable""")
 
 #
-# SomCore.histograms
+# SomCore.histogram() and SomCore.histograms
 #
+
+c.add_method(name = "histogram",
+             signature = "std::optional<histogram> get_histogram(int i)",
+             doc = """Accumulated objective function histogram for the i-th diagonal matrix element of the observable""")
 
 c.add_property(name = "histograms",
                getter = cfunction(signature = "std::optional<std::vector<histogram>> get_histograms ()"),

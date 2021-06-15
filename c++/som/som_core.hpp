@@ -22,6 +22,7 @@
 
 #include <complex>
 #include <optional>
+#include <type_traits>
 #include <variant>
 #include <vector>
 
@@ -42,15 +43,6 @@ class som_core {
   // Must be sure this object is destroyed after all other members
   cache_index ci;
 
-  using input_data_r_t = std::vector<triqs::arrays::vector<double>>;
-  using input_data_c_t =
-      std::vector<triqs::arrays::vector<std::complex<double>>>;
-
-  template <typename Mesh>
-  using input_data_t = std::conditional_t<
-      std::is_same<Mesh, triqs::gfs::gf_mesh<triqs::gfs::imfreq>>::value,
-      input_data_c_t, input_data_r_t>;
-
   // Kind of the observable, GF/Susceptibility/Conductivity
   observable_kind kind;
 
@@ -60,19 +52,54 @@ class som_core {
                triqs::gfs::gf_mesh<triqs::gfs::legendre>>
       mesh;
 
-  // The right-hand side of the Fredholm integral equation
-  // One vector per diagonal matrix element of the Green's function
-  std::variant<input_data_r_t, input_data_c_t> rhs;
-  // Error bars of the RHS, see eq. 30
-  // One vector per diagonal matrix element of the Green's function
-  std::variant<input_data_r_t, input_data_c_t> error_bars;
+  using histogram_t = triqs::statistics::histogram;
 
-  // Norms of the solutions to be found (one number per diagonal matrix element
-  // of g)
-  triqs::arrays::vector<double> norms;
+  // Input/output data (one structure per diagonal matrix element of g)
+  struct data_t {
 
-  // Resulting configurations
-  std::vector<configuration> results;
+    using input_data_r_t = triqs::arrays::array<double, 1>;
+    using input_data_c_t = triqs::arrays::array<std::complex<double>, 1>;
+
+    template <typename Mesh>
+    using input_data_t = std::conditional_t<
+        std::is_same<Mesh, triqs::gfs::gf_mesh<triqs::gfs::imfreq>>::value,
+        input_data_c_t, input_data_r_t>;
+
+    // The right-hand side of the Fredholm integral equation
+    std::variant<input_data_r_t, input_data_c_t> rhs;
+    // Error bars of the RHS
+    std::variant<input_data_r_t, input_data_c_t> error_bars;
+
+    // Norm of the solutions to be found
+    double norm = 1.0;
+
+    // Final solution
+    configuration final_solution;
+
+    // Objective function histogram
+    std::optional<histogram_t> histogram;
+
+    // Constructor
+    template <typename Mesh> data_t(Mesh const& mesh, cache_index & ci);
+
+    // Initialize 'rhs', 'error_bars' and 'norm'
+    template <typename... GfOpts>
+    void init_input(int i,
+                    triqs::gfs::gf_const_view<GfOpts...> g,
+                    triqs::gfs::gf_const_view<GfOpts...> S,
+                    double norm_
+                    );
+
+    // Typed access to 'rhs'
+    template <typename Mesh> input_data_t<Mesh> const& get_rhs() const {
+      return std::get<input_data_t<Mesh>>(rhs);
+    }
+    // Typed access to 'error_bars'
+    template <typename Mesh> input_data_t<Mesh> const& get_error_bars() const {
+      return std::get<input_data_t<Mesh>>(error_bars);
+    }
+  };
+  std::vector<data_t> data;
 
   // Parameters of the last call to run()
   run_parameters_t params;
@@ -83,29 +110,24 @@ class som_core {
   // MPI communicator
   mpi::communicator comm;
 
-  // Objective function histograms
-  std::optional<std::vector<triqs::statistics::histogram>> histograms;
-
-  // Fill rhs and error_bars
-  template <typename... GfOpts>
-  void set_input_data(triqs::gfs::gf_const_view<GfOpts...> g,
-                      triqs::gfs::gf_const_view<GfOpts...> S);
-
   // Run the main part of the algorithm
   template <typename KernelType> void run_impl();
 
   // Adjust the number of global updates (F)
   template <typename KernelType>
-  int adjust_f(KernelType const& kern, typename KernelType::result_type rhs_,
-               typename KernelType::result_type error_bars_, double norm,
+  int adjust_f(KernelType const& kern,
+               typename KernelType::result_type const& rhs_,
+               typename KernelType::result_type const& error_bars_,
+               double norm,
                std::function<bool()> const& stop_callback);
 
   // Accumulate solutions
   template <typename KernelType>
   configuration accumulate(KernelType const& kern,
-                           typename KernelType::result_type rhs_,
-                           typename KernelType::result_type error_bars_,
-                           double norm, triqs::statistics::histogram* hist,
+                           typename KernelType::result_type const& rhs_,
+                           typename KernelType::result_type const& error_bars_,
+                           double norm,
+                           std::optional<histogram_t> & hist,
                            std::function<bool()> const& stop_callback, int F);
 
 public:
@@ -143,16 +165,22 @@ public:
   [[nodiscard]] triqs::arrays::array<std::complex<double>, 3>
   compute_tail(int max_order) const;
 
-  /// Accumulated solutions
-  [[nodiscard]] std::vector<configuration> const& get_solutions() const {
-    return results;
-  }
+  /// Matrix dimension of the observable
+  [[nodiscard]] int get_dim() const { return data.size(); }
 
-  /// Accumulated objective function histograms
-  [[nodiscard]] std::optional<std::vector<triqs::statistics::histogram>> const&
-  get_histograms() {
-    return histograms;
-  }
+  /// Final solution for the i-th diagonal matrix element
+  [[nodiscard]] configuration const& get_solution(int i) const;
+
+  /// Final solutions
+  [[nodiscard]] std::vector<configuration> get_solutions() const;
+
+  /// Accumulated objective function histogram for the i-th diagonal matrix
+  /// element of the observable
+  [[nodiscard]] std::optional<histogram_t> const& get_histogram(int i) const;
+
+  /// Accumulated objective function histogram for all diagonal matrix
+  /// elements of the observable
+  [[nodiscard]] std::optional<std::vector<histogram_t>> get_histograms() const;
 };
 
 } // namespace som
