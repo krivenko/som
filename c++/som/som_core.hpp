@@ -23,6 +23,7 @@
 #include <complex>
 #include <optional>
 #include <type_traits>
+#include <utility>
 #include <variant>
 #include <vector>
 
@@ -73,6 +74,9 @@ class som_core {
     // Norm of the solutions to be found
     double norm = 1.0;
 
+    // Accumulated pairs (basis solution, objective function)
+    std::vector<std::pair<configuration, double>> basis_solutions;
+
     // Final solution
     configuration final_solution;
 
@@ -116,18 +120,13 @@ class som_core {
   // Adjust the number of global updates (F)
   template <typename KernelType>
   int adjust_f(KernelType const& kern,
-               typename KernelType::result_type const& rhs_,
-               typename KernelType::result_type const& error_bars_,
-               double norm,
+               data_t const& data,
                std::function<bool()> const& stop_callback);
 
   // Accumulate solutions
   template <typename KernelType>
   configuration accumulate(KernelType const& kern,
-                           typename KernelType::result_type const& rhs_,
-                           typename KernelType::result_type const& error_bars_,
-                           double norm,
-                           std::optional<histogram_t> & hist,
+                           data_t & data,
                            std::function<bool()> const& stop_callback, int F);
 
 public:
@@ -181,6 +180,9 @@ public:
   /// Accumulated objective function histogram for all diagonal matrix
   /// elements of the observable
   [[nodiscard]] std::optional<std::vector<histogram_t>> get_histograms() const;
+
+  /// Discard all accumulated basis solutions, histograms and final solutions
+  void clear();
 };
 
 } // namespace som
