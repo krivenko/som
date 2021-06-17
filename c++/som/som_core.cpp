@@ -100,10 +100,10 @@ void som_core::data_t::init_input(int i,
                                   gf_const_view<GfOpts...> g,
                                   gf_const_view<GfOpts...> S,
                                   double norm_) {
-  norm = norm_;
   using mesh_t = typename gf_const_view<GfOpts...>::mesh_t;
   std::get<input_data_t<mesh_t>>(rhs)() = g.data()(range(), i, i);
   std::get<input_data_t<mesh_t>>(error_bars)() = S.data()(range(), i, i);
+  norm = norm_;
 }
 
 ////////////////////////////
@@ -274,20 +274,9 @@ template <typename KernelType> void som_core::run_impl() {
       std::cout << "Running algorithm for observable component [" << i << ","
                 << i << "]" << std::endl;
 
-    auto const& rhs = d.get_rhs<mesh_t>();
-    auto const& error_bars = d.get_error_bars<mesh_t>();
+    int F = params.adjust_f ? adjust_f(kernel, d, stop_callback) : params.f;
 
-    int F = params.adjust_f
-                ? adjust_f(kernel, rhs, error_bars, d.norm, stop_callback)
-                : params.f;
-
-    d.final_solution = accumulate(kernel,
-                                  rhs,
-                                  error_bars,
-                                  d.norm,
-                                  d.histogram,
-                                  stop_callback,
-                                  F);
+    d.final_solution = accumulate(kernel, d, stop_callback, F);
   }
 
   ci.invalidate_all();
@@ -295,15 +284,18 @@ template <typename KernelType> void som_core::run_impl() {
 
 template <typename KernelType>
 int som_core::adjust_f(KernelType const& kern,
-                       typename KernelType::result_type const& rhs,
-                       typename KernelType::result_type const& error_bars,
-                       double norm,
+                       data_t const& d,
                        std::function<bool()> const& stop_callback) {
 
   if(params.verbosity >= 1) {
     std::cout << "Adjusting the number of global updates F using "
               << params.adjust_f_l << " particular solutions ..." << std::endl;
   }
+
+  using mesh_t = typename KernelType::mesh_type;
+  auto const& rhs = d.get_rhs<mesh_t>();
+  auto const& error_bars = d.get_error_bars<mesh_t>();
+
   objective_function<KernelType> of(kern, rhs, error_bars);
   fit_quality<KernelType> fq(kern, rhs, error_bars);
 
@@ -321,7 +313,12 @@ int som_core::adjust_f(KernelType const& kern,
       break;
     }
 
-    solution_worker<KernelType> worker(of, norm, ci, params, stop_callback, F);
+    solution_worker<KernelType> worker(of,
+                                       d.norm,
+                                       ci,
+                                       params,
+                                       stop_callback,
+                                       F);
     auto& rng = worker.get_rng();
 
     int n_sol;
@@ -366,22 +363,25 @@ int som_core::adjust_f(KernelType const& kern,
 
 template <typename KernelType>
 configuration som_core::accumulate(KernelType const& kern,
-                                   typename KernelType::result_type const& rhs,
-                                   typename KernelType::result_type const& error_bars,
-                                   double norm,
-                                   std::optional<histogram_t> & hist,
+                                   data_t & d,
                                    std::function<bool()> const& stop_callback,
                                    int F) {
 
   if(params.verbosity >= 1)
     std::cout << "Accumulating particular solutions ..." << std::endl;
 
-  objective_function<KernelType> of(kern, rhs, error_bars);
-  solution_worker<KernelType> worker(of, norm, ci, params, stop_callback, F);
-  auto& rng = worker.get_rng();
+  using mesh_t = typename KernelType::mesh_type;
+  auto const& rhs = d.get_rhs<mesh_t>();
+  auto const& error_bars = d.get_error_bars<mesh_t>();
 
-  // Pairs (configuration, objective function)
-  std::vector<std::pair<configuration, double>> solutions;
+  objective_function<KernelType> of(kern, rhs, error_bars);
+  solution_worker<KernelType> worker(of,
+                                     d.norm,
+                                     ci,
+                                     params,
+                                     stop_callback,
+                                     F);
+  auto& rng = worker.get_rng();
 
   int n_sol_max = 0; // Number of solutions to be accumulated
   int n_sol, i = 0;  // Global and rank-local indices of solution
@@ -398,7 +398,8 @@ configuration som_core::accumulate(KernelType const& kern,
       }
     } else
       n_sol_max = params.l;
-    solutions.reserve(n_sol_max);
+    d.basis_solutions.clear();
+    d.basis_solutions.reserve(n_sol_max);
 
     if(params.verbosity >= 1)
       std::cout
@@ -412,10 +413,10 @@ configuration som_core::accumulate(KernelType const& kern,
                   << std::endl;
       }
 
-      solutions.emplace_back(worker(1 + rng(params.max_rects)), 0);
+      d.basis_solutions.emplace_back(worker(1 + rng(params.max_rects)), 0);
 
       double D = worker.get_objf_value();
-      solutions.back().second = D;
+      d.basis_solutions.back().second = D;
       objf_min = std::min(objf_min, D);
 
       if(params.verbosity >= 2) {
@@ -431,7 +432,7 @@ configuration som_core::accumulate(KernelType const& kern,
 
     // Recalculate numbers of good and very good solutions
     n_good_solutions = n_verygood_solutions = 0;
-    for(auto const& s : solutions) {
+    for(auto const& s : d.basis_solutions) {
       if(s.second / objf_min <= params.adjust_l_good_d) ++n_good_solutions;
       if(s.second / objf_min <= params.adjust_l_verygood_d)
         ++n_verygood_solutions;
@@ -460,14 +461,16 @@ configuration som_core::accumulate(KernelType const& kern,
     std::cout << "Summing up good solutions ..." << std::endl;
   }
 
-  if(hist)
-    *hist = histogram(objf_min, objf_min * params.hist_max, params.hist_n_bins);
+  if(d.histogram)
+    *d.histogram = histogram(objf_min,
+                             objf_min * params.hist_max,
+                             params.hist_n_bins);
 
   configuration sol_sum(ci);
 
   // Rank-local stage of summation
-  for(auto const& s : solutions) {
-    if(hist) *hist << s.second;
+  for(auto const& s : d.basis_solutions) {
+    if(d.histogram) *d.histogram << s.second;
     // Pick only good solutions
     if(s.second / objf_min <= params.adjust_l_good_d) sol_sum += s.first;
   }
@@ -476,7 +479,8 @@ configuration som_core::accumulate(KernelType const& kern,
   // Sum over all processes
   sol_sum = mpi_reduce(sol_sum, comm, 0, true);
 
-  if(hist) *hist = mpi_reduce(*hist, comm, 0, true);
+  if(d.histogram)
+    *d.histogram = mpi_reduce(*d.histogram, comm, 0, true);
 
   if(params.verbosity >= 1) std::cout << "Done" << std::endl;
 
@@ -597,6 +601,18 @@ std::optional<std::vector<histogram>> som_core::get_histograms() const {
     return std::move(histograms);
   } else
     return {};
+}
+
+////////////////////////////
+// som_core::void clear() //
+////////////////////////////
+
+void som_core::clear() {
+  for(auto & d : data) {
+    d.basis_solutions.clear();
+    d.final_solution.clear();
+    d.histogram.reset();
+  }
 }
 
 } // namespace som
