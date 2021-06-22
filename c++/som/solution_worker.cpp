@@ -60,7 +60,7 @@ void dist_function::operator++() { ++step; }
 template <typename KernelType>
 solution_worker<KernelType>::solution_worker(
     objective_function<KernelType> const& objf, double norm, cache_index& ci,
-    run_parameters_t const& params, std::function<bool()> stop_callback, int f)
+    worker_parameters_t const& params, std::function<bool()> stop_callback, int f)
    : ci(ci)
    , verbose_mc(params.verbosity >= 3)
    , f(f)

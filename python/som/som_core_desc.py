@@ -29,7 +29,6 @@ module = module_(full_name = "som_core",
 # Imports
 module.add_imports('triqs.gf', 'triqs.statistics.histograms')
 
-# Main som_core include
 module.add_include("som/som_core.hpp")
 
 # Add here anything to add in the C++ code at the start, e.g. namespace using
@@ -124,6 +123,8 @@ c.add_constructor("""(gf_view<imfreq> g_iw, gf_view<imfreq> S_iw, som::observabl
 c.add_constructor("""(gf_view<legendre> g_l, gf_view<legendre> S_l, som::observable_kind kind = FermionGf, vector<double> norms = {})""",
                   doc = """Construct on quantities in Legendre polynomial basis """)
 
+# TODO: Update docstrings
+
 c.add_method("""void run (**som::run_parameters_t)""",
              release_GIL_and_enable_signal = True,
              doc = """
@@ -141,9 +142,6 @@ Main parameters
 | verbosity       | int           | 2 on MPI rank 0, 0 otherwise. | Verbosity level (max level - 3).                                                                         |
 +-----------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
 | t               | int           | 50                            | Number of elementary updates per global update (:math:`T`).                                              |
-|                 |               |                               | Bigger values make the algorithm more ergodic.                                                           |
-+-----------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| f               | int           | 100                           | Number of global updates (:math:`F`); ignored if `adjust_f = True`.                                      |
 |                 |               |                               | Bigger values make the algorithm more ergodic.                                                           |
 +-----------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
 | adjust_f        | bool          | False                         | Adjust the number of global updates automatically.                                                       |
@@ -198,28 +196,75 @@ Fine tuning options
 """)
 
 #
+# Add parameters from worker_parameters_t
+#
+
+def add_worker_parameters(conv):
+    conv.add_member(c_name = "energy_window",
+                    c_type = "std::pair<double,double>",
+                    initializer = """  """,
+                    doc = """Estimated lower and upper bounds of the spectrum.\nNegative values of the lower bound will be reset to 0 for susceptibilities and conductivity.""")
+
+    conv.add_member(c_name = "max_time",
+                    c_type = "int",
+                    initializer = """ -1 """,
+                    doc = """Maximum runtime in seconds, use -1 to set infinite.""")
+
+    conv.add_member(c_name = "verbosity",
+                    c_type = "int",
+                    initializer = """ ((mpi::communicator().rank() == 0) ? 2 : 0) """,
+                    doc = """Verbosity level (max level - 3).""")
+
+    conv.add_member(c_name = "t",
+                    c_type = "int",
+                    initializer = """50""",
+                    doc = """Number of elementary updates per global update (:math:`T`).\nBigger values make the algorithm more ergodic.""")
+
+    conv.add_member(c_name = "random_seed",
+                    c_type = "int",
+                    initializer = """34788 + 928374 * mpi::communicator().rank()""",
+                    doc = """Seed for random number generator.""")
+
+    conv.add_member(c_name = "random_name",
+                    c_type = "std::string",
+                    initializer = """ "" """,
+                    doc = """Name of random number generator.""")
+
+    conv.add_member(c_name = "max_rects",
+                    c_type = "int",
+                    initializer = """60""",
+                    doc = """Maximum number of rectangles to represent spectra (:math:`K_{max}`), should be below 70.""")
+
+    conv.add_member(c_name = "min_rect_width",
+                    c_type = "double",
+                    initializer = """1e-3""",
+                    doc = """Minimal width of a rectangle, in units of the energy window width.""")
+
+    conv.add_member(c_name = "min_rect_weight",
+                    c_type = "double",
+                    initializer = """1e-3""",
+                    doc = """Minimal weight of a rectangle, in units of the requested solution norm.""")
+
+    conv.add_member(c_name = "distrib_d_max",
+                    c_type = "double",
+                    initializer = """2""",
+                    doc = """Maximal parameter of the power-law distribution function for the Metropolis algorithm.""")
+
+    conv.add_member(c_name = "gamma",
+                    c_type = "double",
+                    initializer = """2""",
+                    doc = """Proposal probability parameter :math:`\gamma`.""")
+
+#
 # Converter for run_parameters_t
 #
 
 run_params_conv = converter_(
-        c_type = "som::run_parameters_t",
-        doc = """""",
+    c_type = "som::run_parameters_t",
+    doc = """Arguments of SomCore.run()""",
 )
 
-run_params_conv.add_member(c_name = "energy_window",
-                           c_type = "std::pair<double,double>",
-                           initializer = """  """,
-                           doc = """Estimated lower and upper bounds of the spectrum.\nNegative values of the lower bound will be reset to 0 for susceptibilities and conductivity.""")
-
-run_params_conv.add_member(c_name = "max_time",
-                           c_type = "int",
-                           initializer = """ -1 """,
-                           doc = """Maximum runtime in seconds, use -1 to set infinite.""")
-
-run_params_conv.add_member(c_name = "verbosity",
-                           c_type = "int",
-                           initializer = """ ((mpi::communicator().rank() == 0) ? 2 : 0) """,
-                           doc = """Verbosity level (max level - 3).""")
+add_worker_parameters(run_params_conv)
 
 run_params_conv.add_member(c_name = "t",
                            c_type = "int",
@@ -230,11 +275,6 @@ run_params_conv.add_member(c_name = "f",
                            c_type = "int",
                            initializer = """100""",
                            doc = """Number of global updates (:math:`F`); ignored if `adjust_f = True`.\nBigger values make the algorithm more ergodic.""")
-
-run_params_conv.add_member(c_name = "adjust_f",
-                           c_type = "bool",
-                           initializer = """ false """,
-                           doc = """Adjust the number of global updates automatically.""")
 
 run_params_conv.add_member(c_name = "l",
                            c_type = "int",
@@ -250,56 +290,6 @@ run_params_conv.add_member(c_name = "make_histograms",
                            c_type = "bool",
                            initializer = """false""",
                            doc = """Accumulate histograms of objective function values.""")
-
-run_params_conv.add_member(c_name = "random_seed",
-                           c_type = "int",
-                           initializer = """34788 + 928374 * mpi::communicator().rank()""",
-                           doc = """Seed for random number generator.""")
-
-run_params_conv.add_member(c_name = "random_name",
-                           c_type = "std::string",
-                           initializer = """ "" """,
-                           doc = """Name of random number generator.""")
-
-run_params_conv.add_member(c_name = "max_rects",
-                           c_type = "int",
-                           initializer = """60""",
-                           doc = """Maximum number of rectangles to represent spectra (:math:`K_{max}`), should be below 70.""")
-
-run_params_conv.add_member(c_name = "min_rect_width",
-                           c_type = "double",
-                           initializer = """1e-3""",
-                           doc = """Minimal width of a rectangle, in units of the energy window width.""")
-
-run_params_conv.add_member(c_name = "min_rect_weight",
-                           c_type = "double",
-                           initializer = """1e-3""",
-                           doc = """Minimal weight of a rectangle, in units of the requested solution norm.""")
-
-run_params_conv.add_member(c_name = "distrib_d_max",
-                           c_type = "double",
-                           initializer = """2""",
-                           doc = """Maximal parameter of the power-law distribution function for the Metropolis algorithm.""")
-
-run_params_conv.add_member(c_name = "gamma",
-                           c_type = "double",
-                           initializer = """2""",
-                           doc = """Proposal probability parameter :math:`\gamma`.""")
-
-run_params_conv.add_member(c_name = "adjust_f_range",
-                           c_type = "std::pair<int,int>",
-                           initializer = """std::pair<int,int>{100,5000}""",
-                           doc = """Search range for the number of global updates.""")
-
-run_params_conv.add_member(c_name = "adjust_f_l",
-                           c_type = "int",
-                           initializer = """20""",
-                           doc = """Number of particular solutions used to adjust :math:`F`.""")
-
-run_params_conv.add_member(c_name = "adjust_f_kappa",
-                           c_type = "double",
-                           initializer = """0.25""",
-                           doc = """Limiting value of :math:`\kappa` used to adjust :math:`F`.""")
 
 run_params_conv.add_member(c_name = "adjust_l_range",
                            c_type = "std::pair<int,int>",
@@ -384,6 +374,41 @@ c.add_property(name = "last_run_parameters",
 c.add_property(name = "run_status",
                getter = cfunction("int get_run_status ()"),
                doc = """Status of the run on exit """)
+
+#
+# Converter for adjust_f_parameters_t
+#
+
+adjust_f_params_conv = converter_(
+    c_type = "som::adjust_f_parameters_t",
+    doc = """Arguments of adjust_f()""",
+)
+
+add_worker_parameters(adjust_f_params_conv)
+
+adjust_f_params_conv.add_member(c_name = "f_range",
+                                c_type = "std::pair<int,int>",
+                                initializer = """std::pair<int,int>{100,5000}""",
+                                doc = """Search range for the number of global updates.""")
+
+adjust_f_params_conv.add_member(c_name = "l",
+                                c_type = "int",
+                                initializer = """20""",
+                                doc = """Number of particular solutions used to adjust :math:`F`.""")
+
+adjust_f_params_conv.add_member(c_name = "kappa",
+                                c_type = "double",
+                                initializer = """0.25""",
+                                doc = """Limiting value of :math:`\kappa` used to adjust :math:`F`.""")
+
+module.add_converter(adjust_f_params_conv)
+
+#
+# SomCore.adjust_f()
+#
+
+c.add_method("int adjust_f(**som::adjust_f_parameters_t)",
+             doc = """Automatically adjust the number of global updates""")
 
 module.add_class(c)
 

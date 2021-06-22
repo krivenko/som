@@ -17,13 +17,15 @@ tail_max_order = 9
 
 abs_error = [1e-4]
 
-run_params = {'energy_window' : (-4.0,7.0)}
-run_params['verbosity'] = 2
-run_params['adjust_f'] = True
+params = {'energy_window' : (-4.0,7.0)}
+params['verbosity'] = 2
+params['t'] = 500
+
+adjust_f_params = params.copy()
+adjust_f_params['l'] = 150
+
+run_params = params.copy()
 run_params['adjust_l'] = True
-run_params['t'] = 500
-run_params['f'] = 500
-run_params['l'] = 150
 run_params['make_histograms'] = True
 
 g_tau = GfImTime(beta = beta, n_points = n_tau, indices = indices)
@@ -52,7 +54,8 @@ for s in abs_error:
 
         start = time.perf_counter()
         cont = Som(g, S)
-        cont.run(**run_params)
+        f = cont.adjust_f(**adjust_f_params)
+        cont.run(**run_params, f = f)
         exec_time = time.perf_counter() - start
 
         cont.fill_observable(g_rec)

@@ -54,7 +54,6 @@ g_zt_norms = np.array([0.4, 0.6])
 
 som_params = {}
 som_params['verbosity'] = 2
-som_params['adjust_f'] = False
 som_params['adjust_l'] = False
 som_params['t'] = 100
 som_params['f'] = 100

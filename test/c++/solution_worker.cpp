@@ -54,7 +54,7 @@ TEST(solution_worker, RandomConfig) {
   kernel<FermionGf, imtime> kern(mesh);
   obj_function of(kern, g_tau, s_tau);
 
-  auto params = run_parameters_t({-3.0, 3.0});
+  auto params = worker_parameters_t({-3.0, 3.0});
   params.random_seed = 963162;
   params.t = 100;
   params.min_rect_width = 0.001;
@@ -77,7 +77,7 @@ TEST(solution_worker, StartConfig) {
   kernel<FermionGf, imtime> kern(mesh);
   obj_function of(kern, g_tau, s_tau);
 
-  auto params = run_parameters_t({-3.0, 3.0});
+  auto params = worker_parameters_t({-3.0, 3.0});
   params.random_seed = 963162;
   params.t = 100;
   params.min_rect_width = 0.001;

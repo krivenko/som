@@ -20,7 +20,6 @@ abs_error = [0.01, 0.005, 0.002, 0.001]
 
 run_params = {'energy_window' : (-5,5)}
 run_params['verbosity'] = 2
-run_params['adjust_f'] = False
 run_params['adjust_l'] = False
 run_params['t'] = 1000
 run_params['f'] = 1000
