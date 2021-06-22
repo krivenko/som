@@ -22,11 +22,29 @@
 
 #include <utility>
 
-#include "worker_parameters.hpp"
+#include <som/worker_parameters.hpp>
 
 namespace som {
 
-// All the arguments of the som_core::run() function
+// Arguments of the som_core::adjust_f() function
+struct adjust_f_parameters_t : public worker_parameters_t {
+
+  /// Search range for the number of global updates.
+  /// type: (int,int)
+  std::pair<int, int> f_range = std::pair<int, int>{100, 5000};
+
+  /// Number of particular solutions used to adjust :math:`F`.
+  int l = 20;
+
+  /// Limiting value of :math:`\kappa` used to adjust :math:`F`.
+  double kappa = 0.25;
+
+  adjust_f_parameters_t() = default;
+  explicit adjust_f_parameters_t(std::pair<double, double> energy_window)
+     : worker_parameters_t(energy_window) {}
+};
+
+// Arguments of the som_core::run() function
 struct run_parameters_t : public worker_parameters_t {
 
   /////////////////////

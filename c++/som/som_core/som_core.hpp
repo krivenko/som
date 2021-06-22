@@ -32,10 +32,9 @@
 #include <triqs/gfs.hpp>
 #include <triqs/statistics/histograms.hpp>
 
-#include "configuration.hpp"
-#include "kernels/observables.hpp"
-#include "run_parameters.hpp"
-#include "adjust_f_parameters.hpp"
+#include <som/configuration.hpp>
+#include <som/kernels/observables.hpp>
+#include "parameters.hpp"
 
 namespace som {
 

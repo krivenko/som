@@ -29,7 +29,7 @@ module = module_(full_name = "som_core",
 # Imports
 module.add_imports('triqs.gf', 'triqs.statistics.histograms')
 
-module.add_include("som/som_core.hpp")
+module.add_include("som/som_core/som_core.hpp")
 
 # Add here anything to add in the C++ code at the start, e.g. namespace using
 module.add_preamble("""
