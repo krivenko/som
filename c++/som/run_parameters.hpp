@@ -22,39 +22,19 @@
 
 #include <utility>
 
+#include "worker_parameters.hpp"
+
 namespace som {
 
-// All the arguments of the run() function
-struct run_parameters_t {
+// All the arguments of the som_core::run() function
+struct run_parameters_t : public worker_parameters_t {
 
   /////////////////////
   // Main parameters //
   /////////////////////
 
-  /// Estimated lower and upper bounds of the spectrum.
-  /// Negative values of the lower bound will be reset to 0 for susceptibilities
-  /// and conductivity.
-  /// type: (float,float)
-  std::pair<double, double> energy_window;
-
-  /// Maximum runtime in seconds, use -1 to set infinite.
-  /// default: -1 = infinite
-  int max_time = -1;
-
-  /// Verbosity level (max level - 3).
-  /// default: 2 on MPI rank 0, 0 otherwise.
-  int verbosity =
-      ((mpi::communicator().rank() == 0) ? 2 : 0); // silence the slave nodes
-
-  /// Number of elementary updates per global update (:math:`T`).
-  int t = 50;
-
   /// Number of global updates (:math:`F`);
-  /// ignored if `adjust_f = True`.
   int f = 100;
-
-  /// Adjust the number of global updates automatically.
-  bool adjust_f = false;
 
   /// Number of particular solutions used in the final accumulation (:math:`L`);
   /// ignored if `adjust_l = True`.
@@ -65,45 +45,6 @@ struct run_parameters_t {
 
   /// Accumulate histograms of objective function values.
   bool make_histograms = false;
-
-  /////////////////////////
-  // Fine tuning options //
-  /////////////////////////
-
-  /// Seed for random number generator.
-  /// default: 34788 + 928374 * MPI.rank
-  int random_seed = 34788 + 928374 * mpi::communicator().rank();
-
-  /// Name of random number generator.
-  /// type: str
-  std::string random_name = "";
-
-  /// Maximum number of rectangles to represent spectra (:math:`K_{max}`),
-  /// should be below 70.
-  int max_rects = 60;
-
-  /// Minimal width of a rectangle, in units of the energy window width.
-  double min_rect_width = 1e-3;
-
-  /// Minimal weight of a rectangle, in units of the requested solution norm.
-  double min_rect_weight = 1e-3;
-
-  /// Maximal parameter of the power-law distribution function for the
-  /// Metropolis algorithm.
-  double distrib_d_max = 2;
-
-  /// Proposal probability parameter :math:`\gamma`.
-  double gamma = 2;
-
-  /// Search range for the number of global updates.
-  /// type: (int,int)
-  std::pair<int, int> adjust_f_range = std::pair<int, int>{100, 5000};
-
-  /// Number of particular solutions used to adjust :math:`F`.
-  int adjust_f_l = 20;
-
-  /// Limiting value of :math:`\kappa` used to adjust :math:`F`.
-  double adjust_f_kappa = 0.25;
 
   /// Search range for the number of solutions used in the final accumulation.
   /// type: (int,int)
@@ -130,7 +71,7 @@ struct run_parameters_t {
 
   run_parameters_t() = default;
   explicit run_parameters_t(std::pair<double, double> energy_window)
-     : energy_window(std::move(energy_window)) {}
+     : worker_parameters_t(energy_window) {}
 };
 
 } // namespace som

@@ -19,14 +19,17 @@
  *
  ******************************************************************************/
 
+#include <cmath>
 #include <limits>
 
 #include <boost/preprocessor/seq/for_each.hpp>
 #include <boost/preprocessor/seq/for_each_product.hpp>
 
-#include "fit_quality.hpp"
+#include <triqs/utility/signal_handler.hpp>
+
 #include "kernels/all.hpp"
 #include "objective_function.hpp"
+#include "fit_quality.hpp"
 #include "solution_worker.hpp"
 #include "som_core.hpp"
 
@@ -214,9 +217,6 @@ void validate_params(observable_kind kind, run_parameters_t & params) {
   if(params.min_rect_weight <= 0 || params.min_rect_weight > 1)
     fatal_error("min_rect_weight must be in (0;1]");
 
-  if(params.adjust_f_range.first > params.adjust_f_range.second)
-    fatal_error("Wrong adjust_f_range");
-
   if(params.adjust_l_range.first > params.adjust_l_range.second)
     fatal_error("Wrong adjust_l_range");
 }
@@ -274,91 +274,10 @@ template <typename KernelType> void som_core::run_impl() {
       std::cout << "Running algorithm for observable component [" << i << ","
                 << i << "]" << std::endl;
 
-    int F = params.adjust_f ? adjust_f(kernel, d, stop_callback) : params.f;
-
-    d.final_solution = accumulate(kernel, d, stop_callback, F);
+    d.final_solution = accumulate(kernel, d, stop_callback, params.f);
   }
 
   ci.invalidate_all();
-}
-
-template <typename KernelType>
-int som_core::adjust_f(KernelType const& kern,
-                       data_t const& d,
-                       std::function<bool()> const& stop_callback) {
-
-  if(params.verbosity >= 1) {
-    std::cout << "Adjusting the number of global updates F using "
-              << params.adjust_f_l << " particular solutions ..." << std::endl;
-  }
-
-  using mesh_t = typename KernelType::mesh_type;
-  auto const& rhs = d.get_rhs<mesh_t>();
-  auto const& error_bars = d.get_error_bars<mesh_t>();
-
-  objective_function<KernelType> of(kern, rhs, error_bars);
-  fit_quality<KernelType> fq(kern, rhs, error_bars);
-
-  int F = params.adjust_f_range.first;
-
-  int l_good;
-  for(l_good = 0;; l_good = 0, F *= 2) {
-    // Upper bound of adjust_f_range is reached
-    if(F >= params.adjust_f_range.second) {
-      F = params.adjust_f_range.second;
-      if(params.verbosity >= 1)
-        warning(
-            "Upper bound of adjust_f_range has been reached, will use F = " +
-            std::to_string(F));
-      break;
-    }
-
-    solution_worker<KernelType> worker(of,
-                                       d.norm,
-                                       ci,
-                                       params,
-                                       stop_callback,
-                                       F);
-    auto& rng = worker.get_rng();
-
-    int n_sol;
-    for(int i = 0; (n_sol = comm.rank() + i * comm.size()) < params.adjust_f_l;
-        ++i) {
-      if(params.verbosity >= 2) {
-        std::cout << "[Rank " << comm.rank()
-                  << "] Accumulation of particular solution " << n_sol
-                  << std::endl;
-      }
-
-      auto solution = worker(1 + rng(params.max_rects));
-      double kappa = fq(solution);
-
-      if(kappa > params.adjust_f_kappa) ++l_good;
-      if(params.verbosity >= 2) {
-        std::cout << "[Rank " << comm.rank() << "] Particular solution "
-                  << n_sol << " is "
-                  << (kappa > params.adjust_f_kappa ? "" : "not ")
-                  << R"(good (\kappa = )" << kappa
-                  << ", D = " << worker.get_objf_value() << ")." << std::endl;
-      }
-    }
-    comm.barrier();
-    l_good = mpi::all_reduce(l_good, comm);
-
-    if(params.verbosity >= 1)
-      std::cout << "F = " << F << ", " << l_good
-                << R"( solutions with \kappa > )" << params.adjust_f_kappa
-                << " (out of " << params.adjust_f_l << ")" << std::endl;
-
-    // Converged
-    if(l_good > params.adjust_f_l / 2) {
-      if(params.verbosity >= 1)
-        std::cout << "F = " << F << " is enough." << std::endl;
-      break;
-    }
-  }
-
-  return F;
 }
 
 template <typename KernelType>
@@ -603,9 +522,9 @@ std::optional<std::vector<histogram>> som_core::get_histograms() const {
     return {};
 }
 
-////////////////////////////
-// som_core::void clear() //
-////////////////////////////
+///////////////////////
+// som_core::clear() //
+///////////////////////
 
 void som_core::clear() {
   for(auto & d : data) {
@@ -613,6 +532,139 @@ void som_core::clear() {
     d.final_solution.clear();
     d.histogram.reset();
   }
+}
+
+//////////////////////////
+// som_core::adjust_f() //
+//////////////////////////
+
+template <typename KernelType>
+int som_core::adjust_f_impl(adjust_f_parameters_t const& p) {
+
+  int F_max = p.f_range.first;
+
+  using mesh_t = typename KernelType::mesh_type;
+  mesh_t const& m = std::get<mesh_t>(mesh);
+
+  triqs::signal_handler::start();
+  try {
+    auto stop_callback = triqs::utility::clock_callback(p.max_time);
+
+    if(p.verbosity > 0) {
+      std::cout << "Constructing integral kernel... " << std::flush;
+    }
+    KernelType kernel(m);
+    if(p.verbosity > 0) {
+      std::cout << "done" << std::endl;
+      std::cout << "Kernel: " << kernel << std::endl;
+    }
+
+    // Find solution for each component of GF
+    for(int n = 0; n < data.size(); ++n) {
+      auto & d = data[n];
+
+      if(p.verbosity > 0)
+        std::cout << "Running algorithm for observable component [" << n << ","
+                  << n << "]" << std::endl;
+
+      auto const& rhs = d.get_rhs<mesh_t>();
+      auto const& error_bars = d.get_error_bars<mesh_t>();
+
+      objective_function<KernelType> of(kernel, rhs, error_bars);
+      fit_quality<KernelType> fq(kernel, rhs, error_bars);
+
+      int F = F_max;
+
+      int l_good;
+      for(l_good = 0;; l_good = 0, F *= 2) {
+        // Upper bound of f_range is reached
+        if(F >= p.f_range.second) {
+          F = p.f_range.second;
+          if(p.verbosity >= 1)
+            std::cout << "WARNING: Upper bound of f_range has been reached,"
+                         " will use F = " + std::to_string(F) << std::endl;
+          break;
+        }
+
+        solution_worker<KernelType> worker(of,
+                                          d.norm,
+                                          ci,
+                                          p,
+                                          stop_callback,
+                                          F);
+        auto& rng = worker.get_rng();
+
+        int n_sol;
+        for(int i = 0; (n_sol = comm.rank() + i * comm.size()) < p.l;
+            ++i) {
+          if(p.verbosity >= 2) {
+            std::cout << "[Rank " << comm.rank()
+                      << "] Accumulation of particular solution " << n_sol
+                      << std::endl;
+          }
+
+          auto solution = worker(1 + rng(params.max_rects));
+          double kappa = fq(solution);
+
+          if(kappa > p.kappa) ++l_good;
+          if(p.verbosity >= 2) {
+            std::cout << "[Rank " << comm.rank() << "] Particular solution "
+                      << n_sol << " is "
+                      << (kappa > p.kappa ? "" : "not ")
+                      << R"(good (\kappa = )" << kappa
+                      << ", D = " << worker.get_objf_value() << ")." << std::endl;
+          }
+        }
+        comm.barrier();
+        l_good = mpi::all_reduce(l_good, comm);
+
+        if(p.verbosity >= 1)
+          std::cout << "F = " << F << ", " << l_good
+                    << R"( solutions with \kappa > )" << p.kappa
+                    << " (out of " << p.l << ")" << std::endl;
+
+        // Converged
+        if(l_good > p.l / 2) {
+          if(p.verbosity >= 1)
+            std::cout << "F = " << F << " is enough." << std::endl;
+          break;
+        }
+      }
+
+      F_max = std::max(F_max, F);
+    }
+  } catch(stopped& e) {
+    triqs::signal_handler::received(true);
+  }
+
+  ci.invalidate_all();
+
+  triqs::signal_handler::stop();
+
+  return F_max;
+}
+
+int som_core::adjust_f(adjust_f_parameters_t const& p) {
+  if(p.f_range.first > p.f_range.second)
+    fatal_error("Wrong f_range in adjust_f()");
+
+  if(p.verbosity >= 1) {
+    std::cout << "Adjusting the number of global updates F using "
+              << p.l << " particular solutions ..." << std::endl;
+  }
+
+#define RUN_IMPL_CASE(r, okmk)                                                 \
+  case(int(BOOST_PP_SEQ_ELEM(0, okmk)) +                                       \
+       n_observable_kinds * mesh_traits<BOOST_PP_SEQ_ELEM(1, okmk)>::index):   \
+    return adjust_f_impl<kernel<BOOST_PP_SEQ_ENUM(okmk)>>(p);
+  switch(int(kind) + n_observable_kinds * mesh.index()) {
+    BOOST_PP_SEQ_FOR_EACH_PRODUCT(RUN_IMPL_CASE,
+                                  (ALL_OBSERVABLES)(ALL_INPUT_MESHES))
+    default: TRIQS_RUNTIME_ERROR << "som_core: unknown observable kind "
+                                 << std::to_string(kind)
+                                 << " in adjust_f()";
+  }
+#undef RUN_IMPL_CASE
 }
 
 } // namespace som

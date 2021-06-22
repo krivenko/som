@@ -30,7 +30,7 @@
 #include "cache_index.hpp"
 #include "configuration.hpp"
 #include "objective_function.hpp"
-#include "run_parameters.hpp"
+#include "worker_parameters.hpp"
 
 namespace som {
 
@@ -110,7 +110,7 @@ template <typename KernelType> class solution_worker {
 
 public:
   solution_worker(objective_function<KernelType> const& objf, double norm,
-                  cache_index& ci, run_parameters_t const& params,
+                  cache_index& ci, worker_parameters_t const& params,
                   std::function<bool()> stop_callback, int f);
 
   // Start from a given configuration

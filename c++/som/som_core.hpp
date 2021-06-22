@@ -35,6 +35,7 @@
 #include "configuration.hpp"
 #include "kernels/observables.hpp"
 #include "run_parameters.hpp"
+#include "adjust_f_parameters.hpp"
 
 namespace som {
 
@@ -50,8 +51,7 @@ class som_core {
   // Mesh of the input functions
   std::variant<triqs::gfs::gf_mesh<triqs::gfs::imtime>,
                triqs::gfs::gf_mesh<triqs::gfs::imfreq>,
-               triqs::gfs::gf_mesh<triqs::gfs::legendre>>
-      mesh;
+               triqs::gfs::gf_mesh<triqs::gfs::legendre>> mesh;
 
   using histogram_t = triqs::statistics::histogram;
 
@@ -117,17 +117,15 @@ class som_core {
   // Run the main part of the algorithm
   template <typename KernelType> void run_impl();
 
-  // Adjust the number of global updates (F)
-  template <typename KernelType>
-  int adjust_f(KernelType const& kern,
-               data_t const& data,
-               std::function<bool()> const& stop_callback);
-
   // Accumulate solutions
   template <typename KernelType>
   configuration accumulate(KernelType const& kern,
                            data_t & data,
                            std::function<bool()> const& stop_callback, int F);
+
+  // Implementation details of adjust_f()
+  template <typename KernelType>
+  int adjust_f_impl(adjust_f_parameters_t const& params);
 
 public:
   /// Construct on imaginary-time quantities
@@ -183,6 +181,9 @@ public:
 
   /// Discard all accumulated basis solutions, histograms and final solutions
   void clear();
+
+  // Automatically adjust the number of global updates (F)
+  TRIQS_WRAP_ARG_AS_DICT int adjust_f(adjust_f_parameters_t const& p);
 };
 
 } // namespace som
