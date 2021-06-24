@@ -20,7 +20,10 @@
  ******************************************************************************/
 
 #include <cmath>
+#include <iostream>
 #include <limits>
+#include <utility>
+#include <vector>
 
 #include <boost/preprocessor/seq/for_each_product.hpp>
 
@@ -37,11 +40,12 @@ namespace som {
 
 using triqs::statistics::histogram;
 
-/////////////////////
-// som_core::run() //
-/////////////////////
+////////////////////////////
+// som_core::accumualte() //
+////////////////////////////
 
-void validate_params(observable_kind kind, run_parameters_t & params) {
+void validate_params(observable_kind kind, accumulate_parameters_t & params) {
+
   double e_min, e_max;
   std::tie(e_min, e_max) = max_energy_window(kind);
   if(params.energy_window.first < e_min) {
@@ -72,32 +76,8 @@ void validate_params(observable_kind kind, run_parameters_t & params) {
     fatal_error("Wrong adjust_l_range");
 }
 
-void som_core::run(run_parameters_t const& p) {
-
-  params = p;
-  validate_params(kind, params);
-
-  triqs::signal_handler::start();
-  run_status = 0;
-  try {
-#define RUN_IMPL_CASE(r, okmk)                                                 \
-  case(int(BOOST_PP_SEQ_ELEM(0, okmk)) +                                       \
-       n_observable_kinds * mesh_traits<BOOST_PP_SEQ_ELEM(1, okmk)>::index):   \
-    run_impl<kernel<BOOST_PP_SEQ_ENUM(okmk)>>();                               \
-    break;
-    switch(int(kind) + n_observable_kinds * mesh.index()) {
-      BOOST_PP_SEQ_FOR_EACH_PRODUCT(RUN_IMPL_CASE,
-                                    (ALL_OBSERVABLES)(ALL_INPUT_MESHES))
-    }
-#undef RUN_IMPL_CASE
-  } catch(stopped& e) {
-    run_status = e.code;
-    triqs::signal_handler::received(true);
-  }
-  triqs::signal_handler::stop();
-}
-
-template <typename KernelType> void som_core::run_impl() {
+template <typename KernelType>
+void som_core::accumulate_impl() {
 
   auto stop_callback = triqs::utility::clock_callback(params.max_time);
 
@@ -114,147 +94,144 @@ template <typename KernelType> void som_core::run_impl() {
   }
 
   // Find solution for each component of GF
-  for(int i = 0; i < data.size(); ++i) {
-    auto & d = data[i];
-
-    // Prepare histogram
-    if(params.make_histograms)
-      d.histogram = histogram();
+  for(int n = 0; n < data.size(); ++n) {
+    auto & d = data[n];
 
     if(params.verbosity > 0)
-      std::cout << "Running algorithm for observable component [" << i << ","
-                << i << "]" << std::endl;
+      std::cout << "Accumulating particular solutions for observable component ["
+                << n << "," << n << "]" << std::endl;
 
-    d.final_solution = accumulate(kernel, d, stop_callback, params.f);
-  }
+    auto const& rhs = d.get_rhs<mesh_t>();
+    auto const& error_bars = d.get_error_bars<mesh_t>();
 
-  ci.invalidate_all();
-}
+    objective_function<KernelType> of(kernel, rhs, error_bars);
+    solution_worker<KernelType> worker(of,
+                                       d.norm,
+                                       ci,
+                                       params,
+                                       stop_callback,
+                                       params.f);
+    auto& rng = worker.get_rng();
 
-template <typename KernelType>
-configuration som_core::accumulate(KernelType const& kern,
-                                   data_t & d,
-                                   std::function<bool()> const& stop_callback,
-                                   int F) {
+    // Reset final solution as it is no more valid
+    d.final_solution.clear();
 
-  if(params.verbosity >= 1)
-    std::cout << "Accumulating particular solutions ..." << std::endl;
+    int n_sol_max = 0; // Number of solutions to be accumulated
+    int n_sol, i = 0;  // Global and rank-local indices of solution
+    int n_good_solutions,
+        n_verygood_solutions;   // Number of good and very good solutions
+    do {
+      if(params.adjust_l) {
+        n_sol_max += params.adjust_l_range.first;
+        if(n_sol_max > params.adjust_l_range.second) {
+          if(params.verbosity >= 1)
+            warning("Upper bound of adjust_l_range has been reached");
+          break;
+        }
+      } else
+        n_sol_max = params.l;
 
-  using mesh_t = typename KernelType::mesh_type;
-  auto const& rhs = d.get_rhs<mesh_t>();
-  auto const& error_bars = d.get_error_bars<mesh_t>();
+      d.particular_solutions.reserve(d.particular_solutions.size() + n_sol_max);
 
-  objective_function<KernelType> of(kern, rhs, error_bars);
-  solution_worker<KernelType> worker(of,
-                                     d.norm,
-                                     ci,
-                                     params,
-                                     stop_callback,
-                                     F);
-  auto& rng = worker.get_rng();
+      if(params.verbosity >= 1)
+        std::cout
+            << "Increasing the total number of solutions to be accumulated to "
+            << n_sol_max << std::endl;
 
-  int n_sol_max = 0; // Number of solutions to be accumulated
-  int n_sol, i = 0;  // Global and rank-local indices of solution
-  int n_good_solutions,
-      n_verygood_solutions;   // Number of good and very good solutions
-  double objf_min = HUGE_VAL; // Minimal value of D
-  do {
-    if(params.adjust_l) {
-      n_sol_max += params.adjust_l_range.first;
-      if(n_sol_max > params.adjust_l_range.second) {
-        if(params.verbosity >= 1)
-          warning("Upper bound of adjust_l_range has been reached");
-        break;
+      for(; (n_sol = comm.rank() + i * comm.size()) < n_sol_max; ++i) {
+        if(params.verbosity >= 2) {
+          std::cout << "[Rank " << comm.rank()
+                    << "] Accumulation of particular solution " << n_sol
+                    << std::endl;
+        }
+
+        d.particular_solutions.emplace_back(worker(1 + rng(params.max_rects)), 0);
+
+        double D = worker.get_objf_value();
+        d.particular_solutions.back().second = D;
+        d.objf_min = std::min(d.objf_min, D);
+
+        if(params.verbosity >= 2) {
+          std::cout << "[Rank " << comm.rank() << "] Solution " << n_sol
+                    << ": D = " << D << std::endl;
+        }
       }
-    } else
-      n_sol_max = params.l;
-    d.basis_solutions.clear();
-    d.basis_solutions.reserve(n_sol_max);
+      comm.barrier();
 
-    if(params.verbosity >= 1)
-      std::cout
-          << "Increasing the total number of solutions to be accumulated to "
-          << n_sol_max << std::endl;
+      // Global minimum of D_min
+      // NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
+      d.objf_min = mpi::all_reduce(d.objf_min, comm, 0, MPI_MIN);
 
-    for(; (n_sol = comm.rank() + i * comm.size()) < n_sol_max; ++i) {
-      if(params.verbosity >= 2) {
-        std::cout << "[Rank " << comm.rank()
-                  << "] Accumulation of particular solution " << n_sol
+      // Recalculate numbers of good and very good solutions
+      n_good_solutions = n_verygood_solutions = 0;
+      for(auto const& s : d.particular_solutions) {
+        if(s.second / d.objf_min <= params.adjust_l_good_d) ++n_good_solutions;
+        if(s.second / d.objf_min <= params.adjust_l_verygood_d)
+          ++n_verygood_solutions;
+      }
+      n_good_solutions = mpi::all_reduce(n_good_solutions);
+      n_verygood_solutions = mpi::all_reduce(n_verygood_solutions);
+
+      if(params.verbosity >= 1) {
+        std::cout << "D_min = " << d.objf_min << std::endl;
+        std::cout << "Number of good solutions (D/D_min <= "
+                  << params.adjust_l_good_d << ") = " << n_good_solutions
+                  << std::endl;
+        std::cout << "Number of very good solutions (D/D_min <= "
+                  << params.adjust_l_verygood_d << ") = " << n_verygood_solutions
                   << std::endl;
       }
 
-      d.basis_solutions.emplace_back(worker(1 + rng(params.max_rects)), 0);
+    } while(params.adjust_l &&
+            double(n_verygood_solutions) / double(n_good_solutions) <
+                params.adjust_l_ratio);
 
-      double D = worker.get_objf_value();
-      d.basis_solutions.back().second = D;
-      objf_min = std::min(objf_min, D);
-
-      if(params.verbosity >= 2) {
-        std::cout << "[Rank " << comm.rank() << "] Solution " << n_sol
-                  << ": D = " << D << std::endl;
-      }
-    }
     comm.barrier();
 
-    // Global minimum of D_min
-    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
-    objf_min = mpi::all_reduce(objf_min, comm, 0, MPI_MIN);
-
-    // Recalculate numbers of good and very good solutions
-    n_good_solutions = n_verygood_solutions = 0;
-    for(auto const& s : d.basis_solutions) {
-      if(s.second / objf_min <= params.adjust_l_good_d) ++n_good_solutions;
-      if(s.second / objf_min <= params.adjust_l_verygood_d)
-        ++n_verygood_solutions;
+    // Recompute the histograms
+    if(params.make_histograms) {
+      d.histogram = histogram(d.objf_min,
+                              d.objf_min * params.hist_max,
+                              params.hist_n_bins);
+      histogram & h = *d.histogram;
+      for(auto const& s : d.particular_solutions) h << s.second;
+      h = mpi_reduce(h, comm, 0, true);
     }
-    n_good_solutions = mpi::all_reduce(n_good_solutions);
-    n_verygood_solutions = mpi::all_reduce(n_verygood_solutions);
 
     if(params.verbosity >= 1) {
-      std::cout << "D_min = " << objf_min << std::endl;
-      std::cout << "Number of good solutions (D/D_min <= "
-                << params.adjust_l_good_d << ") = " << n_good_solutions
-                << std::endl;
-      std::cout << "Number of very good solutions (D/D_min <= "
-                << params.adjust_l_verygood_d << ") = " << n_verygood_solutions
-                << std::endl;
+      std::cout << "Accumulation complete." << std::endl;
     }
-
-  } while(params.adjust_l &&
-          double(n_verygood_solutions) / double(n_good_solutions) <
-              params.adjust_l_ratio);
-
-  comm.barrier();
-
-  if(params.verbosity >= 1) {
-    std::cout << "Accumulation complete." << std::endl;
-    std::cout << "Summing up good solutions ..." << std::endl;
   }
 
-  if(d.histogram)
-    *d.histogram = histogram(objf_min,
-                             objf_min * params.hist_max,
-                             params.hist_n_bins);
+  ci.invalidate_all();
 
-  configuration sol_sum(ci);
+  if(params.verbosity >= 1)
+    std::cout << "Done" << std::endl;
+}
 
-  // Rank-local stage of summation
-  for(auto const& s : d.basis_solutions) {
-    if(d.histogram) *d.histogram << s.second;
-    // Pick only good solutions
-    if(s.second / objf_min <= params.adjust_l_good_d) sol_sum += s.first;
+void som_core::accumulate(accumulate_parameters_t const& p) {
+
+  params = p;
+  validate_params(kind, params);
+
+  triqs::signal_handler::start();
+  accumulate_status = 0;
+  try {
+#define RUN_IMPL_CASE(r, okmk)                                                 \
+  case(int(BOOST_PP_SEQ_ELEM(0, okmk)) +                                       \
+       n_observable_kinds * mesh_traits<BOOST_PP_SEQ_ELEM(1, okmk)>::index):   \
+    accumulate_impl<kernel<BOOST_PP_SEQ_ENUM(okmk)>>();                        \
+    break;
+    switch(int(kind) + n_observable_kinds * mesh.index()) {
+      BOOST_PP_SEQ_FOR_EACH_PRODUCT(RUN_IMPL_CASE,
+                                    (ALL_OBSERVABLES)(ALL_INPUT_MESHES))
+    }
+#undef RUN_IMPL_CASE
+  } catch(stopped& e) {
+    accumulate_status = e.code;
+    triqs::signal_handler::received(true);
   }
-  sol_sum *= 1.0 / double(n_good_solutions);
-
-  // Sum over all processes
-  sol_sum = mpi_reduce(sol_sum, comm, 0, true);
-
-  if(d.histogram)
-    *d.histogram = mpi_reduce(*d.histogram, comm, 0, true);
-
-  if(params.verbosity >= 1) std::cout << "Done" << std::endl;
-
-  return sol_sum;
+  triqs::signal_handler::stop();
 }
 
 } // namespace som

@@ -123,78 +123,6 @@ c.add_constructor("""(gf_view<imfreq> g_iw, gf_view<imfreq> S_iw, som::observabl
 c.add_constructor("""(gf_view<legendre> g_l, gf_view<legendre> S_l, som::observable_kind kind = FermionGf, vector<double> norms = {})""",
                   doc = """Construct on quantities in Legendre polynomial basis """)
 
-# TODO: Update docstrings
-
-c.add_method("""void run (**som::run_parameters_t)""",
-             release_GIL_and_enable_signal = True,
-             doc = """
-Main parameters
----------------
-
-+-----------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| Parameter Name  | Type          | Default                       | Documentation                                                                                            |
-+=================+===============+===============================+==========================================================================================================+
-| energy_window   | (float,float) | --                            | Estimated lower and upper bounds of the spectrum.                                                        |
-|                 |               |                               | Negative values of the lower bound will be reset to 0 for susceptibilities and conductivity.             |
-+-----------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| max_time        | int           | -1 = infinite                 | Maximum runtime in seconds, use -1 to set infinite.                                                      |
-+-----------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| verbosity       | int           | 2 on MPI rank 0, 0 otherwise. | Verbosity level (max level - 3).                                                                         |
-+-----------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| t               | int           | 50                            | Number of elementary updates per global update (:math:`T`).                                              |
-|                 |               |                               | Bigger values make the algorithm more ergodic.                                                           |
-+-----------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| adjust_f        | bool          | False                         | Adjust the number of global updates automatically.                                                       |
-+-----------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| l               | int           | 2000                          | Number of particular solutions used in the final accumulation (:math:`L`); ignored if `adjust_l = True`. |
-|                 |               |                               | Bigger values reduce noise in the final solution / make it smoother.                                     |
-+-----------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| adjust_l        | bool          | False                         | Adjust the number of solutions used in the final accumulation.                                           |
-+-----------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| make_histograms | bool          | False                         | Accumulate histograms of objective function values.                                                      |
-+-----------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-
-Fine tuning options
--------------------
-
-+---------------------+-----------+-------------------------------+-----------------------------------------------------------------------------------------------------+
-| Parameter Name      | Type      | Default                       | Documentation                                                                                       |
-+=====================+===========+===============================+=====================================================================================================+
-| random_seed         | int       | 34788 + 928374 * MPI.rank     | Seed for random number generator.                                                                   |
-+---------------------+-----------+-------------------------------+-----------------------------------------------------------------------------------------------------+
-| random_name         | str       | ""                            | Name of random number generator.                                                                    |
-+---------------------+-----------+-------------------------------+-----------------------------------------------------------------------------------------------------+
-| max_rects           | int       | 60                            | Maximum number of rectangles to represent spectra (:math:`K_{max}`), should be below 70.            |
-+---------------------+-----------+-------------------------------+-----------------------------------------------------------------------------------------------------+
-| min_rect_width      | float     | 1e-3                          | Minimal width of a rectangle, in units of the energy window width.                                  |
-+---------------------+-----------+-------------------------------+-----------------------------------------------------------------------------------------------------+
-| min_rect_weight     | float     | 1e-3                          | Minimal weight of a rectangle, in units of the requested solution norm.                             |
-+---------------------+-----------+-------------------------------+-----------------------------------------------------------------------------------------------------+
-| distrib_d_max       | float     | 2                             | Maximal parameter of the power-law distribution function for the Metropolis algorithm.              |
-+---------------------+-----------+-------------------------------+-----------------------------------------------------------------------------------------------------+
-| gamma               | float     | 2                             | Proposal probability parameter :math:`\gamma`.                                                      |
-+---------------------+-----------+-------------------------------+-----------------------------------------------------------------------------------------------------+
-| adjust_f_range      | (int,int) | (100,5000)                    | Search range for the number of global updates.                                                      |
-+---------------------+-----------+-------------------------------+-----------------------------------------------------------------------------------------------------+
-| adjust_f_l          | int       | 20                            | Number of particular solutions used to adjust :math:`F`.                                            |
-+---------------------+-----------+-------------------------------+-----------------------------------------------------------------------------------------------------+
-| adjust_f_kappa      | float     | 0.25                          | Limiting value of :math:`\kappa` used to adjust :math:`F`.                                          |
-+---------------------+-----------+-------------------------------+-----------------------------------------------------------------------------------------------------+
-| adjust_l_range      | (int,int) | (100,2000)                    | Search range for the number of solutions used in the final accumulation.                            |
-+---------------------+-----------+-------------------------------+-----------------------------------------------------------------------------------------------------+
-| adjust_l_good_d     | float     | 2.0                           | Maximal ratio :math:`D/D_\mathrm{min}` for a particular solution to be considered good.             |
-+---------------------+-----------+-------------------------------+-----------------------------------------------------------------------------------------------------+
-| adjust_l_verygood_d | float     | 4/3                           | Maximal ratio :math:`D/D_\mathrm{min}` for a particular solution to be considered very good.        |
-+---------------------+-----------+-------------------------------+-----------------------------------------------------------------------------------------------------+
-| adjust_l_ratio      | float     | 0.95                          | Critical ratio :math:`N_\mathrm{very good}/N_\mathrm{good}` to stop :math:`L`-adjustment procedure. |
-+---------------------+-----------+-------------------------------+-----------------------------------------------------------------------------------------------------+
-| hist_max            | float     | 2.0                           | Right boundary of the histograms, in units of :math:`D_\mathrm{min}`                                |
-|                     |           |                               | (left boundary is always set to :math:`D_\mathrm{min}`).                                            |
-+---------------------+-----------+-------------------------------+-----------------------------------------------------------------------------------------------------+
-| hist_n_bins         | int       | 100                           | Number of bins for the histograms.                                                                  |
-+---------------------+-----------+-------------------------------+-----------------------------------------------------------------------------------------------------+
-""")
-
 #
 # Add parameters from worker_parameters_t
 #
@@ -256,72 +184,242 @@ def add_worker_parameters(conv):
                     doc = """Proposal probability parameter :math:`\gamma`.""")
 
 #
-# Converter for run_parameters_t
+# Common fragments of docstrings
 #
 
-run_params_conv = converter_(
-    c_type = "som::run_parameters_t",
-    doc = """Arguments of SomCore.run()""",
+docstring_params_header_main = """
+Main parameters
+---------------
+""".strip()
+
+docstring_params_header_fine = """
+Fine tuning options
+-------------------
+""".strip()
+
+docstring_params_table_header = """
++---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+| Parameter Name      | Type          | Default                       | Documentation                                                                                            |
++=====================+===============+===============================+==========================================================================================================+
+""".strip()
+
+docstring_worker_params_main = """
+| energy_window       | (float,float) | --                            | Estimated lower and upper bounds of the spectrum.                                                        |
+|                     |               |                               | Negative values of the lower bound will be reset to 0 for BosonAutoCorr and ZeroTemp observables.        |
++---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+| max_time            | int           | -1 = infinite                 | Maximum runtime in seconds, use -1 to set infinite.                                                      |
++---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+| verbosity           | int           | 2 on MPI rank 0, 0 otherwise. | Verbosity level (max level - 3).                                                                         |
++---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+| t                   | int           | 50                            | Number of elementary updates per global update (:math:`T`).                                              |
+|                     |               |                               | Bigger values make the algorithm more ergodic.                                                           |
++---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+""".strip()
+
+docstring_worker_params_fine = """
+| random_seed         | int           | 34788 + 928374 * MPI.rank     | Seed for random number generator.                                                                        |
++---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+| random_name         | str           | ""                            | Name of random number generator (MT19937 by default).                                                    |
++---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+| max_rects           | int           | 60                            | Maximum number of rectangles in a particular solution (:math:`K_{max}`), should be below 70.             |
++---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+| min_rect_width      | float         | 1e-3                          | Minimal width of a rectangle, in units of the energy window width.                                       |
++---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+| min_rect_weight     | float         | 1e-3                          | Minimal weight of a rectangle, in units of the requested solution norm.                                  |
++---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+| distrib_d_max       | float         | 2                             | Maximal parameter of the power-law distribution function for the Metropolis algorithm.                   |
++---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+| gamma               | float         | 2                             | Proposal probability parameter :math:`\gamma`.                                                           |
++---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+""".strip()
+
+#
+# Converter for adjust_f_parameters_t
+#
+
+adjust_f_params_conv = converter_(
+    c_type = "som::adjust_f_parameters_t",
+    doc = """Arguments of adjust_f()""",
 )
 
-add_worker_parameters(run_params_conv)
+add_worker_parameters(adjust_f_params_conv)
 
-run_params_conv.add_member(c_name = "t",
-                           c_type = "int",
-                           initializer = """50""",
-                           doc = """Number of elementary updates per global update (:math:`T`).\nBigger values make the algorithm more ergodic.""")
+adjust_f_params_conv.add_member(c_name = "f_range",
+                                c_type = "std::pair<int,int>",
+                                initializer = """std::pair<int,int>{100,5000}""",
+                                doc = """Search range for the number of global updates.""")
 
-run_params_conv.add_member(c_name = "f",
-                           c_type = "int",
-                           initializer = """100""",
-                           doc = """Number of global updates (:math:`F`); ignored if `adjust_f = True`.\nBigger values make the algorithm more ergodic.""")
+adjust_f_params_conv.add_member(c_name = "l",
+                                c_type = "int",
+                                initializer = """20""",
+                                doc = """Number of particular solutions used to adjust :math:`F`.""")
 
-run_params_conv.add_member(c_name = "l",
-                           c_type = "int",
-                           initializer = """2000""",
-                           doc = """Number of particular solutions used in the final accumulation (:math:`L`); ignored if `adjust_l = True`.\nBigger values reduce noise in the final solution / make it smoother.""")
+adjust_f_params_conv.add_member(c_name = "kappa",
+                                c_type = "double",
+                                initializer = """0.25""",
+                                doc = """Limiting value of :math:`\kappa` used to adjust :math:`F`.""")
 
-run_params_conv.add_member(c_name = "adjust_l",
-                           c_type = "bool",
-                           initializer = """false""",
-                           doc = """Adjust the number of solutions used in the final accumulation.""")
+module.add_converter(adjust_f_params_conv)
 
-run_params_conv.add_member(c_name = "make_histograms",
-                           c_type = "bool",
-                           initializer = """false""",
-                           doc = """Accumulate histograms of objective function values.""")
+#
+# SomCore.adjust_f()
+#
 
-run_params_conv.add_member(c_name = "adjust_l_range",
-                           c_type = "std::pair<int,int>",
-                           initializer = """std::pair<int,int>{100,2000}""",
-                           doc = """Search range for the number of solutions used in the final accumulation.""")
+c.add_method("int adjust_f(**som::adjust_f_parameters_t)",
+             doc = f"""
+Automatically adjust the number of global updates :math:`F`
+===========================================================
 
-run_params_conv.add_member(c_name = "adjust_l_good_d",
-                           c_type = "double",
-                           initializer = """2.0""",
-                           doc = """Maximal ratio :math:`D/D_\mathrm{min}` for a particular solution to be considered good.""")
+{docstring_params_header_main}
 
-run_params_conv.add_member(c_name = "adjust_l_verygood_d",
-                           c_type = "double",
-                           initializer = """4.0/3.0""",
-                           doc = """Maximal ratio :math:`D/D_\mathrm{min}` for a particular solution to be considered very good.""")
+{docstring_params_table_header}
+{docstring_worker_params_main}
+| f_range             | (int,int)     | (100,5000)                    | Search range for the number of global updates.                                                           |
++---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
 
-run_params_conv.add_member(c_name = "adjust_l_ratio",
-                           c_type = "double",
-                           initializer = """0.95""",
-                           doc = """Critical ratio :math:`N_\mathrm{very good}/N_\mathrm{good}` to stop :math:`L`-adjustment procedure.""")
+{docstring_params_header_fine}
 
-run_params_conv.add_member(c_name = "hist_max",
-                           c_type = "double",
-                           initializer = """2.0""",
-                           doc = """Right boundary of the histograms, in units of :math:`D_\mathrm{min}`\n(left boundary is always set to :math:`D_\mathrm{min}`).""")
+{docstring_params_table_header}
+{docstring_worker_params_fine}
+| l                   | int           | 20                            | Number of particular solutions used to adjust :math:`F`.                                                 |
++---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+| kappa               | float         | 0.25                          | Limiting value of :math:`\kappa` used to adjust :math:`F`.                                               |
++---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+""")
 
-run_params_conv.add_member(c_name = "hist_n_bins",
-                           c_type = "int",
-                           initializer = """100""",
-                           doc = """Number of bins for the histograms.""")
+#
+# Converter for accumulate_parameters_t
+#
 
-module.add_converter(run_params_conv)
+accumulate_params_conv = converter_(
+    c_type = "som::accumulate_parameters_t",
+    doc = """Arguments of SomCore.accumulate()""",
+)
+
+add_worker_parameters(accumulate_params_conv)
+
+accumulate_params_conv.add_member(c_name = "t",
+                                  c_type = "int",
+                                  initializer = """50""",
+                                  doc = """Number of elementary updates per global update (:math:`T`).\nBigger values make the algorithm more ergodic.""")
+
+accumulate_params_conv.add_member(c_name = "f",
+                                  c_type = "int",
+                                  initializer = """100""",
+                                  doc = """Number of global updates (:math:`F`); ignored if `adjust_f = True`.\nBigger values make the algorithm more ergodic.""")
+
+accumulate_params_conv.add_member(c_name = "l",
+                                  c_type = "int",
+                                  initializer = """2000""",
+                                  doc = """Number of particular solutions used in the final accumulation (:math:`L`); ignored if `adjust_l = True`.\nBigger values reduce noise in the final solution / make it smoother.""")
+
+accumulate_params_conv.add_member(c_name = "adjust_l",
+                                  c_type = "bool",
+                                  initializer = """false""",
+                                  doc = """Adjust the number of solutions used in the final accumulation.""")
+
+accumulate_params_conv.add_member(c_name = "make_histograms",
+                                  c_type = "bool",
+                                  initializer = """false""",
+                                  doc = """Accumulate histograms of objective function values.""")
+
+accumulate_params_conv.add_member(c_name = "adjust_l_range",
+                                  c_type = "std::pair<int,int>",
+                                  initializer = """std::pair<int,int>{100,2000}""",
+                                  doc = """Search range for the number of solutions used in the final accumulation.""")
+
+accumulate_params_conv.add_member(c_name = "adjust_l_good_d",
+                                  c_type = "double",
+                                  initializer = """2.0""",
+                                  doc = """Maximal ratio :math:`D/D_\mathrm{min}` for a particular solution to be considered good.""")
+
+accumulate_params_conv.add_member(c_name = "adjust_l_verygood_d",
+                                  c_type = "double",
+                                  initializer = """4.0/3.0""",
+                                  doc = """Maximal ratio :math:`D/D_\mathrm{min}` for a particular solution to be considered very good.""")
+
+accumulate_params_conv.add_member(c_name = "adjust_l_ratio",
+                                  c_type = "double",
+                                  initializer = """0.95""",
+                                  doc = """Critical ratio :math:`N_\mathrm{very good}/N_\mathrm{good}` to stop :math:`L`-adjustment procedure.""")
+
+accumulate_params_conv.add_member(c_name = "hist_max",
+                                  c_type = "double",
+                                  initializer = """2.0""",
+                                  doc = """Right boundary of the histograms, in units of :math:`D_\mathrm{min}`\n(left boundary is always set to :math:`D_\mathrm{min}`).""")
+
+accumulate_params_conv.add_member(c_name = "hist_n_bins",
+                                  c_type = "int",
+                                  initializer = """100""",
+                                  doc = """Number of bins for the histograms.""")
+
+module.add_converter(accumulate_params_conv)
+
+
+
+#
+# SomCore.accumulate()
+#
+
+docstring_accumulate = f"""
+{docstring_params_header_main}
+
+{docstring_params_table_header}
+{docstring_worker_params_main}
+| l                   | int           | 2000                          | Number of particular solutions to accumulate (:math:`L`); ignored if `adjust_l = True`.                  |
+|                     |               |                               | Bigger values reduce noise in the final solution / make it smoother.                                     |
++---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+| adjust_l            | bool          | False                         | Automatically adjust the number of particular solutions to accumulate.                                   |
++---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+| make_histograms     | bool          | False                         | Accumulate histograms of objective function values.                                                      |
++---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+
+{docstring_params_header_fine}
+
+{docstring_params_table_header}
+{docstring_worker_params_fine}
+| adjust_l_range      | (int,int)     | (100,2000)                    | Search range for the number of particular solutions to accumulate.                                       |
++---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+| adjust_l_good_d     | float         | 2.0                           | Maximal ratio :math:`D/D_\mathrm\{{min}}` for a particular solution to be considered good.                 |
++---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+| adjust_l_verygood_d | float         | 4/3                           | Maximal ratio :math:`D/D_\mathrm\{{min}}` for a particular solution to be considered very good.            |
++---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+| adjust_l_ratio      | float         | 0.95                          | Critical ratio :math:`N_\mathrm{{very good}}/N_\mathrm{{good}}` to stop the :math:`L`-adjustment procedure.  |
++---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+| hist_max            | float         | 2.0                           | Right boundary of the histograms, in units of :math:`D_\mathrm{{min}}`                                     |
+|                     |               |                               | (left boundary is always set to :math:`D_\mathrm{{min}}`).                                                 |
++---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+| hist_n_bins         | int           | 100                           | Number of bins for the histograms.                                                                       |
++---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+"""
+
+c.add_method("""void accumulate(**som::accumulate_parameters_t)""",
+             release_GIL_and_enable_signal = True,
+             doc = f"""
+Accumulate particular solutions
+===============================
+
+{docstring_accumulate}
+""")
+
+#
+# SomCore.compute_final_solution()
+#
+
+c.add_method("void compute_final_solution(double good_d = 2.0)",
+             doc = """Select particular solutions according to the standard SOM criterion and compute the final solution""")
+
+#
+# SomCore.run()
+#
+
+c.add_method("void run(**som::accumulate_parameters_t)",
+             doc = f"""
+Accumulate particular solutions and compute the final solution using the standard SOM criterion
+===============================================================================================
+
+{docstring_accumulate}
+""")
 
 #
 # SomCore.fill_observable()
@@ -367,48 +465,17 @@ c.add_method("triqs::arrays::array<dcomplex, 3> compute_tail(int max_order)",
 # Other attributes of SomCore
 #
 
-c.add_property(name = "last_run_parameters",
-               getter = cfunction("som::run_parameters_t get_last_run_parameters ()"),
-               doc = """Set of parameters used in the last call to run() """)
+c.add_property(name = "last_accumulate_parameters",
+               getter = cfunction("som::accumulate_parameters_t get_last_accumulate_parameters ()"),
+               doc = """Set of parameters used in the last call to accumulate() """)
 
-c.add_property(name = "run_status",
-               getter = cfunction("int get_run_status ()"),
-               doc = """Status of the run on exit """)
+c.add_property(name = "accumulate_status",
+               getter = cfunction("int get_accumulate_status ()"),
+               doc = """Status of the accumulate() on exit """)
 
-#
-# Converter for adjust_f_parameters_t
-#
-
-adjust_f_params_conv = converter_(
-    c_type = "som::adjust_f_parameters_t",
-    doc = """Arguments of adjust_f()""",
-)
-
-add_worker_parameters(adjust_f_params_conv)
-
-adjust_f_params_conv.add_member(c_name = "f_range",
-                                c_type = "std::pair<int,int>",
-                                initializer = """std::pair<int,int>{100,5000}""",
-                                doc = """Search range for the number of global updates.""")
-
-adjust_f_params_conv.add_member(c_name = "l",
-                                c_type = "int",
-                                initializer = """20""",
-                                doc = """Number of particular solutions used to adjust :math:`F`.""")
-
-adjust_f_params_conv.add_member(c_name = "kappa",
-                                c_type = "double",
-                                initializer = """0.25""",
-                                doc = """Limiting value of :math:`\kappa` used to adjust :math:`F`.""")
-
-module.add_converter(adjust_f_params_conv)
-
-#
-# SomCore.adjust_f()
-#
-
-c.add_method("int adjust_f(**som::adjust_f_parameters_t)",
-             doc = """Automatically adjust the number of global updates""")
+c.add_property(name = "objf_min",
+               getter = cfunction("std::vector<double> get_objf_min ()"),
+               doc = """Minimum of the objective function over all accumulated particular solutions (one value per a diagonal matrix element of the observable)""")
 
 module.add_class(c)
 
