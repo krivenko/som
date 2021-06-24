@@ -57,7 +57,7 @@ som_params['verbosity'] = 2
 som_params['adjust_l'] = False
 som_params['t'] = 100
 som_params['f'] = 100
-som_params['l'] = 50
+som_params['l'] = 25
 som_params['make_histograms'] = True
 
 if mpi.is_master_node():
@@ -81,7 +81,9 @@ def dos(e, e0):
 def run_som_and_save(kind, mesh, g, S, norms, energy_window):
     start_time = time.perf_counter()
     cont = Som(g, S, kind = kind, norms = norms)
-    cont.run(energy_window = energy_window, **som_params)
+    cont.accumulate(energy_window = energy_window, **som_params)
+    cont.accumulate(energy_window = energy_window, **som_params)
+    cont.compute_final_solution()
     g_rec = g.copy()
     cont.fill_observable(g_rec)
     g_w = GfReFreq(window = energy_window,
