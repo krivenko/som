@@ -21,6 +21,7 @@
 #pragma once
 
 #include <complex>
+#include <limits>
 #include <optional>
 #include <type_traits>
 #include <utility>
@@ -73,8 +74,12 @@ class som_core {
     // Norm of the solutions to be found
     double norm = 1.0;
 
-    // Accumulated pairs (basis solution, objective function)
-    std::vector<std::pair<configuration, double>> basis_solutions;
+    // Accumulated pairs (particular solution, objective function).
+    // For the sake of memory efficiency, this list of solutions is rank-local.
+    std::vector<std::pair<configuration, double>> particular_solutions;
+
+    // Minimum of :math:`D` over all particular solutions
+    double objf_min = HUGE_VAL;
 
     // Final solution
     configuration final_solution;
@@ -104,27 +109,22 @@ class som_core {
   };
   std::vector<data_t> data;
 
-  // Parameters of the last call to run()
-  run_parameters_t params;
+  // Parameters of the last call to accumulate()
+  accumulate_parameters_t params;
 
-  // Status of the run upon exit: 0 for clean termination, > 0 otherwise.
-  int run_status = 0;
+  // Status of accumulate() upon exit: 0 for clean termination, > 0 otherwise.
+  int accumulate_status = 0;
 
   // MPI communicator
   mpi::communicator comm;
 
-  // Run the main part of the algorithm
-  template <typename KernelType> void run_impl();
-
-  // Accumulate solutions
-  template <typename KernelType>
-  configuration accumulate(KernelType const& kern,
-                           data_t & data,
-                           std::function<bool()> const& stop_callback, int F);
-
   // Implementation details of adjust_f()
   template <typename KernelType>
   int adjust_f_impl(adjust_f_parameters_t const& params);
+
+  // Implementation details of accumulate()
+  template <typename KernelType>
+  void accumulate_impl();
 
 public:
   /// Construct on imaginary-time quantities
@@ -143,23 +143,27 @@ public:
            observable_kind kind = FermionGf,
            triqs::arrays::vector<double> const& norms = {});
 
-  // Wrap the parameters as a dictionary in python with c++2py
-  TRIQS_WRAP_ARG_AS_DICT void run(run_parameters_t const& p);
+  // Automatically adjust the number of global updates (F)
+  TRIQS_WRAP_ARG_AS_DICT int adjust_f(adjust_f_parameters_t const& p);
 
-  /// Set of parameters used in the last call to run()
-  run_parameters_t get_last_run_parameters() const { return params; }
+  /// Accumulate particular solutions
+  TRIQS_WRAP_ARG_AS_DICT void accumulate(accumulate_parameters_t const& p);
 
-  /// Status of the run on exit
-  int get_run_status() const { return run_status; }
+  /// Select particular solutions according to the standard SOM criterion
+  /// and compute the final solution
+  void compute_final_solution(double good_d = 2.0);
 
-  /// Fill a Green's function using the calculated spectra
-  template <typename MeshType>
-  friend void triqs_gf_view_assign_delegation(triqs::gfs::gf_view<MeshType> g,
-                                              som_core const& cont);
+  /// Set of parameters used in the last call to accumulate()
+  accumulate_parameters_t get_last_accumulate_parameters() const {
+    return params;
+  }
 
-  /// Compute GF tail coefficients using the calculated spectra
-  [[nodiscard]] triqs::arrays::array<std::complex<double>, 3>
-  compute_tail(int max_order) const;
+  /// Status of the accumulate() on exit
+  int get_accumulate_status() const { return accumulate_status; }
+
+  /// Accumulate particular solutions and compute the final solution using
+  /// the standard SOM criterion
+  TRIQS_WRAP_ARG_AS_DICT void run(accumulate_parameters_t const& p);
 
   /// Matrix dimension of the observable
   [[nodiscard]] int get_dim() const { return data.size(); }
@@ -178,11 +182,22 @@ public:
   /// elements of the observable
   [[nodiscard]] std::optional<std::vector<histogram_t>> get_histograms() const;
 
-  /// Discard all accumulated basis solutions, histograms and final solutions
+  /// Minimum of the objective function over all accumulated particular
+  /// solutions (one value per a diagonal matrix element of the observable)
+  [[nodiscard]] std::vector<double> get_objf_min() const;
+
+  /// Discard all accumulated particular solutions, histograms
+  /// and final solutions
   void clear();
 
-  // Automatically adjust the number of global updates (F)
-  TRIQS_WRAP_ARG_AS_DICT int adjust_f(adjust_f_parameters_t const& p);
+  /// Fill a Green's function using the calculated spectra
+  template <typename MeshType>
+  friend void triqs_gf_view_assign_delegation(triqs::gfs::gf_view<MeshType> g,
+                                              som_core const& cont);
+
+  /// Compute GF tail coefficients using the calculated spectra
+  [[nodiscard]] triqs::arrays::array<std::complex<double>, 3>
+  compute_tail(int max_order) const;
 };
 
 } // namespace som

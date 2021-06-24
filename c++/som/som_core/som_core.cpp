@@ -19,6 +19,9 @@
  *
  ******************************************************************************/
 
+#include <algorithm>
+#include <limits>
+
 #include "som_core.hpp"
 #include "common.hxx"
 
@@ -62,13 +65,21 @@ std::optional<std::vector<histogram>> som_core::get_histograms() const {
     return {};
 }
 
+std::vector<double> som_core::get_objf_min() const {
+  std::vector<double> objf_min(data.size());
+  std::transform(data.begin(), data.end(), objf_min.begin(),
+                 [](auto const& d) { return d.objf_min; });
+  return objf_min;
+}
+
 ///////////////////////
 // som_core::clear() //
 ///////////////////////
 
 void som_core::clear() {
   for(auto & d : data) {
-    d.basis_solutions.clear();
+    d.particular_solutions.clear();
+    d.objf_min = HUGE_VAL;
     d.final_solution.clear();
     d.histogram.reset();
   }

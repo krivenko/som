@@ -44,8 +44,8 @@ struct adjust_f_parameters_t : public worker_parameters_t {
      : worker_parameters_t(energy_window) {}
 };
 
-// Arguments of the som_core::run() function
-struct run_parameters_t : public worker_parameters_t {
+// Arguments of the som_core::accumulate() function
+struct accumulate_parameters_t : public worker_parameters_t {
 
   /////////////////////
   // Main parameters //
@@ -54,11 +54,11 @@ struct run_parameters_t : public worker_parameters_t {
   /// Number of global updates (:math:`F`);
   int f = 100;
 
-  /// Number of particular solutions used in the final accumulation (:math:`L`);
-  /// ignored if `adjust_l = True`.
+  /// Number of particular solutions used in accumulation (:math:`L`);
+  /// Ignored if `adjust_l = True`.
   int l = 2000;
 
-  /// Adjust the number of solutions used in the final accumulation.
+  /// Adjust the number of solutions used in accumulation.
   bool adjust_l = false;
 
   /// Accumulate histograms of objective function values.
@@ -87,8 +87,8 @@ struct run_parameters_t : public worker_parameters_t {
   /// Number of bins for the histograms.
   int hist_n_bins = 100;
 
-  run_parameters_t() = default;
-  explicit run_parameters_t(std::pair<double, double> energy_window)
+  accumulate_parameters_t() = default;
+  explicit accumulate_parameters_t(std::pair<double, double> energy_window)
      : worker_parameters_t(energy_window) {}
 };
 
