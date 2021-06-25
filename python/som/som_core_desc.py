@@ -422,15 +422,6 @@ Accumulate particular solutions and compute the final solution using the standar
 """)
 
 #
-# SomCore.fill_observable()
-#
-
-c.add_method("void fill_observable(gf_view<refreq> g_w)", calling_pattern = "g_w() = self_c")
-c.add_method("void fill_observable(gf_view<imtime> g_tau)", calling_pattern = "g_tau() = self_c")
-c.add_method("void fill_observable(gf_view<imfreq> g_iw)", calling_pattern = "g_iw() = self_c")
-c.add_method("void fill_observable(gf_view<legendre> g_l)", calling_pattern = "g_l() = self_c")
-
-#
 # SomCore.solution() and SomCore.solutions
 #
 
@@ -453,6 +444,11 @@ c.add_method(name = "histogram",
 c.add_property(name = "histograms",
                getter = cfunction(signature = "std::optional<std::vector<histogram>> get_histograms ()"),
                doc = """Accumulated objective function histograms, one per diagonal matrix element of the observable""")
+#
+# SomCore.fill_observable()
+#
+
+c.add_method("void fill_observable(gf_view<refreq> g_w)", calling_pattern = "g_w() = self_c")
 
 #
 # SomCore.compute_tail()
@@ -464,6 +460,14 @@ c.add_method("triqs::arrays::array<dcomplex, 3> compute_tail(int max_order)",
 #
 # Other attributes of SomCore
 #
+
+c.add_property(name = "observable_kind",
+               getter = cfunction("observable_kind get_observable_kind()"),
+               doc = """Kind of the observable""")
+
+c.add_property(name = "dim",
+               getter = cfunction("int get_dim()"),
+               doc = """Matrix dimension of the observable""")
 
 c.add_property(name = "last_accumulate_parameters",
                getter = cfunction("som::accumulate_parameters_t get_last_accumulate_parameters ()"),
@@ -478,5 +482,23 @@ c.add_property(name = "objf_min",
                doc = """Minimum of the objective function over all accumulated particular solutions (one value per a diagonal matrix element of the observable)""")
 
 module.add_class(c)
+
+#
+# reconstruct()
+#
+
+module.add_function("void reconstruct(gf_view<imtime> g, som_core cont)",
+                    doc = """Reconstruct an observable in the imaginary-time representation from a computed SOM solution""")
+module.add_function("void reconstruct(gf_view<imfreq> g, som_core cont)",
+                    doc = """Reconstruct an observable in the imaginary-frequency representation from a computed SOM solution""")
+module.add_function("void reconstruct(gf_view<legendre> g, som_core cont)",
+                    doc = """Reconstruct an observable in the Legendre polynomial basis from a computed SOM solution""")
+
+module.add_function("void reconstruct(gf_view<imtime> g, observable_kind kind, std::vector<configuration> solutions)",
+                    doc = """Reconstruct an observable in the imaginary-time representation from a list of solutions (one solution per a diagonal matrix element of the observable)""")
+module.add_function("void reconstruct(gf_view<imfreq> g, observable_kind kind, std::vector<configuration> solutions)",
+                    doc = """Reconstruct an observable in the imaginary-frequency representation from a list of solutions (one solution per a diagonal matrix element of the observable)""")
+module.add_function("void reconstruct(gf_view<legendre> g, observable_kind kind, std::vector<configuration> solutions)",
+                    doc = """Reconstruct an observable in the Legendre polynomial basis from a list of solutions (one solution per a diagonal matrix element of the observable)""")
 
 module.generate_code()

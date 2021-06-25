@@ -28,7 +28,7 @@ from h5 import HDFArchive
 from triqs.gf import *
 from triqs.gf.descriptors import *
 import triqs.utility.mpi as mpi
-from som import Som
+from som import Som, reconstruct
 from som.version import som_hash
 from scipy.integrate import quad
 from scipy.special import spherical_in
@@ -85,7 +85,7 @@ def run_som_and_save(kind, mesh, g, S, norms, energy_window):
     cont.accumulate(energy_window = energy_window, **som_params)
     cont.compute_final_solution()
     g_rec = g.copy()
-    cont.fill_observable(g_rec)
+    reconstruct(g_rec, cont)
     g_w = GfReFreq(window = energy_window,
                    n_points = n_w,
                    indices = indices)

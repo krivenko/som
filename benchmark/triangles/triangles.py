@@ -2,7 +2,7 @@ from h5 import HDFArchive
 from triqs.gf import *
 from triqs.gf.descriptors import *
 import triqs.utility.mpi as mpi
-from som import Som
+from som import Som, reconstruct
 import numpy as np
 import time
 
@@ -57,8 +57,7 @@ for s in abs_error:
         f = cont.adjust_f(**adjust_f_params)
         cont.run(**run_params, f = f)
         exec_time = time.perf_counter() - start
-
-        cont.fill_observable(g_rec)
+        reconstruct(g_rec, cont)
         cont.fill_observable(g_w)
         g_tail = cont.compute_tail(tail_max_order)
 
