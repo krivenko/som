@@ -110,6 +110,18 @@ public:
     return res;
   }
 
+  // Apply kernel to a configuration ignoring the cache
+  inline ResultType apply_wo_caching(configuration const& c) const {
+    ResultType res(first_dim(lhs_cache[0]));
+    res() = 0;
+    ResultType tmp(first_dim(lhs_cache[0]));
+    for(auto const& r : c) {
+      DERIVED->apply(r, tmp);
+      res += tmp;
+    }
+    return res;
+  }
+
 #undef DERIVED
 
   // Copy a precomputed LHS value bound to one object to a cache entry bound to
