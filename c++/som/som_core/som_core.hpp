@@ -165,6 +165,9 @@ public:
   /// the standard SOM criterion
   TRIQS_WRAP_ARG_AS_DICT void run(accumulate_parameters_t const& p);
 
+  /// Kind of the observable
+  [[nodiscard]] observable_kind get_observable_kind() const { return kind; }
+
   /// Matrix dimension of the observable
   [[nodiscard]] int get_dim() const { return data.size(); }
 
@@ -199,5 +202,35 @@ public:
   [[nodiscard]] triqs::arrays::array<std::complex<double>, 3>
   compute_tail(int max_order) const;
 };
+
+/// Reconstruct an observable in the imaginary-time representation
+/// from a computed SOM solution
+void reconstruct(triqs::gfs::gf_view<triqs::gfs::imtime> g,
+                 som_core const& cont);
+/// Reconstruct an observable in the imaginary-frequency representation
+/// from a computed SOM solution
+void reconstruct(triqs::gfs::gf_view<triqs::gfs::imfreq> g,
+                 som_core const& cont);
+/// Reconstruct an observable in the Legendre polynomial basis
+/// from a computed SOM solution
+void reconstruct(triqs::gfs::gf_view<triqs::gfs::legendre> g,
+                 som_core const& cont);
+
+/// Reconstruct an observable in the imaginary-time representation from a list
+/// of solutions (one solution per a diagonal matrix element of the observable)
+void reconstruct(triqs::gfs::gf_view<triqs::gfs::imtime> g,
+                 observable_kind kind,
+                 std::vector<configuration> const& solutions);
+/// Reconstruct an observable in the imaginary-frequency representation from
+/// a list of solutions (one solution per a diagonal matrix element of the
+/// observable)
+void reconstruct(triqs::gfs::gf_view<triqs::gfs::imfreq> g,
+                 observable_kind kind,
+                 std::vector<configuration> const& solutions);
+/// Reconstruct an observable in the Legendre polynomial basis from a list of
+/// solutions (one solution per a diagonal matrix element of the observable)
+void reconstruct(triqs::gfs::gf_view<triqs::gfs::legendre> g,
+                 observable_kind kind,
+                 std::vector<configuration> const& solutions);
 
 } // namespace som

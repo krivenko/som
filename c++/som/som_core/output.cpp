@@ -19,6 +19,10 @@
  *
  ******************************************************************************/
 
+#include <string>
+#include <type_traits>
+#include <vector>
+
 #include <boost/preprocessor/seq/for_each.hpp>
 
 #include <som/kernels/all.hpp>
@@ -29,48 +33,6 @@
 namespace som {
 
 using namespace triqs::gfs;
-
-///////////////////////////////////////
-// triqs_gf_view_assign_delegation() //
-///////////////////////////////////////
-
-void fill_data(gf_view<imtime> g_tau, int i, vector<double> const& data) {
-  g_tau.data()(range(), i, i) = data;
-}
-
-void fill_data(gf_view<imfreq> g_iw, int i, vector<dcomplex> const& data) {
-  auto g_positive_freq = positive_freq_view(g_iw);
-  g_positive_freq.data()(range(), i, i) = data;
-  g_iw = make_gf_from_real_gf(make_const_view(g_positive_freq));
-}
-
-void fill_data(gf_view<legendre> g_l, int i, vector<double> const& data) {
-  g_l.data()(range(), i, i) = data;
-}
-
-template <typename MeshType>
-void triqs_gf_view_assign_delegation(gf_view<MeshType> g,
-                                     som_core const& cont) {
-  auto gf_dim = cont.data.size();
-  check_gf_dim(g, gf_dim);
-  if(is_stat_relevant(cont.kind))
-    check_gf_stat(g, observable_statistics(cont.kind));
-
-  g() = 0;
-#define FILL_DATA_CASE(r, d, ok)                                               \
-  case ok: {                                                                   \
-    kernel<ok, MeshType> kern(g.mesh());                                       \
-    for(int i : range(gf_dim)) {                                               \
-      fill_data(g, i, kern(cont.data[i].final_solution));                      \
-    }                                                                          \
-    return;                                                                    \
-  }
-  switch(cont.kind) {
-    BOOST_PP_SEQ_FOR_EACH(FILL_DATA_CASE, _, ALL_OBSERVABLES)
-    default: fatal_error("unknown observable kind " + to_string(cont.kind));
-  }
-#undef FILL_DATA_CASE
-}
 
 template <>
 void triqs_gf_view_assign_delegation<refreq>(gf_view<refreq> g_w,
@@ -87,13 +49,6 @@ void triqs_gf_view_assign_delegation<refreq>(gf_view<refreq> g_w,
   }
 }
 
-template void triqs_gf_view_assign_delegation<imtime>(gf_view<imtime>,
-                                                      som_core const&);
-template void triqs_gf_view_assign_delegation<imfreq>(gf_view<imfreq>,
-                                                      som_core const&);
-template void triqs_gf_view_assign_delegation<legendre>(gf_view<legendre>,
-                                                        som_core const&);
-
 //////////////////////////////
 // som_core::compute_tail() //
 //////////////////////////////
@@ -109,6 +64,78 @@ array<dcomplex, 3> som_core::compute_tail(int max_order) const {
                           max_order);
   }
   return tail;
+}
+
+///////////////////
+// reconstruct() //
+///////////////////
+
+void fill_data(gf_view<imtime> g_tau, int i, vector<double> const& data) {
+  g_tau.data()(range(), i, i) = data;
+}
+
+void fill_data(gf_view<imfreq> g_iw, int i, vector<dcomplex> const& data) {
+  auto g_positive_freq = positive_freq_view(g_iw);
+  g_positive_freq.data()(range(), i, i) = data;
+  g_iw = make_gf_from_real_gf(make_const_view(g_positive_freq));
+}
+
+void fill_data(gf_view<legendre> g_l, int i, vector<double> const& data) {
+  g_l.data()(range(), i, i) = data;
+}
+
+template <typename MeshType, typename Solutions>
+void reconstruct_impl(gf_view<MeshType> g,
+                      int gf_dim,
+                      observable_kind kind,
+                      Solutions const& sols) {
+  check_gf_dim(g, gf_dim);
+  if(is_stat_relevant(kind))
+    check_gf_stat(g, observable_statistics(kind));
+
+  g() = 0;
+#define FILL_DATA_CASE(r, d, ok)                                               \
+  case ok: {                                                                   \
+    kernel<ok, MeshType> kern(g.mesh());                                       \
+    for(int i : range(gf_dim)) {                                               \
+      if constexpr(std::is_same_v<Solutions, som_core>)                        \
+        fill_data(g, i, kern.apply_wo_caching(sols.get_solution(i)));          \
+      else                                                                     \
+        fill_data(g, i, kern.apply_wo_caching(sols[i]));                       \
+    }                                                                          \
+    return;                                                                    \
+  }
+  switch(kind) {
+    BOOST_PP_SEQ_FOR_EACH(FILL_DATA_CASE, _, ALL_OBSERVABLES)
+    default: fatal_error("unknown observable kind " + std::to_string(kind));
+  }
+#undef FILL_DATA_CASE
+}
+
+void reconstruct(gf_view<imtime> g, som_core const& cont) {
+  reconstruct_impl(g, cont.get_dim(), cont.get_observable_kind(), cont);
+}
+void reconstruct(gf_view<imfreq> g, som_core const& cont) {
+  reconstruct_impl(g, cont.get_dim(), cont.get_observable_kind(), cont);
+}
+void reconstruct(gf_view<legendre> g, som_core const& cont) {
+  reconstruct_impl(g, cont.get_dim(), cont.get_observable_kind(), cont);
+}
+
+void reconstruct(gf_view<imtime> g,
+                 observable_kind kind,
+                 std::vector<configuration> const& solutions) {
+  reconstruct_impl(g, solutions.size(), kind, solutions);
+}
+void reconstruct(gf_view<imfreq> g,
+                 observable_kind kind,
+                 std::vector<configuration> const& solutions) {
+  reconstruct_impl(g, solutions.size(), kind, solutions);
+}
+void reconstruct(gf_view<legendre> g,
+                 observable_kind kind,
+                 std::vector<configuration> const& solutions) {
+  reconstruct_impl(g, solutions.size(), kind, solutions);
 }
 
 } // namespace som
