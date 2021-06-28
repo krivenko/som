@@ -2,7 +2,7 @@ from h5 import HDFArchive
 from triqs.gf import *
 from triqs.gf.descriptors import *
 import triqs.utility.mpi as mpi
-from som import Som, reconstruct
+from som import Som, fill_refreq, reconstruct
 import numpy as np
 import time
 
@@ -58,7 +58,7 @@ for s in abs_error:
         cont.run(**run_params, f = f)
         exec_time = time.perf_counter() - start
         reconstruct(g_rec, cont)
-        cont.fill_observable(g_w)
+        fill_refreq(g_w, cont)
         g_tail = cont.compute_tail(tail_max_order)
 
         if mpi.is_master_node():

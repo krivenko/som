@@ -34,18 +34,30 @@ namespace som {
 
 using namespace triqs::gfs;
 
-template <>
-void triqs_gf_view_assign_delegation<refreq>(gf_view<refreq> g_w,
-                                             som_core const& cont) {
-  auto gf_dim = cont.data.size();
+///////////////////
+// fill_refreq() //
+///////////////////
+
+void fill_refreq(gf_view<refreq> g_w, som_core const& cont) {
+  auto kind = cont.get_observable_kind();
+  auto gf_dim = cont.get_dim();
   check_gf_dim(g_w, gf_dim);
   for(int i : range(gf_dim)) {
-    back_transform(cont.kind,
-                   cont.data[i].final_solution,
-                   const_cast<som_core&>(cont).ci,
+    back_transform(kind,
+                   cont.get_solution(i),
                    slice_target_to_scalar(g_w, i, i),
-                   const_cast<som_core&>(cont).comm
+                   cont.get_comm()
                    );
+  }
+}
+
+void fill_refreq(gf_view<refreq> g_w,
+                 observable_kind kind,
+                 std::vector<configuration> const& solutions) {
+  auto gf_dim = solutions.size();
+  check_gf_dim(g_w, gf_dim);
+  for(int i : range(gf_dim)) {
+    back_transform(kind, solutions[i], slice_target_to_scalar(g_w, i, i));
   }
 }
 

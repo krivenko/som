@@ -64,8 +64,8 @@ std::pair<double, double> max_energy_window(observable_kind kind) {
 
 // Construct a real-frequency GF from a configuration
 void back_transform(observable_kind kind, configuration const& conf,
-                    cache_index& ci, gf_view<refreq, scalar_valued> g_w,
-                    mpi::communicator& comm) {
+                    gf_view<refreq, scalar_valued> g_w,
+                    mpi::communicator const& comm) {
   bool bosoncorr = kind == BosonCorr || kind == BosonAutoCorr;
 
   array<std::complex<double>, 1> data(g_w.data().shape());
@@ -83,7 +83,7 @@ void back_transform(observable_kind kind, configuration const& conf,
 
     if(kind == BosonAutoCorr) {
       // Add a reflected rectangle
-      rectangle reflected_rect(-rect.center, rect.width, rect.height, ci);
+      rectangle reflected_rect(-rect.center, rect.width, rect.height);
       for(auto e : g_w.mesh())
         data(e.index()) += reflected_rect.hilbert_transform(double(e), true);
     }

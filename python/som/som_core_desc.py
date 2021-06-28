@@ -444,11 +444,6 @@ c.add_method(name = "histogram",
 c.add_property(name = "histograms",
                getter = cfunction(signature = "std::optional<std::vector<histogram>> get_histograms ()"),
                doc = """Accumulated objective function histograms, one per diagonal matrix element of the observable""")
-#
-# SomCore.fill_observable()
-#
-
-c.add_method("void fill_observable(gf_view<refreq> g_w)", calling_pattern = "g_w() = self_c")
 
 #
 # SomCore.compute_tail()
@@ -482,6 +477,16 @@ c.add_property(name = "objf_min",
                doc = """Minimum of the objective function over all accumulated particular solutions (one value per a diagonal matrix element of the observable)""")
 
 module.add_class(c)
+
+#
+# fill_refreq()
+#
+
+module.add_function("void fill_refreq(gf_view<refreq> g_w, som_core cont)",
+                    doc = """Fill a real-frequency observable from a computed SOM solution""")
+
+module.add_function("void fill_refreq(gf_view<refreq> g_w, observable_kind kind, std::vector<configuration> solutions)",
+                    doc = """Fill a real-frequency observable from a list of solutions (one solution per a diagonal matrix element of the observable)""")
 
 #
 # reconstruct()

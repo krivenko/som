@@ -171,6 +171,9 @@ public:
   /// Matrix dimension of the observable
   [[nodiscard]] int get_dim() const { return data.size(); }
 
+  /// MPI communicator
+  [[nodiscard]] mpi::communicator const& get_comm() const { return comm; }
+
   /// Final solution for the i-th diagonal matrix element
   [[nodiscard]] configuration const& get_solution(int i) const;
 
@@ -193,15 +196,20 @@ public:
   /// and final solutions
   void clear();
 
-  /// Fill a Green's function using the calculated spectra
-  template <typename MeshType>
-  friend void triqs_gf_view_assign_delegation(triqs::gfs::gf_view<MeshType> g,
-                                              som_core const& cont);
-
   /// Compute GF tail coefficients using the calculated spectra
   [[nodiscard]] triqs::arrays::array<std::complex<double>, 3>
   compute_tail(int max_order) const;
 };
+
+/// Fill a real-frequency observable from a computed SOM solution
+void fill_refreq(triqs::gfs::gf_view<triqs::gfs::refreq> g_w,
+                 som_core const& cont);
+
+/// Fill a real-frequency observable from a list of solutions
+/// (one solution per a diagonal matrix element of the observable)
+void fill_refreq(triqs::gfs::gf_view<triqs::gfs::refreq> g_w,
+                 observable_kind kind,
+                 std::vector<configuration> const& solutions);
 
 /// Reconstruct an observable in the imaginary-time representation
 /// from a computed SOM solution
