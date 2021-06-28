@@ -61,19 +61,28 @@ void fill_refreq(gf_view<refreq> g_w,
   }
 }
 
-//////////////////////////////
-// som_core::compute_tail() //
-//////////////////////////////
+////////////////////
+// compute_tail() //
+////////////////////
 
-array<dcomplex, 3> som_core::compute_tail(int max_order) const {
-  auto gf_dim = data.size();
+array<dcomplex, 3> compute_tail(int max_order, som_core const& cont) {
+  auto kind = cont.get_observable_kind();
+  auto gf_dim = cont.get_dim();
   array<dcomplex, 3> tail(max_order + 1, gf_dim, gf_dim);
   for(int i : range(gf_dim)) {
     tail(range(), i, i) =
-        som::compute_tail(kind, data[i].final_solution,
-                          const_cast<som_core*>(this)->ci,
-                          const_cast<som_core*>(this)->comm,
-                          max_order);
+      som::compute_tail(kind, cont.get_solution(i), max_order, cont.get_comm());
+  }
+  return tail;
+}
+
+array<dcomplex, 3> compute_tail(int max_order,
+                                observable_kind kind,
+                                std::vector<configuration> const& solutions) {
+  auto gf_dim = solutions.size();
+  array<dcomplex, 3> tail(max_order + 1, gf_dim, gf_dim);
+  for(int i : range(gf_dim)) {
+    tail(range(), i, i) = som::compute_tail(kind, solutions[i], max_order);
   }
   return tail;
 }

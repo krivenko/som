@@ -195,21 +195,26 @@ public:
   /// Discard all accumulated particular solutions, histograms
   /// and final solutions
   void clear();
-
-  /// Compute GF tail coefficients using the calculated spectra
-  [[nodiscard]] triqs::arrays::array<std::complex<double>, 3>
-  compute_tail(int max_order) const;
 };
 
 /// Fill a real-frequency observable from a computed SOM solution
 void fill_refreq(triqs::gfs::gf_view<triqs::gfs::refreq> g_w,
                  som_core const& cont);
-
 /// Fill a real-frequency observable from a list of solutions
 /// (one solution per a diagonal matrix element of the observable)
 void fill_refreq(triqs::gfs::gf_view<triqs::gfs::refreq> g_w,
                  observable_kind kind,
                  std::vector<configuration> const& solutions);
+
+/// Compute tail coefficients from a computed SOM solution
+[[nodiscard]] triqs::arrays::array<std::complex<double>, 3>
+compute_tail(int max_order, som_core const& cont);
+/// Compute tail coefficients from a list of solutions
+/// (one solution per a diagonal matrix element of the observable)
+[[nodiscard]] triqs::arrays::array<std::complex<double>, 3>
+compute_tail(int max_order,
+             observable_kind kind,
+             std::vector<configuration> const& solutions);
 
 /// Reconstruct an observable in the imaginary-time representation
 /// from a computed SOM solution
