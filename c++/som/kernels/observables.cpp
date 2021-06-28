@@ -19,6 +19,8 @@
  *
  ******************************************************************************/
 
+#include <memory>
+
 #include <triqs/utility/exceptions.hpp>
 
 #include "observables.hpp"
@@ -68,8 +70,12 @@ void back_transform(observable_kind kind, configuration const& conf,
                     mpi::communicator const& comm) {
   bool bosoncorr = kind == BosonCorr || kind == BosonAutoCorr;
 
-  array<std::complex<double>, 1> data(g_w.data().shape());
+  auto & data = g_w.data();
   data() = 0;
+
+  std::unique_ptr<rectangle> reflected_rect;
+  if(kind == BosonAutoCorr)
+    reflected_rect = std::make_unique<rectangle>(0, 0, 0);
 
   long rect_index = 0;
   for(auto const& rect : conf) {
@@ -81,11 +87,13 @@ void back_transform(observable_kind kind, configuration const& conf,
     for(auto e : g_w.mesh())
       data(e.index()) += rect.hilbert_transform(double(e), bosoncorr);
 
-    if(kind == BosonAutoCorr) {
-      // Add a reflected rectangle
-      rectangle reflected_rect(-rect.center, rect.width, rect.height);
+    // Add the reflected rectangle as needed
+    if(reflected_rect) {
+      reflected_rect->center = -rect.center;
+      reflected_rect->width = rect.width;
+      reflected_rect->height = rect.height;
       for(auto e : g_w.mesh())
-        data(e.index()) += reflected_rect.hilbert_transform(double(e), true);
+        data(e.index()) += reflected_rect->hilbert_transform(double(e), true);
     }
 
     ++rect_index;
@@ -93,8 +101,11 @@ void back_transform(observable_kind kind, configuration const& conf,
 
   if(bosoncorr) { data *= -1.0 / M_PI; }
 
-  data = mpi::all_reduce(data, comm);
-  g_w.data() = data;
+  // A copy is needed here because mpi::all_reduce() does not work
+  // with non-contiguous views
+  array<std::complex<double>, 1> d(data);
+  d = mpi::all_reduce(d, comm);
+  data() = d;
 }
 
 // Compute the GF tail from a configuration
