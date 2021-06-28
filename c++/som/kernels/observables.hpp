@@ -57,9 +57,9 @@ std::pair<double, double> max_energy_window(observable_kind kind);
 
 // Construct a real-frequency GF from a configuration
 void back_transform(
-    observable_kind kind, configuration const& conf, cache_index& ci,
+    observable_kind kind, configuration const& conf,
     triqs::gfs::gf_view<triqs::gfs::refreq, triqs::gfs::scalar_valued> g_w,
-    mpi::communicator& comm);
+    mpi::communicator const& comm = {});
 
 // Compute the GF tail from a configuration
 triqs::arrays::array<std::complex<double>, 1>
