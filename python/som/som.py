@@ -22,7 +22,7 @@
 Main module of SOM
 """
 
-from .som_core import SomCore, fill_refreq, reconstruct
+from .som_core import SomCore, fill_refreq, compute_tail, reconstruct
 import numpy as np
 
 class Som(SomCore):

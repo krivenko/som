@@ -446,13 +446,6 @@ c.add_property(name = "histograms",
                doc = """Accumulated objective function histograms, one per diagonal matrix element of the observable""")
 
 #
-# SomCore.compute_tail()
-#
-
-c.add_method("triqs::arrays::array<dcomplex, 3> compute_tail(int max_order)",
-             doc = """Compute GF tail coefficients using calculated spectra""")
-
-#
 # Other attributes of SomCore
 #
 
@@ -487,6 +480,16 @@ module.add_function("void fill_refreq(gf_view<refreq> g_w, som_core cont)",
 
 module.add_function("void fill_refreq(gf_view<refreq> g_w, observable_kind kind, std::vector<configuration> solutions)",
                     doc = """Fill a real-frequency observable from a list of solutions (one solution per a diagonal matrix element of the observable)""")
+
+#
+# compute_tail()
+#
+
+module.add_function("triqs::arrays::array<dcomplex, 3> compute_tail(int max_order, som_core cont)",
+                    doc = """Compute tail coefficients from a computed SOM solution""")
+
+module.add_function("triqs::arrays::array<dcomplex, 3> compute_tail(int max_order, observable_kind kind, std::vector<configuration> solutions)",
+                    doc = """Compute tail coefficients from a list of solutions (one solution per a diagonal matrix element of the observable)""")
 
 #
 # reconstruct()

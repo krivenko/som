@@ -99,8 +99,8 @@ void back_transform(observable_kind kind, configuration const& conf,
 
 // Compute the GF tail from a configuration
 triqs::arrays::array<std::complex<double>, 1>
-compute_tail(observable_kind kind, configuration const& conf, cache_index& ci,
-             mpi::communicator& comm, int max_order) {
+compute_tail(observable_kind kind, configuration const& conf,
+             int max_order, mpi::communicator const& comm) {
   assert(max_order >= 0);
 
   bool bosoncorr = kind == BosonCorr || kind == BosonAutoCorr;
@@ -119,7 +119,7 @@ compute_tail(observable_kind kind, configuration const& conf, cache_index& ci,
 
     if(kind == BosonAutoCorr) {
       // Add a reflected rectangle
-      rectangle reflected_rect(-rect.center, rect.width, rect.height, ci);
+      rectangle reflected_rect(-rect.center, rect.width, rect.height);
       tail += reflected_rect.tail_coefficients(0, max_order, true);
     }
 

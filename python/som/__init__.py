@@ -22,11 +22,12 @@
 SOM: Stochastic Optimization Method for Analytic Continuation
 """
 
-from .som_core import SomCore, fill_refreq, reconstruct
+from .som_core import SomCore, fill_refreq, compute_tail, reconstruct
 from .som import Som, count_good_solutions
 
 __all__ = ['SomCore',
            'Som',
            'fill_refreq',
+           'compute_tail',
            'reconstruct',
            'count_good_solutions']

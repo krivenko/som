@@ -63,7 +63,7 @@ void back_transform(
 
 // Compute the GF tail from a configuration
 triqs::arrays::array<std::complex<double>, 1>
-compute_tail(observable_kind kind, configuration const& conf, cache_index& ci,
-             mpi::communicator& comm, int max_order);
+compute_tail(observable_kind kind, configuration const& conf,
+             int max_order, mpi::communicator const& comm = {});
 
 } // namespace som
