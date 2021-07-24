@@ -1,7 +1,7 @@
 SOM: Stochastic Optimization Method for Analytic Continuation
 =============================================================
 
-[![Build Status](https://travis-ci.org/krivenko/som.svg?branch=master)](https://travis-ci.org/krivenko/som)
+[![Build Status](https://travis-ci.com/krivenko/som.svg?branch=master)](https://travis-ci.com/krivenko/som)
 
 http://krivenko.github.io/som/
 
