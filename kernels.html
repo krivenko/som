@@ -1,23 +1,21 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Supported integral kernels &mdash; TRIQS Stochastic Optimization Method  documentation</title>
-    
+    <title>Supported integral kernels &#8212; TRIQS Stochastic Optimization Method  documentation</title>
     <link rel="stylesheet" href="_static/triqs.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
         VERSION:     '',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
@@ -25,8 +23,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="/som/mathjax/MathJax.js?config=default"></script>
     <link rel="author" title="About these documents" href="about.html" />
-    <link rel="top" title="TRIQS Stochastic Optimization Method  documentation" href="index.html" />
-    <link rel="up" title="Documentation" href="documentation.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="run() parameters" href="parameters.html" />
     <link rel="prev" title="Documentation" href="documentation.html" />
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
@@ -62,7 +60,7 @@
   </div>
 </div>
 
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -79,15 +77,15 @@
              accesskey="P">previous</a> |</li>
     <li><a href="index.html">Home</a> &raquo;</li>
 
-          <li><a href="documentation.html" accesskey="U">Documentation</a> &raquo;</li> 
+          <li class="nav-item nav-item-1"><a href="documentation.html" accesskey="U">Documentation</a> &#187;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h3><a href="contents.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Supported integral kernels</a><ul>
-<li><a class="reference internal" href="#fermionic-thermal-green-s-function">Fermionic thermal Green&#8217;s function</a></li>
+<li><a class="reference internal" href="#fermionic-thermal-green-s-function">Fermionic thermal Green’s function</a></li>
 <li><a class="reference internal" href="#correlator-of-boson-like-operators">Correlator of boson-like operators</a></li>
 <li><a class="reference internal" href="#autocorrelator-of-a-boson-like-operator">Autocorrelator of a boson-like operator</a></li>
 <li><a class="reference internal" href="#correlation-function-at-zero-temperature">Correlation function at zero temperature</a></li>
@@ -101,22 +99,21 @@
   <h4>Next topic</h4>
   <p class="topless"><a href="parameters.html"
                         title="next chapter">run() parameters</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/kernels.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/kernels.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -125,7 +122,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="supported-integral-kernels">
 <span id="kernels"></span><h1>Supported integral kernels<a class="headerlink" href="#supported-integral-kernels" title="Permalink to this headline">¶</a></h1>
@@ -134,9 +131,9 @@
 <p class="last"><span class="math">\(\beta\)</span> denotes the inverse temperature in all equations below.</p>
 </div>
 <div class="section" id="fermionic-thermal-green-s-function">
-<span id="fermiongf"></span><h2>Fermionic thermal Green&#8217;s function<a class="headerlink" href="#fermionic-thermal-green-s-function" title="Permalink to this headline">¶</a></h2>
+<span id="fermiongf"></span><h2>Fermionic thermal Green’s function<a class="headerlink" href="#fermionic-thermal-green-s-function" title="Permalink to this headline">¶</a></h2>
 <p><span class="math">\(A(\epsilon) = -(1/\pi)\Im G^\mathrm{ret}(\epsilon)\)</span> is the spectral function to be found.</p>
-<p>Enabled when <cite>Som()</cite> object is constucted with <cite>kind = &#8220;FermionGf&#8221;</cite>.</p>
+<p>Enabled when <cite>Som()</cite> object is constucted with <cite>kind = “FermionGf”</cite>.</p>
 <ul>
 <li><p class="first">In imaginary time, <span class="math">\(G(\tau)\)</span></p>
 <blockquote>
@@ -169,7 +166,7 @@ d\epsilon \frac{\beta\sqrt{2\ell+1}(-\mathrm{sgn}(\epsilon))^\ell i_{\ell}(\beta
 </div></blockquote>
 <p>The default value <span class="math">\(N=1\)</span> can be overridden to perform analytical continuation of related fermionic
 quantities, such as self-energy.</p>
-<p>The retared Green&#8217;s function of a real frequency is reconstructed according to</p>
+<p>The retared Green’s function of a real frequency is reconstructed according to</p>
 <blockquote>
 <div><div class="math">
 \[G^\mathrm{ret}(\epsilon) = -\int\limits_{-\infty}^\infty
@@ -178,7 +175,7 @@ d\epsilon' \frac{A(\epsilon')}{\epsilon' - \epsilon - i0}.\]</div>
 </div>
 <div class="section" id="correlator-of-boson-like-operators">
 <span id="bosoncorr"></span><h2>Correlator of boson-like operators<a class="headerlink" href="#correlator-of-boson-like-operators" title="Permalink to this headline">¶</a></h2>
-<p>Enabled when <cite>Som()</cite> object is constucted with <cite>kind = &#8220;BosonCorr&#8221;</cite>.</p>
+<p>Enabled when <cite>Som()</cite> object is constucted with <cite>kind = “BosonCorr”</cite>.</p>
 <p><span class="math">\(A(\epsilon)\)</span> is the spectral function to be found. It is defined differently from the fermionic
 case, namely <span class="math">\(A(\epsilon) = \Im\chi(\epsilon)/\epsilon\)</span>, where</p>
 <blockquote>
@@ -226,7 +223,7 @@ d\epsilon' \frac{\epsilon' A(\epsilon')}{\epsilon' - \epsilon - i0}.\]</div>
 </div>
 <div class="section" id="autocorrelator-of-a-boson-like-operator">
 <span id="bosonautocorr"></span><h2>Autocorrelator of a boson-like operator<a class="headerlink" href="#autocorrelator-of-a-boson-like-operator" title="Permalink to this headline">¶</a></h2>
-<p>Enabled when <cite>Som()</cite> object is constucted with <cite>kind = &#8220;BosonAutoCorr&#8221;</cite>.</p>
+<p>Enabled when <cite>Som()</cite> object is constucted with <cite>kind = “BosonAutoCorr”</cite>.</p>
 <p><span class="math">\(A(\epsilon)\)</span> is the spectral function to be found. It is defined differently from the fermionic
 case, namely <span class="math">\(A(\epsilon) = \Im\chi(\epsilon)/\epsilon\)</span>, where</p>
 <blockquote>
@@ -288,7 +285,7 @@ d\epsilon' \frac{\epsilon' A(\epsilon')}{\epsilon' - \epsilon - i0}.\]</div>
 <div class="section" id="correlation-function-at-zero-temperature">
 <span id="zerotemp"></span><h2>Correlation function at zero temperature<a class="headerlink" href="#correlation-function-at-zero-temperature" title="Permalink to this headline">¶</a></h2>
 <p><span class="math">\(A(\epsilon) = -(1/\pi)\Im G(\epsilon)\)</span> is the spectral function to be found.</p>
-<p>Enabled when <cite>Som()</cite> object is constucted with <cite>kind = &#8220;ZeroTemp&#8221;</cite>.</p>
+<p>Enabled when <cite>Som()</cite> object is constucted with <cite>kind = “ZeroTemp”</cite>.</p>
 <ul>
 <li><p class="first">In imaginary time, <span class="math">\(G(\tau)\)</span>, <span class="math">\(\tau\in[0;\tau_{max}]\)</span></p>
 <blockquote>
@@ -336,7 +333,7 @@ d\epsilon' \frac{A(\epsilon')}{\epsilon' - \epsilon - i0}.\]</div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -353,11 +350,11 @@ d\epsilon' \frac{A(\epsilon')}{\epsilon' - \epsilon - i0}.\]</div>
              >previous</a> |</li>
     <li><a href="index.html">Home</a> &raquo;</li>
 
-          <li><a href="documentation.html" >Documentation</a> &raquo;</li> 
+          <li class="nav-item nav-item-1"><a href="documentation.html" >Documentation</a> &#187;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2016-2020, Igor Krivenko.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016-2020, Igor Krivenko.
     </div>
   </body>
 </html>

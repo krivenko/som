@@ -1,11 +1,8 @@
-/* -*- Mode: Javascript; indent-tabs-mode:nil; js-indent-level: 2 -*- */
-/* vim: set ts=2 et sw=2 tw=80: */
-
 /*************************************************************
  *
  *  MathJax/localization/da/TeX.js
  *
- *  Copyright (c) 2009-2013 The MathJax Consortium
+ *  Copyright (c) 2009-2018 The MathJax Consortium
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,9 +17,8 @@
  *  limitations under the License.
  *
  */
-
 MathJax.Localization.addTranslation("da","TeX",{
-        version: "2.3",
+        version: "2.7.3",
         isLoaded: true,
         strings: {
           ExtraOpenMissingClose: "Ekstra venstreklammeparentes eller manglende h\u00F8jreklammeparentes",
@@ -36,6 +32,7 @@ MathJax.Localization.addTranslation("da","TeX",{
           AmbiguousUseOf: "Flertydig brug af %1",
           EnvBadEnd: "\\begin{%1} sluttede med \\end{%2}",
           EnvMissingEnd: "Manglende \\end{%1}",
+          MissingBoxFor: "Manglende boks for %1",
           MissingCloseBrace: "Manglende h\u00F8jreklammeparentes",
           UndefinedControlSequence: "Udefineret kontrolsekvens %1",
           DoubleExponent: "Dobbelt eksponent: brug klammeparenteser til at tydeligg\u00F8re",
@@ -51,7 +48,7 @@ MathJax.Localization.addTranslation("da","TeX",{
           InvalidMathMLAttr: "Ugyldig MathML attribut: %1",
           UnknownAttrForElement: "%1 er ikke en genkendt attribut for %2",
           MaxMacroSub1: "Det maksimale antal makro substitutioner i MathJax er overskredet; er der et rekursivt makrokald?",
-          MaxMacroSub2: "Det maksimale antal substitutioner i MathJax er overskredet; er der et rekursivt latex milj\u00F8?",
+          MaxMacroSub2: "Det maksimale antal substitutioner i MathJax er overskredet; er der et rekursivt LaTeX milj\u00F8?",
           MissingArgFor: "Manglende argument til %1",
           ExtraAlignTab: "For mange \u0026 i \\cases tekst",
           BracketMustBeDimension: "Klammeargument til %1 skal v\u00E6re en dimension",
@@ -94,8 +91,7 @@ MathJax.Localization.addTranslation("da","TeX",{
           MissingReplacementString: "Manglende erstatningsstreng til definition af %1",
           MismatchUseDef: "Brug af %1 stemmer ikke overens med dens definition",
           RunawayArgument: "L\u00F8bsk argument for %1?",
-          NoClosingDelim: "Kan ikke finde afsluttende skilletegn for %1",
-          MissingBoxFor: "Manglende boks for %1"
+          NoClosingDelim: "Kan ikke finde afsluttende skilletegn for %1"
         }
 });
 

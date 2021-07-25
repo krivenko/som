@@ -9,7 +9,7 @@
  *
  *  ---------------------------------------------------------------------
  *  
- *  Copyright (c) 2010-2013 The MathJax Consortium
+ *  Copyright (c) 2010-2018 The MathJax Consortium
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@
  */
 
 MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
-  var VERSION = "2.3";
+  var VERSION = "2.7.3";
   var MML = MathJax.ElementJax.mml,
       HTMLCSS = MathJax.OutputJax["HTML-CSS"];
       
@@ -39,6 +39,7 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
     badbreak:    [+200],
     auto:           [0],
     
+    maxwidth:     1.33,  // stop looking for breaks after this time the line-break width
     toobig:        800,
     nestfactor:    400,
     spacefactor:  -100,
@@ -67,7 +68,7 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
       //
       var parent = this;
       while (parent.inferred || (parent.parent && parent.parent.type === "mrow" &&
-             parent.parent.data.length === 1)) {parent = parent.parent}
+             parent.isEmbellished())) {parent = parent.parent}
       var isTop = ((parent.type === "math" && parent.Get("display") === "block") ||
                     parent.type === "mtd");
       parent.isMultiline = true;
@@ -90,9 +91,10 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
       //
       this.HTMLremoveColor(span);
       var stack = HTMLCSS.createStack(span);
+      this.HTMLgetScale();
       var state = {
             n: 0, Y: 0,
-            scale: this.HTMLgetScale(),
+            scale: this.scale || 1,
             isTop: isTop,
             values: {},
             VALUES: VALUES
@@ -108,7 +110,7 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
           broken = false;
           
       while (this.HTMLbetterBreak(end,state) && 
-             (end.scanW >= HTMLCSS.linebreakWidth || end.penalty == PENALTY.newline)) {
+             (end.scanW >= HTMLCSS.linebreakWidth || end.penalty === PENALTY.newline)) {
         this.HTMLaddLine(stack,start,end.index,state,end.values,broken);
         start = end.index.slice(0); broken = true;
         align = this.HTMLgetAlign(state,end.values);
@@ -156,7 +158,7 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
       //  Look through the line for breakpoints,
       //    (as long as we are not too far past the breaking width)
       //
-      while (i < m && info.scanW < 1.33*HTMLCSS.linebreakWidth) {
+      while (i < m && (info.scanW < PENALTY.maxwidth*HTMLCSS.linebreakWidth || info.w === 0)) {
         if (this.data[i]) {
           if (this.data[i].HTMLbetterBreak(info,state)) {
             better = true; index = [i].concat(info.index); W = info.W; w = info.w;
@@ -208,24 +210,17 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
       var align = this.HTMLgetAlign(state,values),
           shift = this.HTMLgetShift(state,values,align);
       //
-      //  Add in space for the shift
-      //
-      if (shift) {
-        HTMLCSS.createBlank(line,shift,(align !== MML.INDENTALIGN.RIGHT));
-        line.bbox.w += shift; line.bbox.rw += shift;
-      }
-      //
       //  Set the Y offset based on previous depth, leading, and current height
       //
       if (state.n > 0) {
         var LHD = HTMLCSS.FONTDATA.baselineskip * state.scale;
-        var leading = (state.values.lineleading == null ? state.VALUES : state.values).lineleading;
+        var leading = (state.values.lineleading == null ? state.VALUES : state.values).lineleading * state.scale;
         state.Y -= Math.max(LHD,state.d + line.bbox.h + leading);
       }
       //
       //  Place the new line
       //
-      HTMLCSS.alignBox(line,align,state.Y);
+      HTMLCSS.alignBox(line,align,state.Y,shift);
       //
       //  Save the values needed for the future
       //
@@ -246,14 +241,18 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
       return align;
     },
     HTMLgetShift: function (state,values,align) {
-      if (align === MML.INDENTALIGN.CENTER) {return 0}
       var cur = values, prev = state.values, def = state.VALUES, shift;
       if (state.n === 0)     {shift = cur.indentshiftfirst || prev.indentshiftfirst || def.indentshiftfirst}
       else if (state.isLast) {shift = prev.indentshiftlast || def.indentshiftlast}
       else                   {shift = prev.indentshift || def.indentshift}
       if (shift === MML.INDENTSHIFT.INDENTSHIFT) {shift = prev.indentshift || def.indentshift}
-      if (shift === "auto" || shift === "") {shift = (state.isTSop ? this.displayIndent : "0")}
-      return HTMLCSS.length2em(shift,0);
+      if (shift === "auto" || shift === "") {shift = "0"}
+      shift = HTMLCSS.length2em(shift,1,HTMLCSS.cwidth);
+      if (state.isTop && this.displayIndent !== "0") {
+        var indent = HTMLCSS.length2em(this.displayIndent,1,HTMLCSS.cwidth);
+        shift += (align === MML.INDENTALIGN.RIGHT ? -indent : indent);
+      }
+      return shift;
     },
     
     /****************************************************************/
@@ -317,10 +316,13 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
       this.HTMLcleanBBox(slice.bbox);
       if (end.length === 0) {
         span = this.HTMLspanElement();
+        var SPAN = span;
+        if (this.href) span = span.parentNode;
         span.parentNode.removeChild(span);
-        span.nextMathJaxSpan.id = span.id; var n = 0;
-        while (span = span.nextMathJaxSpan) {
-          var color = this.HTMLhandleColor(span);
+        span.nextMathJaxSpan.id = SPAN.id; var n = 0;
+        while ((SPAN = SPAN.nextMathJaxSpan)) {
+          if (SPAN.nodeName.toLowerCase() === "a") SPAN = SPAN.firstChild;
+          var color = this.HTMLhandleColor(SPAN);
           if (color) {color.id += "-MathJax-Continue-"+n; n++}
         }
       }
@@ -335,6 +337,7 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
     //
     HTMLcreateSliceSpan: function (span) {
       var SPAN = this.HTMLspanElement(), n = 0;
+      if (this.href) SPAN = SPAN.parentNode;
       var LAST = SPAN; while (LAST.nextMathJaxSpan) {LAST = LAST.nextMathJaxSpan; n++}
       var SLICE = SPAN.cloneNode(false); LAST.nextMathJaxSpan = SLICE; SLICE.nextMathJaxSpan = null;
       SLICE.id += "-MathJax-Continue-"+n;
@@ -359,6 +362,7 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
 	var color = document.getElementById("MathJax-Color-"+this.spanID+HTMLCSS.idPostfix);
         if (color) {line.appendChild(color)}
         var span = this.HTMLspanElement();
+        if (this.href) span = span.parentNode;
         line.appendChild(span);
         //
         //  If it is last, remove right padding
@@ -366,15 +370,16 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
         //
         if (state.last) {span.style.paddingRight = ""}
         if (state.first || state.nextIsFirst) {
-          delete state.nextIsFirst;
           span.style.paddingLeft = "";
           if (color) {this.HTMLremoveColor(span); this.HTMLhandleColor(span)}
         }
+        if (state.first && span.bbox.w === 0) {state.nextIsFirst = true}
+          else {delete state.nextIsFirst}
         //
         //  Update bounding box
         //
         this.HTMLcombineBBoxes(this,line.bbox);
-      } else if (state.first) {state.nextIsFirst = true} else {delete state.nextIsFirst}
+      }
     }
   });
 
@@ -407,7 +412,7 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
       //  Look through the line for breakpoints, including the open, close, and separators
       //    (as long as we are not too far past the breaking width)
       //
-      while (i < m && info.scanW < 1.33*HTMLCSS.linebreakWidth) {
+      while (i < m && (info.scanW < PENALTY.maxwidth*HTMLCSS.linebreakWidth || info.w === 0)) {
         var k = this.dataI[i];
         if (this.data[k]) {
           if (this.data[k].HTMLbetterBreak(info,state)) {
@@ -515,8 +520,10 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
       //
       if (end.length === 0) {
         var s = this.data[this.sup] || this.data[this.sub];
-        if (s) {
-          var box = s.HTMLspanElement().parentNode, stack = box.parentNode;
+        if (s && this.HTMLnotEmpty(s)) {
+          var box = s.HTMLspanElement().parentNode;
+          if (s.href) box = box.parentNode;
+          var stack = box.parentNode;
           if (this.data[this.base]) {stack.removeChild(stack.firstChild)}
 	  for (box = stack.firstChild; box; box = box.nextSibling)
 	    {box.style.left = HTMLCSS.Em(HTMLCSS.unEm(box.style.left)-this.HTMLbaseW)}
@@ -524,6 +531,104 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
           this.HTMLcombineBBoxes(stack,span.bbox);
           span.appendChild(stack);
         }
+      }
+    }
+
+  });
+  
+  /**************************************************************************/
+
+  MML.mmultiscripts.Augment({
+    HTMLbetterBreak: function (info,state) {
+      if (!this.data[this.base]) {return false}
+      //
+      //  Get the current breakpoint position and other data
+      //
+      var index = info.index.slice(0); info.index.shift();
+      var W, w, scanW, broken = (info.index.length > 0), better = false;
+      if (!broken) {info.W += info.w; info.w = 0}
+      info.scanW = info.W;
+      //
+      //  Get the bounding boxes and the width of the scripts
+      //
+      var bbox = this.HTMLspanElement().bbox,
+          base = this.data[this.base].HTMLspanElement().bbox;
+      var dw = bbox.w - base.w;
+      //
+      //  Add in the prescripts
+      //  
+      info.scanW += bbox.dx; scanW = info.scanW;
+      //
+      //  Check if the base can be broken
+      //
+      if (this.data[this.base].HTMLbetterBreak(info,state)) {
+        better = true; index = [this.base].concat(info.index); W = info.W; w = info.w;
+        if (info.penalty === PENALTY.newline) {better = broken = true}
+      }
+      //
+      //  Add in the base if it is unbroken, and add the scripts
+      //
+      if (!broken) {this.HTMLaddWidth(this.base,info,scanW)}
+      info.scanW += dw; info.W = info.scanW;
+      info.index = []; if (better) {info.W = W; info.w = w; info.index = index}
+      return better;
+    },
+    
+    HTMLmoveLine: function (start,end,span,state,values) {
+      var SPAN = this.HTMLspanElement(), data = SPAN.bbox,
+          stack = SPAN.firstChild, BOX = {};
+      if (HTMLCSS.msiePaddingWidthBug) {stack = stack.nextSibling}
+      var box = stack.firstChild;
+      
+      //
+      //  Get the boxes for the scripts (if any)
+      //
+      while (box) {
+        if (box.bbox && box.bbox.name) {BOX[box.bbox.name] = box}
+        box = box.nextSibling;
+      }
+      //
+      //  If this is the start, move the prescripts, if any.
+      //
+      if (start.length < 1) {
+        if (BOX.presub || BOX.presup) {
+          var STACK = HTMLCSS.createStack(span);
+          if (BOX.presup) {
+            HTMLCSS.addBox(STACK,BOX.presup);
+            HTMLCSS.placeBox(BOX.presup,data.dx-BOX.presup.bbox.w,data.u);
+          }
+          if (BOX.presub) {
+            HTMLCSS.addBox(STACK,BOX.presub);
+            HTMLCSS.placeBox(BOX.presub,data.dx+data.delta-BOX.presub.bbox.w,-data.v);
+          }
+          this.HTMLcombineBBoxes(STACK,span.bbox);
+          span.appendChild(STACK);
+          STACK.style.width = HTMLCSS.Em(data.dx);
+        }
+      }
+      //
+      //  Move the proper part of the base
+      //
+      if (this.data[this.base]) {
+        if (start.length > 1) {
+          this.data[this.base].HTMLmoveSlice(start.slice(1),end.slice(1),span,state,values,"paddingLeft");
+        } else {
+          if (end.length <= 1) {this.data[this.base].HTMLmoveSpan(span,state,values)}
+            else {this.data[this.base].HTMLmoveSlice([],end.slice(1),span,state,values,"paddingRight")}
+        }
+      }
+      //
+      //  If this is the end, check for super and subscripts, and move those
+      //  by moving the stack that contains them, and shifting by the amount of the
+      //  base that has been removed.  Remove the empty base box from the stack.
+      //
+      if (end.length === 0) {
+        if (this.data[this.base]) {stack.removeChild(stack.firstChild)}
+        for (box = stack.firstChild; box; box = box.nextSibling)
+	  {box.style.left = HTMLCSS.Em(HTMLCSS.unEm(box.style.left)-data.px)}
+        stack.bbox.w -= data.px; stack.style.width = HTMLCSS.Em(stack.bbox.w);
+        this.HTMLcombineBBoxes(stack,span.bbox);
+        span.appendChild(stack);
       }
     }
 
@@ -559,7 +664,8 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
       var span = mo.HTMLspanElement(), w = span.bbox.w;
       if (span.style.paddingLeft) {w += HTMLCSS.unEm(span.style.paddingLeft)}
       if (values.linebreakstyle === MML.LINEBREAKSTYLE.AFTER) {W += w; w = 0}
-      if (W - info.shift === 0) {return false} // don't break at zero width (FIXME?)
+      if (W - info.shift === 0 && values.linebreak !== MML.LINEBREAK.NEWLINE)
+        {return false} // don't break at zero width (FIXME?)
       var offset = HTMLCSS.linebreakWidth - W;
       // Adjust offest for explicit first-line indent and align
       if (state.n === 0 && (values.indentshiftfirst !== state.VALUES.indentshiftfirst ||
@@ -581,7 +687,7 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
       //    use it to modify the default penalty
       //
       var linebreak = PENALTY[values.linebreak||MML.LINEBREAK.AUTO];
-      if (!(linebreak instanceof Array)) {
+      if (!MathJax.Object.isArray(linebreak)) {
         //  for breaks past the width, don't modify penalty
         if (offset >= 0) {penalty = linebreak * info.nest}
       } else {penalty = Math.max(1,penalty + linebreak[0] * info.nest)}
@@ -591,7 +697,7 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
       //
       if (penalty >= info.penalty) {return false}
       info.penalty = penalty; info.values = values; info.W = W; info.w = w;
-      values.lineleading = HTMLCSS.length2em(values.lineleading,state.VALUES.lineleading);
+      values.lineleading = HTMLCSS.length2em(values.lineleading,1,state.VALUES.lineleading);
       values.id = this.spanID;
       return true;
     }
@@ -628,9 +734,10 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
       //    use it to modify the default penalty
       //
       var linebreak = PENALTY[linebreakValue];
-      if (linebreakValue === MML.LINEBREAK.AUTO && w >= PENALTY.spacelimit)
+      if (linebreakValue === MML.LINEBREAK.AUTO && w >= PENALTY.spacelimit &&
+          !this.mathbackground && !this.background)
         {linebreak = [(w+PENALTY.spaceoffset)*PENALTY.spacefactor]}
-      if (!(linebreak instanceof Array)) {
+      if (!MathJax.Object.isArray(linebreak)) {
         //  for breaks past the width, don't modify penalty
         if (offset >= 0) {penalty = linebreak * info.nest}
       } else {penalty = Math.max(1,penalty + linebreak[0] * info.nest)}

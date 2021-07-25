@@ -1,23 +1,21 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Stochastic Optimization Method for Analytic Continuation &mdash; TRIQS Stochastic Optimization Method  documentation</title>
-    
+    <title>Stochastic Optimization Method for Analytic Continuation &#8212; TRIQS Stochastic Optimization Method  documentation</title>
     <link rel="stylesheet" href="_static/triqs.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
         VERSION:     '',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
@@ -25,7 +23,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="/som/mathjax/MathJax.js?config=default"></script>
     <link rel="author" title="About these documents" href="about.html" />
-    <link rel="top" title="TRIQS Stochastic Optimization Method  documentation" href="#" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Installation" href="install.html" />
     <link rel="prev" title="Table of contents" href="contents.html" />
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
@@ -63,7 +62,7 @@
   </div>
 </div>
 
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -82,22 +81,19 @@
  
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper"><p>
 <a href="https://www.uni-hamburg.de/en.html"><img style="width: 240px; margin: 10px 5px 0 5px" src='_static/uhh-logo-web.gif' alt="Universität Hamburg"/> </a>
 <a href="http://www.sfb668.de/"><img style="width: 240px; margin: 10px 5px 0 5px" src='_static/sfb668.jpg' alt="Sonderforschungsbereiche 668"/> </a>
 </p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -106,13 +102,13 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="stochastic-optimization-method-for-analytic-continuation">
 <span id="welcome"></span><h1>Stochastic Optimization Method for Analytic Continuation<a class="headerlink" href="#stochastic-optimization-method-for-analytic-continuation" title="Permalink to this headline">¶</a></h1>
-<p>The <a class="reference external" href="https://triqs.github.io/triqs/1.4/index.html#welcome" title="(in TRIQS v1.4)"><em class="xref std std-ref">TRIQS-based</em></a> Stochastic Optimization Method for Analytic Continuation allows to solve
+<p>The <a class="reference external" href="https://triqs.github.io/triqs/1.4/index.html#welcome" title="(in TRIQS v1.4)"><span class="xref std std-ref">TRIQS-based</span></a> Stochastic Optimization Method for Analytic Continuation allows to solve
 a family of Fredholm integral equations of the first kind. Numerical solution of such equations is
-required to reconstruct the spectral representation of physical observables (Green&#8217;s functions,
+required to reconstruct the spectral representation of physical observables (Green’s functions,
 dynamical susceptibilities) from the noisy results of Quantum Monte Carlo simulations.</p>
 <p>The integral equations have the following general form,</p>
 <div class="math">
@@ -122,7 +118,7 @@ K(m,\epsilon) A(\epsilon) d\epsilon = G(m),\]</div>
 <span class="math">\(A(\epsilon)\)</span> is a spectral function to be found. Meaning of the index <span class="math">\(m\)</span>,
 limits of the integral, and the form of the kernel <span class="math">\(K(m,\epsilon)\)</span> depend on the problem at hand.
 <span class="math">\(A(\epsilon)\)</span> is assumed to be non-negative and normalized to a known constant.
-A full list of supported observables with respective integral kernels is given <a class="reference internal" href="kernels.html#kernels"><em>here</em></a>.</p>
+A full list of supported observables with respective integral kernels is given <a class="reference internal" href="kernels.html#kernels"><span class="std std-ref">here</span></a>.</p>
 <p>The whole family of equations shares a common property of being <em>ill-posed problems</em>;
 tiny variations of the right hand part may result in huge changes of the solution at high energies.</p>
 <p>The Stochastic Optimization Method uses Markov chain sampling to minimize an objective function</p>
@@ -132,7 +128,7 @@ tiny variations of the right hand part may result in huge changes of the solutio
     K(m,\epsilon) A(\epsilon) d\epsilon - G(m)
 \right|.\]</div>
 <p>One can use a weight factor <span class="math">\(S(m)\)</span> to stress importance of some data points <span class="math">\(G(m)\)</span>.</p>
-<p>An important feature of the algorithm is a &#8220;continuous-energy&#8221; representation of the solutions.
+<p>An important feature of the algorithm is a “continuous-energy” representation of the solutions.
 Function <span class="math">\(A(\epsilon)\)</span> is parametrized as a sum of rectangles with certain positions, widths and
 heights.</p>
 <p><em>Despite a number of optimizations, this code is considerably more CPU-intensive than algorithms based
@@ -147,7 +143,7 @@ of the spectrum.</em></p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -166,8 +162,8 @@ of the spectrum.</em></p>
  
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2016-2020, Igor Krivenko.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016-2020, Igor Krivenko.
     </div>
   </body>
 </html>

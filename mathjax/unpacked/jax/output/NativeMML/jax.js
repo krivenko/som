@@ -10,7 +10,7 @@
  *  
  *  ---------------------------------------------------------------------
  *  
- *  Copyright (c) 2010-2012 The MathJax Consortium
+ *  Copyright (c) 2010-2018 The MathJax Consortium
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -101,24 +101,28 @@
           "white-space":     "nowrap",
           "float":           "none",
           "direction":       "ltr",
+          "max-width": "none", "max-height": "none",
+          "min-width": 0, "min-height": 0,
           border: 0, padding: 0, margin: 0
         },
         
         "span.MathJax_MathML": {
-          display: "inline"
+          display: "inline!important"
         },
         
         "div.MathJax_MathML": {
-          display: "block"
+          display: "block!important"
         },
         
         ".MathJax_mmlExBox": {
-          display:"block", overflow:"hidden",
+          display:"block!important", overflow:"hidden",
           height:"1px", width:"60ex",
+          "min-height": 0, "max-height":"none",
           padding:0, border: 0, margin: 0
         }
       }
     },
+    handlesVariants: false, // true if native support for mathvariants
     settings: HUB.config.menuSettings,
     ex: 1, scale: 1,  // filled in later
     adjustWidths: [], // array of elements to have their widths adjusted
@@ -152,7 +156,7 @@
       this.Mouseout    = HOVER.Mouseout;
       this.Mousemove   = HOVER.Mousemove;
 
-      if (!isMSIE) {
+      if (!HUB.Browser.hasMathPlayer) {
         // Used in preTranslate to get scaling factors
         this.EmExSpan = HTML.Element("span",
           {style:{position:"absolute","font-size-adjust":"none"}},
@@ -169,10 +173,11 @@
     },
     //
     //  Set up MathPlayer for IE on the first time through.
+    //  Get the ex and em sizes.
     //
     InitializeMML: function () {
       this.initialized = true;
-      if (isMSIE) {
+      if (HUB.Browser.hasMathPlayer) {
         try {
           //
           //  Insert data needed to use MathPlayer for MathML output
@@ -192,17 +197,19 @@
           //
           //  If that fails, give an alert about security settings
           //
-          alert(MathJax.Localization._(["MathML", "MathPlayer"],
-                "MathJax was not able to set up MathPlayer.\n\n"+
-                "If MathPlayer is not installed, you need to install it first.\n"+
-                "Otherwise, your security settings may be preventing ActiveX     \n"+
-                "controls from running.  Use the Internet Options item under\n"+
-                "the Tools menu and select the Security tab, then press the\n"+
-                "Custom Level button. Check that the settings for\n"+
-                "'Run ActiveX Controls', and 'Binary and script behaviors'\n"+
-                "are enabled.\n\n"+
-                "Currently you will see error messages rather than\n"+
-                "typeset mathematics."));
+          if (!this.config.noMathPlayerWarning) {
+	    alert(MathJax.Localization._(["MathML", "MathPlayer"],
+	          "MathJax was not able to set up MathPlayer.\n\n"+
+	          "If MathPlayer is not installed, you need to install it first.\n"+
+	          "Otherwise, your security settings may be preventing ActiveX     \n"+
+	          "controls from running.  Use the Internet Options item under\n"+
+	          "the Tools menu and select the Security tab, then press the\n"+
+	          "Custom Level button. Check that the settings for\n"+
+	          "'Run ActiveX Controls', and 'Binary and script behaviors'\n"+
+	          "are enabled.\n\n"+
+	          "Currently you will see error messages rather than\n"+
+	          "typeset mathematics."));
+          }
         }
       } else {
         //
@@ -286,15 +293,15 @@
       //  Get the jax and the container and set the size
       //
       var jax = script.MathJax.elementJax, math = jax.root;
-      var span = document.getElementById(jax.inputID+"-Frame"),
-	  container = span.firstChild, mspan = container.firstChild;
+      var span = document.getElementById(jax.inputID+"-Frame"); if (!span) return;
+      var container = span.firstChild, mspan = container.firstChild;
       this.ex = jax.NativeMML.ex || this.defaultEx;
       this.scale = jax.NativeMML.scale || 1;
       if (this.scale !== 1) {span.style.fontSize = jax.NativeMML.fontSize}
       //
       //  Convert to MathML (if restarted, remove any partial math)
       //
-      try {math.toNativeMML(mspan)} catch (err) {
+      try {math.toNativeMML(mspan,jax)} catch (err) {
         if (err.restart) {while (mspan.firstChild) {mspan.removeChild(mspan.firstChild)}}
         throw err;
       }
@@ -319,6 +326,9 @@
         container.onmousedown   = EVENT.Mousedown;
         container.onclick       = EVENT.Click;
         container.ondblclick    = EVENT.DblClick;
+        // Added for keyboard accessible menu.
+        container.onkeydown = EVENT.Keydown;
+        container.tabIndex = HUB.getTabOrder(jax);
 	if (HUB.Browser.noContextMenu) {
 	  container.ontouchstart = TOUCH.start;
 	  container.ontouchend   = TOUCH.end;
@@ -338,7 +348,7 @@
     },
     
     //
-    //  Remove MathML preceeding the script
+    //  Remove MathML preceding the script
     //
     Remove: function (jax) {
       var span = jax.SourceElement(); if (!span) return;
@@ -350,6 +360,24 @@
     //
     MMLnamespace: "http://www.w3.org/1998/Math/MathML",
 
+    isFullWidth: function (node) {
+      if (!node) return;
+      var width = node.getAttribute("width") ||
+                  (String(node.getAttribute("style")).match(/(?:^| )width: *([^; ]*)/)||[])[1];
+      if (width) return !!width.match(/%/);
+      if (node.nodeName.match(/^(semantics|math|mstyle)$/)) {
+        width = this.isFullWidth(node.firstChild);
+      } else if (node.nodeName.toLowerCase() === "mrow") {
+        for (var i = 0, m = node.childNodes.length; i < m && !width; i++)
+          width = this.isFullWidth(node.childNodes[i]);
+      }
+      if (width) {
+        var style = "width:100%; "+(node.getAttribute("style")||"");
+        node.setAttribute("style",style.replace(/ +$/,""));
+      }
+      return width;
+    },
+    
     //
     //  For MSIE, we must overlay the MathPlayer object to trap the events
     //  (since they can't be cancelled when the events are on the <math> tag
@@ -427,15 +455,18 @@
     Zoom: function (jax,span,math,Mw,Mh) {
       jax.root.toNativeMML(span);
       if (this.msieIE8HeightBug) {span.style.position = "absolute"}
+      if (nMML.widthBug) {span.style.width = span.parentNode.style.width = ""}
+      if (span.parentNode.style.width.match(/%$/)) 
+        {span.parentNode.style.minWidth = Math.ceil(3*Mh/4)+"px"} // for full-width tables
       var mW = math.offsetWidth  || math.scrollWidth,
           mH = math.offsetHeight || math.scrollHeight;
       var zW = span.offsetWidth, zH = span.offsetHeight;
-      if (nMML.widthBug) {
+      if (nMML.widthBug || span.style.width.match(/%/)) {
         //
         //  FF doesn't get width of <math> right, so get it from <mrow>
         //
         var W = span.firstChild.firstChild.scrollWidth;
-        if (W > zW) {zW = W; span.style.width = zW + "px"}
+        if (W > zW) {zW = W; span.parentNode.style.width = span.style.minWidth = zW + "px";}
       }
       if (this.msieIE8HeightBug) {span.style.position = ""}
       return {Y:-EVENT.getBBox(span.parentNode).h, mW:mW, mH:mH, zW:zW, zH:zH}
@@ -482,17 +513,21 @@
       //    and set those in the tag's attribute list
       //
       NativeMMLattributes: function (tag) {
-	var defaults = this.defaults;
-	var copy = (this.attrNames||MML.copyAttributeNames), skip = MML.skipAttributes;
+	var defaults = (this.type === "mstyle" ? MML.math.prototype.defaults : this.defaults);
+        var names = (this.attrNames||MML.copyAttributeNames),
+            skip = MML.skipAttributes, copy = MML.copyAttributes;
         if (!this.attrNames) {
-          if (this.type === "mstyle") {defaults = MML.math.prototype.defaults}
-          for (var id in defaults) {if (!skip[id] && defaults.hasOwnProperty(id)) {
-	    if (this[id] != null) {tag.setAttribute(id,this.NativeMMLattribute(this[id]))}
+          for (var id in defaults) {if (!skip[id] && !copy[id] && defaults.hasOwnProperty(id)) {
+	    if (this[id] != null && this[id] !== defaults[id]) {
+              if (this.Get(id,null,1) !== this[id]) 
+                tag.setAttribute(id,this.NativeMMLattribute(this[id]));
+            }
           }}
         }
-	for (var i = 0, m = copy.length; i < m; i++) {
-          var value = (this.attr||{})[copy[i]]; if (value == null) {value = this[copy[i]]}
-	  if (value != null) {tag.setAttribute(copy[i],this.NativeMMLattribute(value))}
+	for (var i = 0, m = names.length; i < m; i++) {
+          if (copy[names[i]] === 1 && !defaults.hasOwnProperty(names[i])) continue;
+          var value = (this.attr||{})[names[i]]; if (value == null) {value = this[names[i]]}
+          if (value != null) {tag.setAttribute(names[i],this.NativeMMLattribute(value))}
 	}
         this.NativeMMLclass(tag);
       },
@@ -500,7 +535,10 @@
         var CLASS = []; if (this["class"]) {CLASS.push(this["class"])}
         if (this.isa(MML.TeXAtom)) {
           var TEXCLASS = ["ORD","OP","BIN","REL","OPEN","CLOSE","PUNCT","INNER","VCENTER"][this.texClass];
-          if (TEXCLASS) {CLASS.push("MJX-TeXAtom-"+TEXCLASS)}
+          if (TEXCLASS) {
+            CLASS.push("MJX-TeXAtom-"+TEXCLASS)
+            if (TEXCLASS === "OP" && !this.movablelimits) CLASS.push("MJX-fixedlimits");
+          }
         }
         if (this.mathvariant && this.NativeMMLvariants[this.mathvariant])
           {CLASS.push("MJX"+this.mathvariant)}
@@ -511,7 +549,7 @@
 	value = String(value);
 	if (nMML.NAMEDSPACE[value]) {value = nMML.NAMEDSPACE[value]} // MP doesn't do negative spaces
 	else if (value.match(/^\s*(([-+])?(\d+(\.\d*)?|\.\d+))\s*mu\s*$/))
-          {value = RegExp.$2+((1/18)*RegExp.$3).toFixed(3).replace(/\.?0+$/,"")+"em"} // FIXME:  should take scriptlevel into account
+          {value = (RegExp.$2||"")+((1/18)*RegExp.$3).toFixed(3).replace(/\.?0+$/,"")+"em"} // FIXME:  should take scriptlevel into account
 	else if (this.NativeMMLvariants[value]) {value = this.NativeMMLvariants[value]}
 	return value;
       },
@@ -526,8 +564,9 @@
       //  Create a MathML element
       //
       NativeMMLelement: function (type) {
-        var math = (isMSIE ? document.createElement("m:"+type) :
-	                     document.createElementNS(nMML.MMLnamespace,type));
+        var math = ( HUB.Browser.mpNamespace ? document.createElement("m:"+type) :
+                   (document.createElementNS ? document.createElementNS(nMML.MMLnamespace,type) :
+                                               document.createElement(type)));
         math.isMathJax = true;
         return math;
       }
@@ -538,7 +577,7 @@
       //  Make inferred rows not include an mrow tag
       //
       toNativeMML: function (parent) {
-        var i, m; 
+        var i, m;
 	if (this.inferred  && this.parent.inferRow) {
 	  for (i = 0, m = this.data.length; i < m; i++) {
 	    if (this.data[i]) {this.data[i].toNativeMML(parent)}
@@ -596,12 +635,19 @@
     MML.munderover.Augment({
       //
       //  Use proper version of munder, mover, or munderover, depending on
-      //  which items are present
+      //  which items are present.  Handle movablelimits on TeXAtom base.
       //
       toNativeMML: function (parent) {
 	var type = this.type;
-	if (this.data[this.under] == null) {type = "mover"}
-	if (this.data[this.over] == null)  {type = "munder"}
+        var base = this.data[this.base];
+        if (base && base.isa(MML.TeXAtom) && base.movablelimits && !base.Get("displaystyle")) {
+          type = "msubsup";
+          if (this.data[this.under] == null) {type = "msup"}
+          if (this.data[this.over] == null)  {type = "msub"}
+        } else {
+          if (this.data[this.under] == null) {type = "mover"}
+          if (this.data[this.over] == null)  {type = "munder"}
+        }
 	var tag = this.NativeMMLelement(type);
 	this.NativeMMLattributes(tag);
 	if (this.data[0]) {delete this.data[0].inferred}
@@ -846,62 +892,88 @@
           }
         }
       });
+      
+      MML.mn.Augment({
+        NativeMMLremapMinus: function (text) {return text.replace(/^-/,"\u2212")},
+        toNativeMML: function (parent) {
+          var tag = this.NativeMMLelement(this.type);
+          this.NativeMMLattributes(tag);
+          var remap = this.NativeMMLremapMinus;
+          for (var i = 0, m = this.data.length; i < m; i++) {
+            if (this.data[i]) {
+              this.data[i].toNativeMML(tag,remap);
+              remap = null;
+            }
+          }
+          parent.appendChild(tag);
+        }
+      });
 
       var fontDir = AJAX.fileURL(MathJax.OutputJax.fontDir+"/HTML-CSS/TeX/otf");
 
       /*
-       *  Add fix for mathvariant issues in FF
+       *  Add fix for mathvariant issues
        */
       nMML.Augment({
-	config: {
-	  styles: {
-	    '[mathvariant="double-struck"]':          {"font-family":"MathJax_AMS, MathJax_AMS-WEB"},
-	    '[mathvariant="script"]':                 {"font-family":"MathJax_Script, MathJax_Script-WEB"},
-	    '[mathvariant="fraktur"]':                {"font-family":"MathJax_Fraktur, MathJax_Fraktur-WEB"},
-	    '[mathvariant="bold-script"]':            {"font-family":"MathJax_Script, MathJax_Caligraphic-WEB", "font-weight":"bold"},
-	    '[mathvariant="bold-fraktur"]':           {"font-family":"MathJax_Fraktur, MathJax_Fraktur-WEB", "font-weight":"bold"},
-	    '[mathvariant="monospace"]':              {"font-family":"monospace"},
-	    '[mathvariant="sans-serif"]':             {"font-family":"sans-serif"},
-	    '[mathvariant="bold-sans-serif"]':        {"font-family":"sans-serif", "font-weight":"bold"},
-	    '[mathvariant="sans-serif-italic"]':      {"font-family":"sans-serif", "font-style":"italic"},
-	    '[mathvariant="sans-serif-bold-italic"]': {"font-family":"sans-serif", "font-style":"italic", "font-weight":"bold"},
-	    '[class="MJX-tex-oldstyle"]':             {"font-family":"MathJax_Caligraphic, MathJax_Caligraphic-WEB"},
-	    '[class="MJX-tex-oldstyle-bold"]':        {"font-family":"MathJax_Caligraphic, MathJax_Caligraphic-WEB", "font-weight":"bold"},
-	    '[class="MJX-tex-caligraphic"]':          {"font-family":"MathJax_Caligraphic, MathJax_Caligraphic-WEB"},
-	    '[class="MJX-tex-caligraphic-bold"]':     {"font-family":"MathJax_Caligraphic, MathJax_Caligraphic-WEB", "font-weight":"bold"},
+        config: {
+          styles: {
+            '[class="MJX-tex-oldstyle"]':             {"font-family":"MathJax_Caligraphic, MathJax_Caligraphic-WEB"},
+            '[class="MJX-tex-oldstyle-bold"]':        {"font-family":"MathJax_Caligraphic, MathJax_Caligraphic-WEB", "font-weight":"bold"},
+            '[class="MJX-tex-caligraphic"]':          {"font-family":"MathJax_Caligraphic, MathJax_Caligraphic-WEB"},
+            '[class="MJX-tex-caligraphic-bold"]':     {"font-family":"MathJax_Caligraphic, MathJax_Caligraphic-WEB", "font-weight":"bold"},
 
-	    '@font-face /*1*/': {
-	      "font-family": "MathJax_AMS-WEB",
-	      "src": "url('"+fontDir+"/MathJax_AMS-Regular.otf')"
-	    },
-	    '@font-face /*2*/': {
-	      "font-family": "MathJax_Script-WEB",
-	      "src": "url('"+fontDir+"/MathJax_Script-Regular.otf')"
-	    },
-	    '@font-face /*3*/': {
-	      "font-family": "MathJax_Fraktur-WEB",
-	      "src": "url('"+fontDir+"/MathJax_Fraktur-Regular.otf')"
-	    },
-	    '@font-face /*4*/': {
-	      "font-family": "MathJax_Caligraphic-WEB",
-	      "src": "url('"+fontDir+"/MathJax_Caligraphic-Regular.otf')"
-	    },
-	    '@font-face /*5*/': {
-	      "font-family": "MathJax_Fraktur-WEB", "font-weight":"bold",
-	      "src": "url('"+fontDir+"/MathJax_Fraktur-Bold.otf')"
-	    },
-	    '@font-face /*6*/': {
-	      "font-family": "MathJax_Caligraphic-WEB", "font-weight":"bold",
-	      "src": "url('"+fontDir+"/MathJax_Caligraphic-Bold.otf')"
-	    }
-	  }
-	}
+            '@font-face /*1*/': {
+              "font-family": "MathJax_Caligraphic-WEB",
+              "src": "url('"+fontDir+"/MathJax_Caligraphic-Regular.otf')"
+            },
+            '@font-face /*2*/': {
+              "font-family": "MathJax_Caligraphic-WEB", "font-weight":"bold",
+              "src": "url('"+fontDir+"/MathJax_Caligraphic-Bold.otf')"
+            }
+          }
+        }
       });
+      if (!this.handlesVariants) {
+        nMML.Augment({
+          config: {
+            styles: {
+              '[mathvariant="double-struck"]':          {"font-family":"MathJax_AMS, MathJax_AMS-WEB"},
+              '[mathvariant="script"]':                 {"font-family":"MathJax_Script, MathJax_Script-WEB"},
+              '[mathvariant="fraktur"]':                {"font-family":"MathJax_Fraktur, MathJax_Fraktur-WEB"},
+              '[mathvariant="bold-script"]':            {"font-family":"MathJax_Script, MathJax_Caligraphic-WEB", "font-weight":"bold"},
+              '[mathvariant="bold-fraktur"]':           {"font-family":"MathJax_Fraktur, MathJax_Fraktur-WEB", "font-weight":"bold"},
+              '[mathvariant="monospace"]':              {"font-family":"monospace"},
+              '[mathvariant="sans-serif"]':             {"font-family":"sans-serif"},
+              '[mathvariant="bold-sans-serif"]':        {"font-family":"sans-serif", "font-weight":"bold"},
+              '[mathvariant="sans-serif-italic"]':      {"font-family":"sans-serif", "font-style":"italic"},
+              '[mathvariant="sans-serif-bold-italic"]': {"font-family":"sans-serif", "font-style":"italic", "font-weight":"bold"},
+
+              '@font-face /*3*/': {
+                "font-family": "MathJax_AMS-WEB",
+                "src": "url('"+fontDir+"/MathJax_AMS-Regular.otf')"
+              },
+              '@font-face /*4*/': {
+                "font-family": "MathJax_Script-WEB",
+                "src": "url('"+fontDir+"/MathJax_Script-Regular.otf')"
+              },
+              '@font-face /*5*/': {
+                "font-family": "MathJax_Fraktur-WEB",
+                "src": "url('"+fontDir+"/MathJax_Fraktur-Regular.otf')"
+              },
+              '@font-face /*6*/': {
+                "font-family": "MathJax_Fraktur-WEB", "font-weight":"bold",
+                "src": "url('"+fontDir+"/MathJax_Fraktur-Bold.otf')"
+              }
+            }
+          }
+        });
+      }
     }
     
     MML.math.Augment({
-      toNativeMML: function (parent) {
-        var tag = this.NativeMMLelement(this.type), math = tag, jax;
+      toNativeMML: function (parent,jax) {
+        var tag = this.NativeMMLelement(this.type), math = tag;
+        var annotate = (jax ? MathJax.InputJax[jax.inputJax].annotationEncoding : null);
         var i, m;
         nMML.adjustWidths = [];
         //
@@ -915,6 +987,17 @@
         //
         if (nMML.widthBug) {tag = tag.appendChild(this.NativeMMLelement("mrow"))}
         //
+        //  Addannotation if the input jax provides an annotation encoding
+        //
+        if (annotate) {
+          tag = tag.appendChild(this.NativeMMLelement("semantics"))
+          tag.appendChild(this.NativeMMLelement("mrow"));
+          var annotation = tag.appendChild(this.NativeMMLelement("annotation"));
+          annotation.appendChild(document.createTextNode(jax.originalText));
+          annotation.setAttribute("encoding",annotate);
+          tag = tag.firstChild; // mrow
+        }
+        //
         //  Add the children
         //
         for (i = 0, m = this.data.length; i < m; i++) {
@@ -923,15 +1006,15 @@
         }
         //
         //  Look for a top-level mtable and if it has labels
-        //    Make sure the containers have 100% width, when needed
+        //    Make sure the containers have 100% width, when needed.
         //    If the label is on the same side as alignment,
         //      override the margin set by the stylesheet.
         //
-        var mtable = ((this.data[0]||[]).data[0]||{});
+        var mtable = ((this.data[0]||{data:[]}).data[0]||{});
         if (mtable.nMMLhasLabels) {
           if (mtable.nMMLforceWidth || !mtable.nMMLlaMatch) {
-            tag.setAttribute("style","width:100%")
-            parent.style.width = parent.parentNode.style.width="100%";
+            tag.setAttribute("style","width:100%")  // mrow node
+            if (annotate) tag.parentNode.setAttribute("style","width:100%"); // semantics node
           };
           if (mtable.nMMLlaMatch) {
             if (parent.parentNode.parentNode.nodeName.toLowerCase() === "div") {
@@ -940,6 +1023,11 @@
             }
           }
         }
+        //
+        //  Check if container must have width set to 100%
+        //
+        var fullWidth = nMML.isFullWidth(math);
+        if (fullWidth) {parent.style.width = parent.parentNode.style.width = "100%"}
         //
         //  Add the math to the page
         //
@@ -950,8 +1038,7 @@
         //  parent element to match.  Even if we set the <math> width properly,
         //  it doesn't seem to propagate up to the <span> correctly.
         //
-        if (nMML.widthBug &&
-            !(mtable.nMMLhasLabels && (mtable.nMMLforceWidth || !mtable.nMMLlaMatch))) {
+        if (nMML.widthBug &&!fullWidth) {
           //
           //  Convert size to ex's so that it scales properly if the print media
           //    has a different font size.
@@ -960,7 +1047,6 @@
           //
           //  Save size for later when we check if Web fonts have arrived
           //
-          jax = HUB.getJaxFor(parent);
           if (jax) {jax.NativeMML.scrollWidth = math.firstChild.scrollWidth}
         }
         if (nMML.adjustWidths.length) {
@@ -974,8 +1060,9 @@
             tag = nMML.adjustWidths[i];
             var style = tag.getAttribute("style") || "";
             if (!style.match(/(^|;)\s*min-width:/)) {
-              mtd.push(tag.scrollWidth);
-              var width = (tag.scrollWidth/nMML.ex).toFixed(3)+"ex";
+              var width = tag.firstChild.scrollWidth;
+              mtd.push(width);
+              width = (width/nMML.ex).toFixed(3)+"ex";
               style = style.replace(/;?\s*$/,"; ");
               tag.setAttribute("style",style+"min-width:"+width);
             }
@@ -1110,8 +1197,10 @@
       //
       //  Add a text node
       //
-      toNativeMML: function (parent) {
-	parent.appendChild(document.createTextNode(this.toString()));
+      toNativeMML: function (parent,remap) {
+        var text = this.toString();
+        if (remap) text = remap(text);
+	parent.appendChild(document.createTextNode(text));
       }
     });
 
@@ -1193,7 +1282,7 @@
         // Some browsers do not implement the mmultiscripts element.
         // Try to emulate the support using basic script elements.
         //
-        if (!nMML.mmultiscriptsBug || this.data.length === 0 ) {
+        if (!nMML.mmultiscriptsBug || this.data.length === 0) {
           this.SUPER(arguments).toNativeMML.call(this,parent);
           return;
         }
@@ -1211,7 +1300,7 @@
         //
         if (this.data[0]) {this.data[0].toNativeMML(tag)}
         else {tag.appendChild(this.NativeMMLelement("mrow"))}
-        base = tag.removeChild(tag.lastChild);
+        var base = tag.removeChild(tag.lastChild);
 
         //
         // Process the postscript pairs
@@ -1294,7 +1383,6 @@
       nMML.msieIE8HeightBug = (mode === 8);
     },
     Opera: function (browser) {
-      nMML.operaPositionBug = true;
       nMML.stretchyMoBug = true;
       nMML.tableLabelBug = true;
       nMML.mfencedBug = true;
@@ -1302,18 +1390,19 @@
       nMML.mmultiscriptsBug = true;
     },
     Firefox: function (browser) {
+      var is29 = browser.versionAtLeast("29.0");
       nMML.ffTableWidthBug = !browser.versionAtLeast("13.0"); // <mtable width="xx"> not implemented
-      nMML.forceReflow = true;   // <mtable> with alignments set don't display properly without a reflow
-      nMML.widthBug = true;      // <math> elements don't always get the correct width
+      nMML.forceReflow = !is29;    // <mtable> with alignments set don't display properly without a reflow
+      nMML.widthBug = !is29;       // <math> elements don't always get the correct width
+      nMML.mtdWidthBug = true;     // <mtd> widths not properly determined
+      nMML.handlesVariants = is29; // FF >=29 handles all math variants
 
       // In Firefox < 20, the intrinsic width of <mspace> is not computed
       // correctly and thus the element is displayed incorrectly in <mtable>.
       nMML.spaceWidthBug = !browser.versionAtLeast("20.0");
 
-      nMML.mtdWidthBug = true;     // <mtd> widths not properly determined
-
-      nMML.tableSpacingBug = true; // mtable@rowspacing/mtable@columnspacing not
-                                   // supported.
+      // mtable@rowspacing/mtable@columnspacing not supported.
+      nMML.tableSpacingBug = !browser.versionAtLeast("33.0");
       nMML.tableLabelBug = true;   // mlabeledtr is not implemented.
       nMML.mfencedBug = true;      // mfenced not displayed correctly
     },

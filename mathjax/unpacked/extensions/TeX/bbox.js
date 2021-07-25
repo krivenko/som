@@ -30,7 +30,7 @@
  *
  *  ---------------------------------------------------------------------
  *  
- *  Copyright (c) 2011-2013 The MathJax Consortium
+ *  Copyright (c) 2011-2018 The MathJax Consortium
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@
  */
 
 MathJax.Extension["TeX/bbox"] = {
-  version: "2.3"
+  version: "2.7.3"
 };
 
 MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
@@ -61,14 +61,14 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
       var bbox = this.GetBrackets(name,""),
           math = this.ParseArg(name);
       var parts = bbox.split(/,/), def, background, style;
-      for (var i in parts) {
+      for (var i = 0, m = parts.length; i < m; i++) {
         var part = parts[i].replace(/^\s+/,'').replace(/\s+$/,'');
         var match = part.match(/^(\.\d+|\d+(\.\d*)?)(pt|em|ex|mu|px|in|cm|mm)$/);
         if (match) {
           if (def)
             {TEX.Error(["MultipleBBoxProperty","%1 specified twice in %2","Padding",name])}
-          var pad = match[1]+match[3];
-          def = {height:"+"+pad, depth:"+"+pad, lspace:pad, width:"+"+(2*match[1])+match[3]};
+          var pad = this.BBoxPadding(match[1]+match[3]);
+          if (pad) def = {height:"+"+pad, depth:"+"+pad, lspace:pad, width:"+"+(2*match[1])+match[3]};
         } else if (part.match(/^([a-z0-9]+|\#[0-9a-f]{6}|\#[0-9a-f]{3})$/i)) {
           if (background)
             {TEX.Error(["MultipleBBoxProperty","%1 specified twice in %2","Background",name])}
@@ -91,7 +91,8 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
       }
       this.Push(math);
     },
-    BBoxStyle: function (styles) {return styles}
+    BBoxStyle: function (styles) {return styles},
+    BBoxPadding: function (pad) {return pad}
   });
 
   MathJax.Hub.Startup.signal.Post("TeX bbox Ready");

@@ -11,7 +11,7 @@
  *
  *  ---------------------------------------------------------------------
  *  
- *  Copyright (c) 2010-2013 The MathJax Consortium
+ *  Copyright (c) 2010-2018 The MathJax Consortium
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@
  */
 
 MathJax.Extension.mml2jax = {
-  version: "2.3",
+  version: "2.7.3",
   config: {
     preview: "mathml"       // Use the <math> element as the
                             //   preview.  Set to "none" for no preview,
@@ -53,12 +53,11 @@ MathJax.Extension.mml2jax = {
     //
     //  Handle all math tags with no namespaces
     //
-    mathArray.push.apply(mathArray,element.getElementsByTagName("math"));
+    this.PushMathElements(mathArray,element,"math");
     //
     //  Handle math with namespaces in XHTML
     //
-    if (element.getElementsByTagNameNS)
-      {mathArray.push.apply(mathArray,element.getElementsByTagNameNS(this.MMLnamespace,"math"))}
+    this.PushMathElements(mathArray,element,"math",this.MMLnamespace);
     //
     //  Handle math with namespaces in HTML
     //
@@ -71,7 +70,7 @@ MathJax.Extension.mml2jax = {
         for (i = 0, m = document.namespaces.length; i < m; i++) {
           var ns = document.namespaces[i];
           if (ns.urn === this.MMLnamespace)
-            {mathArray.push.apply(mathArray,element.getElementsByTagName(ns.name+":math"))}
+            {this.PushMathElements(mathArray,element,ns.name+":math")}
         }
       } catch (err) {}
     } else {
@@ -83,11 +82,26 @@ MathJax.Extension.mml2jax = {
         for (i = 0, m = html.attributes.length; i < m; i++) {
           var attr = html.attributes[i];
           if (attr.nodeName.substr(0,6) === "xmlns:" && attr.nodeValue === this.MMLnamespace)
-            {mathArray.push.apply(mathArray,element.getElementsByTagName(attr.nodeName.substr(6)+":math"))}
+            {this.PushMathElements(mathArray,element,attr.nodeName.substr(6)+":math")}
         }
       }
     }
     this.ProcessMathArray(mathArray);
+  },
+  
+  PushMathElements: function (array,element,name,namespace) {
+    var math, preview = MathJax.Hub.config.preRemoveClass;
+    if (namespace) {
+      if (!element.getElementsByTagNameNS) return;
+      math = element.getElementsByTagNameNS(namespace,name);
+    } else {
+      math = element.getElementsByTagName(name);
+    }
+    for (var i = 0, m = math.length; i < m; i++) {
+      var parent = math[i].parentNode;
+      if (parent && parent.className !== preview &&
+         !parent.isMathJax && !math[i].prefix === !namespace) array.push(math[i]);
+    }
   },
   
   ProcessMathArray: function (math) {
@@ -153,7 +167,7 @@ MathJax.Extension.mml2jax = {
       html = "<"+node.nodeName.toLowerCase();
       for (i = 0, m = node.attributes.length; i < m; i++) {
         var attribute = node.attributes[i];
-        if (attribute.specified) {
+        if (attribute.specified && attribute.nodeName.substr(0,10) !== "_moz-math-") {
           // Opera 11.5 beta turns xmlns into xmlns:xmlns, so put it back (*** check after 11.5 is out ***)
           html += " "+attribute.nodeName.toLowerCase().replace(/xmlns:xmlns/,"xmlns")+"=";
           var value = attribute.nodeValue; // IE < 8 doesn't properly set style by setAttributes
@@ -189,10 +203,12 @@ MathJax.Extension.mml2jax = {
     var preview = this.config.preview;
     if (preview === "none") return;
     var isNodePreview = false;
+    var previewClass = MathJax.Hub.config.preRemoveClass;
+    if ((script.previousSibling||{}).className === previewClass) return;
     if (preview === "mathml") {
       isNodePreview = true;
       // mathml preview does not work with IE < 9, so fallback to alttext.
-      if (this.MathTagBug) {preview = "alttext"} else {preview = math.cloneNode(false)}
+      if (this.MathTagBug) {preview = "alttext"} else {preview = math.cloneNode(true)}
     }
     if (preview === "alttext" || preview === "altimg") {
       isNodePreview = true;
@@ -211,10 +227,10 @@ MathJax.Extension.mml2jax = {
     if (preview) {
       var span;
       if (isNodePreview) {
-        span = MathJax.HTML.Element("span",{className:MathJax.Hub.config.preRemoveClass});
+        span = MathJax.HTML.Element("span",{className:previewClass});
         span.appendChild(preview);
       } else {
-        span = MathJax.HTML.Element("span",{className:MathJax.Hub.config.preRemoveClass},preview);
+        span = MathJax.HTML.Element("span",{className:previewClass},preview);
       }
       script.parentNode.insertBefore(span,script);
     }
@@ -236,10 +252,12 @@ MathJax.Extension.mml2jax = {
 
 };
 
+//
 // We register the preprocessors with the following priorities:
 // - mml2jax.js: 5
 // - jsMath2jax.js: 8
 // - asciimath2jax.js, tex2jax.js: 10 (default)
 // See issues 18 and 484 and the other *2jax.js files.
+// 
 MathJax.Hub.Register.PreProcessor(["PreProcess",MathJax.Extension.mml2jax],5);
 MathJax.Ajax.loadComplete("[MathJax]/extensions/mml2jax.js");

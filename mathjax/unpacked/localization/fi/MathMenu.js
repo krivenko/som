@@ -1,11 +1,8 @@
-/* -*- Mode: Javascript; indent-tabs-mode:nil; js-indent-level: 2 -*- */
-/* vim: set ts=2 et sw=2 tw=80: */
-
 /*************************************************************
  *
  *  MathJax/localization/fi/MathMenu.js
  *
- *  Copyright (c) 2009-2013 The MathJax Consortium
+ *  Copyright (c) 2009-2018 The MathJax Consortium
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,9 +17,8 @@
  *  limitations under the License.
  *
  */
-
 MathJax.Localization.addTranslation("fi","MathMenu",{
-        version: "2.3",
+        version: "2.7.3",
         isLoaded: true,
         strings: {
           MathMLcode: "MathML-koodi",
@@ -78,7 +74,8 @@ MathJax.Localization.addTranslation("fi","MathMenu",{
           genericfonts: "k\u00E4ytt\u00E4en geneerisi\u00E4 unicode-kirjasimia",
           wofforotffonts: "woff- tai otf-kirjasimia",
           eotffonts: "eot-kirjasimia",
-          svgfonts: "svg-kirjasimia"
+          svgfonts: "svg-kirjasimia",
+          Close: "Sulje"
         }
 });
 

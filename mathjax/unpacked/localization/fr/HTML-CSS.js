@@ -1,11 +1,8 @@
-/* -*- Mode: Javascript; indent-tabs-mode:nil; js-indent-level: 2 -*- */
-/* vim: set ts=2 et sw=2 tw=80: */
-
 /*************************************************************
  *
  *  MathJax/localization/fr/HTML-CSS.js
  *
- *  Copyright (c) 2009-2013 The MathJax Consortium
+ *  Copyright (c) 2009-2018 The MathJax Consortium
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,16 +17,15 @@
  *  limitations under the License.
  *
  */
-
 MathJax.Localization.addTranslation("fr","HTML-CSS",{
-        version: "2.3",
+        version: "2.7.3",
         isLoaded: true,
         strings: {
-          LoadWebFont: "T\u00E9l\u00E9chargement de la police Web %1",
-          CantLoadWebFont: "Impossible de t\u00E9l\u00E9charger la police Web %1",
+          LoadWebFont: "T\u00E9l\u00E9chargement de la police web %1",
+          CantLoadWebFont: "Impossible de t\u00E9l\u00E9charger la police web %1",
           FirefoxCantLoadWebFont: "Firefox ne peut pas charger les polices web depuis un h\u00F4te distant",
           CantFindFontUsing: "Impossible de trouver une police valide en utilisant %1",
-          WebFontsNotAvailable: "Polices web non disponibles -- les polices image seront utilis\u00E9es \u00E0 la place"
+          WebFontsNotAvailable: "Polices web non disponibles. Les polices image seront utilis\u00E9es \u00E0 la place"
         }
 });
 

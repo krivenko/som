@@ -1,23 +1,21 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Example: Matsubara correlator at zero temperature &mdash; TRIQS Stochastic Optimization Method  documentation</title>
-    
+    <title>Example: Matsubara correlator at zero temperature &#8212; TRIQS Stochastic Optimization Method  documentation</title>
     <link rel="stylesheet" href="../../_static/triqs.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
         VERSION:     '',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
@@ -25,8 +23,8 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="/som/mathjax/MathJax.js?config=default"></script>
     <link rel="author" title="About these documents" href="../../about.html" />
-    <link rel="top" title="TRIQS Stochastic Optimization Method  documentation" href="../../index.html" />
-    <link rel="up" title="Documentation" href="../../documentation.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Reporting issues" href="../../issues.html" />
     <link rel="prev" title="Example: Autocorrelator of a Hermitian operator" href="../bosonautocorr/example.html" />
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
@@ -62,7 +60,7 @@
   </div>
 </div>
 
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -79,10 +77,10 @@
              accesskey="P">previous</a> |</li>
     <li><a href="../../index.html">Home</a> &raquo;</li>
 
-          <li><a href="../../documentation.html" accesskey="U">Documentation</a> &raquo;</li> 
+          <li class="nav-item nav-item-1"><a href="../../documentation.html" accesskey="U">Documentation</a> &#187;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h3><a href="../../contents.html">Table Of Contents</a></h3>
   <ul>
@@ -100,22 +98,21 @@
   <h4>Next topic</h4>
   <p class="topless"><a href="../../issues.html"
                         title="next chapter">Reporting issues</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../_sources/examples/zerotemp/example.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/examples/zerotemp/example.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -124,11 +121,11 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="example-matsubara-correlator-at-zero-temperature">
 <span id="example-zerotemp"></span><h1>Example: Matsubara correlator at zero temperature<a class="headerlink" href="#example-matsubara-correlator-at-zero-temperature" title="Permalink to this headline">¶</a></h1>
-<p>Observable kind: <a class="reference internal" href="../../kernels.html#zerotemp"><em>ZeroTemp</em></a>.</p>
+<p>Observable kind: <a class="reference internal" href="../../kernels.html#zerotemp"><span class="std std-ref">ZeroTemp</span></a>.</p>
 <p>Formally speaking, the imaginary time segment <span class="math">\(\tau\in[0;\beta)\)</span>
 turns into an infinite interval as <span class="math">\(\beta\to\infty\)</span>. Similarly,
 spacing between Matsubara frequencies goes to 0 in that limit, and
@@ -142,114 +139,114 @@ since <span class="math">\((1\pm e^{-\beta\epsilon})^{-1}\)</span> vanishes for 
 <span class="math">\(\epsilon\)</span> in the zero temperature limit.</p>
 <div class="section" id="run-analytical-continuation">
 <h2>Run analytical continuation<a class="headerlink" href="#run-analytical-continuation" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python"><div class="highlight"><pre><span class="c"># Import some TRIQS modules and NumPy</span>
-<span class="kn">from</span> <span class="nn">pytriqs.gf.local</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">pytriqs.archive</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
-<span class="kn">import</span> <span class="nn">pytriqs.utility.mpi</span> <span class="kn">as</span> <span class="nn">mpi</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Import some TRIQS modules and NumPy</span>
+<span class="kn">from</span> <span class="nn">pytriqs.gf.local</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">pytriqs.archive</span> <span class="k">import</span> <span class="n">HDFArchive</span>
+<span class="kn">import</span> <span class="nn">pytriqs.utility.mpi</span> <span class="k">as</span> <span class="nn">mpi</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
 
-<span class="c"># Import main SOM class</span>
-<span class="kn">from</span> <span class="nn">pytriqs.applications.analytical_continuation.som</span> <span class="kn">import</span> <span class="n">Som</span>
+<span class="c1"># Import main SOM class</span>
+<span class="kn">from</span> <span class="nn">pytriqs.applications.analytical_continuation.som</span> <span class="k">import</span> <span class="n">Som</span>
 
-<span class="n">n_w</span> <span class="o">=</span> <span class="mi">1001</span>               <span class="c"># Number of energy slices for the solution</span>
-<span class="n">energy_window</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">10.0</span><span class="p">)</span> <span class="c"># Energy window to search the solution in</span>
-                         <span class="c"># The window must entirely lie on the positive half-axis</span>
+<span class="n">n_w</span> <span class="o">=</span> <span class="mi">1001</span>               <span class="c1"># Number of energy slices for the solution</span>
+<span class="n">energy_window</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">10.0</span><span class="p">)</span> <span class="c1"># Energy window to search the solution in</span>
+                         <span class="c1"># The window must entirely lie on the positive half-axis</span>
 
-<span class="c"># Parameters for Som.run()</span>
-<span class="n">run_params</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;energy_window&#39;</span> <span class="p">:</span> <span class="n">energy_window</span><span class="p">}</span>
-<span class="c"># Verbosity level</span>
-<span class="n">run_params</span><span class="p">[</span><span class="s">&#39;verbosity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="c"># Number of particular solutions to accumulate</span>
-<span class="n">run_params</span><span class="p">[</span><span class="s">&#39;l&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5000</span>
-<span class="c"># Number of global updates</span>
-<span class="n">run_params</span><span class="p">[</span><span class="s">&#39;f&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="c"># Number of local updates per global update</span>
-<span class="n">run_params</span><span class="p">[</span><span class="s">&#39;t&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">50</span>
-<span class="c"># Accumulate histogram of the objective function values</span>
-<span class="n">run_params</span><span class="p">[</span><span class="s">&#39;make_histograms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="c1"># Parameters for Som.run()</span>
+<span class="n">run_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;energy_window&#39;</span> <span class="p">:</span> <span class="n">energy_window</span><span class="p">}</span>
+<span class="c1"># Verbosity level</span>
+<span class="n">run_params</span><span class="p">[</span><span class="s1">&#39;verbosity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="c1"># Number of particular solutions to accumulate</span>
+<span class="n">run_params</span><span class="p">[</span><span class="s1">&#39;l&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5000</span>
+<span class="c1"># Number of global updates</span>
+<span class="n">run_params</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="c1"># Number of local updates per global update</span>
+<span class="n">run_params</span><span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="c1"># Accumulate histogram of the objective function values</span>
+<span class="n">run_params</span><span class="p">[</span><span class="s1">&#39;make_histograms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
-<span class="c"># Read g(\tau) from archive</span>
-<span class="c"># Could be g(i\omega_n) or g_l as well.</span>
-<span class="n">g_tau</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s">&#39;example.h5&#39;</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)[</span><span class="s">&#39;g_tau&#39;</span><span class="p">]</span>
+<span class="c1"># Read g(\tau) from archive</span>
+<span class="c1"># Could be g(i\omega_n) or g_l as well.</span>
+<span class="n">g_tau</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;example.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)[</span><span class="s1">&#39;g_tau&#39;</span><span class="p">]</span>
 
-<span class="c"># Set the weight function S to a constant (all points of g_iw are equally important)</span>
+<span class="c1"># Set the weight function S to a constant (all points of g_iw are equally important)</span>
 <span class="n">S</span> <span class="o">=</span> <span class="n">g_tau</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">S</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="mf">1.0</span>
 
-<span class="c"># Construct a SOM object</span>
-<span class="c"># Norm of spectral function is known to be 0.5</span>
-<span class="n">cont</span> <span class="o">=</span> <span class="n">Som</span><span class="p">(</span><span class="n">g_tau</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">kind</span> <span class="o">=</span> <span class="s">&quot;ZeroTemp&quot;</span><span class="p">,</span> <span class="n">norms</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">]))</span>
+<span class="c1"># Construct a SOM object</span>
+<span class="c1"># Norm of spectral function is known to be 0.5</span>
+<span class="n">cont</span> <span class="o">=</span> <span class="n">Som</span><span class="p">(</span><span class="n">g_tau</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">kind</span> <span class="o">=</span> <span class="s2">&quot;ZeroTemp&quot;</span><span class="p">,</span> <span class="n">norms</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">]))</span>
 
-<span class="c"># Run!</span>
-<span class="c"># Takes 1-2 minutes on 16 cores ...</span>
+<span class="c1"># Run!</span>
+<span class="c1"># Takes 1-2 minutes on 16 cores ...</span>
 <span class="n">cont</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">run_params</span><span class="p">)</span>
 
-<span class="c"># Evaluate the solution on an energy mesh</span>
-<span class="c"># NB: we can use *any* energy window at this point, not necessarily that from run_params</span>
+<span class="c1"># Evaluate the solution on an energy mesh</span>
+<span class="c1"># NB: we can use *any* energy window at this point, not necessarily that from run_params</span>
 <span class="n">g_w</span> <span class="o">=</span> <span class="n">GfReFreq</span><span class="p">(</span><span class="n">window</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">10.0</span><span class="p">),</span> <span class="n">n_points</span> <span class="o">=</span> <span class="n">n_w</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="n">g_w</span> <span class="o">&lt;&lt;</span> <span class="n">cont</span>
 
-<span class="c"># G(i\omega_n) reconstructed from the solution</span>
+<span class="c1"># G(i\omega_n) reconstructed from the solution</span>
 <span class="n">g_rec_tau</span> <span class="o">=</span> <span class="n">g_tau</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">g_rec_tau</span> <span class="o">&lt;&lt;</span> <span class="n">cont</span>
 
-<span class="c"># On master node, save results to an archive</span>
+<span class="c1"># On master node, save results to an archive</span>
 <span class="k">if</span> <span class="n">mpi</span><span class="o">.</span><span class="n">is_master_node</span><span class="p">():</span>
-    <span class="k">with</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s">&quot;results.h5&quot;</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ar</span><span class="p">:</span>
-        <span class="n">ar</span><span class="p">[</span><span class="s">&#39;g_tau&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g_tau</span>
-        <span class="n">ar</span><span class="p">[</span><span class="s">&#39;g_rec_tau&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g_rec_tau</span>
-        <span class="n">ar</span><span class="p">[</span><span class="s">&#39;g_w&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g_w</span>
-        <span class="n">ar</span><span class="p">[</span><span class="s">&#39;histograms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cont</span><span class="o">.</span><span class="n">histograms</span>
+    <span class="k">with</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s2">&quot;results.h5&quot;</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ar</span><span class="p">:</span>
+        <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;g_tau&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g_tau</span>
+        <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;g_rec_tau&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g_rec_tau</span>
+        <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;g_w&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g_w</span>
+        <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;histograms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cont</span><span class="o">.</span><span class="n">histograms</span>
 </pre></div>
 </div>
-<p>Download input file <a class="reference download internal" href="../../_downloads/example3.h5"><tt class="xref download docutils literal"><span class="pre">example.h5</span></tt></a>.</p>
+<p>Download input file <a class="reference download internal" href="../../_downloads/example3.h5" download=""><code class="xref download docutils literal"><span class="pre">example.h5</span></code></a>.</p>
 </div>
 <div class="section" id="plot-input-and-reconstructed-imaginary-time-correlators">
 <h2>Plot input and reconstructed imaginary-time correlators<a class="headerlink" href="#plot-input-and-reconstructed-imaginary-time-correlators" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pytriqs.gf.local</span> <span class="kn">import</span> <span class="o">*</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pytriqs.gf.local</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">pytriqs.archive</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 <span class="kn">from</span> <span class="nn">pytriqs.plot.mpl_interface</span> <span class="kn">import</span> <span class="n">oplot</span>
 
-<span class="c"># Read data from archive</span>
-<span class="n">ar</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s">&#39;results.h5&#39;</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+<span class="c1"># Read data from archive</span>
+<span class="n">ar</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;results.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
 
-<span class="c"># Plot input and reconstructed correlator</span>
-<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s">&#39;g_tau&#39;</span><span class="p">],</span>     <span class="n">mode</span><span class="o">=</span><span class="s">&#39;R&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;$g(</span><span class="se">\\</span><span class="s">tau)$&quot;</span><span class="p">)</span>
-<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s">&#39;g_rec_tau&#39;</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;R&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;$g_\mathrm{rec}(</span><span class="se">\\</span><span class="s">tau)$&quot;</span><span class="p">)</span>
+<span class="c1"># Plot input and reconstructed correlator</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s1">&#39;g_tau&#39;</span><span class="p">],</span>     <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;$g(</span><span class="se">\\</span><span class="s2">tau)$&quot;</span><span class="p">)</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s1">&#39;g_rec_tau&#39;</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;$g_\mathrm{rec}(</span><span class="se">\\</span><span class="s2">tau)$&quot;</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&quot;$g(</span><span class="se">\\</span><span class="s">tau)$&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s">&quot;upper right&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;$g(</span><span class="se">\\</span><span class="s2">tau)$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper right&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>(<a class="reference external" href="../../examples/zerotemp/plot_g_tau.py">Source code</a>, <a class="reference external" href="../../examples/zerotemp/plot_g_tau.png">png</a>, <a class="reference external" href="../../examples/zerotemp/plot_g_tau.hires.png">hires.png</a>, <a class="reference external" href="../../examples/zerotemp/plot_g_tau.pdf">pdf</a>)</p>
 <div class="figure">
-<a class="reference internal image-reference" href="../../_images/plot_g_tau1.png"><img alt="../../_images/plot_g_tau1.png" src="../../_images/plot_g_tau1.png" /></a>
+<a class="reference internal image-reference" href="../../_images/plot_g_tau1.png"><img alt="../../_images/plot_g_tau1.png" src="../../_images/plot_g_tau1.png" style="width: 512.0px; height: 384.0px;" /></a>
 </div>
 </div>
 <div class="section" id="plot-the-spectral-function">
 <h2>Plot the spectral function<a class="headerlink" href="#plot-the-spectral-function" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pytriqs.gf.local</span> <span class="kn">import</span> <span class="o">*</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pytriqs.gf.local</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">pytriqs.archive</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 <span class="kn">from</span> <span class="nn">pytriqs.plot.mpl_interface</span> <span class="kn">import</span> <span class="n">oplot</span>
 
-<span class="c"># Read data from archive</span>
-<span class="n">ar</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s">&#39;results.h5&#39;</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+<span class="c1"># Read data from archive</span>
+<span class="n">ar</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;results.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
 
-<span class="c"># Plot the spectral function</span>
-<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s">&#39;g_w&#39;</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;S&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;$A(</span><span class="se">\\</span><span class="s">omega)$&quot;</span><span class="p">)</span>
+<span class="c1"># Plot the spectral function</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s1">&#39;g_w&#39;</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;$A(</span><span class="se">\\</span><span class="s2">omega)$&quot;</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mf">10.0</span><span class="p">))</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.3</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&quot;$A(</span><span class="se">\\</span><span class="s">omega)$&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span> <span class="o">=</span> <span class="s">&quot;upper right&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;$A(</span><span class="se">\\</span><span class="s2">omega)$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span> <span class="o">=</span> <span class="s2">&quot;upper right&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>(<a class="reference external" href="../../examples/zerotemp/plot_g_w.py">Source code</a>, <a class="reference external" href="../../examples/zerotemp/plot_g_w.png">png</a>, <a class="reference external" href="../../examples/zerotemp/plot_g_w.hires.png">hires.png</a>, <a class="reference external" href="../../examples/zerotemp/plot_g_w.pdf">pdf</a>)</p>
 <div class="figure">
-<a class="reference internal image-reference" href="../../_images/plot_g_w1.png"><img alt="../../_images/plot_g_w1.png" src="../../_images/plot_g_w1.png" /></a>
+<a class="reference internal image-reference" href="../../_images/plot_g_w1.png"><img alt="../../_images/plot_g_w1.png" src="../../_images/plot_g_w1.png" style="width: 512.0px; height: 384.0px;" /></a>
 </div>
 </div>
 </div>
@@ -260,7 +257,7 @@ since <span class="math">\((1\pm e^{-\beta\epsilon})^{-1}\)</span> vanishes for 
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -277,11 +274,11 @@ since <span class="math">\((1\pm e^{-\beta\epsilon})^{-1}\)</span> vanishes for 
              >previous</a> |</li>
     <li><a href="../../index.html">Home</a> &raquo;</li>
 
-          <li><a href="../../documentation.html" >Documentation</a> &raquo;</li> 
+          <li class="nav-item nav-item-1"><a href="../../documentation.html" >Documentation</a> &#187;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2016-2020, Igor Krivenko.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016-2020, Igor Krivenko.
     </div>
   </body>
 </html>

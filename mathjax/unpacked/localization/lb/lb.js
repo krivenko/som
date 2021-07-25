@@ -1,11 +1,8 @@
-/* -*- Mode: Javascript; indent-tabs-mode:nil; js-indent-level: 2 -*- */
-/* vim: set ts=2 et sw=2 tw=80: */
-
 /*************************************************************
  *
  *  MathJax/localization/lb/lb.js
  *
- *  Copyright (c) 2009-2013 The MathJax Consortium
+ *  Copyright (c) 2009-2018 The MathJax Consortium
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,22 +17,21 @@
  *  limitations under the License.
  *
  */
-
 MathJax.Localization.addTranslation("lb",null,{
   menuTitle: "L\u00EBtzebuergesch",
-  version: "2.3",
+  version: "2.7.3",
   isLoaded: true,
   domains: {
     "_": {
-        version: "2.3",
+        version: "2.7.3",
         isLoaded: true,
         strings: {
+          MathError: "Math Feeler",
           LoadFile: "%1 lueden",
           Loading: "Lueden",
           LoadFailed: "De Fichier konnt net geluede ginn: %1",
-          MathJaxNotSupported: "\u00C4re browser \u00EBnnerst\u00EBtzt MathJax net",
-          MathError: "Math Feeler",
-          Processing: "Verschaffen"
+          Processing: "Verschaffen",
+          MathJaxNotSupported: "\u00C4re browser \u00EBnnerst\u00EBtzt MathJax net"
         }
     },
     "FontWarnings": {},

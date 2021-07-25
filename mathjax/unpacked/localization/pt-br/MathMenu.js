@@ -1,11 +1,8 @@
-/* -*- Mode: Javascript; indent-tabs-mode:nil; js-indent-level: 2 -*- */
-/* vim: set ts=2 et sw=2 tw=80: */
-
 /*************************************************************
  *
  *  MathJax/localization/pt-br/MathMenu.js
  *
- *  Copyright (c) 2009-2013 The MathJax Consortium
+ *  Copyright (c) 2009-2018 The MathJax Consortium
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,9 +17,8 @@
  *  limitations under the License.
  *
  */
-
 MathJax.Localization.addTranslation("pt-br","MathMenu",{
-        version: "2.3",
+        version: "2.7.3",
         isLoaded: true,
         strings: {
           Show: "Mostrar F\u00F3rmulas Como",
@@ -64,6 +60,12 @@ MathJax.Localization.addTranslation("pt-br","MathMenu",{
           TeXWeb: "TeX (web)",
           TeXImage: "TeX (imagem)",
           STIXLocal: "STIX (local)",
+          STIXWeb: "STIX (Web)",
+          AsanaMathWeb: "Asana Math (Web)",
+          GyrePagellaWeb: "Gyre Pagella (Web)",
+          GyreTermesWeb: "Gyre Termes (Web)",
+          LatinModernWeb: "Latim Moderno (Web)",
+          NeoEulerWeb: "Neo Euler (web)",
           ContextMenu: "Menu de Contexto",
           Browser: "Navegador",
           Scale: "Redimensionar Todas as F\u00F3rmulas ...",
@@ -75,17 +77,17 @@ MathJax.Localization.addTranslation("pt-br","MathMenu",{
           localTeXfonts: "usando fontes TeX locais",
           webTeXfonts: "usando fontes TeX da web",
           imagefonts: "usando fontes feitas com imagens",
-          localSTIXfonts: "usando fontes STIX",
+          localSTIXfonts: "usando fontes STIX locais",
           webSVGfonts: "usando fontes SVG da web",
           genericfonts: "usando fontes unicode gen\u00E9ricas",
-          wofforotffonts: "fontes woff ou otf",
-          eotffonts: "fontes eot",
-          svgfonts: "fontes svg",
-          WebkitNativeMMLWarning: "N\u00E3o parece haver suporte nativo a MathML em seu navegador, ent\u00E3o a mudan\u00E7a para MathML pode tornar ileg\u00EDveis as f\u00F3rmulas matem\u00E1ticas da p\u00E1gina.",
+          wofforotffonts: "fontes WOFF ou OTF",
+          eotffonts: "fontes EOT",
+          svgfonts: "fontes SVG",
+          WebkitNativeMMLWarning: "Parece que seu navegador n\u00E3o oferece suporte nativo ao MathML, ent\u00E3o a mudan\u00E7a para a sa\u00EDda do MathML pode tornar ileg\u00EDveis as f\u00F3rmulas matem\u00E1ticas da p\u00E1gina.",
           MSIENativeMMLWarning: "O Internet Explorer requer o plugin MathPlayer para processar MathML.",
-          OperaNativeMMLWarning: "O suporte a MathML no Opera \u00E9 limitado, ent\u00E3o a mudan\u00E7a para MathML pode piorar a renderiza\u00E7\u00E3o de algumas express\u00F5es.",
-          SafariNativeMMLWarning: "O suporte a MathML nativo do seu navegador n\u00E3o implementa todos os recursos usados pelo MathJax, ent\u00E3o algumas express\u00F5es podem n\u00E3o ser exibidas adequadamente.",
-          FirefoxNativeMMLWarning: "O suporte a MathML nativo do seu navegador n\u00E3o implementa todos os recursos usados pelo MathJax, ent\u00E3o algumas express\u00F5es podem n\u00E3o ser exibidas adequadamente.",
+          OperaNativeMMLWarning: "O suporte ao MathML no Opera \u00E9 limitado, ent\u00E3o a mudan\u00E7a para MathML pode piorar a renderiza\u00E7\u00E3o de algumas express\u00F5es.",
+          SafariNativeMMLWarning: "O suporte ao MathML nativo do seu navegador n\u00E3o implementa todos os recursos usados pelo MathJax, ent\u00E3o algumas express\u00F5es podem n\u00E3o ser exibidas adequadamente.",
+          FirefoxNativeMMLWarning: "O suporte ao MathML nativo do seu navegador n\u00E3o implementa todos os recursos usados pelo MathJax, ent\u00E3o algumas express\u00F5es podem n\u00E3o ser exibidas adequadamente.",
           MSIESVGWarning: "N\u00E3o h\u00E1 uma implementa\u00E7\u00E3o de SVG nas vers\u00F5es do Internet Explorer anteriores ao IE9 ou quando ele est\u00E1 emulando o IE8 ou as vers\u00F5es anteriores. A mudan\u00E7a para SVG far\u00E1 com que as f\u00F3rmulas n\u00E3o sejam exibidas adequadamente.",
           LoadURL: "Carregar os dados de tradu\u00E7\u00E3o a partir desta URL:",
           BadURL: "A URL deve ser para um um arquivo de javascript que defina os dados de tradu\u00E7\u00E3o do MathJax. Os nomes dos arquivos de Javascript devem terminar com '.js'",
@@ -96,9 +98,13 @@ MathJax.Localization.addTranslation("pt-br","MathMenu",{
           PercentScale: "A escala deve ser uma porcentagem (por exemplo, 120%%)",
           IE8warning: "Isto desabilitar\u00E1 o menu MathJax e os recursos de zoom, mas voc\u00EA poder\u00E1 usar Alt-Clique em uma express\u00E3o para obter o menu MathJax em vez disso.\n\nRealmente alterar as configura\u00E7\u00F5es do MathPlayer?",
           IE9warning: "O menu de contexto do MathJax ser\u00E1 desabilitado, mas voc\u00EA pode usar Alt-Clique em uma express\u00E3o para obter o menu MathJax em vez disso.",
-          NoOriginalForm: "Sem uma forma original dispon\u00EDvel",
+          NoOriginalForm: "Sem formulario original dispon\u00EDvel",
           Close: "Fechar",
-          EqSource: "Fonte da Equa\u00E7\u00E3o do MathJax"
+          EqSource: "Fonte da Equa\u00E7\u00E3o do MathJax",
+          CloseAboutDialog: "Fechar caixa sobre MathJax",
+          FastPreview: "Pr\u00E9-visualiza\u00E7\u00E3o r\u00E1pida",
+          AssistiveMML: "MAthML assistiva",
+          InTabOrder: "Incluir na ordem da guia"
         }
 });
 

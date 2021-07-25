@@ -1,11 +1,8 @@
-/* -*- Mode: Javascript; indent-tabs-mode:nil; js-indent-level: 2 -*- */
-/* vim: set ts=2 et sw=2 tw=80: */
-
 /*************************************************************
  *
  *  MathJax/localization/oc/MathMenu.js
  *
- *  Copyright (c) 2009-2013 The MathJax Consortium
+ *  Copyright (c) 2009-2018 The MathJax Consortium
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,13 +17,12 @@
  *  limitations under the License.
  *
  */
-
 MathJax.Localization.addTranslation("oc","MathMenu",{
-        version: "2.3",
+        version: "2.7.3",
         isLoaded: true,
         strings: {
           Show: "Afichar jos la forma",
-          MathMLcode: "C\u00F2de MathML",
+          MathMLcode: "C\u00F2di MathML",
           OriginalMathML: "MathML d\u2019origina",
           TeXCommands: "Comandas TeX",
           AsciiMathInput: "entrada AsciiMathML",
@@ -63,10 +59,30 @@ MathJax.Localization.addTranslation("oc","MathMenu",{
           TeXWeb: "TeX (web)",
           TeXImage: "TeX (imatge)",
           STIXLocal: "STIX (local)",
+          STIXWeb: "STIX (web)",
+          AsanaMathWeb: "Asana Math (web)",
+          GyrePagellaWeb: "Gyre Pagella (web)",
+          GyreTermesWeb: "Gyre Termes (web)",
+          LatinModernWeb: "Latin Modern (web)",
+          NeoEulerWeb: "Neo Euler (web)",
           ContextMenu: "Men\u00FA contextual",
           Browser: "Navigador",
           Locale: "Lenga",
-          Close: "Tampar"
+          LoadLocale: "Cargar dempu\u00E8i l\u2019URL\u2026",
+          About: "A prepaus de MathJax",
+          Help: "Ajuda de MathJax",
+          localTeXfonts: "utilizar las poli\u00E7as TeX localas",
+          webTeXfonts: "utilizar las poli\u00E7as TeX del web",
+          imagefonts: "utilizar las poli\u00E7as Imatge",
+          localSTIXfonts: "utilizar las poli\u00E7as STIX localas",
+          webSVGfonts: "utilizar las poli\u00E7as SVG del web",
+          genericfonts: "utilizar las poli\u00E7as unicode genericas",
+          wofforotffonts: "poli\u00E7as woff o otf",
+          eotffonts: "poli\u00E7as eot",
+          svgfonts: "poli\u00E7as svg",
+          Close: "Tampar",
+          Scale: "Metre totes los maths a l\u2019escala\u2026",
+          CloseAboutDialog: "Tampar la b\u00F3stia de dial\u00F2g A prepaus de MathJax"
         }
 });
 

@@ -1,23 +1,21 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Installation &mdash; TRIQS Stochastic Optimization Method  documentation</title>
-    
+    <title>Installation &#8212; TRIQS Stochastic Optimization Method  documentation</title>
     <link rel="stylesheet" href="_static/triqs.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
         VERSION:     '',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
@@ -25,7 +23,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="/som/mathjax/MathJax.js?config=default"></script>
     <link rel="author" title="About these documents" href="about.html" />
-    <link rel="top" title="TRIQS Stochastic Optimization Method  documentation" href="index.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Documentation" href="documentation.html" />
     <link rel="prev" title="Stochastic Optimization Method for Analytic Continuation" href="index.html" />
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
@@ -61,7 +60,7 @@
   </div>
 </div>
 
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -80,7 +79,7 @@
  
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h3><a href="contents.html">Table Of Contents</a></h3>
   <ul>
@@ -98,22 +97,21 @@
   <h4>Next topic</h4>
   <p class="topless"><a href="documentation.html"
                         title="next chapter">Documentation</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/install.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/install.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -122,39 +120,39 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="prerequisite">
 <h2>Prerequisite<a class="headerlink" href="#prerequisite" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic simple">
-<li>The <a class="reference external" href="https://triqs.github.io/triqs/1.4/index.html#welcome" title="(in TRIQS v1.4)"><em class="xref std std-ref">TRIQS</em></a> toolbox version 1.4.2 (see <a class="reference external" href="https://triqs.github.io/triqs/1.4/install.html#installation" title="(in TRIQS v1.4)"><em class="xref std std-ref">TRIQS installation instruction</em></a>).
-In the following, we will suppose that it is installed in the <tt class="docutils literal"><span class="pre">path_to_triqs</span></tt> directory.</li>
+<li>The <a class="reference external" href="https://triqs.github.io/triqs/1.4/index.html#welcome" title="(in TRIQS v1.4)"><span class="xref std std-ref">TRIQS</span></a> toolbox version 1.4.2 (see <a class="reference external" href="https://triqs.github.io/triqs/1.4/install.html#installation" title="(in TRIQS v1.4)"><span class="xref std std-ref">TRIQS installation instruction</span></a>).
+In the following, we will suppose that it is installed in the <code class="docutils literal"><span class="pre">path_to_triqs</span></code> directory.</li>
 </ol>
 </div>
 <div class="section" id="installation-steps">
 <h2>Installation steps<a class="headerlink" href="#installation-steps" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic">
 <li><p class="first">Download the sources of the solver from github:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>git clone https://github.com/krivenko/som.git som.src
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ git clone https://github.com/krivenko/som.git som.src
 </pre></div>
 </div>
 </li>
 <li><p class="first">Create an empty build directory where you will compile the code:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>mkdir som.build <span class="o">&amp;&amp;</span> <span class="nb">cd </span>som.build
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ mkdir som.build <span class="o">&amp;&amp;</span> <span class="nb">cd</span> som.build
 </pre></div>
 </div>
 </li>
 <li><p class="first">In the build directory call cmake specifying where the TRIQS library is installed:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>cmake -DTRIQS_PATH<span class="o">=</span>path_to_triqs ../som.src
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ cmake -DTRIQS_PATH<span class="o">=</span>path_to_triqs ../som.src
 </pre></div>
 </div>
 </li>
 <li><p class="first">Compile the code, run the tests and install the application:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>make
-<span class="nv">$ </span>make <span class="nb">test</span>
-<span class="nv">$ </span>make install
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ make
+$ make <span class="nb">test</span>
+$ make install
 </pre></div>
 </div>
 </li>
@@ -197,7 +195,7 @@ In the following, we will suppose that it is installed in the <tt class="docutil
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -216,8 +214,8 @@ In the following, we will suppose that it is installed in the <tt class="docutil
  
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2016-2020, Igor Krivenko.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016-2020, Igor Krivenko.
     </div>
   </body>
 </html>

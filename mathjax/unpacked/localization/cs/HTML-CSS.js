@@ -1,11 +1,8 @@
-/* -*- Mode: Javascript; indent-tabs-mode:nil; js-indent-level: 2 -*- */
-/* vim: set ts=2 et sw=2 tw=80: */
-
 /*************************************************************
  *
  *  MathJax/localization/cs/HTML-CSS.js
  *
- *  Copyright (c) 2009-2013 The MathJax Consortium
+ *  Copyright (c) 2009-2018 The MathJax Consortium
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,14 +17,15 @@
  *  limitations under the License.
  *
  */
-
 MathJax.Localization.addTranslation("cs","HTML-CSS",{
-        version: "2.3",
+        version: "2.7.3",
         isLoaded: true,
         strings: {
           LoadWebFont: "Na\u010D\u00EDt\u00E1 se web-font %1",
           CantLoadWebFont: "Nelze na\u010D\u00EDst web-font %1",
-          FirefoxCantLoadWebFont: "Firefox nem\u016F\u017Ee na\u010D\u00EDtat web-fonty ze vzd\u00E1len\u00E9ho hostitele"
+          FirefoxCantLoadWebFont: "Firefox nem\u016F\u017Ee na\u010D\u00EDtat web-fonty ze vzd\u00E1len\u00E9ho hostitele",
+          CantFindFontUsing: "Nelze naj\u00EDt platn\u00FD font pomoc\u00ED %1",
+          WebFontsNotAvailable: "Webov\u00E9 fonty nejsou k dispozici. M\u00EDsto toho jsou pou\u017Eity obr\u00E1zkov\u00E9 fonty."
         }
 });
 
