@@ -1,0 +1,122 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+      - ci
+  pull_request:
+    branches:
+      - master
+  schedule:
+    - cron:  '0 0 * * 6'
+
+jobs:
+  build:
+
+    strategy:
+      matrix:
+        include:
+          - {os: ubuntu-18.04, cc: gcc-5, cxx: g++-5}
+          - {os: ubuntu-18.04, cc: clang-4.0, cxx: clang++-4.0}
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Update apt-get cache
+      run: sudo apt-get update
+
+    - name: Install Ubuntu dependencies
+      run: >
+        sudo apt-get install
+        gcc-5
+        g++-5
+        clang-4.0
+        libboost-dev
+        libgfortran3
+        gfortran
+        openmpi-bin
+        openmpi-common
+        openmpi-doc
+        libopenmpi-dev
+        libblas-dev
+        libfftw3-dev
+        libgmp-dev
+        hdf5-tools
+        libhdf5-serial-dev
+        python-h5py
+        python-dev
+        python-numpy
+        python-scipy
+        python-matplotlib
+        ipython
+        python-mpi4py
+        python-mako
+        python-sphinx
+        libclang-4.0-dev
+        python-clang-4.0
+        libjs-mathjax
+
+    - name: Build & install TRIQS
+      env:
+        CC: ${{ matrix.cc }}
+        CXX: ${{ matrix.cxx }}
+        LIBCLANG_LOCATION: /usr/lib/llvm-4.0/lib/libclang-4.0.so
+        LIBCLANG_CXX_FLAGS: -I/usr/lib/llvm-4.0/include
+      run: |
+        git clone https://github.com/TRIQS/triqs --branch 1.4.2
+        # Delete problematic lines from TRIQS docs that make older versions of
+        # Clang segfault
+        sed -i -e '15,32d' triqs/doc/reference/gfs/c++/gf_block_0.cpp
+        mkdir triqs/build && pushd triqs/build
+        cmake ..                                                               \
+          -DCMAKE_BUILD_TYPE=Debug                                             \
+          -DCMAKE_INSTALL_PREFIX=$HOME/install                                 \
+          -DBuild_Tests=OFF                                                    \
+          -DPython_use_mpi4py=ON                                               \
+          -DTRIQS_LIBCLANG_LOCATION=${LIBCLANG_LOCATION}                       \
+          -DTRIQS_LIBCLANG_CXX_ADDITIONAL_FLAGS=${LIBCLANG_CXX_FLAGS}          \
+          -DSphinx_Math_Generator_MathJax=ON                                   \
+          -DMATHJAX_PATH=/usr/share/javascript/mathjax                         \
+          -DBuild_Documentation=ON
+        make -j2 install VERBOSE=1
+        popd
+
+    - name: Build SOM
+      env:
+        CC: ${{ matrix.cc }}
+        CXX: ${{ matrix.cxx }}
+      run: |
+        mkdir build && pushd build
+        cmake ..                                                               \
+          -DCMAKE_BUILD_TYPE=Debug                                             \
+          -DTRIQS_PATH=$HOME/install                                           \
+          -DTRIQS_INVENTORY_DIR="https://triqs.github.io/triqs/1.4/"           \
+          -DBUILD_DOC=ON
+        make -j2 VERBOSE=1
+        popd
+
+    - name: Test SOM
+      run: |
+        pushd build
+        ctest --output-on-failure
+        popd
+
+    - name: Prepare docs for deployment
+      run: |
+        pushd build
+        find doc/html -name "*.html"                                           \
+        -type f -exec sed -i 's/\/usr\/share\/javascript\/mathjax/\/som\/mathjax/g' {} \;
+        cp -r /usr/share/javascript/mathjax doc/html/mathjax
+        touch doc/html/.nojekyll
+        popd
+
+    - name: Deploy documentation
+      if: github.ref == 'refs/heads/master' && startsWith(matrix.cxx, 'clang')
+      uses: JamesIves/github-pages-deploy-action@4.1.0
+      with:
+        branch: gh-pages
+        token: ${{ secrets.GITHUB_TOKEN }}
+        folder: build/doc/html
