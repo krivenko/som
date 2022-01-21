@@ -44,14 +44,39 @@ double rectangle::operator()(double x) const {
 std::complex<double> rectangle::hilbert_transform(std::complex<double> z,
                                                   bool multiply_by_e) const {
   if(multiply_by_e)
-    // -h \int_{c-w/2}^{c+w/2} d\epsilon'
-    //   \frac{\epsilon'}{\epsilon' - \epsilon - i0}
+    // -h \int_{c-w/2}^{c+w/2} d\epsilon' \frac{\epsilon'}{\epsilon' - z - i0}
     return -height * (width + z * std::log((center + width / 2 - z) /
                                            (center - width / 2 - z)));
   else
-    // -h \int_{c-w/2}^{c+w/2} d\epsilon' \frac{1}{\epsilon' - \epsilon - i0}
+    // -h \int_{c-w/2}^{c+w/2} d\epsilon' \frac{1}{\epsilon' - z - i0}
     return -height *
            std::log((center + width / 2 - z) / (center - width / 2 - z));
+}
+
+std::complex<double>
+rectangle::averaged_hilbert_transform(std::complex<double> ea,
+                                      std::complex<double> eb,
+                                      bool multiply_by_e) const {
+  double ra = center - width / 2;
+  double rb = center + width / 2;
+  if(multiply_by_e) {
+    // -h \frac{1}{e_b - e_a} \int_{e_a}^{e_b} dz
+    //    \int_{c-w/2}^{c+w/2} d\epsilon' \frac{\epsilon'}{\epsilon' - z - i0}
+    return - (height * width / 2)
+           - (height / (2 * (eb - ea))) * (
+              (ra * ra - eb * eb) * std::log(ra - eb) +
+              (rb * rb - ea * ea) * std::log(rb - ea) -
+              (rb * rb - eb * eb) * std::log(rb - eb) -
+              (ra * ra - ea * ea) * std::log(ra - ea)
+           );
+  } else {
+    // -h \frac{1}{e_b - e_a} \int_{e_a}^{e_b} dz
+    //    \int_{c-w/2}^{c+w/2} d\epsilon' \frac{1}{\epsilon' - z - i0}
+    return (height / (eb - ea)) * ((ra - ea) * std::log(ra - ea) +
+                                   (rb - eb) * std::log(rb - eb) -
+                                   (rb - ea) * std::log(rb - ea) -
+                                   (ra - eb) * std::log(ra - eb));
+  }
 }
 
 vector<double> rectangle::tail_coefficients(long order_min, long order_max,

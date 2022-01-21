@@ -92,8 +92,14 @@ public:
   [[nodiscard]] double norm() const { return width * height; }
   double operator()(double x) const;
 
+  // Hilbert transform of a rectangle
   [[nodiscard]] std::complex<double>
   hilbert_transform(std::complex<double> z, bool multiply_by_e = false) const;
+  // Hilbert transform of a rectangle averaged over a segment [ea; eb]
+  [[nodiscard]] std::complex<double>
+  averaged_hilbert_transform(std::complex<double> ea,
+                             std::complex<double> eb,
+                             bool multiply_by_e = false) const;
   [[nodiscard]] triqs::arrays::vector<double>
   tail_coefficients(long order_min, long order_max,
                     bool multiply_by_e = false) const;

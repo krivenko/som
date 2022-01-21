@@ -59,6 +59,7 @@ std::pair<double, double> max_energy_window(observable_kind kind);
 void back_transform(
     observable_kind kind, configuration const& conf,
     triqs::gfs::gf_view<triqs::gfs::refreq, triqs::gfs::scalar_valued> g_w,
+    bool with_binning,
     mpi::communicator const& comm = {});
 
 // Compute the GF tail from a configuration

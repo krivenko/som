@@ -67,11 +67,29 @@ std::pair<double, double> max_energy_window(observable_kind kind) {
 // Construct a real-frequency GF from a configuration
 void back_transform(observable_kind kind, configuration const& conf,
                     gf_view<refreq, scalar_valued> g_w,
+                    bool with_binning,
                     mpi::communicator const& comm) {
   bool bosoncorr = kind == BosonCorr || kind == BosonAutoCorr;
 
+  auto const& e_mesh = g_w.mesh();
   auto & data = g_w.data();
   data() = 0;
+
+  auto add_to_data = [&](rectangle const& rect) {
+    for(auto e : e_mesh)
+      data(e.index()) += rect.hilbert_transform(double(e), bosoncorr);
+  };
+
+  auto add_to_data_with_binning = [&](rectangle const& rect) {
+    double de = e_mesh.delta();
+    for(auto e : e_mesh) {
+      double ea = e.index() == 0 ?
+                  double(e) : (double(e) - de / 2);
+      double eb = (e.index() == e_mesh.size() - 1) ?
+                  double(e) : (double(e) + de / 2);
+      data(e.index()) += rect.averaged_hilbert_transform(ea, eb, bosoncorr);
+    }
+  };
 
   std::unique_ptr<rectangle> reflected_rect;
   if(kind == BosonAutoCorr)
@@ -84,16 +102,20 @@ void back_transform(observable_kind kind, configuration const& conf,
       continue;
     }
 
-    for(auto e : g_w.mesh())
-      data(e.index()) += rect.hilbert_transform(double(e), bosoncorr);
+    if(with_binning)
+      add_to_data_with_binning(rect);
+    else
+      add_to_data(rect);
 
     // Add the reflected rectangle as needed
     if(reflected_rect) {
       reflected_rect->center = -rect.center;
       reflected_rect->width = rect.width;
       reflected_rect->height = rect.height;
-      for(auto e : g_w.mesh())
-        data(e.index()) += reflected_rect->hilbert_transform(double(e), true);
+      if(with_binning)
+        add_to_data_with_binning(*reflected_rect);
+      else
+        add_to_data(*reflected_rect);
     }
 
     ++rect_index;

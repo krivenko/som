@@ -38,7 +38,9 @@ using namespace triqs::gfs;
 // fill_refreq() //
 ///////////////////
 
-void fill_refreq(gf_view<refreq> g_w, som_core const& cont) {
+void fill_refreq(gf_view<refreq> g_w,
+                 som_core const& cont,
+                 bool with_binning) {
   auto kind = cont.get_observable_kind();
   auto gf_dim = cont.get_dim();
   check_gf_dim(g_w, gf_dim);
@@ -46,6 +48,7 @@ void fill_refreq(gf_view<refreq> g_w, som_core const& cont) {
     back_transform(kind,
                    cont.get_solution(i),
                    slice_target_to_scalar(g_w, i, i),
+                   with_binning,
                    cont.get_comm()
                    );
   }
@@ -53,11 +56,15 @@ void fill_refreq(gf_view<refreq> g_w, som_core const& cont) {
 
 void fill_refreq(gf_view<refreq> g_w,
                  observable_kind kind,
-                 std::vector<configuration> const& solutions) {
+                 std::vector<configuration> const& solutions,
+                 bool with_binning) {
   auto gf_dim = solutions.size();
   check_gf_dim(g_w, gf_dim);
   for(int i : range(gf_dim)) {
-    back_transform(kind, solutions[i], slice_target_to_scalar(g_w, i, i));
+    back_transform(kind,
+                   solutions[i],
+                   slice_target_to_scalar(g_w, i, i),
+                   with_binning);
   }
 }
 
