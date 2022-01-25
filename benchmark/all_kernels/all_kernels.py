@@ -109,21 +109,21 @@ print_master("FermionGf kernels")
 print_master("=================")
 
 def g_iw_model(iw):
-    kern = lambda e: 1 / (iw - e) / np.pi
-    return np.diag(chi_norms) * quad_complex(lambda e: dos(e, 1) * kern(e), -1, 3, points = [0])
+    kern = lambda e: 1 / (iw - e)
+    return np.diag(g_norms) * quad_complex(lambda e: dos(e, 1) * kern(e), -1, 3, points = [0])
 g_iw = GfImFreq(beta = beta, statistic = "Fermion", n_points = n_iw, indices = indices)
 g_iw << Function(g_iw_model)
 
 def g_tau_model(tau):
     kern = lambda e: -np.exp(-tau * e) / (1 + np.exp(-beta*e))
-    return np.diag(chi_norms) * quad(lambda e: dos(e, 1) * kern(e), -1, 3, points = [0])[0].real
+    return np.diag(g_norms) * quad(lambda e: dos(e, 1) * kern(e), -1, 3, points = [0])[0].real
 g_tau = GfImTime(beta = beta, statistic = "Fermion", n_points = n_tau, indices = indices)
 g_tau << Function(g_tau_model)
 
 def g_l_model(l):
     kern = lambda e: -beta * sqrt(2*l+1) *((-np.sign(e)) ** l) * \
                      spherical_in(l, np.abs(e)*beta/2) / (2 * np.cosh(e*beta/2))
-    return np.diag(chi_norms) * quad(lambda e: dos(e, 1) * kern(e), -1, 3, points = [0])[0].real
+    return np.diag(g_norms) * quad(lambda e: dos(e, 1) * kern(e), -1, 3, points = [0])[0].real
 g_l = GfLegendre(beta = beta, statistic = "Fermion", n_points = n_l, indices = indices)
 g_l << Function(g_l_model)
 
