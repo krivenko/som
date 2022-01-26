@@ -533,6 +533,56 @@ We use a different density function, which is finite everywhere on $\delta\xi\in
 	\right]^{-1}.
 \end{equation}
 
+\section{Hilbert(-like) transforms of a rectangular spectral function}
+\label{hilbert_transform}
+
+Recovery of observables as functions of the real frequency from a computed spectral function amounts to evaluating Hilbert(-like) transforms of rectangles $R(c,w,h)$. The transforms in question are
+\begin{itemize}
+    \item
+    \begin{equation}
+        F_1(\epsilon) =
+        - \int_{-\infty}^\infty d\epsilon'
+            \frac{R(c,w,h;\epsilon')}{\epsilon' - \epsilon - i0} =
+        -h \int_{c-w/2}^{c+w/2} d\epsilon' \frac{1}{\epsilon' - \epsilon - i0} =
+        -h \log\left(\frac{c + w / 2 - \epsilon}{c - w / 2 - \epsilon}\right)
+    \end{equation}
+    for fermionic thermal Green's functions and zero temperature correlators;
+
+    \item
+    \begin{equation}
+        F_2(\epsilon) =
+        - \int_{-\infty}^\infty d\epsilon'
+        \frac{\epsilon' R(c,w,h;\epsilon')}{\epsilon' - \epsilon - i0} =
+        -h \int_{c-w/2}^{c+w/2} d\epsilon'
+            \frac{\epsilon'}{\epsilon' - \epsilon - i0} =
+        -h \left[ w + \epsilon \log\left(\frac{c + w / 2 - \epsilon}{c - w / 2 - \epsilon}\right)\right]
+    \end{equation}
+    for (auto)correlators of boson-like operators.
+\end{itemize}
+
+When binning is used to perform projection of an observable onto a real frequency mesh, functions $F_1(\epsilon)$ and $F_2(\epsilon)$ are replaced by their averages over a finite segment $[\epsilon_a, \epsilon_b]$.
+\begin{multline}
+    \frac{1}{\epsilon_b - \epsilon_a} \int_{\epsilon_a}^{\epsilon_b}
+        F_1(\epsilon) d\epsilon =\\=
+        \frac{h}{\epsilon_b - \epsilon_a} \left[
+            (\epsilon_- - \epsilon_a) \log(\epsilon_- - \epsilon_a) +
+            (\epsilon_+ - \epsilon_b) \log(\epsilon_+ - \epsilon_b) -
+            (\epsilon_+ - \epsilon_a) \log(\epsilon_+ - \epsilon_a) -
+            (\epsilon_- - \epsilon_b) \log(\epsilon_- - \epsilon_b)
+        \right],
+\end{multline}
+\begin{multline}
+    \frac{1}{\epsilon_b - \epsilon_a} \int_{\epsilon_a}^{\epsilon_b}
+    F_2(\epsilon) d\epsilon = -\frac{hw}{2} -\\-
+    \frac{h}{2(\epsilon_b - \epsilon_a)} \left[
+        (\epsilon_-^2 - \epsilon_b^2) \log(\epsilon_- - \epsilon_b) +
+        (\epsilon_+^2 - \epsilon_a^2) \log(\epsilon_+ - \epsilon_a) -
+        (\epsilon_+^2 - \epsilon_b^2) \log(\epsilon_+ - \epsilon_b) -
+        (\epsilon_-^2 - \epsilon_a^2) \log(\epsilon_- - \epsilon_a)
+    \right],
+\end{multline}
+where $\epsilon_\pm = c \pm w/2$ are edges of the rectangle.
+
 \begin{thebibliography}{9}
 \bibitem{som_lecture}
 
