@@ -24,14 +24,18 @@ configure_file(version.py.in version.py)
 
 # Copy Python files to the build dir to have a complete package for the tests.
 file(GLOB_RECURSE python_sources RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.py)
-list(REMOVE_ITEM python_sources "som_core_desc.py")
+list(REMOVE_ITEM python_sources "som_core_desc.py" "spectral_stats_desc.py")
 foreach(file ${python_sources})
   configure_file(${file} ${file} COPYONLY)
 endforeach()
 
-# Build Python module
+# Build main Python module of SOM
 add_cpp2py_module(som_core)
 target_link_libraries(som_core som_c triqs_py)
+
+# Build `spectral_stats` module
+add_cpp2py_module(spectral_stats)
+target_link_libraries(spectral_stats som_c triqs_py)
 
 # Install Python modules
 set(PYTHON_LIB_DEST ${TRIQS_PYTHON_LIB_DEST_ROOT}/som)

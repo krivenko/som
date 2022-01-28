@@ -45,25 +45,57 @@ macro(add_cppcheck_command test_name src)
   )
 endmacro()
 
-foreach(test ${all_tests})
-  get_filename_component(test_name "${test}" NAME_WE)
+# Add a test
+macro(add_som_cpp_test test)
+  get_filename_component(test_name ${test} NAME_WE)
   set(test_name "test.${test_name}")
   get_filename_component(test_dir ${test} DIRECTORY)
   add_executable(${test_name} ${test})
+
   set_property(TARGET ${test_name} PROPERTY
                RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${test_dir})
   target_link_libraries(${test_name} som_c gtest_main project_warnings)
-  add_test(NAME ${test_name} COMMAND ${test_name}
-           WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${test_dir})
+
+  if(${ARGC} GREATER 1)
+    foreach(numproc ${ARGN})
+      add_test(NAME ${test_name}_np${numproc}
+               COMMAND ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${numproc}
+                       ${MPIEXEC_PREFLAGS} ${test_name} ${MPIEXEC_POSTFLAGS}
+               WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${test_dir})
+    endforeach()
+  else()
+    add_test(NAME ${test_name} COMMAND ${test_name}
+             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${test_dir})
+  endif()
+
   # Run clang-tidy if found
   if(CLANG_TIDY_EXECUTABLE)
     set_target_properties(${test_name} PROPERTIES
                           CXX_CLANG_TIDY "${CLANG_TIDY_EXECUTABLE}")
   endif()
+
   # Run cppcheck if found
   if(CPPCHECK_EXECUTABLE)
     add_cppcheck_command(${test_name} ${CMAKE_CURRENT_SOURCE_DIR}/${test})
   endif()
+endmacro()
+
+# Simple tests
+set(SIMPLE_TESTS configuration.cpp
+                 objective_function.cpp
+                 kernels_fermiongf.cpp
+                 kernels_bosoncorr.cpp
+                 kernels_bosonautocorr.cpp
+                 kernels_zerotemp.cpp
+                 solution_worker.cpp)
+foreach(test ${SIMPLE_TESTS})
+  add_som_cpp_test(${test})
+endforeach()
+
+# MPI tests
+set(MPI_TESTS spectral_stats.cpp)
+foreach(test ${MPI_TESTS})
+  add_som_cpp_test(${test} 1 2 4)
 endforeach()
 
 add_subdirectory(numerics)

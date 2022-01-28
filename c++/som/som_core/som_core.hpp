@@ -41,6 +41,12 @@ namespace som {
 
 class som_core {
 
+// Only for unit testing
+#ifdef SOM_TESTING
+public:
+  som_core() = default;
+#endif
+
   // LHS cache index
   // Must be sure this object is destroyed after all other members
   cache_index ci;
