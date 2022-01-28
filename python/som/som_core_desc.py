@@ -422,6 +422,15 @@ Accumulate particular solutions and compute the final solution using the standar
 """)
 
 #
+# SomCore.particular_solutions()
+#
+
+c.add_method(name = "particular_solutions",
+             signature = "std::vector<std::pair<configuration, double>> get_particular_solutions (int i)",
+             doc = """Accumulated particular solutions and their respective values of the objective function for the i-th diagonal matrix element.
+The returned list includes only those solutions stored locally in the calling MPI process.""")
+
+#
 # SomCore.solution() and SomCore.solutions
 #
 

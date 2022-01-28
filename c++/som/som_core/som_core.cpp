@@ -34,6 +34,13 @@ using triqs::statistics::histogram;
 // som_core: Accessors //
 /////////////////////////
 
+std::vector<std::pair<configuration, double>> const&
+som_core::get_particular_solutions(int i) const {
+  if(i >= data.size())
+    fatal_error("Matrix element index " + to_string(i) + " out of bounds");
+  return data[i].particular_solutions;
+}
+
 configuration const& som_core::get_solution(int i) const {
   if(i >= data.size())
     fatal_error("Matrix element index " + to_string(i) + " out of bounds");

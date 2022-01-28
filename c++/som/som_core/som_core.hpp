@@ -174,6 +174,11 @@ public:
   /// MPI communicator
   [[nodiscard]] mpi::communicator const& get_comm() const { return comm; }
 
+  /// Accumulated particular solutions for the i-th diagonal matrix element.
+  /// The returned list of solutions is rank-local.
+  [[nodiscard]] std::vector<std::pair<configuration, double>> const&
+  get_particular_solutions(int i) const;
+
   /// Final solution for the i-th diagonal matrix element
   [[nodiscard]] configuration const& get_solution(int i) const;
 
