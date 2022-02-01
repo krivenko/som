@@ -22,8 +22,8 @@
 
 #include <complex>
 
-#include "configuration.hpp"
-#include "kernels/all.hpp"
+#include <som/configuration.hpp>
+#include <som/kernels/all.hpp>
 
 namespace som {
 

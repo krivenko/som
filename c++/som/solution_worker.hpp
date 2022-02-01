@@ -29,7 +29,7 @@
 
 #include "cache_index.hpp"
 #include "configuration.hpp"
-#include "objective_function.hpp"
+#include "solution_functionals/objective_function.hpp"
 #include "worker_parameters.hpp"
 
 namespace som {

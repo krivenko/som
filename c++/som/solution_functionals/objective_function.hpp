@@ -20,9 +20,9 @@
  ******************************************************************************/
 #pragma once
 
-#include "config_update.hpp"
-#include "configuration.hpp"
-#include "kernels/all.hpp"
+#include <som/config_update.hpp>
+#include <som/configuration.hpp>
+#include <som/kernels/all.hpp>
 
 namespace som {
 

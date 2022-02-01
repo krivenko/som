@@ -27,8 +27,8 @@
 #include <triqs/utility/signal_handler.hpp>
 
 #include <som/kernels/all.hpp>
-#include <som/objective_function.hpp>
-#include <som/fit_quality.hpp>
+#include <som/solution_functionals/objective_function.hpp>
+#include <som/solution_functionals/fit_quality.hpp>
 #include <som/solution_worker.hpp>
 
 #include "som_core.hpp"
