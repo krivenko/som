@@ -70,85 +70,84 @@ objective_function<kernel<FermionGf, imtime>> of(kern, g, s);
 TEST(objective_function, Change) {
   configuration conf({rects[0], rects[2]}, ci);
 
-  EXPECT_NEAR(172.784, of(conf), 1e-3);
+  EXPECT_NEAR(586.079, of(conf), 1e-3);
 
   config_update cu(conf, ci);
   cu.change_rectangle(1, rects[3]);
-  EXPECT_NEAR(167.785, of(cu), 1e-3);
+  EXPECT_NEAR(577.133, of(cu), 1e-3);
 
   cu.reset();
-  EXPECT_NEAR(172.784, of(cu), 1e-3);
+  EXPECT_NEAR(586.079, of(cu), 1e-3);
   cu.change_rectangle(0, rects[1]);
-  EXPECT_NEAR(301.098, of(cu), 1e-3);
+  EXPECT_NEAR(991.805, of(cu), 1e-3);
 
   cu.apply();
   of.get_kernel().cache_copy(cu, conf);
-  EXPECT_NEAR(301.098, of(conf), 1e-3);
+  EXPECT_NEAR(991.805, of(conf), 1e-3);
 }
 
 TEST(objective_function, Add) {
   configuration conf({rects[0], rects[1]}, ci);
 
-  EXPECT_NEAR(173.149, of(conf), 1e-3);
+  EXPECT_NEAR(393.205, of(conf), 1e-3);
 
   config_update cu(conf, ci);
   cu.add_rectangle(rects[2]);
-  EXPECT_NEAR(400.832, of(cu), 1e-3);
+  EXPECT_NEAR(1715.986, of(cu), 1e-3);
 
   cu.reset();
-  EXPECT_NEAR(173.149, of(cu), 1e-3);
+  EXPECT_NEAR(393.205, of(cu), 1e-3);
   cu.add_rectangle(rects[3]);
-  EXPECT_NEAR(405.862, of(cu), 1e-3);
+  EXPECT_NEAR(2797.053, of(cu), 1e-3);
 
   cu.apply();
   of.get_kernel().cache_copy(cu, conf);
-  EXPECT_NEAR(405.862, of(conf), 1e-3);
+  EXPECT_NEAR(2797.053, of(conf), 1e-3);
 }
 
 TEST(objective_function, Remove) {
   configuration conf({rects[0], rects[1], rects[2]}, ci);
 
-  EXPECT_NEAR(400.832, of(conf), 1e-3);
+  EXPECT_NEAR(1715.986, of(conf), 1e-3);
 
   config_update cu(conf, ci);
   cu.remove_rectangle(1);
-  EXPECT_NEAR(172.784, of(cu), 1e-3);
+  EXPECT_NEAR(586.079, of(cu), 1e-3);
 
   cu.reset();
-  EXPECT_NEAR(400.832, of(cu), 1e-3);
+  EXPECT_NEAR(1715.986, of(cu), 1e-3);
   cu.remove_rectangle(2);
-  EXPECT_NEAR(173.149, of(cu), 1e-3);
+  EXPECT_NEAR(393.205, of(cu), 1e-3);
 
   cu.apply();
   of.get_kernel().cache_copy(cu, conf);
-  EXPECT_NEAR(173.149, of(conf), 1e-3);
+  EXPECT_NEAR(393.205, of(conf), 1e-3);
 }
-
 
 TEST(objective_function, Multiple) {
   configuration conf({rects[0], rects[1]}, ci);
 
-  EXPECT_NEAR(173.149, of(conf), 1e-3);
+  EXPECT_NEAR(393.205, of(conf), 1e-3);
 
   config_update cu(conf, ci);
   cu.add_rectangle(rects[3]);
   cu.change_rectangle(1, rects[2]);
-  EXPECT_NEAR(395.468, of(cu), 1e-3);
+  EXPECT_NEAR(1860.577, of(cu), 1e-3);
 
   cu.reset();
-  EXPECT_NEAR(173.149, of(cu), 1e-3);
+  EXPECT_NEAR(393.205, of(cu), 1e-3);
   cu.change_rectangle(1, rects[2]);
   cu.remove_rectangle(0);
-  EXPECT_NEAR(79.8879, of(cu), 1e-3);
+  EXPECT_NEAR(94.502, of(cu), 1e-3);
 
   cu.apply();
   of.get_kernel().cache_copy(cu, conf);
-  EXPECT_NEAR(79.8879, of(conf), 1e-3);
+  EXPECT_NEAR(94.502, of(conf), 1e-3);
   cu.add_rectangle(rects[3]);
   cu.change_rectangle(0, rects[0]);
-  EXPECT_NEAR(167.785, of(cu), 1e-3);
+  EXPECT_NEAR(577.133, of(cu), 1e-3);
   cu.apply();
-  EXPECT_NEAR(167.785, of(conf), 1e-3);
+  EXPECT_NEAR(577.133, of(conf), 1e-3);
 }
 
 MAKE_MAIN

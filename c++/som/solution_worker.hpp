@@ -80,8 +80,8 @@ template <typename KernelType> struct mc_data {
   objective_function<KernelType> const& objf; // Objective function
   configuration temp_conf;                    // Temporary configuration
   configuration global_conf; // Configuration selected by global updates
-  double temp_objf_value;    // D(temp_conf)
-  double global_objf_value;  // D(global_conf)
+  double temp_objf_value;    // \chi^2(temp_conf)
+  double global_objf_value;  // \chi^2(global_conf)
   dist_function Z;           // Distribution function Z(x)
   const double gamma;        // Proposal probability parameter :math:`\gamma`
 };

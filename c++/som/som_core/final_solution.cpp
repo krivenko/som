@@ -19,6 +19,8 @@
  *
  ******************************************************************************/
 
+#include <cmath>
+
 #include "som_core.hpp"
 
 namespace som {
@@ -27,7 +29,7 @@ namespace som {
 // som_core::compute_final_solution() //
 ////////////////////////////////////////
 
-void som_core::compute_final_solution(double good_d) {
+void som_core::compute_final_solution(double good_chi) {
 
   for(int n = 0; n < data.size(); ++n) {
     auto & d = data[n];
@@ -38,7 +40,7 @@ void som_core::compute_final_solution(double good_d) {
     int n_good_solutions = 0;
     for(auto const& s : d.particular_solutions) {
       // Pick only good solutions
-      if(s.second / d.objf_min <= good_d) {
+      if(std::sqrt(s.second / d.objf_min) <= good_chi) {
         sol_sum += s.first;
         ++n_good_solutions;
       }
@@ -57,7 +59,7 @@ void som_core::compute_final_solution(double good_d) {
 
 void som_core::run(accumulate_parameters_t const& p) {
   accumulate(p);
-  compute_final_solution(p.adjust_l_good_d);
+  compute_final_solution(p.adjust_l_good_chi);
 }
 
 } // namespace som

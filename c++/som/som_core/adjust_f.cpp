@@ -115,7 +115,8 @@ int som_core::adjust_f_impl(adjust_f_parameters_t const& p) {
                       << n_sol << " is "
                       << (kappa > p.kappa ? "" : "not ")
                       << R"(good (\kappa = )" << kappa
-                      << ", D = " << worker.get_objf_value() << ")." << std::endl;
+                      << ", \\chi = "
+                      << std::sqrt(worker.get_objf_value()) << ")." << std::endl;
           }
         }
         comm.barrier();

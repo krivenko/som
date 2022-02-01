@@ -68,20 +68,20 @@ struct accumulate_parameters_t : public worker_parameters_t {
   /// type: (int,int)
   std::pair<int, int> adjust_l_range = std::pair<int, int>{100, 2000};
 
-  /// Maximal ratio :math:`D/D_\mathrm{min}` for a particular solution to be
-  /// considered good.
-  double adjust_l_good_d = 2.0;
+  /// Maximal ratio :math:`\chi/\chi_\mathrm{min}` for a particular solution to
+  /// be considered good.
+  double adjust_l_good_chi = 2.0;
 
-  /// Maximal ratio :math:`D/D_\mathrm{min}` for a particular solution to be
-  /// considered very good.
-  double adjust_l_verygood_d = 4.0 / 3.0;
+  /// Maximal ratio :math:`\chi/\chi_\mathrm{min}` for a particular solution to
+  /// be considered very good.
+  double adjust_l_verygood_chi = 4.0 / 3.0;
 
   /// Critical ratio :math:`N_\mathrm{very good}/N_\mathrm{good}` to stop
   /// :math:`L`-adjustment procedure.
   double adjust_l_ratio = 0.95;
 
-  /// Right boundary of the histograms, in units of :math:`D_\mathrm{min}`
-  /// (left boundary is always set to :math:`D_\mathrm{min}`).
+  /// Right boundary of the histograms, in units of :math:`\chi_\mathrm{min}`
+  /// (left boundary is always set to :math:`\chi_\mathrm{min}`).
   double hist_max = 2.0;
 
   /// Number of bins for the histograms.

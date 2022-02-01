@@ -38,8 +38,8 @@ def plot_histogram(histos, fig):
     x = np.linspace(hist.limits[0], hist.limits[1], len(hist.data))
     y = hist.data
     ax.bar(x, y, dx, color = 'green', linewidth = 0.1)
-    ax.set_xlabel("$D$")
-    ax.set_ylabel("$P(D)$")
+    ax.set_xlabel(r"$\chi$")
+    ax.set_ylabel(r"$P(\chi)$")
     ax.set_xlim(*hist.limits)
     ax.set_ylim(bottom=0)
 

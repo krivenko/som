@@ -147,38 +147,40 @@ void som_core::accumulate_impl() {
 
         d.particular_solutions.emplace_back(worker(1 + rng(params.max_rects)), 0);
 
-        double D = worker.get_objf_value();
-        d.particular_solutions.back().second = D;
-        d.objf_min = std::min(d.objf_min, D);
+        double chi2 = worker.get_objf_value();
+        d.particular_solutions.back().second = chi2;
+        d.objf_min = std::min(d.objf_min, chi2);
 
         if(params.verbosity >= 2) {
           std::cout << "[Rank " << comm.rank() << "] Solution " << n_sol
-                    << ": D = " << D << std::endl;
+                    << ": \\chi = " << std::sqrt(chi2) << std::endl;
         }
       }
       comm.barrier();
 
-      // Global minimum of D_min
+      // Global minimum of \chi^2_min
       // NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
       d.objf_min = mpi::all_reduce(d.objf_min, comm, 0, MPI_MIN);
+      double chi_min = std::sqrt(d.objf_min);
 
       // Recalculate numbers of good and very good solutions
       n_good_solutions = n_verygood_solutions = 0;
       for(auto const& s : d.particular_solutions) {
-        if(s.second / d.objf_min <= params.adjust_l_good_d) ++n_good_solutions;
-        if(s.second / d.objf_min <= params.adjust_l_verygood_d)
+        if(std::sqrt(s.second) / chi_min <= params.adjust_l_good_chi)
+          ++n_good_solutions;
+        if(std::sqrt(s.second) / chi_min <= params.adjust_l_verygood_chi)
           ++n_verygood_solutions;
       }
       n_good_solutions = mpi::all_reduce(n_good_solutions);
       n_verygood_solutions = mpi::all_reduce(n_verygood_solutions);
 
       if(params.verbosity >= 1) {
-        std::cout << "D_min = " << d.objf_min << std::endl;
-        std::cout << "Number of good solutions (D/D_min <= "
-                  << params.adjust_l_good_d << ") = " << n_good_solutions
+        std::cout << "\\chi_min = " << chi_min << std::endl;
+        std::cout << "Number of good solutions (\\chi/\\chi_min <= "
+                  << params.adjust_l_good_chi << ") = " << n_good_solutions
                   << std::endl;
-        std::cout << "Number of very good solutions (D/D_min <= "
-                  << params.adjust_l_verygood_d << ") = " << n_verygood_solutions
+        std::cout << "Number of very good solutions (\\chi/\\chi_min <= "
+                  << params.adjust_l_verygood_chi << ") = " << n_verygood_solutions
                   << std::endl;
       }
 
@@ -190,11 +192,11 @@ void som_core::accumulate_impl() {
 
     // Recompute the histograms
     if(params.make_histograms) {
-      d.histogram = histogram(d.objf_min,
-                              d.objf_min * params.hist_max,
+      d.histogram = histogram(std::sqrt(d.objf_min),
+                              std::sqrt(d.objf_min) * params.hist_max,
                               params.hist_n_bins);
       histogram & h = *d.histogram;
-      for(auto const& s : d.particular_solutions) h << s.second;
+      for(auto const& s : d.particular_solutions) h << std::sqrt(s.second);
       h = mpi_reduce(h, comm, 0, true);
     }
 

@@ -26,6 +26,7 @@
 
 namespace som {
 
+// Objective function \chi^2
 template <typename KernelType> class objective_function {
 
   using rhs_type = typename KernelType::result_type;

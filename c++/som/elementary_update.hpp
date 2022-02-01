@@ -59,8 +59,8 @@ protected:
   // and :math:`\delta\xi_{opt}:
   std::array<config_update, 3> update;
 
-  // :math:`D(\xi+\delta\xi)`, :math:`D(\xi+\delta\xi/2)` and
-  // :math:`D(\xi+\delta\xi_{opt})`
+  // :math:`\chi^2(\xi+\delta\xi)`, :math:`\chi^2(\xi+\delta\xi/2)` and
+  // :math:`\chi^2(\xi+\delta\xi_{opt})`
   std::array<double, 3> new_objf_value;
 
   // Returns (true,:math:`\delta\xi_{opt}`) (see eq. (41)), if

@@ -84,7 +84,7 @@ public:
     // For the sake of memory efficiency, this list of solutions is rank-local.
     std::vector<std::pair<configuration, double>> particular_solutions;
 
-    // Minimum of :math:`D` over all particular solutions
+    // Minimum of :math:`\chi^2` over all particular solutions
     double objf_min = HUGE_VAL;
 
     // Final solution
@@ -157,7 +157,7 @@ public:
 
   /// Select particular solutions according to the standard SOM criterion
   /// and compute the final solution
-  void compute_final_solution(double good_d = 2.0);
+  void compute_final_solution(double good_chi = 2.0);
 
   /// Set of parameters used in the last call to accumulate()
   accumulate_parameters_t get_last_accumulate_parameters() const {

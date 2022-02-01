@@ -37,9 +37,9 @@ class Som(SomCore):
         SomCore.__init__(self, g, s, kind, norms)
 
 def count_good_solutions(hist, upper_lim = 1):
-    """
-    Given a histogram of objective function values,
-    count the number of solutions with D/D_{min} <= 1 + upper_lim
+    r"""
+    Given a histogram of \chi-values,
+    count the number of solutions with \chi/\chi_{min} <= 1 + upper_lim
     """
     d_max = hist.limits[0] * (1 + upper_lim)
     return int(sum(c for n, c in enumerate(hist.data) if hist.mesh_point(n) <= d_max))

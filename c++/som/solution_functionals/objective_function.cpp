@@ -34,13 +34,13 @@ objective_function<KernelType>::objective_function(KernelType const& kern,
 template <typename KernelType>
 double
 objective_function<KernelType>::operator()(configuration const& c) const {
-  return sum(abs((rhs - kern(c)) / error_bars));
+  return sum(abs2((rhs - kern(c)) / error_bars)) / double(rhs.size());
 }
 
 template <typename KernelType>
 double
 objective_function<KernelType>::operator()(config_update const& cu) const {
-  return sum(abs((rhs - kern(cu)) / error_bars));
+  return sum(abs2((rhs - kern(cu)) / error_bars)) / double(rhs.size());
 }
 
 INSTANTIATE_CLASS_FOR_EACH_KERNEL(objective_function)

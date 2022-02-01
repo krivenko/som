@@ -74,8 +74,8 @@ Code architecture changes in SOM 2.0
   * ``verbosity``
   * ``t``
   * ``f``
-  * ``good_d``
-  * ``verygood_d``
+  * ``good_chi``
+  * ``verygood_chi``
   * ``ratio``
   * ``random_seed``
   * ``random_name``
@@ -92,7 +92,7 @@ Code architecture changes in SOM 2.0
 - ``adjust_f()`` and ``adjust_l()`` should call ``SomCore.clear()`` at the beginning
   of the adjustment procedure but not at the end.
 
-- New method ``compute_final_solution(good_d)`` (select basis solutions using the
+- New method ``compute_final_solution(good_chi)`` (select basis solutions using the
   standard SOM criterion).
 
 - New method ``compute_final_solution_cc(...)`` (selection algorithm described in [1]).

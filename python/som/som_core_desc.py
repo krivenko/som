@@ -198,39 +198,39 @@ Fine tuning options
 """.strip()
 
 docstring_params_table_header = """
-+---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| Parameter Name      | Type          | Default                       | Documentation                                                                                            |
-+=====================+===============+===============================+==========================================================================================================+
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| Parameter Name        | Type          | Default                       | Documentation                                                                                         |
++=======================+===============+===============================+=======================================================================================================+
 """.strip()
 
 docstring_worker_params_main = """
-| energy_window       | (float,float) | --                            | Estimated lower and upper bounds of the spectrum.                                                        |
-|                     |               |                               | Negative values of the lower bound will be reset to 0 for BosonAutoCorr and ZeroTemp observables.        |
-+---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| max_time            | int           | -1 = infinite                 | Maximum runtime in seconds, use -1 to set infinite.                                                      |
-+---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| verbosity           | int           | 2 on MPI rank 0, 0 otherwise. | Verbosity level (max level - 3).                                                                         |
-+---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| t                   | int           | 50                            | Number of elementary updates per global update (:math:`T`).                                              |
-|                     |               |                               | Bigger values make the algorithm more ergodic.                                                           |
-+---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+| energy_window         | (float,float) | --                            | Estimated lower and upper bounds of the spectrum.                                                     |
+|                       |               |                               | Negative values of the lower bound will be reset to 0 for BosonAutoCorr and ZeroTemp observables.     |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| max_time              | int           | -1 = infinite                 | Maximum runtime in seconds, use -1 to set infinite.                                                   |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| verbosity             | int           | 2 on MPI rank 0, 0 otherwise. | Verbosity level (max level - 3).                                                                      |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| t                     | int           | 50                            | Number of elementary updates per global update (:math:`T`).                                           |
+|                       |               |                               | Bigger values make the algorithm more ergodic.                                                        |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
 """.strip()
 
 docstring_worker_params_fine = """
-| random_seed         | int           | 34788 + 928374 * MPI.rank     | Seed for random number generator.                                                                        |
-+---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| random_name         | str           | ""                            | Name of random number generator (MT19937 by default).                                                    |
-+---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| max_rects           | int           | 60                            | Maximum number of rectangles in a particular solution (:math:`K_{max}`), should be below 70.             |
-+---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| min_rect_width      | float         | 1e-3                          | Minimal width of a rectangle, in units of the energy window width.                                       |
-+---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| min_rect_weight     | float         | 1e-3                          | Minimal weight of a rectangle, in units of the requested solution norm.                                  |
-+---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| distrib_d_max       | float         | 2                             | Maximal parameter of the power-law distribution function for the Metropolis algorithm.                   |
-+---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| gamma               | float         | 2                             | Proposal probability parameter :math:`\gamma`.                                                           |
-+---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+| random_seed           | int           | 34788 + 928374 * MPI.rank     | Seed for random number generator.                                                                     |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| random_name           | str           | ""                            | Name of random number generator (MT19937 by default).                                                 |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| max_rects             | int           | 60                            | Maximum number of rectangles in a particular solution (:math:`K_{max}`), should be below 70.          |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| min_rect_width        | float         | 1e-3                          | Minimal width of a rectangle, in units of the energy window width.                                    |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| min_rect_weight       | float         | 1e-3                          | Minimal weight of a rectangle, in units of the requested solution norm.                               |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| distrib_d_max         | float         | 2                             | Maximal parameter of the power-law distribution function for the Metropolis algorithm.                |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| gamma                 | float         | 2                             | Proposal probability parameter :math:`\gamma`.                                                        |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
 """.strip()
 
 #
@@ -266,7 +266,7 @@ module.add_converter(adjust_f_params_conv)
 #
 
 c.add_method("int adjust_f(**som::adjust_f_parameters_t)",
-             doc = f"""
+             doc = fr"""
 Automatically adjust the number of global updates :math:`F`
 ===========================================================
 
@@ -274,17 +274,17 @@ Automatically adjust the number of global updates :math:`F`
 
 {docstring_params_table_header}
 {docstring_worker_params_main}
-| f_range             | (int,int)     | (100,5000)                    | Search range for the number of global updates.                                                           |
-+---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+| f_range               | (int,int)     | (100,5000)                    | Search range for the number of global updates.                                                        |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
 
 {docstring_params_header_fine}
 
 {docstring_params_table_header}
 {docstring_worker_params_fine}
-| l                   | int           | 20                            | Number of particular solutions used to adjust :math:`F`.                                                 |
-+---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| kappa               | float         | 0.25                          | Limiting value of :math:`\kappa` used to adjust :math:`F`.                                               |
-+---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+| l                     | int           | 20                            | Number of particular solutions used to adjust :math:`F`.                                              |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| kappa                 | float         | 0.25                          | Limiting value of :math:`\kappa` used to adjust :math:`F`.                                            |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
 """)
 
 #
@@ -321,32 +321,32 @@ accumulate_params_conv.add_member(c_name = "adjust_l",
 accumulate_params_conv.add_member(c_name = "make_histograms",
                                   c_type = "bool",
                                   initializer = """false""",
-                                  doc = """Accumulate histograms of objective function values.""")
+                                  doc = """Accumulate histograms of :math:`\chi` values.""")
 
 accumulate_params_conv.add_member(c_name = "adjust_l_range",
                                   c_type = "std::pair<int,int>",
                                   initializer = """std::pair<int,int>{100,2000}""",
                                   doc = """Search range for the number of solutions used in the final accumulation.""")
 
-accumulate_params_conv.add_member(c_name = "adjust_l_good_d",
+accumulate_params_conv.add_member(c_name = "adjust_l_good_chi",
                                   c_type = "double",
                                   initializer = """2.0""",
-                                  doc = """Maximal ratio :math:`D/D_\mathrm{min}` for a particular solution to be considered good.""")
+                                  doc = r"""Maximal ratio :math:`\chi/\chi_\mathrm{min}` for a particular solution to be considered good.""")
 
-accumulate_params_conv.add_member(c_name = "adjust_l_verygood_d",
+accumulate_params_conv.add_member(c_name = "adjust_l_verygood_chi",
                                   c_type = "double",
                                   initializer = """4.0/3.0""",
-                                  doc = """Maximal ratio :math:`D/D_\mathrm{min}` for a particular solution to be considered very good.""")
+                                  doc = r"""Maximal ratio :math:`\chi/\chi_\mathrm{min}` for a particular solution to be considered very good.""")
 
 accumulate_params_conv.add_member(c_name = "adjust_l_ratio",
                                   c_type = "double",
                                   initializer = """0.95""",
-                                  doc = """Critical ratio :math:`N_\mathrm{very good}/N_\mathrm{good}` to stop :math:`L`-adjustment procedure.""")
+                                  doc = r"""Critical ratio :math:`N_\mathrm{very good}/N_\mathrm{good}` to stop :math:`L`-adjustment procedure.""")
 
 accumulate_params_conv.add_member(c_name = "hist_max",
                                   c_type = "double",
                                   initializer = """2.0""",
-                                  doc = """Right boundary of the histograms, in units of :math:`D_\mathrm{min}`\n(left boundary is always set to :math:`D_\mathrm{min}`).""")
+                                  doc = r"""Right boundary of the histograms, in units of :math:`\chi_\mathrm{min}`\n(left boundary is always set to :math:`\chi_\mathrm{min}`).""")
 
 accumulate_params_conv.add_member(c_name = "hist_n_bins",
                                   c_type = "int",
@@ -361,36 +361,37 @@ module.add_converter(accumulate_params_conv)
 # SomCore.accumulate()
 #
 
-docstring_accumulate = f"""
+docstring_accumulate = fr"""
 {docstring_params_header_main}
 
 {docstring_params_table_header}
 {docstring_worker_params_main}
-| l                   | int           | 2000                          | Number of particular solutions to accumulate (:math:`L`); ignored if `adjust_l = True`.                  |
-|                     |               |                               | Bigger values reduce noise in the final solution / make it smoother.                                     |
-+---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| adjust_l            | bool          | False                         | Automatically adjust the number of particular solutions to accumulate.                                   |
-+---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| make_histograms     | bool          | False                         | Accumulate histograms of objective function values.                                                      |
-+---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+| l                     | int           | 2000                          | Number of particular solutions to accumulate (:math:`L`); ignored if `adjust_l = True`.               |
+|                       |               |                               | Bigger values reduce noise in the final solution / make it smoother.                                  |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| adjust_l              | bool          | False                         | Automatically adjust the number of particular solutions to accumulate.                                |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| make_histograms       | bool          | False                         | Accumulate histograms of :math:`\chi` values.                                                         |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
 
 {docstring_params_header_fine}
 
 {docstring_params_table_header}
 {docstring_worker_params_fine}
-| adjust_l_range      | (int,int)     | (100,2000)                    | Search range for the number of particular solutions to accumulate.                                       |
-+---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| adjust_l_good_d     | float         | 2.0                           | Maximal ratio :math:`D/D_\mathrm\{{min}}` for a particular solution to be considered good.                 |
-+---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| adjust_l_verygood_d | float         | 4/3                           | Maximal ratio :math:`D/D_\mathrm\{{min}}` for a particular solution to be considered very good.            |
-+---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| adjust_l_ratio      | float         | 0.95                          | Critical ratio :math:`N_\mathrm{{very good}}/N_\mathrm{{good}}` to stop the :math:`L`-adjustment procedure.  |
-+---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| hist_max            | float         | 2.0                           | Right boundary of the histograms, in units of :math:`D_\mathrm{{min}}`                                     |
-|                     |               |                               | (left boundary is always set to :math:`D_\mathrm{{min}}`).                                                 |
-+---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
-| hist_n_bins         | int           | 100                           | Number of bins for the histograms.                                                                       |
-+---------------------+---------------+-------------------------------+----------------------------------------------------------------------------------------------------------+
+| adjust_l_range        | (int,int)     | (100,2000)                    | Search range for the number of particular solutions to accumulate.                                    |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| adjust_l_good_chi     | float         | 2.0                           | Maximal ratio :math:`\chi/\chi_\mathrm{{min}}` for a particular solution to be considered good.         |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| adjust_l_verygood_chi | float         | 4/3                           | Maximal ratio :math:`\chi/\chi_\mathrm{{min}}` for a particular solution to be considered very good.    |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| adjust_l_ratio        | float         | 0.95                          | Critical ratio :math:`N_\mathrm{{very good}}/N_\mathrm{{good}}` to stop                                   |
+|                       |               |                               | the :math:`L`-adjustment procedure.                                                                   |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| hist_max              | float         | 2.0                           | Right boundary of the histograms, in units of :math:`\chi_\mathrm{{min}}`                               |
+|                       |               |                               | (left boundary is always set to :math:`\chi_\mathrm{{min}}`).                                           |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| hist_n_bins           | int           | 100                           | Number of bins for the histograms.                                                                    |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
 """
 
 c.add_method("""void accumulate(**som::accumulate_parameters_t)""",
@@ -406,7 +407,7 @@ Accumulate particular solutions
 # SomCore.compute_final_solution()
 #
 
-c.add_method("void compute_final_solution(double good_d = 2.0)",
+c.add_method("void compute_final_solution(double good_chi = 2.0)",
              doc = """Select particular solutions according to the standard SOM criterion and compute the final solution""")
 
 #
@@ -427,7 +428,7 @@ Accumulate particular solutions and compute the final solution using the standar
 
 c.add_method(name = "particular_solutions",
              signature = "std::vector<std::pair<configuration, double>> get_particular_solutions (int i)",
-             doc = """Accumulated particular solutions and their respective values of the objective function for the i-th diagonal matrix element.
+             doc = """Accumulated particular solutions and their respective values of the objective function :math:`\chi^2` for the i-th diagonal matrix element.
 The returned list includes only those solutions stored locally in the calling MPI process.""")
 
 #
@@ -448,11 +449,11 @@ c.add_property(name = "solutions",
 
 c.add_method(name = "histogram",
              signature = "std::optional<histogram> get_histogram(int i)",
-             doc = """Accumulated objective function histogram for the i-th diagonal matrix element of the observable""")
+             doc = """Accumulated :math:`\chi` histogram for the i-th diagonal matrix element of the observable""")
 
 c.add_property(name = "histograms",
                getter = cfunction(signature = "std::optional<std::vector<histogram>> get_histograms ()"),
-               doc = """Accumulated objective function histograms, one per diagonal matrix element of the observable""")
+               doc = """Accumulated :math:`\chi` histograms, one per diagonal matrix element of the observable""")
 
 #
 # Other attributes of SomCore
@@ -476,7 +477,7 @@ c.add_property(name = "accumulate_status",
 
 c.add_property(name = "objf_min",
                getter = cfunction("std::vector<double> get_objf_min ()"),
-               doc = """Minimum of the objective function over all accumulated particular solutions (one value per a diagonal matrix element of the observable)""")
+               doc = """Minimum of the objective function :math:`\chi^2` over all accumulated particular solutions (one value per diagonal matrix element of the observable)""")
 
 module.add_class(c)
 
@@ -488,7 +489,7 @@ module.add_function("void fill_refreq(gf_view<refreq> g_w, som_core cont, bool w
                     doc = """Fill a real-frequency observable from a computed SOM solution""")
 
 module.add_function("void fill_refreq(gf_view<refreq> g_w, observable_kind kind, std::vector<configuration> solutions, bool with_binning = false)",
-                    doc = """Fill a real-frequency observable from a list of solutions (one solution per a diagonal matrix element of the observable)""")
+                    doc = """Fill a real-frequency observable from a list of solutions (one solution per diagonal matrix element of the observable)""")
 
 #
 # compute_tail()
@@ -498,7 +499,7 @@ module.add_function("triqs::arrays::array<dcomplex, 3> compute_tail(int max_orde
                     doc = """Compute tail coefficients from a computed SOM solution""")
 
 module.add_function("triqs::arrays::array<dcomplex, 3> compute_tail(int max_order, observable_kind kind, std::vector<configuration> solutions)",
-                    doc = """Compute tail coefficients from a list of solutions (one solution per a diagonal matrix element of the observable)""")
+                    doc = """Compute tail coefficients from a list of solutions (one solution per diagonal matrix element of the observable)""")
 
 #
 # reconstruct()
@@ -512,10 +513,10 @@ module.add_function("void reconstruct(gf_view<legendre> g, som_core cont)",
                     doc = """Reconstruct an observable in the Legendre polynomial basis from a computed SOM solution""")
 
 module.add_function("void reconstruct(gf_view<imtime> g, observable_kind kind, std::vector<configuration> solutions)",
-                    doc = """Reconstruct an observable in the imaginary-time representation from a list of solutions (one solution per a diagonal matrix element of the observable)""")
+                    doc = """Reconstruct an observable in the imaginary-time representation from a list of solutions (one solution per diagonal matrix element of the observable)""")
 module.add_function("void reconstruct(gf_view<imfreq> g, observable_kind kind, std::vector<configuration> solutions)",
-                    doc = """Reconstruct an observable in the imaginary-frequency representation from a list of solutions (one solution per a diagonal matrix element of the observable)""")
+                    doc = """Reconstruct an observable in the imaginary-frequency representation from a list of solutions (one solution per diagonal matrix element of the observable)""")
 module.add_function("void reconstruct(gf_view<legendre> g, observable_kind kind, std::vector<configuration> solutions)",
-                    doc = """Reconstruct an observable in the Legendre polynomial basis from a list of solutions (one solution per a diagonal matrix element of the observable)""")
+                    doc = """Reconstruct an observable in the Legendre polynomial basis from a list of solutions (one solution per diagonal matrix element of the observable)""")
 
 module.generate_code()

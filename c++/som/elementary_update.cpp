@@ -20,6 +20,7 @@
  ******************************************************************************/
 
 #ifdef EXT_DEBUG
+#include <cmath>
 #include <iostream>
 
 #include <triqs/utility/numeric_ops.hpp>
@@ -134,7 +135,7 @@ template <typename KernelType> double elementary_update<KernelType>::accept() {
   std::cerr << "* Elementary update accepted" << std::endl;
   std::cerr << "Temporary configuration: size = " << data.temp_conf.size()
             << ", norm = " << data.temp_conf.norm()
-            << ", D = " << data.temp_objf_value << std::endl;
+            << ", \\chi = " << std::sqrt(data.temp_objf_value) << std::endl;
   using triqs::utility::is_zero;
   if(!is_zero(data.temp_conf.norm() - data.global_conf.norm(), 1e-10))
     TRIQS_RUNTIME_ERROR
@@ -157,8 +158,9 @@ template <typename KernelType> double elementary_update<KernelType>::accept() {
   if(data.temp_objf_value < data.global_objf_value) {
 #ifdef EXT_DEBUG
     std::cerr << "Copying temporary configuration to global configuration "
-              << "(D(temp) = " << data.temp_objf_value
-              << ", D(global) = " << data.global_objf_value << ")" << std::endl;
+              << "(\\chi(temp) = " << std::sqrt(data.temp_objf_value)
+              << ", \\chi(global) = " << std::sqrt(data.global_objf_value)
+              << ")" << std::endl;
 #endif
     data.global_conf = data.temp_conf;
     kern.cache_copy(data.temp_conf, data.global_conf);
@@ -182,7 +184,7 @@ template <typename KernelType> void elementary_update<KernelType>::reject() {
   std::cerr << "* Elementary update rejected" << std::endl;
   std::cerr << "Temporary configuration: size = " << data.temp_conf.size()
             << ", norm = " << data.temp_conf.norm()
-            << ", D = " << data.temp_objf_value << std::endl;
+            << ", \\chi = " << std::sqrt(data.temp_objf_value) << std::endl;
   std::cerr << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << std::endl;
 #endif
 
