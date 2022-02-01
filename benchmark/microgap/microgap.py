@@ -63,7 +63,7 @@ for s in abs_error:
         if mpi.is_master_node():
             abs_err_gr.create_group(name)
             gr = abs_err_gr[name]
-            gr['params'] = cont.last_run_parameters
+            gr['params'] = cont.last_accumulate_parameters
             gr['exec_time'] = exec_time
             gr['g'] = g
             gr['g_w'] = g_w
