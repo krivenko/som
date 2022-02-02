@@ -49,6 +49,18 @@ enum resolution_function : unsigned int {
 double spectral_integral(double z_m, double delta_m, configuration const& c,
                          resolution_function r_func);
 
+/// Spectral integrals i_m^{(j)} (Eq. (4) of [1]) for all points z_m
+/// of a regular real frequency mesh.
+triqs::arrays::vector<double>
+spectral_integral(triqs::gfs::gf_mesh<triqs::gfs::refreq> const& mesh,
+                  configuration const& c, resolution_function r_func);
+
+/// Spectral integrals i_m^{(j)} (Eq. (4) of [1]) for an arbitrary set
+/// of real frequency intervals.
+triqs::arrays::vector<double>
+spectral_integral(std::vector<std::pair<double, double>> const& intervals,
+                  configuration const& c, resolution_function r_func);
+
 /// Spectral averages i_m (Eq. (6) of [1])
 ///
 /// i_m = J^{-1} \sum_{j=1}^J i_m^{(j)}

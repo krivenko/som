@@ -54,6 +54,14 @@ module.add_enum("resolution_function",
 module.add_function("double spectral_integral(double z_m, double delta_m, configuration c, resolution_function r_func)",
                     doc = r"""Spectral integral :math:`i_m^{(j)} = \int_{-\infty}^\infty dz \bar K(m, z) A^{(j)}(z)`.""")
 
+module.add_function("vector<double> spectral_integral(gf_mesh<refreq> mesh, configuration c, resolution_function r_func)",
+                    doc = r"""Spectral integrals :math:`i_m^{(j)} = \int_{-\infty}^\infty dz \bar K(m, z) A^{(j)}(z)`\
+parametrized by real energy points from a regular mesh.""")
+
+module.add_function("vector<double> spectral_integral(std::vector<std::pair<double, double>> intervals, configuration c, resolution_function r_func)",
+                    doc = r"""Spectral integrals :math:`i_m^{(j)} = \int_{-\infty}^\infty dz \bar K(m, z) A^{(j)}(z)`
+parametrized by a list of real energy intervals.""")
+
 #
 # spectral_avg()
 #

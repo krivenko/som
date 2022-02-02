@@ -63,6 +63,30 @@ protected:
   }
 };
 
+TEST_F(spectral_stats, spectral_integral) {
+  configuration c{{0, 1, 2}, {1, 4, 1}, {3, 2, 3}};
+
+  EXPECT_NEAR(spectral_integral(2.0, 1.5, c, rectangle), 2.5, 1e-10);
+  EXPECT_NEAR(spectral_integral(2.0, 1.5, c, lorentzian), 1.9842074284, 1e-10);
+  EXPECT_NEAR(spectral_integral(2.0, 1.5, c, gaussian), 2.4419081106, 1e-10);
+
+  triqs::arrays::vector<double> ref(mesh.size());
+
+  ref = {0., 0., 1.7, 2.8, 0.3};
+  EXPECT_ARRAY_NEAR(spectral_integral(mesh, c, rectangle), ref, 1e-10);
+  ref = {0.1142532345, 0.3316005188, 1.3177758720, 1.8161452063, 0.6213209141};
+  EXPECT_ARRAY_NEAR(spectral_integral(mesh, c, lorentzian), ref, 1e-10);
+  ref = {0.0009945621, 0.2087447961, 1.5639704932, 2.3671263370, 0.6660794784};
+  EXPECT_ARRAY_NEAR(spectral_integral(mesh, c, gaussian), ref, 1e-10);
+
+  ref = {0., 2., 1.5};
+  EXPECT_ARRAY_NEAR(spectral_integral(interv, c, rectangle), ref, 1e-10);
+  ref = {0.1341663357, 1.4467315501, 1.2823782799};
+  EXPECT_ARRAY_NEAR(spectral_integral(interv, c, lorentzian), ref, 1e-10);
+  ref = {0.0018083638, 1.6740000753, 1.5908630342};
+  EXPECT_ARRAY_NEAR(spectral_integral(interv, c, gaussian), ref, 1e-10);
+}
+
 TEST_F(spectral_stats, spectral_avg_mesh) {
   triqs::arrays::vector<double> ref(mesh.size());
 
