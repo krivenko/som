@@ -96,6 +96,12 @@ double configuration::norm() const {
       [](double n, rectangle const& r) { return n + r.norm(); });
 }
 
+double configuration::operator()(double e) const {
+  return std::accumulate(
+      rects.begin(), rects.end(), double(0),
+      [e](double s, rectangle const& r) { return s + r(e); });
+}
+
 configuration& configuration::operator+=(configuration const& c) {
   rects.reserve(rects.size() + c.rects.size());
   std::copy(c.rects.begin(), c.rects.end(), std::back_inserter(rects));

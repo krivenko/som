@@ -20,8 +20,12 @@
  ******************************************************************************/
 #include <triqs/test_tools/arrays.hpp>
 
+#include <triqs/gfs.hpp>
+
 #include <som/configuration.hpp>
 
+using namespace triqs::arrays;
+using namespace triqs::gfs;
 using namespace som;
 
 cache_index ci;
@@ -35,6 +39,17 @@ configuration
           ci);
 std::string conf2_str =
     "(c:-3, w:2.6, h:0.3),(c:-1.6, w:2.4, h:0.1),(c:2.8, w:2.8, h:0.55)";
+
+TEST(configuration, Evaluation) {
+  gf_mesh<refreq> mesh(-5.0, 5.0, 11);
+  vector<double> ref1 = {.0, .0, 0.3, 0.3, 0.3, 0.6, 1.3, 1.3, 0.7, .0, .0};
+  vector<double> ref2 = {.0, 0.3, 0.3, 0.4, 0.1, .0, .0, 0.55, 0.55, 0.55, .0};
+
+  for(int k = 0; k < mesh.size(); ++k) {
+    EXPECT_CLOSE(conf1(mesh[k]), ref1(k));
+    EXPECT_CLOSE(conf2(mesh[k]), ref2(k));
+  }
+}
 
 TEST(configuration, Print) {
   ASSERT_PRINT(conf1_str, conf1);

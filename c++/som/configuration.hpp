@@ -86,6 +86,9 @@ public:
   // Norm of this configuration
   [[nodiscard]] double norm() const;
 
+  // Evaluate configuration at an energy point
+  [[nodiscard]] double operator()(double e) const;
+
   // Access a rectangle by index
   rectangle const& operator[](int index) const { return rects[index]; }
 
