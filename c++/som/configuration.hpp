@@ -23,6 +23,7 @@
 #include <initializer_list>
 #include <iostream>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include <h5/h5.hpp>
@@ -122,6 +123,13 @@ public:
   [[nodiscard]] const_iterator end() const { return rects.end(); }
   [[nodiscard]] const_iterator cbegin() const { return rects.cbegin(); }
   [[nodiscard]] const_iterator cend() const { return rects.cend(); }
+
+  // Convert a given configuration into a non-overlapping configuration of
+  // rectangles with possibly zero heights.
+  // (Section II.A of O. Goulko et al. Phys. Rev. B 95, 014102 (2017)).
+  friend configuration
+  make_nonoverlapping(configuration const& c,
+                      std::pair<double, double> const& energy_window);
 
   // stream insertion
   friend std::ostream& operator<<(std::ostream& os, configuration const& c);

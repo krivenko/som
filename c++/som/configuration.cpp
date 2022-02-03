@@ -22,6 +22,7 @@
 #include <algorithm>
 #include <iterator>
 #include <numeric>
+#include <set>
 
 #include <nda/h5.hpp>
 #include <nda/nda.hpp>
@@ -191,6 +192,36 @@ void h5_read(h5::group gr, std::string const& name, configuration& c) {
       c.insert({data(i, 0), data(i, 1), data(i, 2), c.cache_ptr.get_ci()});
     else
       c.insert({data(i, 0), data(i, 1), data(i, 2)});
+}
+
+configuration
+make_nonoverlapping(configuration const& c,
+                    std::pair<double, double> const& energy_window) {
+  std::set<double> boundaries;
+  for(auto const& r : c.rects) {
+    boundaries.emplace(r.center - r.width / 2);
+    boundaries.emplace(r.center + r.width / 2);
+  }
+  boundaries.emplace_hint(boundaries.begin(), energy_window.first);
+  boundaries.emplace_hint(boundaries.end(), energy_window.second);
+
+  auto nonoverlapping = c.cache_ptr ? configuration(c.cache_ptr.get_ci()) :
+                                      configuration();
+
+  auto it_left = boundaries.begin();
+  auto it_right = boundaries.begin();
+  for(++it_right; it_right != boundaries.end(); ++it_left, ++it_right) {
+    double center = (*it_left + *it_right) / 2;
+    double width = *it_right - *it_left;
+    double height = c(center);
+    if(c.cache_ptr)
+      nonoverlapping.insert(rectangle(center, width, height,
+                                      c.cache_ptr.get_ci()));
+    else
+      nonoverlapping.insert(rectangle(center, width, height));
+  }
+
+  return nonoverlapping;
 }
 
 } // namespace som

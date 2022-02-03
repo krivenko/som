@@ -110,3 +110,17 @@ TEST_F(configuration_test, prune) {
       {{-2.0, 2.6, 0.3, ci}, {1.3, 2.6, 0.6, ci}, {2.0, 2.6, 0.7, ci}});
   EXPECT_EQ(conf, ref);
 }
+
+TEST_F(configuration_test, make_nonoverlapping) {
+  configuration conf({{0.5, 6.0, 1.0}, {3.1, 1.8, 2.0}, {-0.5, 1.0, 3.0}}, ci);
+  configuration ref({{-2.75, 0.5, 0.0, ci},
+                     {-1.75, 1.5, 1.0, ci},
+                     {-0.5, 1.0, 4.0, ci},
+                     {1.1, 2.2, 1.0, ci},
+                     {2.85, 1.3, 3.0, ci},
+                     {3.75, 0.5, 2.0, ci},
+                     {4.5, 1.0, 0.0, ci}},
+                    ci);
+  auto nonoverlapping = make_nonoverlapping(conf, {-3.0, 5.0});
+  EXPECT_EQ(nonoverlapping, ref);
+}
