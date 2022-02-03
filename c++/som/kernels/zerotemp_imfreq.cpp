@@ -44,10 +44,10 @@ void kernel<ZeroTemp, imfreq>::apply(
 
 std::ostream& operator<<(std::ostream& os,
                          kernel<ZeroTemp, imfreq> const& kern) {
-  os << R"(A(\epsilon) -> G_{T=0}(i\omega), )";
+  os << R"(A(ϵ) -> G_{T=0}(iω), )";
   os << "Statistics = "
      << (kern.mesh.domain().statistic == Fermion ? "Fermion" : "Boson") << ", "
-     << R"(\Delta\omega = )" << (2 * M_PI) / kern.mesh.domain().beta << ", "
+     << R"(Δω = )" << (2 * M_PI) / kern.mesh.domain().beta << ", "
      << kern.mesh.size() << " Matsubara frequencies.";
   return os;
 }

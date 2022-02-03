@@ -51,11 +51,11 @@ void kernel<ZeroTemp, imtime>::apply(rectangle const& rect,
 
 std::ostream& operator<<(std::ostream& os,
                          kernel<ZeroTemp, imtime> const& kern) {
-  os << R"(A(\epsilon) -> G_{T=0}(\tau), )";
+  os << R"(A(ϵ) -> G_{T=0}(τ), )";
   os << "Statistics = "
      << (kern.mesh.domain().statistic == Fermion ? "Fermion" : "Boson") << ", "
-     << R"(\tau_{max} = )" << kern.mesh.domain().beta << ", "
-     << kern.mesh.size() << " Matsubara frequencies.";
+     << R"(τ_{max} = )" << kern.mesh.domain().beta << ", "
+     << kern.mesh.size() << R"( τ-points.)";
   return os;
 }
 

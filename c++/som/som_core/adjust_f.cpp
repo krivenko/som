@@ -114,8 +114,8 @@ int som_core::adjust_f_impl(adjust_f_parameters_t const& p) {
             std::cout << "[Rank " << comm.rank() << "] Particular solution "
                       << n_sol << " is "
                       << (kappa > p.kappa ? "" : "not ")
-                      << R"(good (\kappa = )" << kappa
-                      << ", \\chi = "
+                      << R"(good (κ = )" << kappa
+                      << ", χ = "
                       << std::sqrt(worker.get_objf_value()) << ")." << std::endl;
           }
         }
@@ -124,7 +124,7 @@ int som_core::adjust_f_impl(adjust_f_parameters_t const& p) {
 
         if(p.verbosity >= 1)
           std::cout << "F = " << F << ", " << l_good
-                    << R"( solutions with \kappa > )" << p.kappa
+                    << R"( solutions with κ > )" << p.kappa
                     << " (out of " << p.l << ")" << std::endl;
 
         // Converged

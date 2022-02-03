@@ -127,8 +127,8 @@ double kernel<ZeroTemp, legendre>::Lambda(int l, double Omega) const {
 
 std::ostream& operator<<(std::ostream& os,
                          kernel<ZeroTemp, legendre> const& kern) {
-  os << R"(A(\epsilon) -> G_{T=0}(l), )";
-  os << R"(\tau_{max} = )" << kern.tau_max << ", " << kern.mesh.size()
+  os << R"(A(ϵ) -> G_{T=0}(ℓ), )";
+  os << R"(τ_{max} = )" << kern.tau_max << ", " << kern.mesh.size()
      << " Legendre coefficients.";
   return os;
 }

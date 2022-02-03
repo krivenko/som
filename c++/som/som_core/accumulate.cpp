@@ -153,7 +153,7 @@ void som_core::accumulate_impl() {
 
         if(params.verbosity >= 2) {
           std::cout << "[Rank " << comm.rank() << "] Solution " << n_sol
-                    << ": \\chi = " << std::sqrt(chi2) << std::endl;
+                    << ": χ = " << std::sqrt(chi2) << std::endl;
         }
       }
       comm.barrier();
@@ -175,11 +175,11 @@ void som_core::accumulate_impl() {
       n_verygood_solutions = mpi::all_reduce(n_verygood_solutions);
 
       if(params.verbosity >= 1) {
-        std::cout << "\\chi_min = " << chi_min << std::endl;
-        std::cout << "Number of good solutions (\\chi/\\chi_min <= "
+        std::cout << "χ_min = " << chi_min << std::endl;
+        std::cout << "Number of good solutions (χ / χ_min <= "
                   << params.adjust_l_good_chi << ") = " << n_good_solutions
                   << std::endl;
-        std::cout << "Number of very good solutions (\\chi/\\chi_min <= "
+        std::cout << "Number of very good solutions (χ / χ_min <= "
                   << params.adjust_l_verygood_chi << ") = " << n_verygood_solutions
                   << std::endl;
       }

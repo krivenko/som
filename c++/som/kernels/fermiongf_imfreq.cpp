@@ -47,8 +47,8 @@ void kernel<FermionGf, imfreq>::apply(
 
 std::ostream& operator<<(std::ostream& os,
                          kernel<FermionGf, imfreq> const& kern) {
-  os << R"(A(\epsilon) -> G(i\omega), )";
-  os << R"(\beta = )" << kern.beta << ", " << kern.mesh.size()
+  os << R"(A(ϵ) -> G(iω), )";
+  os << R"(β = )" << kern.beta << ", " << kern.mesh.size()
      << " Matsubara frequencies.";
   return os;
 }

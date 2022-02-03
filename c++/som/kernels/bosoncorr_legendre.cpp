@@ -133,8 +133,8 @@ double kernel<BosonCorr, legendre>::Lambda(int l, double Omega) const {
 
 std::ostream& operator<<(std::ostream& os,
                          kernel<BosonCorr, legendre> const& kern) {
-  os << R"(A(\epsilon) -> \chi(l), )";
-  os << R"(\beta = )" << kern.beta << ", " << kern.mesh.size()
+  os << R"(A(ϵ) -> χ(ℓ), )";
+  os << R"(β = )" << kern.beta << ", " << kern.mesh.size()
      << " Legendre coefficients.";
   return os;
 }

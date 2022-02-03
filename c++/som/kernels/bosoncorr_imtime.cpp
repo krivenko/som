@@ -217,9 +217,9 @@ void kernel<BosonCorr, imtime>::apply(rectangle const& rect,
 
 std::ostream& operator<<(std::ostream& os,
                          kernel<BosonCorr, imtime> const& kern) {
-  os << R"(A(\epsilon) -> \chi(\tau), )";
-  os << R"(\beta = )" << kern.beta << ", " << kern.mesh.size()
-     << R"( \tau-points.)";
+  os << R"(A(ϵ) -> χ(τ), )";
+  os << R"(β = )" << kern.beta << ", " << kern.mesh.size()
+     << R"( τ-points.)";
   return os;
 }
 

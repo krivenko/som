@@ -185,9 +185,8 @@ void kernel<FermionGf, imtime>::apply(rectangle const& rect,
 
 std::ostream& operator<<(std::ostream& os,
                          kernel<FermionGf, imtime> const& kern) {
-  os << R"(A(\epsilon) -> G(\tau), )";
-  os << R"(\beta = )" << kern.beta << ", " << kern.mesh.size()
-     << R"( \tau-points.)";
+  os << R"(A(ϵ) -> G(τ), )";
+  os << R"(β = )" << kern.beta << ", " << kern.mesh.size() << R"( τ-points.)";
   return os;
 }
 

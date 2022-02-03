@@ -53,8 +53,8 @@ void kernel<BosonAutoCorr, imfreq>::apply(
 
 std::ostream& operator<<(std::ostream& os,
                          kernel<BosonAutoCorr, imfreq> const& kern) {
-  os << R"(A(\epsilon) -> \chi_{sym}(i\Omega), )";
-  os << R"(\beta = )" << kern.beta << ", " << kern.mesh.size()
+  os << R"(A(ϵ) -> χ_{sym}(iΩ), )";
+  os << R"(β = )" << kern.beta << ", " << kern.mesh.size()
      << " Matsubara frequencies.";
   return os;
 }
