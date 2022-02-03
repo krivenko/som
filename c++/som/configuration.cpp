@@ -23,8 +23,8 @@
 #include <iterator>
 #include <numeric>
 
-#include <nda/nda.hpp>
 #include <nda/h5.hpp>
+#include <nda/nda.hpp>
 
 #include <triqs/utility/exceptions.hpp>
 
@@ -66,18 +66,14 @@ configuration::configuration(std::initializer_list<rectangle> const& l,
 }
 
 configuration::configuration(configuration const& c)
-   : rects(c.rects),
-  cache_ptr(c.cache_ptr ?
-            cache_entry_ptr(c.cache_ptr.get_ci()) :
-            cache_entry_ptr())
-{}
+   : rects(c.rects)
+   , cache_ptr(c.cache_ptr ? cache_entry_ptr(c.cache_ptr.get_ci())
+                           : cache_entry_ptr()) {}
 
 configuration::configuration(configuration&& c) noexcept
-   : rects(std::move(c.rects)),
-  cache_ptr(c.cache_ptr ?
-            cache_entry_ptr(c.cache_ptr.get_ci()) :
-            cache_entry_ptr())
-{}
+   : rects(std::move(c.rects))
+   , cache_ptr(c.cache_ptr ? cache_entry_ptr(c.cache_ptr.get_ci())
+                           : cache_entry_ptr()) {}
 
 // cppcheck-suppress operatorEqVarError
 configuration& configuration::operator=(configuration const& c) {
@@ -94,14 +90,16 @@ configuration& configuration::operator=(configuration&& c) noexcept {
 
 double configuration::norm() const {
   return std::accumulate(
-      rects.begin(), rects.end(), double(0),
-      [](double n, rectangle const& r) { return n + r.norm(); });
+      rects.begin(), rects.end(), double(0), [](double n, rectangle const& r) {
+        return n + r.norm();
+      });
 }
 
 double configuration::operator()(double e) const {
   return std::accumulate(
-      rects.begin(), rects.end(), double(0),
-      [e](double s, rectangle const& r) { return s + r(e); });
+      rects.begin(), rects.end(), double(0), [e](double s, rectangle const& r) {
+        return s + r(e);
+      });
 }
 
 configuration& configuration::operator+=(configuration const& c) {
@@ -117,7 +115,9 @@ configuration configuration::operator+(configuration const& c) const {
 }
 
 configuration& configuration::operator*=(double alpha) {
-  std::transform(rects.begin(), rects.end(), rects.begin(),
+  std::transform(rects.begin(),
+                 rects.end(),
+                 rects.begin(),
                  [&](rectangle const& r) { return r * alpha; });
   cache_ptr.invalidate_entry();
   return *this;
@@ -138,10 +138,24 @@ void configuration::normalize(double norm) {
     TRIQS_RUNTIME_ERROR << "Configuration must have a positive norm; norm = "
                         << norm << " is requested";
   double old_norm = std::accumulate(
-      rects.begin(), rects.end(), .0,
-      [](double n, rectangle const& r) { return n + r.norm(); });
-  std::transform(rects.begin(), rects.end(), rects.begin(),
+      rects.begin(), rects.end(), .0, [](double n, rectangle const& r) {
+        return n + r.norm();
+      });
+  std::transform(rects.begin(),
+                 rects.end(),
+                 rects.begin(),
                  [&](rectangle const& r) { return r * (norm / old_norm); });
+  cache_ptr.invalidate_entry();
+}
+
+void configuration::prune(double width_min, double weight_min) {
+  rects.erase(std::remove_if(rects.begin(),
+                             rects.end(),
+                             [=](rectangle const& r) {
+                               return r.width < width_min ||
+                                      r.norm() < weight_min;
+                             }),
+              rects.end());
   cache_ptr.invalidate_entry();
 }
 
@@ -157,8 +171,7 @@ std::ostream& operator<<(std::ostream& os, configuration const& c) {
   return os;
 }
 
-void h5_write(h5::group gr, std::string const& name,
-              configuration const& c) {
+void h5_write(h5::group gr, std::string const& name, configuration const& c) {
   using nda::array;
   array<double, 2> data(c.size(), 3);
   for(int i = 0; i < c.size(); ++i)

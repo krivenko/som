@@ -112,6 +112,10 @@ public:
   // Normalize configuration to have a total area of norm
   void normalize(double norm = 1.0);
 
+  // Remove rectangles with width below `width_min` or with weight
+  // below `weight_min`.
+  void prune(double width_min, double weight_min);
+
   // constant iterator
   using const_iterator = std::vector<rectangle>::const_iterator;
   [[nodiscard]] const_iterator begin() const { return rects.begin(); }

@@ -97,3 +97,16 @@ TEST_F(configuration_test, normalize) {
   conf2.normalize(2.56);
   EXPECT_PRINT(conf2_str, conf2);
 }
+
+TEST_F(configuration_test, prune) {
+  configuration conf({{-2.0, 2.6, 0.3, ci},
+                      {-1.0, 1e-5, 1e5, ci},
+                      {1.3, 2.6, 0.6, ci},
+                      {2.0, 2.6, 0.7, ci},
+                      {3.0, 0.01, 0.01, ci}},
+                     ci);
+  conf.prune(1e-4, 1e-3);
+  configuration ref(
+      {{-2.0, 2.6, 0.3, ci}, {1.3, 2.6, 0.6, ci}, {2.0, 2.6, 0.7, ci}});
+  EXPECT_EQ(conf, ref);
+}
