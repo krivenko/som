@@ -37,8 +37,8 @@ kernel<ZeroTemp, imtime>::kernel(mesh_type const& mesh)
 void kernel<ZeroTemp, imtime>::apply(rectangle const& rect,
                                      result_type& res) const {
 
-  double e1 = rect.center - rect.width / 2;
-  double e2 = rect.center + rect.width / 2;
+  double e1 = rect.left();
+  double e2 = rect.right();
 
   auto it = mesh.begin();
   res(0) = -rect.height * rect.width;

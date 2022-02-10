@@ -147,8 +147,7 @@ template <typename KernelType> double elementary_update<KernelType>::accept() {
       TRIQS_RUNTIME_ERROR << "Rectangle is too narrow: " << r;
     if(r.height < 0)
       TRIQS_RUNTIME_ERROR << "Rectangle with negative height: " << r;
-    if(r.center - r.width / 2 < energy_window.first ||
-       r.center + r.width / 2 > energy_window.second)
+    if(r.left() < energy_window.first || r.right() > energy_window.second)
       TRIQS_RUNTIME_ERROR << "Rectangle is not within energy window: " << r;
   }
 #endif

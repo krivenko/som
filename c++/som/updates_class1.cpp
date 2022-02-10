@@ -42,8 +42,8 @@ template <typename KernelType> double update_shift<KernelType>::attempt() {
   int t = eu::rng(eu::data.temp_conf.size());
   auto const& rect = eu::data.temp_conf[t];
 
-  double dc_min = energy_window.first + rect.width / 2 - rect.center;
-  double dc_max = energy_window.second - rect.width / 2 - rect.center;
+  double dc_min = energy_window.first - rect.left();
+  double dc_max = energy_window.second - rect.right();
   double dc = eu::generate_parameter_change(dc_min, dc_max);
   if(dc == 0) return 0;
 

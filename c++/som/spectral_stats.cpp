@@ -55,22 +55,22 @@ double spectral_integral(double z_m, double delta_m, configuration const& c,
           c, [delta_m, z_min = z_m - delta_m / 2,
               z_max = z_m + delta_m / 2](struct rectangle const& r) {
             return (r.height / delta_m) * overlap(z_min, z_max,
-                                                  r.center - r.width / 2,
-                                                  r.center + r.width / 2);
+                                                  r.left(),
+                                                  r.right());
           });
     case lorentzian:
       return spectral_integral_impl(
           c, [z_m, delta_m](struct rectangle const& r) {
             return (r.height / M_PI) *
-                   (std::atan((r.center + r.width / 2 - z_m) / (delta_m / 2)) -
-                    std::atan((r.center - r.width / 2 - z_m) / (delta_m / 2)));
+                   (std::atan((r.right() - z_m) / (delta_m / 2)) -
+                    std::atan((r.left() - z_m) / (delta_m / 2)));
           });
     case gaussian:
       return spectral_integral_impl(
           c, [z_m, delta_m](struct rectangle const& r) {
-            return (r.height / 2) * (std::erf((r.center + r.width / 2 - z_m) /
+            return (r.height / 2) * (std::erf((r.right() - z_m) /
                                               (M_SQRT2 * delta_m / 2)) -
-                                     std::erf((r.center - r.width / 2 - z_m) /
+                                     std::erf((r.left() - z_m) /
                                               (M_SQRT2 * delta_m / 2)));
           });
   }

@@ -34,8 +34,8 @@ kernel<ZeroTemp, imfreq>::kernel(
 void kernel<ZeroTemp, imfreq>::apply(
     rectangle const& rect, kernel<ZeroTemp, imfreq>::result_type& res) const {
 
-  double e1 = rect.center - rect.width / 2;
-  double e2 = rect.center + rect.width / 2;
+  double e1 = rect.left();
+  double e2 = rect.right();
 
   for(auto iw : mesh)
     res(iw.linear_index()) =

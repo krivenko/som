@@ -37,8 +37,8 @@ kernel<BosonCorr, imfreq>::kernel(
 void kernel<BosonCorr, imfreq>::apply(
     rectangle const& rect, kernel<BosonCorr, imfreq>::result_type& res) const {
 
-  double e1 = rect.center - rect.width / 2;
-  double e2 = rect.center + rect.width / 2;
+  double e1 = rect.left();
+  double e2 = rect.right();
 
   auto it = std::begin(mesh);
   res((*it).linear_index()) = rect.height * rect.width / M_PI; // \Omega = 0

@@ -38,27 +38,26 @@ bool rectangle::operator==(rectangle const& r) const {
 }
 
 double rectangle::operator()(double x) const {
-  return (x >= center - width / 2 && x <= center + width / 2) ? height : 0;
+  return (x >= left() && x <= right()) ? height : 0;
 }
 
 std::complex<double> rectangle::hilbert_transform(std::complex<double> z,
                                                   bool multiply_by_e) const {
   if(multiply_by_e)
     // -h \int_{c-w/2}^{c+w/2} d\epsilon' \frac{\epsilon'}{\epsilon' - z - i0}
-    return -height * (width + z * std::log((center + width / 2 - z) /
-                                           (center - width / 2 - z)));
+    return -height * (width + z * std::log((right() - z) / (left() - z)));
   else
     // -h \int_{c-w/2}^{c+w/2} d\epsilon' \frac{1}{\epsilon' - z - i0}
     return -height *
-           std::log((center + width / 2 - z) / (center - width / 2 - z));
+           std::log((right() - z) / (left() - z));
 }
 
 std::complex<double>
 rectangle::averaged_hilbert_transform(std::complex<double> ea,
                                       std::complex<double> eb,
                                       bool multiply_by_e) const {
-  double ra = center - width / 2;
-  double rb = center + width / 2;
+  double ra = left();
+  double rb = right();
   if(multiply_by_e) {
     // -h \frac{1}{e_b - e_a} \int_{e_a}^{e_b} dz
     //    \int_{c-w/2}^{c+w/2} d\epsilon' \frac{\epsilon'}{\epsilon' - z - i0}
@@ -82,7 +81,7 @@ rectangle::averaged_hilbert_transform(std::complex<double> ea,
 vector<double> rectangle::tail_coefficients(long order_min, long order_max,
                                             bool multiply_by_e) const {
   vector<double> data(order_max - order_min + 1);
-  double e1 = center - width / 2, e2 = center + width / 2;
+  double e1 = left(), e2 = right();
   double e1n, e2n;
   int denom_shift;
   if(multiply_by_e) {

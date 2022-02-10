@@ -174,8 +174,8 @@ kernel<FermionGf, imtime>::kernel(mesh_type const& mesh)
 void kernel<FermionGf, imtime>::apply(rectangle const& rect,
                                       result_type& res) const {
 
-  double x1 = beta * (rect.center - rect.width / 2);
-  double x2 = beta * (rect.center + rect.width / 2);
+  double x1 = beta * rect.left();
+  double x2 = beta * rect.right();
 
   for(auto tau : mesh) {
     auto const& lambda = lambdas[tau.linear_index()];

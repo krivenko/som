@@ -144,8 +144,8 @@ double update_remove_shift<KernelType>::attempt() {
   auto const& rect1 = eu::data.temp_conf[t1];
   auto const& rect2 = eu::data.temp_conf[t2];
 
-  double dc2_min = energy_window.first + rect2.width / 2 - rect2.center;
-  double dc2_max = energy_window.second - rect2.width / 2 - rect2.center;
+  double dc2_min = energy_window.first - rect2.left();
+  double dc2_max = energy_window.second - rect2.right();
   double dc2 = eu::generate_parameter_change(dc2_min, dc2_max);
   if(dc2 == 0) return 0;
 
@@ -233,8 +233,8 @@ double update_split_shift<KernelType>::attempt() {
       std::min(rect.width - width_min, rect.width - weight_min / rect.height);
   double w1 = eu::rng(w_min, w_max);
   double w2 = rect.width - w1;
-  double c1 = rect.center - rect.width / 2 + w1 / 2;
-  double c2 = rect.center + rect.width / 2 - w2 / 2;
+  double c1 = rect.left() + w1 / 2;
+  double c2 = rect.right() - w2 / 2;
 
   if(w1 <= w2) {
     double dc1_min = std::max(energy_window.first + w1 / 2 - c1,

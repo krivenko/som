@@ -92,6 +92,11 @@ public:
   [[nodiscard]] double norm() const { return width * height; }
   double operator()(double x) const;
 
+  // Position of the left boundary
+  [[nodiscard]] inline double left() const { return center - width / 2; }
+  // Position of the right boundary
+  [[nodiscard]] inline double right() const { return center + width / 2; }
+
   // Hilbert transform of a rectangle
   [[nodiscard]] std::complex<double>
   hilbert_transform(std::complex<double> z, bool multiply_by_e = false) const;
