@@ -46,7 +46,8 @@ static double make_a(long k, long l) {
 // kernel<BosonCorr, legendre>::evaluator //
 ////////////////////////////////////////////
 
-kernel<BosonCorr, legendre>::evaluator::evaluator(long l, double x0_start,
+kernel<BosonCorr, legendre>::evaluator::evaluator(long l,
+                                                  double x0_start,
                                                   double beta)
    : log_coeff(-0.5 * double(l * (l + 1)))
    , pref((2 / (M_PI * beta)) * std::sqrt(2 * l + 1)) {
@@ -117,7 +118,7 @@ kernel<BosonCorr, legendre>::kernel(mesh_type const& mesh)
 }
 
 void kernel<BosonCorr, legendre>::apply(rectangle const& rect,
-                                        result_type& res) const {
+                                        result_view_type res) const {
 
   double e1 = rect.left();
   double e2 = rect.right();

@@ -113,7 +113,7 @@ kernel<FermionGf, legendre>::kernel(mesh_type const& mesh)
 }
 
 void kernel<FermionGf, legendre>::apply(rectangle const& rect,
-                                        result_type& res) const {
+                                        result_view_type res) const {
 
   double e1 = rect.left();
   double e2 = rect.right();

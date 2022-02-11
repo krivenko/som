@@ -35,7 +35,8 @@ using namespace triqs::gfs;
 //////////////////////////////////////////
 
 kernel<FermionGf, imtime>::evaluator::evaluator(
-    mesh_type const& mesh, mesh_type::mesh_point_t const& tau) {
+    mesh_type const& mesh,
+    mesh_type::mesh_point_t const& tau) {
   using boost::math::digamma;
   using std::atan;
   using std::exp;
@@ -174,7 +175,7 @@ kernel<FermionGf, imtime>::kernel(mesh_type const& mesh)
 
 // Apply to a rectangle
 void kernel<FermionGf, imtime>::apply(rectangle const& rect,
-                                      result_type& res) const {
+                                      result_view_type res) const {
 
   double x1 = beta * rect.left();
   double x2 = beta * rect.right();

@@ -73,6 +73,7 @@ class kernel<BosonAutoCorr, triqs::mesh::legendre>
 
 public:
   using result_type = nda::array<double, 1>;
+  using result_view_type = nda::array_view<double, 1>;
   using mesh_type = triqs::mesh::legendre;
   constexpr static observable_kind kind = BosonAutoCorr;
 
@@ -84,7 +85,7 @@ public:
   explicit kernel(mesh_type const& mesh);
 
   // Apply to a rectangle
-  void apply(rectangle const& rect, result_type& res) const;
+  void apply(rectangle const& rect, result_view_type res) const;
 
   friend std::ostream& operator<<(std::ostream& os, kernel const& kern);
 };

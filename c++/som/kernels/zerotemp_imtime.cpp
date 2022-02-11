@@ -35,7 +35,7 @@ kernel<ZeroTemp, imtime>::kernel(mesh_type const& mesh)
    : kernel_base(mesh.size()), mesh(mesh) {}
 
 void kernel<ZeroTemp, imtime>::apply(rectangle const& rect,
-                                     result_type& res) const {
+                                     result_view_type res) const {
 
   double e1 = rect.left();
   double e2 = rect.right();
@@ -54,8 +54,8 @@ std::ostream& operator<<(std::ostream& os,
   os << R"(A(ϵ) -> G_{T=0}(τ), )";
   os << "Statistics = "
      << (kern.mesh.domain().statistic == Fermion ? "Fermion" : "Boson") << ", "
-     << R"(τ_{max} = )" << kern.mesh.domain().beta << ", "
-     << kern.mesh.size() << R"( τ-points)";
+     << R"(τ_{max} = )" << kern.mesh.domain().beta << ", " << kern.mesh.size()
+     << R"( τ-points)";
   return os;
 }
 

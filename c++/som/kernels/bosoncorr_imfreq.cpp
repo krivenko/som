@@ -34,8 +34,8 @@ kernel<BosonCorr, imfreq>::kernel(
    , mesh(mesh.get_positive_freq()) {}
 
 // Apply to a rectangle
-void kernel<BosonCorr, imfreq>::apply(
-    rectangle const& rect, kernel<BosonCorr, imfreq>::result_type& res) const {
+void kernel<BosonCorr, imfreq>::apply(rectangle const& rect,
+                                      result_view_type res) const {
 
   double e1 = rect.left();
   double e2 = rect.right();

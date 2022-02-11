@@ -39,6 +39,7 @@ class kernel<ZeroTemp, triqs::mesh::imfreq>
 
 public:
   using result_type = nda::array<std::complex<double>, 1>;
+  using result_view_type = nda::array_view<std::complex<double>, 1>;
   using mesh_type = triqs::mesh::imfreq;
   constexpr static observable_kind kind = ZeroTemp;
 
@@ -48,7 +49,7 @@ public:
   explicit kernel(mesh_type const& mesh);
 
   // Apply to a rectangle
-  void apply(rectangle const& rect, result_type& res) const;
+  void apply(rectangle const& rect, result_view_type res) const;
 
   friend std::ostream& operator<<(std::ostream& os, kernel const& kern);
 };

@@ -36,7 +36,8 @@ using namespace triqs::gfs;
 //////////////////////////////////////////////
 
 kernel<BosonAutoCorr, imtime>::evaluator::evaluator(
-    mesh_type const& mesh, mesh_type::mesh_point_t const& tau) {
+    mesh_type const& mesh,
+    mesh_type::mesh_point_t const& tau) {
   using boost::math::trigamma;
   using som::dilog;
   using std::exp;
@@ -59,7 +60,10 @@ kernel<BosonAutoCorr, imtime>::evaluator::evaluator(
   if(i == 0 || i == s - 1) { // \alpha = 0, 1
     alpha_case = edge;
     nda::for_each(spline_knots.shape(), [&spline_knots, dx](int xi) {
-      if(xi == 0) { spline_knots(xi) = 0; return; }
+      if(xi == 0) {
+        spline_knots(xi) = 0;
+        return;
+      }
       double x = dx * xi;
       double expx = exp(-x);
       spline_knots(xi) = -1 + M_PI * M_PI / 3 + 2 * x * log1p(-expx) -
@@ -69,11 +73,15 @@ kernel<BosonAutoCorr, imtime>::evaluator::evaluator(
   } else if(s % 2 == 1 && i == s / 2) { // \alpha = 1/2
     alpha_case = half;
     nda::for_each(spline_knots.shape(), [&spline_knots, dx](int xi) {
-      if(xi == 0) { spline_knots(xi) = 0; return; }
+      if(xi == 0) {
+        spline_knots(xi) = 0;
+        return;
+      }
       double x = dx * xi;
       double expx2 = exp(-x / 2);
-      spline_knots(xi) = -8 + M_PI * M_PI + 4 * expx2 * (2 + x) + 2 * x * log(tanh(x / 4)) -
-             8 * real(dilog(expx2)) + 2 * real(dilog(expx2 * expx2));
+      spline_knots(xi) = -8 + M_PI * M_PI + 4 * expx2 * (2 + x) +
+                         2 * x * log(tanh(x / 4)) - 8 * real(dilog(expx2)) +
+                         2 * real(dilog(expx2 * expx2));
     });
     tail_coeff1 = 4 / (M_PI * beta_ * beta_);
   } else { // \alpha \in (0;1/2)\cup(1/2;1)
@@ -134,7 +142,7 @@ kernel<BosonAutoCorr, imtime>::kernel(mesh_type const& mesh)
 
 // Apply to a rectangle
 void kernel<BosonAutoCorr, imtime>::apply(rectangle const& rect,
-                                          result_type& res) const {
+                                          result_view_type res) const {
 
   double x1 = beta * rect.left();
   double x2 = beta * rect.right();

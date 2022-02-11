@@ -36,7 +36,8 @@ using namespace triqs::gfs;
 //////////////////////////////////////////
 
 kernel<BosonCorr, imtime>::evaluator::evaluator(
-    mesh_type const& mesh, mesh_type::mesh_point_t const& tau) {
+    mesh_type const& mesh,
+    mesh_type::mesh_point_t const& tau) {
   using boost::math::trigamma;
   using som::dilog;
   using std::exp;
@@ -73,13 +74,19 @@ kernel<BosonCorr, imtime>::evaluator::evaluator(
     if(i == 0) {  // \alpha = 0
       alpha_case = zero;
       nda::for_each(spline_m_knots.shape(), [&spline_m_knots, dx](int xi) {
-        if(xi == n_spline_knots - 1) { spline_m_knots(xi) = 0; return; }
+        if(xi == n_spline_knots - 1) {
+          spline_m_knots(xi) = 0;
+          return;
+        }
         double x = -x0 + dx * xi;
         double expx = exp(x);
         spline_m_knots(xi) = real(dilog(expx)) - pi6 + x * log1p(-expx);
       });
       nda::for_each(spline_p_knots.shape(), [&spline_p_knots, dx](int xi) {
-        if(xi == 0) { spline_p_knots(xi) = 0; return; }
+        if(xi == 0) {
+          spline_p_knots(xi) = 0;
+          return;
+        }
         double x = dx * xi;
         double expx = exp(-x);
         spline_p_knots(xi) = pi6 - real(dilog(expx)) + x * log1p(-expx);
@@ -109,13 +116,19 @@ kernel<BosonCorr, imtime>::evaluator::evaluator(
     if(i == s - 1) {          // \alpha = 1
       alpha_case = one;
       nda::for_each(spline_m_knots.shape(), [&spline_m_knots, dx](int xi) {
-        if(xi == n_spline_knots - 1) { spline_m_knots(xi) = 0; return; }
+        if(xi == n_spline_knots - 1) {
+          spline_m_knots(xi) = 0;
+          return;
+        }
         double x = -x0 + dx * double(xi);
         double expx = exp(x);
         spline_m_knots(xi) = real(dilog(expx)) - pi6 + x * log1p(-expx);
       });
       nda::for_each(spline_p_knots.shape(), [&spline_p_knots, dx](int xi) {
-        if(xi == 0) { spline_p_knots(xi) = 0; return; }
+        if(xi == 0) {
+          spline_p_knots(xi) = 0;
+          return;
+        }
         double x = dx * xi;
         double expx = exp(-x);
         spline_p_knots(xi) = pi6 - real(dilog(expx)) + x * log1p(-expx);
@@ -145,16 +158,22 @@ kernel<BosonCorr, imtime>::evaluator::evaluator(
     alpha_case = half;
     static const double pi2 = M_PI * M_PI / 2;
     nda::for_each(spline_m_knots.shape(), [&spline_m_knots, dx](int xi) {
-      if(xi == n_spline_knots - 1) { spline_m_knots(xi) = 0; return; }
+      if(xi == n_spline_knots - 1) {
+        spline_m_knots(xi) = 0;
+        return;
+      }
       double x = -x0 + dx * xi;
       spline_m_knots(xi) = -pi2 + x * log(tanh(-x / 4)) - real(dilog(exp(x))) +
-             4 * real(dilog(exp(x / 2)));
+                           4 * real(dilog(exp(x / 2)));
     });
     nda::for_each(spline_p_knots.shape(), [&spline_p_knots, dx](int xi) {
-      if(xi == 0) { spline_p_knots(xi) = 0; return; }
+      if(xi == 0) {
+        spline_p_knots(xi) = 0;
+        return;
+      }
       double x = dx * xi;
       spline_p_knots(xi) = pi2 + x * log(tanh(x / 4)) + real(dilog(exp(-x))) -
-             4 * real(dilog(exp(-x / 2)));
+                           4 * real(dilog(exp(-x / 2)));
     });
   }
 
@@ -204,7 +223,7 @@ kernel<BosonCorr, imtime>::kernel(mesh_type const& mesh)
 
 // Apply to a rectangle
 void kernel<BosonCorr, imtime>::apply(rectangle const& rect,
-                                      result_type& res) const {
+                                      result_view_type res) const {
 
   double x1 = beta * rect.left();
   double x2 = beta * rect.right();
@@ -217,9 +236,7 @@ void kernel<BosonCorr, imtime>::apply(rectangle const& rect,
 
 std::ostream& operator<<(std::ostream& os,
                          kernel<BosonCorr, imtime> const& kern) {
-  os << R"(A(ϵ) -> χ(τ), )";
-  os << R"(β = )" << kern.beta << ", " << kern.mesh.size()
-     << R"( τ-points)";
+  os << R"(β = )" << kern.beta << ", " << kern.mesh.size() << R"( τ-points)";
   return os;
 }
 
