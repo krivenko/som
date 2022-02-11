@@ -20,6 +20,7 @@
  ******************************************************************************/
 
 #include <algorithm>
+#include <cassert>
 #include <iterator>
 #include <numeric>
 #include <set>
@@ -160,6 +161,31 @@ void configuration::prune(double width_min, double weight_min) {
   cache_ptr.invalidate_entry();
 }
 
+void configuration::strip_rect_heights(nda::vector<double>& heights) {
+  assert(rects.size() == heights.size());
+  for(int i = 0; i < rects.size(); ++i) {
+    auto& r = rects[i];
+    heights[i] = r.height;
+    if(r.cache_ptr)
+      r = rectangle(r.center, r.width, 1.0, r.cache_ptr.get_ci());
+    else
+      r = rectangle(r.center, r.width, 1.0);
+  }
+  cache_ptr.invalidate_entry();
+}
+
+void configuration::update_rect_heights(nda::vector<double> const& heights) {
+  assert(size() == heights.size());
+  for(int i = 0; i < rects.size(); ++i) {
+    auto& r = rects[i];
+    if(r.cache_ptr)
+      r = rectangle(r.center, r.width, heights[i], r.cache_ptr.get_ci());
+    else
+      r = rectangle(r.center, r.width, heights[i]);
+  }
+  cache_ptr.invalidate_entry();
+}
+
 std::ostream& operator<<(std::ostream& os, configuration const& c) {
   bool print_comma = false;
   for(auto const& r : c.rects) {
@@ -205,8 +231,8 @@ make_nonoverlapping(configuration const& c,
   boundaries.emplace_hint(boundaries.begin(), energy_window.first);
   boundaries.emplace_hint(boundaries.end(), energy_window.second);
 
-  auto nonoverlapping = c.cache_ptr ? configuration(c.cache_ptr.get_ci()) :
-                                      configuration();
+  auto nonoverlapping =
+      c.cache_ptr ? configuration(c.cache_ptr.get_ci()) : configuration();
 
   auto it_left = boundaries.begin();
   auto it_right = boundaries.begin();
@@ -215,8 +241,8 @@ make_nonoverlapping(configuration const& c,
     double width = *it_right - *it_left;
     double height = c(center);
     if(c.cache_ptr)
-      nonoverlapping.insert(rectangle(center, width, height,
-                                      c.cache_ptr.get_ci()));
+      nonoverlapping.insert(
+          rectangle(center, width, height, c.cache_ptr.get_ci()));
     else
       nonoverlapping.insert(rectangle(center, width, height));
   }

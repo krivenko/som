@@ -124,3 +124,29 @@ TEST_F(configuration_test, make_nonoverlapping) {
   auto nonoverlapping = make_nonoverlapping(conf, {-3.0, 5.0});
   EXPECT_EQ(nonoverlapping, ref);
 }
+
+TEST_F(configuration_test, strip_rect_heights) {
+  configuration conf(
+      {{0.5, 6.0, 1.0, ci}, {3.1, 1.8, 2.0, ci}, {-0.5, 1.0, 3.0, ci}}, ci);
+
+  vector<double> heights(3);
+  conf.strip_rect_heights(heights);
+
+  configuration ref(
+      {{0.5, 6.0, 1.0, ci}, {3.1, 1.8, 1.0, ci}, {-0.5, 1.0, 1.0, ci}}, ci);
+  vector<double> heights_ref = {1.0, 2.0, 3.0};
+  EXPECT_EQ(conf, ref);
+  EXPECT_EQ(heights, heights_ref);
+}
+
+TEST_F(configuration_test, update_rect_heights) {
+  configuration conf(
+      {{0.5, 6.0, 1.0, ci}, {3.1, 1.8, 1.0, ci}, {-0.5, 1.0, 1.0, ci}}, ci);
+
+  vector<double> heights = {1.0, 2.0, 3.0};
+  conf.update_rect_heights(heights);
+
+  configuration ref(
+      {{0.5, 6.0, 1.0, ci}, {3.1, 1.8, 2.0, ci}, {-0.5, 1.0, 3.0, ci}}, ci);
+  EXPECT_EQ(conf, ref);
+}

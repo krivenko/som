@@ -26,6 +26,8 @@
 #include <utility>
 #include <vector>
 
+#include <nda/nda.hpp>
+
 #include <h5/h5.hpp>
 #include <mpi/mpi.hpp>
 #include <mpi/vector.hpp>
@@ -116,6 +118,13 @@ public:
   // Remove rectangles with width below `width_min` or with weight
   // below `weight_min`.
   void prune(double width_min, double weight_min);
+
+  // Reset heights of all rectangles to 1 and write their original heights
+  // into the argument.
+  void strip_rect_heights(nda::vector<double>& heights);
+
+  // Update heights of all rectangles from the argument.
+  void update_rect_heights(nda::vector<double> const& heights);
 
   // constant iterator
   using const_iterator = std::vector<rectangle>::const_iterator;
