@@ -21,17 +21,20 @@
 #pragma once
 
 #include <iostream>
+#include <string>
 
 #include <triqs/gfs.hpp>
 
 #include <som/kernels/mesh_traits.hpp>
+#include <som/kernels/observables.hpp>
+#include <som/worker_parameters.hpp>
 
 namespace som {
 
 using std::to_string;
 using namespace triqs::gfs;
 
-inline void fatal_error(std::string const& message) {
+[[noreturn]] inline void fatal_error(std::string const& message) {
   TRIQS_RUNTIME_ERROR << "som_core: " << message;
 }
 

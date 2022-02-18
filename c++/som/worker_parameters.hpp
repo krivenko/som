@@ -27,6 +27,8 @@
 
 namespace som {
 
+enum observable_kind : unsigned int;
+
 /// Parameters of solution_worker::operator()()
 struct worker_parameters_t {
 
@@ -84,6 +86,9 @@ struct worker_parameters_t {
   worker_parameters_t() = default;
   explicit worker_parameters_t(std::pair<double, double> energy_window)
      : energy_window(std::move(energy_window)) {}
+
+  // Validate values of parameters
+  void validate(observable_kind kind) const;
 };
 
 } // namespace som

@@ -21,21 +21,41 @@
 
 #include <cmath>
 #include <iostream>
+#include <string>
 
 #include <boost/preprocessor/seq/for_each_product.hpp>
 
 #include <triqs/utility/signal_handler.hpp>
 
 #include <som/kernels/all.hpp>
-#include <som/solution_functionals/objective_function.hpp>
 #include <som/solution_functionals/fit_quality.hpp>
+#include <som/solution_functionals/objective_function.hpp>
 #include <som/solution_worker.hpp>
 
+#include "common.hxx"
 #include "som_core.hpp"
 
 namespace som {
 
 using namespace triqs::gfs;
+
+void adjust_f_parameters_t::validate(observable_kind kind) const {
+  worker_parameters_t::validate(kind);
+
+  using std::to_string;
+
+  if(f_range.first <= 0 || f_range.second <= 0 ||
+     f_range.first > f_range.second)
+    fatal_error("Wrong f_range = [" + to_string(f_range.first) + ";" +
+                to_string(f_range.second) + "]");
+
+  if(l <= 0)
+    fatal_error("Number of particular solutions l must be positive (got l = " +
+                to_string(l) + ")");
+
+  if(kappa <= 0 || kappa > 0.5)
+    fatal_error("Parameter kappa = " + to_string(kappa) + " is not in (0;0.5]");
+}
 
 //////////////////////////
 // som_core::adjust_f() //
@@ -64,7 +84,7 @@ int som_core::adjust_f_impl(adjust_f_parameters_t const& p) {
 
     // Find solution for each component of GF
     for(int n = 0; n < data.size(); ++n) {
-      auto & d = data[n];
+      auto& d = data[n];
 
       if(p.verbosity > 0)
         std::cout << "Running algorithm for observable component [" << n << ","
@@ -85,21 +105,17 @@ int som_core::adjust_f_impl(adjust_f_parameters_t const& p) {
           F = p.f_range.second;
           if(p.verbosity >= 1)
             std::cout << "WARNING: Upper bound of f_range has been reached,"
-                         " will use F = " + std::to_string(F) << std::endl;
+                         " will use F = " +
+                             std::to_string(F)
+                      << std::endl;
           break;
         }
 
-        solution_worker<KernelType> worker(of,
-                                          d.norm,
-                                          ci,
-                                          p,
-                                          stop_callback,
-                                          F);
+        solution_worker<KernelType> worker(of, d.norm, ci, p, stop_callback, F);
         auto& rng = worker.get_rng();
 
         int n_sol;
-        for(int i = 0; (n_sol = comm.rank() + i * comm.size()) < p.l;
-            ++i) {
+        for(int i = 0; (n_sol = comm.rank() + i * comm.size()) < p.l; ++i) {
           if(p.verbosity >= 2) {
             std::cout << "[Rank " << comm.rank()
                       << "] Accumulation of particular solution " << n_sol
@@ -112,11 +128,10 @@ int som_core::adjust_f_impl(adjust_f_parameters_t const& p) {
           if(kappa > p.kappa) ++l_good;
           if(p.verbosity >= 2) {
             std::cout << "[Rank " << comm.rank() << "] Particular solution "
-                      << n_sol << " is "
-                      << (kappa > p.kappa ? "" : "not ")
+                      << n_sol << " is " << (kappa > p.kappa ? "" : "not ")
                       << R"(good (κ = )" << kappa
-                      << ", χ = "
-                      << std::sqrt(worker.get_objf_value()) << ")." << std::endl;
+                      << ", χ = " << std::sqrt(worker.get_objf_value()) << ")."
+                      << std::endl;
           }
         }
         comm.barrier();
@@ -124,8 +139,8 @@ int som_core::adjust_f_impl(adjust_f_parameters_t const& p) {
 
         if(p.verbosity >= 1)
           std::cout << "F = " << F << ", " << l_good
-                    << R"( solutions with κ > )" << p.kappa
-                    << " (out of " << p.l << ")" << std::endl;
+                    << R"( solutions with κ > )" << p.kappa << " (out of "
+                    << p.l << ")" << std::endl;
 
         // Converged
         if(l_good > p.l / 2) {
@@ -137,9 +152,7 @@ int som_core::adjust_f_impl(adjust_f_parameters_t const& p) {
 
       F_max = std::max(F_max, F);
     }
-  } catch(stopped& e) {
-    triqs::signal_handler::received(true);
-  }
+  } catch(stopped& e) { triqs::signal_handler::received(true); }
 
   ci.invalidate_all();
 
@@ -149,12 +162,11 @@ int som_core::adjust_f_impl(adjust_f_parameters_t const& p) {
 }
 
 int som_core::adjust_f(adjust_f_parameters_t const& p) {
-  if(p.f_range.first > p.f_range.second)
-    TRIQS_RUNTIME_ERROR << "som_core: Wrong f_range in adjust_f()";
+  p.validate(kind);
 
   if(p.verbosity >= 1) {
-    std::cout << "Adjusting the number of global updates F using "
-              << p.l << " particular solutions ..." << std::endl;
+    std::cout << "Adjusting the number of global updates F using " << p.l
+              << " particular solutions ..." << std::endl;
   }
 
 #define RUN_IMPL_CASE(r, okmk)                                                 \
@@ -164,9 +176,9 @@ int som_core::adjust_f(adjust_f_parameters_t const& p) {
   switch(int(kind) + n_observable_kinds * mesh.index()) {
     BOOST_PP_SEQ_FOR_EACH_PRODUCT(RUN_IMPL_CASE,
                                   (ALL_OBSERVABLES)(ALL_INPUT_MESHES))
-    default: TRIQS_RUNTIME_ERROR << "som_core: unknown observable kind "
-                                 << std::to_string(kind)
-                                 << " in adjust_f()";
+    default:
+      fatal_error("Unknown observable kind " + to_string(kind) +
+                  " in adjust_f()");
   }
 #undef RUN_IMPL_CASE
 }

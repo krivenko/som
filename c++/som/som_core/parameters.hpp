@@ -42,6 +42,9 @@ struct adjust_f_parameters_t : public worker_parameters_t {
   adjust_f_parameters_t() = default;
   explicit adjust_f_parameters_t(std::pair<double, double> energy_window)
      : worker_parameters_t(energy_window) {}
+
+  // Validate values of parameters
+  void validate(observable_kind kind) const;
 };
 
 // Arguments of the som_core::accumulate() function
@@ -90,6 +93,9 @@ struct accumulate_parameters_t : public worker_parameters_t {
   accumulate_parameters_t() = default;
   explicit accumulate_parameters_t(std::pair<double, double> energy_window)
      : worker_parameters_t(energy_window) {}
+
+  // Validate values of parameters
+  void validate(observable_kind kind) const;
 };
 
 } // namespace som

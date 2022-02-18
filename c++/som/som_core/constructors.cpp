@@ -24,8 +24,8 @@
 
 #include <som/kernels/mesh_traits.hpp>
 
-#include "som_core.hpp"
 #include "common.hxx"
+#include "som_core.hpp"
 
 namespace som {
 
@@ -49,24 +49,24 @@ void check_input_gf(gf_const_view<GfOpts...> g, gf_const_view<GfOpts...> S) {
 //////////////////////
 
 template <typename Mesh>
-som_core::data_t::data_t(Mesh const& mesh, cache_index & ci) :
-  rhs(input_data_t<Mesh>(mesh.size())),
-  error_bars(input_data_t<Mesh>(mesh.size())),
-  final_solution(ci)
-{}
+som_core::data_t::data_t(Mesh const& mesh, cache_index& ci)
+   : rhs(input_data_t<Mesh>(mesh.size()))
+   , error_bars(input_data_t<Mesh>(mesh.size()))
+   , final_solution(ci) {}
 
-template som_core::data_t::data_t(gf_mesh<imtime> const&, cache_index &);
-template som_core::data_t::data_t(gf_mesh<imfreq> const&, cache_index &);
-template som_core::data_t::data_t(gf_mesh<legendre> const&, cache_index &);
+template som_core::data_t::data_t(gf_mesh<imtime> const&, cache_index&);
+template som_core::data_t::data_t(gf_mesh<imfreq> const&, cache_index&);
+template som_core::data_t::data_t(gf_mesh<legendre> const&, cache_index&);
 
 template <typename... GfOpts>
-void som_core::data_t::init_input(int i,
-                                  gf_const_view<GfOpts...> g,
-                                  gf_const_view<GfOpts...> S,
-                                  double norm_) {
+void som_core::data_t::init_input(int i, gf_const_view<GfOpts...> g,
+                                  gf_const_view<GfOpts...> S, double norm_) {
   using mesh_t = typename gf_const_view<GfOpts...>::mesh_t;
   std::get<input_data_t<mesh_t>>(rhs)() = g.data()(range(), i, i);
   std::get<input_data_t<mesh_t>>(error_bars)() = S.data()(range(), i, i);
+  if(norm_ <= 0)
+    fatal_error("solution norm must be positive (got norm = " +
+                std::to_string(norm_) + ")");
   norm = norm_;
 }
 
@@ -91,8 +91,7 @@ som_core::som_core(gf_const_view<imtime> g_tau, gf_const_view<imtime> S_tau,
 
   int gf_dim = g_tau.target_shape()[0];
   for(int i : range(gf_dim)) {
-    data[i].init_input(i,
-                       make_const_view(g_tau_real),
+    data[i].init_input(i, make_const_view(g_tau_real),
                        make_const_view(S_tau_real),
                        norms.size() > 0 ? norms[i] : 1.0);
   }
@@ -117,9 +116,7 @@ som_core::som_core(gf_const_view<imfreq> g_iw, gf_const_view<imfreq> S_iw,
 
   int gf_dim = g_iw_pos.target_shape()[0];
   for(int i : range(gf_dim)) {
-    data[i].init_input(i,
-                       g_iw_pos,
-                       S_iw_pos,
+    data[i].init_input(i, g_iw_pos, S_iw_pos,
                        norms.size() > 0 ? norms[i] : 1.0);
   }
 }
@@ -140,9 +137,7 @@ som_core::som_core(gf_const_view<legendre> g_l, gf_const_view<legendre> S_l,
 
   int gf_dim = g_l_real.target_shape()[0];
   for(int i : range(gf_dim)) {
-    data[i].init_input(i,
-                       make_const_view(g_l_real),
-                       make_const_view(S_l_real),
+    data[i].init_input(i, make_const_view(g_l_real), make_const_view(S_l_real),
                        norms.size() > 0 ? norms[i] : 1.0);
   }
 }

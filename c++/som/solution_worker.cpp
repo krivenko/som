@@ -138,7 +138,8 @@ configuration solution_worker<KernelType>::operator()(int init_config_size) {
   if(init_config_size * weight_min > norm)
     TRIQS_RUNTIME_ERROR << "solution_worker: requested configuration size "
                         << init_config_size
-                        << " is too big (inconsistent with norm = " << norm
+                        << " is too big (inconsistent with min_rect_weight = "
+                        << weight_min << " and norm = " << norm
                         << ")";
 
 #ifdef EXT_DEBUG

@@ -22,6 +22,7 @@
 #include <cmath>
 #include <iostream>
 #include <limits>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -33,51 +34,62 @@
 #include <som/solution_functionals/objective_function.hpp>
 #include <som/solution_worker.hpp>
 
-#include "som_core.hpp"
 #include "common.hxx"
+#include "som_core.hpp"
 
 namespace som {
 
 using triqs::statistics::histogram;
 
-////////////////////////////
-// som_core::accumualte() //
-////////////////////////////
+void accumulate_parameters_t::validate(observable_kind kind) const {
+  worker_parameters_t::validate(kind);
 
-void validate_params(observable_kind kind, accumulate_parameters_t & params) {
+  using std::to_string;
 
-  double e_min, e_max;
-  std::tie(e_min, e_max) = max_energy_window(kind);
-  if(params.energy_window.first < e_min) {
-    params.energy_window.first = e_min;
-    if(params.verbosity > 0)
-      warning("left boundary of the energy window is reset to " +
-              std::to_string(e_min));
+  if(f <= 0)
+    fatal_error("Number of global updates f must be positive (got f = " +
+                to_string(f) + ")");
+
+  if(l <= 0)
+    fatal_error("Number of particular solutions l must be positive (got l = " +
+                to_string(l) + ")");
+
+  if(adjust_l) {
+    if(adjust_l_range.first <= 0 || adjust_l_range.second <= 0 ||
+       adjust_l_range.first > adjust_l_range.second)
+      fatal_error("Wrong adjust_l_range = [" + to_string(adjust_l_range.first) +
+                  ";" + to_string(adjust_l_range.second) + "]");
+
+    if(adjust_l_good_chi < 1.0)
+      fatal_error("Parameter adjust_l_good_chi must be >= 1.0 (got " +
+                  to_string(adjust_l_good_chi) + ")");
+
+    if(adjust_l_verygood_chi < 1.0)
+      fatal_error("Parameter adjust_l_verygood_chi must be >= 1.0 (got " +
+                  to_string(adjust_l_verygood_chi) + ")");
+
+    if(adjust_l_verygood_chi > adjust_l_good_chi)
+      fatal_error("adjust_l_verygood_chi cannot exceed adjust_l_good_chi");
+
+    if(adjust_l_ratio < 0 || adjust_l_ratio > 1.0)
+      fatal_error("Parameter adjust_l_ratio = " + to_string(adjust_l_ratio) +
+                  " is not in [0;1.0]");
   }
-  if(params.energy_window.second > e_max) {
-    params.energy_window.second = e_max;
-    if(params.verbosity > 0)
-      warning("right boundary of the energy window is reset to " +
-              std::to_string(e_max));
-  }
 
-  if(params.energy_window.first >= params.energy_window.second)
-    fatal_error("wrong energy window [" +
-                to_string(params.energy_window.first) + ";" +
-                to_string(params.energy_window.second) + "]");
+  if(hist_max <= 1.0)
+    fatal_error("Parameter hist_max = " + to_string(hist_max) +
+                " must exceed 1.0");
 
-  if(params.min_rect_width <= 0 || params.min_rect_width > 1)
-    fatal_error("min_rect_width must be in (0;1]");
-
-  if(params.min_rect_weight <= 0 || params.min_rect_weight > 1)
-    fatal_error("min_rect_weight must be in (0;1]");
-
-  if(params.adjust_l_range.first > params.adjust_l_range.second)
-    fatal_error("Wrong adjust_l_range");
+  if(make_histograms && hist_n_bins < 1)
+    fatal_error("Histograms must contain at least one bin (got hist_n_bins = " +
+                to_string(hist_n_bins) + ")");
 }
 
-template <typename KernelType>
-void som_core::accumulate_impl() {
+////////////////////////////
+// som_core::accumulate() //
+////////////////////////////
+
+template <typename KernelType> void som_core::accumulate_impl() {
 
   auto stop_callback = triqs::utility::clock_callback(params.max_time);
 
@@ -95,21 +107,18 @@ void som_core::accumulate_impl() {
 
   // Find solution for each component of GF
   for(int n = 0; n < data.size(); ++n) {
-    auto & d = data[n];
+    auto& d = data[n];
 
     if(params.verbosity > 0)
-      std::cout << "Accumulating particular solutions for observable component ["
-                << n << "," << n << "]" << std::endl;
+      std::cout
+          << "Accumulating particular solutions for observable component [" << n
+          << "," << n << "]" << std::endl;
 
     auto const& rhs = d.get_rhs<mesh_t>();
     auto const& error_bars = d.get_error_bars<mesh_t>();
 
     objective_function<KernelType> of(kernel, rhs, error_bars);
-    solution_worker<KernelType> worker(of,
-                                       d.norm,
-                                       ci,
-                                       params,
-                                       stop_callback,
+    solution_worker<KernelType> worker(of, d.norm, ci, params, stop_callback,
                                        params.f);
     auto& rng = worker.get_rng();
 
@@ -119,7 +128,7 @@ void som_core::accumulate_impl() {
     int n_sol_max = 0; // Number of solutions to be accumulated
     int n_sol, i = 0;  // Global and rank-local indices of solution
     int n_good_solutions,
-        n_verygood_solutions;   // Number of good and very good solutions
+        n_verygood_solutions; // Number of good and very good solutions
     do {
       if(params.adjust_l) {
         n_sol_max += params.adjust_l_range.first;
@@ -145,7 +154,8 @@ void som_core::accumulate_impl() {
                     << std::endl;
         }
 
-        d.particular_solutions.emplace_back(worker(1 + rng(params.max_rects)), 0);
+        d.particular_solutions.emplace_back(worker(1 + rng(params.max_rects)),
+                                            0);
 
         double chi2 = worker.get_objf_value();
         d.particular_solutions.back().second = chi2;
@@ -180,8 +190,8 @@ void som_core::accumulate_impl() {
                   << params.adjust_l_good_chi << ") = " << n_good_solutions
                   << std::endl;
         std::cout << "Number of very good solutions (χ / χ_min <= "
-                  << params.adjust_l_verygood_chi << ") = " << n_verygood_solutions
-                  << std::endl;
+                  << params.adjust_l_verygood_chi
+                  << ") = " << n_verygood_solutions << std::endl;
       }
 
     } while(params.adjust_l &&
@@ -195,7 +205,7 @@ void som_core::accumulate_impl() {
       d.histogram = histogram(std::sqrt(d.objf_min),
                               std::sqrt(d.objf_min) * params.hist_max,
                               params.hist_n_bins);
-      histogram & h = *d.histogram;
+      histogram& h = *d.histogram;
       for(auto const& s : d.particular_solutions) h << std::sqrt(s.second);
       h = mpi_reduce(h, comm, 0, true);
     }
@@ -207,14 +217,12 @@ void som_core::accumulate_impl() {
 
   ci.invalidate_all();
 
-  if(params.verbosity >= 1)
-    std::cout << "Done" << std::endl;
+  if(params.verbosity >= 1) std::cout << "Done" << std::endl;
 }
 
 void som_core::accumulate(accumulate_parameters_t const& p) {
-
   params = p;
-  validate_params(kind, params);
+  params.validate(kind);
 
   triqs::signal_handler::start();
   accumulate_status = 0;
