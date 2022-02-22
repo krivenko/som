@@ -168,18 +168,12 @@ int som_core::adjust_f(adjust_f_parameters_t const& p) {
               << " particular solutions ..." << std::endl;
   }
 
-#define RUN_IMPL_CASE(r, okmk)                                                 \
-  case(int(BOOST_PP_SEQ_ELEM(0, okmk)) +                                       \
-       n_observable_kinds * mesh_traits<BOOST_PP_SEQ_ELEM(1, okmk)>::index):   \
+#define IMPL_CASE(r, okmk)                                                     \
+  case(kernel_id(BOOST_PP_SEQ_ELEM(0, okmk), BOOST_PP_SEQ_ELEM(1, okmk){})):   \
     return adjust_f_impl<kernel<BOOST_PP_SEQ_ENUM(okmk)>>(p);
-  switch(int(kind) + n_observable_kinds * mesh.index()) {
-    BOOST_PP_SEQ_FOR_EACH_PRODUCT(RUN_IMPL_CASE,
-                                  (ALL_OBSERVABLES)(ALL_INPUT_MESHES))
-    default:
-      fatal_error("Unknown observable kind " + to_string(kind) +
-                  " in adjust_f()");
-  }
-#undef RUN_IMPL_CASE
+
+  SELECT_KERNEL(IMPL_CASE, som_core::adjust_f())
+#undef IMPL_CASE
 }
 
 } // namespace som

@@ -93,7 +93,7 @@ foreach(test ${SIMPLE_TESTS})
 endforeach()
 
 # MPI tests
-set(MPI_TESTS spectral_stats.cpp)
+set(MPI_TESTS global_index_map.cpp spectral_stats.cpp)
 foreach(test ${MPI_TESTS})
   add_som_cpp_test(${test} 1 2 4)
 endforeach()

@@ -36,6 +36,7 @@
 
 #include "parameters.hpp"
 #include <som/configuration.hpp>
+#include <som/kernels/mesh_traits.hpp>
 #include <som/kernels/observables.hpp>
 
 namespace som {
@@ -56,10 +57,7 @@ public:
   observable_kind kind;
 
   // Mesh of the input functions
-  std::variant<triqs::gfs::gf_mesh<triqs::gfs::imtime>,
-               triqs::gfs::gf_mesh<triqs::gfs::imfreq>,
-               triqs::gfs::gf_mesh<triqs::gfs::legendre>>
-      mesh;
+  mesh_variant_t mesh;
 
   using histogram_t = triqs::statistics::histogram;
 
@@ -140,6 +138,11 @@ public:
   std::vector<double> compute_objf_final();
   template <typename KernelType> std::vector<double> compute_objf_final_impl();
 
+  // Implementation details of compute_final_solution_cc_impl()
+  template <typename KernelType>
+  std::vector<double> compute_final_solution_cc_impl(
+    final_solution_cc_parameters_t const& params);
+
 public:
   /// Construct on imaginary-time quantities
   som_core(triqs::gfs::gf_const_view<triqs::gfs::imtime> g_tau,
@@ -169,6 +172,12 @@ public:
   /// :math:`\chi \leq good_chi_abs`.
   std::vector<double> compute_final_solution(double good_chi_rel = 2.0,
                                              double good_chi_abs = HUGE_VAL);
+
+  /// Compute the final solution using the SOCC protocol
+  TRIQS_WRAP_ARG_AS_DICT
+  std::vector<double> compute_final_solution_cc(
+    final_solution_cc_parameters_t const& p
+  );
 
   /// Set of parameters used in the last call to accumulate()
   accumulate_parameters_t get_last_accumulate_parameters() const {

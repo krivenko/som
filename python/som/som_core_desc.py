@@ -36,6 +36,7 @@ module.add_preamble("""
 #include <cpp2py/converters/optional.hpp>
 #include <cpp2py/converters/pair.hpp>
 #include <cpp2py/converters/tuple.hpp>
+#include <cpp2py/converters/variant.hpp>
 #include <cpp2py/converters/vector.hpp>
 #include <triqs/cpp2py_converters/arrays.hpp>
 #include <triqs/cpp2py_converters/gf.hpp>
@@ -355,8 +356,6 @@ accumulate_params_conv.add_member(c_name = "hist_n_bins",
 
 module.add_converter(accumulate_params_conv)
 
-
-
 #
 # SomCore.accumulate()
 #
@@ -409,6 +408,131 @@ Accumulate particular solutions
 
 c.add_method("std::vector<double> compute_final_solution(double good_chi_rel = 2.0, double good_chi_abs = HUGE_VAL)",
              doc = """Select particular solutions according to the standard SOM criterion and compute the final solution""")
+
+#
+# Converter for final_solution_cc_parameters_t
+#
+
+compute_final_solution_cc_params_conv = converter_(
+    c_type = "som::final_solution_cc_parameters_t",
+    doc = """Arguments of SomCore.compute_final_solution_cc()""",
+)
+
+compute_final_solution_cc_params_conv.add_member(c_name = "refreq_mesh",
+                                                 c_type = "std::variant<gf_mesh<refreq>, triqs::arrays::array<double, 1>>",
+                                                 initializer = """ """,
+                                                 doc = """Grid of energy points used in derivative regularization procedure.""")
+
+compute_final_solution_cc_params_conv.add_member(c_name = "verbosity",
+                                                 c_type = "int",
+                                                 initializer = """ ((mpi::communicator().rank() == 0) ? 1 : 0) """,
+                                                 doc = """Verbosity level (max level - 2).""")
+
+compute_final_solution_cc_params_conv.add_member(c_name = "good_chi_rel",
+                                                 c_type = "double",
+                                                 initializer = "2.0",
+                                                 doc = """Maximal ratio :math:`\chi/\chi_\mathrm{min}` for a particular solution to be selected.
+This criterion must be fulfilled together with the one set by `good_chi_abs`.""")
+
+compute_final_solution_cc_params_conv.add_member(c_name = "good_chi_abs",
+                                                 c_type = "double",
+                                                 initializer = "HUGE_VAL",
+                                                 doc = """Maximal value of :math:`\chi` for a particular solution to be selected.
+This criterion must be fulfilled together with the one set by `good_chi_rel`.""")
+
+compute_final_solution_cc_params_conv.add_member(c_name = "default_model",
+                                                 c_type = "triqs::arrays::array<double, 1>",
+                                                 initializer = """{}""",
+                                                 doc = """Default model of the spectral function evaluated at energy points of `refreq_mesh`.""")
+
+compute_final_solution_cc_params_conv.add_member(c_name = "default_model_weights",
+                                                 c_type = "triqs::arrays::array<double, 1>",
+                                                 initializer = """{}""",
+                                                 doc = """Weights determining how much deviations from `default_model` are penalized at each energy point of `refreq_mesh`.""")
+
+compute_final_solution_cc_params_conv.add_member(c_name = "max_iter",
+                                                 c_type = "int",
+                                                 initializer = """20""",
+                                                 doc = """Maximum allowed number of parameter adjustment iterations.""")
+compute_final_solution_cc_params_conv.add_member(c_name = "unity_sum_coeff",
+                                                 c_type = "double",
+                                                 initializer = """1e6""",
+                                                 doc = """Coefficient of the term that enforces the unity sum constraint.""")
+
+compute_final_solution_cc_params_conv.add_member(c_name = "amp_penalty_max",
+                                                 c_type = "double",
+                                                 initializer = """1e6""",
+                                                 doc = """Maximum value of the regularization parameter that penalizes negative values of the spectral function.""")
+
+compute_final_solution_cc_params_conv.add_member(c_name = "amp_penalty_divisor",
+                                                 c_type = "double",
+                                                 initializer = """100""",
+                                                 doc = """Divisor used to reduce the regularization parameter that penalizes negative values of the spectral function.""")
+
+compute_final_solution_cc_params_conv.add_member(c_name = "der_penalty_init",
+                                                 c_type = "double",
+                                                 initializer = """1.0""",
+                                                 doc = """Initial value of the regularization parameters that penalize large derivatives of the solution.""")
+
+compute_final_solution_cc_params_conv.add_member(c_name = "der_penalty_coeff",
+                                                 c_type = "double",
+                                                 initializer = """2.0""",
+                                                 doc = """Coefficient used to increase the regularization parameters that penalize large derivatives of the solution.""")
+
+module.add_converter(compute_final_solution_cc_params_conv)
+
+#
+# SomCore.compute_final_solution_cc()
+#
+
+c.add_method("std::vector<double> compute_final_solution_cc(**som::final_solution_cc_parameters_t)",
+             #release_GIL_and_enable_signal = True, FIXME
+             doc = f"""
+Compute the final solution using the SOCC protocol
+==================================================
+
+{docstring_params_header_main}
+
+{docstring_params_table_header}
+| refreq_mesh           | MeshReFreq or | --                            | Grid of energy points :math:`\epsilon_k` used in CC regularization procedure.                         |
+|                       | real 1D       |                               | Either a TRIQS real-frequency mesh object or a strictly ordered list of points is allowed.            |
+|                       | array_like    |                               |                                                                                                       |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| verbosity             | int           | 1 on MPI rank 0, 0 otherwise. | Verbosity level (max level - 2).                                                                      |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| good_chi_rel          | float         | 2.0                           | Maximal ratio :math:`\chi/\chi_\mathrm{{min}}` for a particular solution to be selected.                |
+|                       |               |                               | This criterion must be fulfilled together with the one set by `good_chi_abs`.                         |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| good_chi_abs          | float         | infinity                      | Maximal value of :math:`\chi` for a particular solution to be selected.                               |
+|                       |               |                               | This criterion must be fulfilled together with the one set by `good_chi_rel`.                         |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| default_model         | Real 1D array | []                            | Optional default model of the spectral function evaluated at energy points of `refreq_mesh`           |
+|                       |               |                               | (:math:`A_T(\epsilon_k)`).                                                                            |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| default_model_weights | Real 1D array | []                            | Weights determining how much deviations from `default_model` are penalized at each energy point       |
+|                       |               |                               | (:math:`T_k`).                                                                                        |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| max_iter              | int           | 20                            | Maximum allowed number of parameter adjustment iterations.                                            |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+
+{docstring_params_header_fine}
+
+{docstring_params_table_header}
+| unity_sum_coeff       | float         | 1e6                           | Coefficient of the term that enforces the unity sum constraint (:math:`\mathcal{{U}}`).                 |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| amp_penalty_max       | float         | 1e6                           | Maximum value of the regularization parameter that penalizes negative values of                       |
+|                       |               |                               | the spectral function (:math:`\mathcal{{Q}}`).                                                          |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| amp_penalty_divisor   | float         | 100                           | Divisor used to reduce the regularization parameter that penalizes negative values of                 |
+|                       |               |                               | the spectral function.                                                                                |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| der_penalty_init      | float         | 1e-3                          | Initial value of the regularization parameters that penalize large derivatives of the solution        |
+|                       |               |                               | (:math:`\mathcal{{D}}`).                                                                                |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| der_penalty_coeff     | float         | 2.0                           | Coefficient used to increase the regularization parameters that penalize large derivatives of         |
+|                       |               |                               | the solution (:math:`f`).                                                                             |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+""")
 
 #
 # SomCore.run()

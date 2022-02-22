@@ -20,7 +20,13 @@
  ******************************************************************************/
 #pragma once
 
+#include <cmath>
 #include <utility>
+#include <variant>
+
+#include <mpi/mpi.hpp>
+
+#include <triqs/gfs/meshes.hpp>
 
 #include <som/worker_parameters.hpp>
 
@@ -96,6 +102,70 @@ struct accumulate_parameters_t : public worker_parameters_t {
 
   // Validate values of parameters
   void validate(observable_kind kind) const;
+};
+
+struct final_solution_cc_parameters_t {
+
+  /// Grid of energy points used in derivative regularization procedure.
+  std::variant<triqs::gfs::gf_mesh<triqs::gfs::refreq>,
+               triqs::arrays::array<double, 1>>
+      refreq_mesh;
+
+  /// Verbosity level (max level - 3).
+  /// default: 2 on MPI rank 0, 0 otherwise.
+  int verbosity =
+      ((mpi::communicator().rank() == 0) ? 2 : 0); // silence the slave nodes
+
+  /// Maximal ratio :math:`\chi/\chi_\mathrm{min}` for a particular solution to
+  /// be selected. This criterion must be fulfilled together with the one set
+  /// by `good_chi_abs`.
+  double good_chi_rel = 2.0;
+
+  /// Maximal value of :math:`\chi` for a particular solution to be selected.
+  /// This criterion must be fulfilled together with the one set
+  /// by `good_chi_rel`.
+  double good_chi_abs = HUGE_VAL;
+
+  /// Default model of the spectral function evaluated at
+  /// energy points of `refreq_mesh`.
+  triqs::arrays::array<double, 1> default_model;
+
+  /// Weights determining how much deviations from `default_model` are penalized
+  /// at each energy point of `refreq_mesh`.
+  triqs::arrays::array<double, 1> default_model_weights;
+
+  /// Maximum allowed number of parameter adjustment iterations.
+  int max_iter = 20;
+
+  /// Coefficient of the term that enforces the unity sum constraint.
+  double unity_sum_coeff = 1e6;
+
+  /// Maximum value of the regularization parameter that penalizes
+  /// negative values of the spectral function.
+  double amp_penalty_max = 1e6;
+
+  /// Divisor used to reduce the regularization parameter that penalizes
+  /// negative values of the spectral function.
+  double amp_penalty_divisor = 100;
+
+  /// Initial value of the regularization parameters that penalize large
+  /// derivatives of the solution.
+  double der_penalty_init = 1e-3;
+
+  /// Coefficient used to increase the regularization parameters that penalize
+  /// large derivatives of the solution.
+  double der_penalty_coeff = 2.0;
+
+  final_solution_cc_parameters_t() = default;
+  explicit final_solution_cc_parameters_t(
+      triqs::gfs::gf_mesh<triqs::gfs::refreq> refreq_mesh)
+     : refreq_mesh(std::move(refreq_mesh)) {}
+  explicit final_solution_cc_parameters_t(
+      triqs::arrays::array<double, 1> refreq_mesh)
+     : refreq_mesh(std::move(refreq_mesh)) {}
+
+  // Validate values of parameters
+  void validate() const;
 };
 
 } // namespace som

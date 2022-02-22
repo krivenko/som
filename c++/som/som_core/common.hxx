@@ -44,7 +44,7 @@ inline void warning(std::string const& message) {
   std::cout << "WARNING: " << message << std::endl;
 }
 
-inline std::ostream & mpi_cout(mpi::communicator const& comm) {
+inline std::ostream& mpi_cout(mpi::communicator const& comm) {
   return (std::cout << "[Rank " << comm.rank() << "] ");
 }
 
@@ -73,5 +73,25 @@ template <typename MeshType>
 void check_gf_stat(gf_view<MeshType> g, statistic_enum expected_stat) {
   return check_gf_stat(make_const_view(g), expected_stat);
 }
+
+template <typename MeshType>
+inline constexpr int kernel_id(observable_kind kind, MeshType) {
+  return int(kind) + n_observable_kinds * mesh_traits<MeshType>::index;
+}
+
+inline int kernel_id(observable_kind kind, mesh_variant_t const& mesh) {
+  return int(kind) + n_observable_kinds * mesh.index();
+}
+
+#define FOR_EACH_KERNEL(F)                                                     \
+  BOOST_PP_SEQ_FOR_EACH_PRODUCT(F, (ALL_OBSERVABLES)(ALL_INPUT_MESHES))
+
+#define SELECT_KERNEL(F, F_NAME)                                               \
+  switch(kernel_id(kind, mesh)) {                                              \
+    FOR_EACH_KERNEL(F)                                                         \
+    default:                                                                   \
+      fatal_error("Unknown observable kind " + std::to_string(kind) +          \
+                  " in " #F_NAME);                                             \
+  }
 
 } // namespace som

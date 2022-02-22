@@ -26,7 +26,8 @@
 #include <utility>
 #include <vector>
 
-#include <boost/preprocessor/seq/for_each_product.hpp>
+#include <boost/preprocessor/seq/elem.hpp>
+#include <boost/preprocessor/seq/enum.hpp>
 
 #include <triqs/utility/signal_handler.hpp>
 
@@ -226,16 +227,12 @@ void som_core::accumulate(accumulate_parameters_t const& p) {
   triqs::signal_handler::start();
   accumulate_status = 0;
   try {
-#define RUN_IMPL_CASE(r, okmk)                                                 \
-  case(int(BOOST_PP_SEQ_ELEM(0, okmk)) +                                       \
-       n_observable_kinds * mesh_traits<BOOST_PP_SEQ_ELEM(1, okmk)>::index):   \
-    accumulate_impl<kernel<BOOST_PP_SEQ_ENUM(okmk)>>();                        \
-    break;
-    switch(int(kind) + n_observable_kinds * mesh.index()) {
-      BOOST_PP_SEQ_FOR_EACH_PRODUCT(RUN_IMPL_CASE,
-                                    (ALL_OBSERVABLES)(ALL_INPUT_MESHES))
-    }
-#undef RUN_IMPL_CASE
+#define IMPL_CASE(r, okmk)                                                     \
+    case(kernel_id(BOOST_PP_SEQ_ELEM(0, okmk), BOOST_PP_SEQ_ELEM(1, okmk){})): \
+      accumulate_impl<kernel<BOOST_PP_SEQ_ENUM(okmk)>>(); break;
+
+    SELECT_KERNEL(IMPL_CASE, som_core::accumulate())
+#undef IMPL_CASE
   } catch(stopped& e) {
     accumulate_status = e.code;
     triqs::signal_handler::received(true);

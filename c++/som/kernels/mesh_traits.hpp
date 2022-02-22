@@ -21,6 +21,7 @@
 #pragma once
 
 #include <string>
+#include <variant>
 
 #include <triqs/gfs.hpp>
 
@@ -48,5 +49,9 @@ template <> struct mesh_traits<triqs::gfs::refreq> {
   static constexpr int index = -1;
   inline static std::string name() { return "real frequency"; }
 };
+
+using mesh_variant_t = std::variant<triqs::gfs::gf_mesh<triqs::gfs::imtime>,
+                                    triqs::gfs::gf_mesh<triqs::gfs::imfreq>,
+                                    triqs::gfs::gf_mesh<triqs::gfs::legendre>>;
 
 } // namespace som
