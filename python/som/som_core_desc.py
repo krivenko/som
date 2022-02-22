@@ -407,7 +407,7 @@ Accumulate particular solutions
 # SomCore.compute_final_solution()
 #
 
-c.add_method("void compute_final_solution(double good_chi = 2.0)",
+c.add_method("void compute_final_solution(double good_chi_rel = 2.0, double good_chi_abs = HUGE_VAL)",
              doc = """Select particular solutions according to the standard SOM criterion and compute the final solution""")
 
 #

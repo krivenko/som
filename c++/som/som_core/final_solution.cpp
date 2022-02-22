@@ -29,18 +29,21 @@ namespace som {
 // som_core::compute_final_solution() //
 ////////////////////////////////////////
 
-void som_core::compute_final_solution(double good_chi) {
+void som_core::compute_final_solution(double good_chi_rel,
+                                      double good_chi_abs) {
 
   for(int n = 0; n < data.size(); ++n) {
-    auto & d = data[n];
+    auto& d = data[n];
 
     configuration sol_sum(ci);
 
     // Rank-local stage of summation
     int n_good_solutions = 0;
+    double chi_min = std::sqrt(d.objf_min);
     for(auto const& s : d.particular_solutions) {
       // Pick only good solutions
-      if(std::sqrt(s.second / d.objf_min) <= good_chi) {
+      double chi = std::sqrt(s.second);
+      if(chi / chi_min <= good_chi_rel && chi <= good_chi_abs) {
         sol_sum += s.first;
         ++n_good_solutions;
       }

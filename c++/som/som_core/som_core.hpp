@@ -20,6 +20,7 @@
  ******************************************************************************/
 #pragma once
 
+#include <cmath>
 #include <complex>
 #include <limits>
 #include <optional>
@@ -33,9 +34,9 @@
 #include <triqs/gfs.hpp>
 #include <triqs/statistics/histograms.hpp>
 
+#include "parameters.hpp"
 #include <som/configuration.hpp>
 #include <som/kernels/observables.hpp>
-#include "parameters.hpp"
 
 namespace som {
 
@@ -57,7 +58,8 @@ public:
   // Mesh of the input functions
   std::variant<triqs::gfs::gf_mesh<triqs::gfs::imtime>,
                triqs::gfs::gf_mesh<triqs::gfs::imfreq>,
-               triqs::gfs::gf_mesh<triqs::gfs::legendre>> mesh;
+               triqs::gfs::gf_mesh<triqs::gfs::legendre>>
+      mesh;
 
   using histogram_t = triqs::statistics::histogram;
 
@@ -94,15 +96,12 @@ public:
     std::optional<histogram_t> histogram;
 
     // Constructor
-    template <typename Mesh> data_t(Mesh const& mesh, cache_index & ci);
+    template <typename Mesh> data_t(Mesh const& mesh, cache_index& ci);
 
     // Initialize 'rhs', 'error_bars' and 'norm'
     template <typename... GfOpts>
-    void init_input(int i,
-                    triqs::gfs::gf_const_view<GfOpts...> g,
-                    triqs::gfs::gf_const_view<GfOpts...> S,
-                    double norm_
-                    );
+    void init_input(int i, triqs::gfs::gf_const_view<GfOpts...> g,
+                    triqs::gfs::gf_const_view<GfOpts...> S, double norm_);
 
     // Typed access to 'rhs'
     template <typename Mesh> input_data_t<Mesh> const& get_rhs() const {
@@ -129,8 +128,7 @@ public:
   int adjust_f_impl(adjust_f_parameters_t const& params);
 
   // Implementation details of accumulate()
-  template <typename KernelType>
-  void accumulate_impl();
+  template <typename KernelType> void accumulate_impl();
 
 public:
   /// Construct on imaginary-time quantities
@@ -156,8 +154,11 @@ public:
   TRIQS_WRAP_ARG_AS_DICT void accumulate(accumulate_parameters_t const& p);
 
   /// Select particular solutions according to the standard SOM criterion
-  /// and compute the final solution
-  void compute_final_solution(double good_chi = 2.0);
+  /// and compute the final solution. Selected solutions must fulfill
+  /// :math:`\chi/\chi_{min} \leq good_chi_rel` *and*
+  /// :math:`\chi \leq good_chi_abs`.
+  void compute_final_solution(double good_chi_rel = 2.0,
+                              double good_chi_abs = HUGE_VAL);
 
   /// Set of parameters used in the last call to accumulate()
   accumulate_parameters_t get_last_accumulate_parameters() const {
@@ -210,8 +211,7 @@ public:
 
 /// Fill a real-frequency observable from a computed SOM solution
 void fill_refreq(triqs::gfs::gf_view<triqs::gfs::refreq> g_w,
-                 som_core const& cont,
-                 bool with_binning = false);
+                 som_core const& cont, bool with_binning = false);
 /// Fill a real-frequency observable from a list of solutions
 /// (one solution per a diagonal matrix element of the observable)
 void fill_refreq(triqs::gfs::gf_view<triqs::gfs::refreq> g_w,
@@ -225,8 +225,7 @@ compute_tail(int max_order, som_core const& cont);
 /// Compute tail coefficients from a list of solutions
 /// (one solution per a diagonal matrix element of the observable)
 [[nodiscard]] triqs::arrays::array<std::complex<double>, 3>
-compute_tail(int max_order,
-             observable_kind kind,
+compute_tail(int max_order, observable_kind kind,
              std::vector<configuration> const& solutions);
 
 /// Reconstruct an observable in the imaginary-time representation
