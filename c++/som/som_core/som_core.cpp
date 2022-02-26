@@ -22,8 +22,8 @@
 #include <algorithm>
 #include <limits>
 
-#include "som_core.hpp"
 #include "common.hxx"
+#include "som_core.hpp"
 
 namespace som {
 
@@ -50,9 +50,21 @@ configuration const& som_core::get_solution(int i) const {
 std::vector<configuration> som_core::get_solutions() const {
   std::vector<configuration> conf;
   conf.reserve(data.size());
-  for(auto const& d : data)
-    conf.emplace_back(d.final_solution);
+  for(auto const& d : data) conf.emplace_back(d.final_solution);
   return conf;
+}
+
+double som_core::get_objf(int i) const {
+  if(i >= data.size())
+    fatal_error("Matrix element index " + to_string(i) + " out of bounds");
+  return data[i].objf_final;
+}
+
+std::vector<double> som_core::get_objf() const {
+  std::vector<double> objf(data.size());
+  std::transform(data.begin(), data.end(), objf.begin(),
+                 [](auto const& d) { return d.objf_final; });
+  return objf;
 }
 
 std::optional<histogram> const& som_core::get_histogram(int i) const {
@@ -65,8 +77,7 @@ std::optional<std::vector<histogram>> som_core::get_histograms() const {
   if(data.back().histogram) {
     std::vector<histogram> histograms;
     histograms.reserve(data.size());
-    for(auto const& d : data)
-      histograms.emplace_back(*d.histogram);
+    for(auto const& d : data) histograms.emplace_back(*d.histogram);
     return std::move(histograms);
   } else
     return {};
@@ -84,7 +95,7 @@ std::vector<double> som_core::get_objf_min() const {
 ///////////////////////
 
 void som_core::clear() {
-  for(auto & d : data) {
+  for(auto& d : data) {
     d.particular_solutions.clear();
     d.objf_min = HUGE_VAL;
     d.final_solution.clear();

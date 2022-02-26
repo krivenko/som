@@ -92,6 +92,9 @@ public:
     // Final solution
     configuration final_solution;
 
+    // :math:`\chi^2` of the final solution
+    double objf_final = std::numeric_limits<double>::quiet_NaN();
+
     // Objective function histogram
     std::optional<histogram_t> histogram;
 
@@ -111,6 +114,9 @@ public:
     template <typename Mesh> input_data_t<Mesh> const& get_error_bars() const {
       return std::get<input_data_t<Mesh>>(error_bars);
     }
+
+    template <typename KernelType>
+    void compute_objf_final(KernelType const& kernel);
   };
   std::vector<data_t> data;
 
@@ -129,6 +135,10 @@ public:
 
   // Implementation details of accumulate()
   template <typename KernelType> void accumulate_impl();
+
+  // Compute objective function :math:`\chi^2` of final solutions
+  std::vector<double> compute_objf_final();
+  template <typename KernelType> std::vector<double> compute_objf_final_impl();
 
 public:
   /// Construct on imaginary-time quantities
@@ -157,8 +167,8 @@ public:
   /// and compute the final solution. Selected solutions must fulfill
   /// :math:`\chi/\chi_{min} \leq good_chi_rel` *and*
   /// :math:`\chi \leq good_chi_abs`.
-  void compute_final_solution(double good_chi_rel = 2.0,
-                              double good_chi_abs = HUGE_VAL);
+  std::vector<double> compute_final_solution(double good_chi_rel = 2.0,
+                                             double good_chi_abs = HUGE_VAL);
 
   /// Set of parameters used in the last call to accumulate()
   accumulate_parameters_t get_last_accumulate_parameters() const {
@@ -191,6 +201,14 @@ public:
 
   /// Final solutions
   [[nodiscard]] std::vector<configuration> get_solutions() const;
+
+  /// Value of the objective function :math:`\chi^2` of the final solution
+  /// for the i-th diagonal matrix element.
+  [[nodiscard]] double get_objf(int i) const;
+
+  /// Values of the objective function :math:`\chi^2` of the final solutions
+  /// (one value per a diagonal matrix element of the observable).
+  [[nodiscard]] std::vector<double> get_objf() const;
 
   /// Accumulated objective function histogram for the i-th diagonal matrix
   /// element of the observable

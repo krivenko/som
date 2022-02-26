@@ -407,7 +407,7 @@ Accumulate particular solutions
 # SomCore.compute_final_solution()
 #
 
-c.add_method("void compute_final_solution(double good_chi_rel = 2.0, double good_chi_abs = HUGE_VAL)",
+c.add_method("std::vector<double> compute_final_solution(double good_chi_rel = 2.0, double good_chi_abs = HUGE_VAL)",
              doc = """Select particular solutions according to the standard SOM criterion and compute the final solution""")
 
 #
@@ -442,6 +442,18 @@ c.add_method(name = "solution",
 c.add_property(name = "solutions",
                getter = cfunction("std::vector<configuration> get_solutions ()"),
                doc = """Final solutions, one per diagonal matrix element of the observable""")
+
+#
+# SomCore.objf() and SomCore.objf_list
+#
+
+c.add_method(name = "objf",
+             signature = "double get_objf (int i)",
+             doc = """Value of the objective function :math:`\chi^2` of the final solution for the i-th diagonal matrix element""")
+
+c.add_property(name = "objf_list",
+               getter = cfunction("std::vector<double> get_objf ()"),
+               doc = """Values of the objective function :math:`\chi^2` of the final solutions, one value per a diagonal matrix element of the observable""")
 
 #
 # SomCore.histogram() and SomCore.histograms

@@ -21,17 +21,73 @@
 
 #include <cmath>
 
+#include <boost/preprocessor/seq/for_each_product.hpp>
+
+#include <som/kernels/all.hpp>
+#include <som/solution_functionals/objective_function.hpp>
+
+#include "common.hxx"
 #include "som_core.hpp"
 
 namespace som {
+
+////////////////////////////////////////////
+// som_core::data_t::compute_objf_final() //
+////////////////////////////////////////////
+
+template <typename KernelType>
+void som_core::data_t::compute_objf_final(KernelType const& kernel) {
+  using mesh_t = typename KernelType::mesh_type;
+  objective_function<KernelType> of(kernel, get_rhs<mesh_t>(),
+                                    get_error_bars<mesh_t>());
+  objf_final = of(final_solution);
+}
+
+////////////////////////////////////
+// som_core::compute_objf_final() //
+////////////////////////////////////
+
+template <typename KernelType>
+std::vector<double> som_core::compute_objf_final_impl() {
+  using mesh_t = typename KernelType::mesh_type;
+  mesh_t const& m = std::get<mesh_t>(mesh);
+
+  KernelType kernel(m);
+
+  std::vector<double> objf_final(data.size());
+  for(int n = 0; n < data.size(); ++n) {
+    auto& d = data[n];
+    d.compute_objf_final(kernel);
+    objf_final[n] = d.objf_final;
+  }
+
+  ci.invalidate_all();
+
+  return objf_final;
+}
+
+std::vector<double> som_core::compute_objf_final() {
+#define RUN_IMPL_CASE(r, okmk)                                                 \
+  case(int(BOOST_PP_SEQ_ELEM(0, okmk)) +                                       \
+       n_observable_kinds * mesh_traits<BOOST_PP_SEQ_ELEM(1, okmk)>::index):   \
+    return compute_objf_final_impl<kernel<BOOST_PP_SEQ_ENUM(okmk)>>();
+
+  switch(int(kind) + n_observable_kinds * mesh.index()) {
+    BOOST_PP_SEQ_FOR_EACH_PRODUCT(RUN_IMPL_CASE,
+                                  (ALL_OBSERVABLES)(ALL_INPUT_MESHES))
+    default:
+      fatal_error("Unknown observable kind " + to_string(kind) +
+                  " in compute_objf_final()");
+  }
+#undef RUN_IMPL_CASE
+}
 
 ////////////////////////////////////////
 // som_core::compute_final_solution() //
 ////////////////////////////////////////
 
-void som_core::compute_final_solution(double good_chi_rel,
-                                      double good_chi_abs) {
-
+std::vector<double> som_core::compute_final_solution(double good_chi_rel,
+                                                     double good_chi_abs) {
   for(int n = 0; n < data.size(); ++n) {
     auto& d = data[n];
 
@@ -54,6 +110,8 @@ void som_core::compute_final_solution(double good_chi_rel,
     d.final_solution = mpi::all_reduce(sol_sum);
     d.final_solution *= 1.0 / double(n_good_solutions);
   }
+
+  return compute_objf_final();
 }
 
 /////////////////////
