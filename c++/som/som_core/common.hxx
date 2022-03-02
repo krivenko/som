@@ -23,6 +23,8 @@
 #include <iostream>
 #include <string>
 
+#include <mpi/mpi.hpp>
+
 #include <triqs/gfs.hpp>
 
 #include <som/kernels/mesh_traits.hpp>
@@ -40,6 +42,10 @@ using namespace triqs::gfs;
 
 inline void warning(std::string const& message) {
   std::cout << "WARNING: " << message << std::endl;
+}
+
+inline std::ostream & mpi_cout(mpi::communicator const& comm) {
+  return (std::cout << "[Rank " << comm.rank() << "] ");
 }
 
 template <typename MeshType>

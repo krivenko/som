@@ -117,9 +117,8 @@ int som_core::adjust_f_impl(adjust_f_parameters_t const& p) {
         int n_sol;
         for(int i = 0; (n_sol = comm.rank() + i * comm.size()) < p.l; ++i) {
           if(p.verbosity >= 2) {
-            std::cout << "[Rank " << comm.rank()
-                      << "] Accumulation of particular solution " << n_sol
-                      << std::endl;
+            mpi_cout(comm) << "Accumulation of particular solution " << n_sol
+                           << std::endl;
           }
 
           auto solution = worker(1 + rng(params.max_rects));
@@ -127,11 +126,11 @@ int som_core::adjust_f_impl(adjust_f_parameters_t const& p) {
 
           if(kappa > p.kappa) ++l_good;
           if(p.verbosity >= 2) {
-            std::cout << "[Rank " << comm.rank() << "] Particular solution "
-                      << n_sol << " is " << (kappa > p.kappa ? "" : "not ")
-                      << R"(good (κ = )" << kappa
-                      << ", χ = " << std::sqrt(worker.get_objf_value()) << ")."
-                      << std::endl;
+            mpi_cout(comm) << "Particular solution " << n_sol << " is "
+                           << (kappa > p.kappa ? "" : "not ") << R"(good (κ = )"
+                           << kappa
+                           << ", χ = " << std::sqrt(worker.get_objf_value())
+                           << ")." << std::endl;
           }
         }
         comm.barrier();

@@ -118,8 +118,8 @@ template <typename KernelType> void som_core::accumulate_impl() {
     auto const& error_bars = d.get_error_bars<mesh_t>();
 
     objective_function<KernelType> of(kernel, rhs, error_bars);
-    solution_worker<KernelType> worker(of, d.norm, ci, params, stop_callback,
-                                       params.f);
+    solution_worker<KernelType> worker(
+        of, d.norm, ci, params, stop_callback, params.f);
     auto& rng = worker.get_rng();
 
     // Reset final solution as it is no more valid
@@ -149,9 +149,8 @@ template <typename KernelType> void som_core::accumulate_impl() {
 
       for(; (n_sol = comm.rank() + i * comm.size()) < n_sol_max; ++i) {
         if(params.verbosity >= 2) {
-          std::cout << "[Rank " << comm.rank()
-                    << "] Accumulation of particular solution " << n_sol
-                    << std::endl;
+          mpi_cout(comm) << "Accumulation of particular solution " << n_sol
+                         << std::endl;
         }
 
         d.particular_solutions.emplace_back(worker(1 + rng(params.max_rects)),
@@ -162,8 +161,8 @@ template <typename KernelType> void som_core::accumulate_impl() {
         d.objf_min = std::min(d.objf_min, chi2);
 
         if(params.verbosity >= 2) {
-          std::cout << "[Rank " << comm.rank() << "] Solution " << n_sol
-                    << ": χ = " << std::sqrt(chi2) << std::endl;
+          mpi_cout(comm) << "Solution " << n_sol << ": χ = " << std::sqrt(chi2)
+                         << std::endl;
         }
       }
       comm.barrier();
