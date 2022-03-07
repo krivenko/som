@@ -115,9 +115,6 @@ configuration configuration::operator+(configuration const& c) const {
 }
 
 configuration& configuration::operator*=(double alpha) {
-  if(alpha < 0)
-    TRIQS_RUNTIME_ERROR
-        << "Cannot multiply a configuration by a negative number " << alpha;
   std::transform(rects.begin(), rects.end(), rects.begin(),
                  [&](rectangle const& r) { return r * alpha; });
   cache_ptr.invalidate_entry();

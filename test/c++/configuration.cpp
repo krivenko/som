@@ -64,9 +64,6 @@ TEST(configuration, Detached) {
 TEST(configuration, Arithmetics) {
   EXPECT_PRINT(conf1_str + "," + conf2_str, conf1 + conf2);
 
-  EXPECT_THROW(-2.0 * conf1, triqs::runtime_error);
-  EXPECT_THROW(conf1 * (-2.0), triqs::runtime_error);
-
   EXPECT_PRINT("(c:-2, w:2.6, h:0.6),(c:1.3, w:2.6, h:1.2),(c:2, w:2.6, h:1.4)",
                2.0 * conf1);
   EXPECT_PRINT(
