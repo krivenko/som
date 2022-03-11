@@ -133,7 +133,7 @@ int som_core::adjust_f_impl(adjust_f_parameters_t const& p) {
                            << ")." << std::endl;
           }
         }
-        comm.barrier();
+        comm.barrier(0);
         l_good = mpi::all_reduce(l_good, comm);
 
         if(p.verbosity >= 1)
@@ -169,7 +169,7 @@ int som_core::adjust_f(adjust_f_parameters_t const& p) {
   }
 
 #define IMPL_CASE(r, okmk)                                                     \
-  case(kernel_id(BOOST_PP_SEQ_ELEM(0, okmk), BOOST_PP_SEQ_ELEM(1, okmk){})):   \
+  case(kernel_id<BOOST_PP_SEQ_ELEM(1, okmk)>(BOOST_PP_SEQ_ELEM(0, okmk))):     \
     return adjust_f_impl<kernel<BOOST_PP_SEQ_ENUM(okmk)>>(p);
 
   SELECT_KERNEL(IMPL_CASE, som_core::adjust_f())

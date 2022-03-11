@@ -23,8 +23,8 @@
 #include <iostream>
 #include <vector>
 
-#include <triqs/arrays.hpp>
-#include <triqs/gfs.hpp>
+#include <nda/nda.hpp>
+#include <triqs/mesh.hpp>
 
 #include "../numerics/polynomial.hpp"
 #include "../numerics/spline.hpp"
@@ -35,9 +35,9 @@ namespace som {
 
 // Kernel: fermionic GF, Legendre basis
 template <>
-class kernel<FermionGf, triqs::gfs::legendre>
-   : public kernel_base<kernel<FermionGf, triqs::gfs::legendre>,
-                        triqs::arrays::array<double, 1>> {
+class kernel<FermionGf, triqs::mesh::legendre>
+   : public kernel_base<kernel<FermionGf, triqs::mesh::legendre>,
+                        nda::array<double, 1>> {
 
   // Tolerance levels for function evaluation
   static constexpr double tolerance = 1e-14;
@@ -70,8 +70,8 @@ class kernel<FermionGf, triqs::gfs::legendre>
   double Lambda(int l, double Omega) const;
 
 public:
-  using result_type = triqs::arrays::array<double, 1>;
-  using mesh_type = triqs::gfs::gf_mesh<triqs::gfs::legendre>;
+  using result_type = nda::array<double, 1>;
+  using mesh_type = triqs::mesh::legendre;
   constexpr static observable_kind kind = FermionGf;
 
   const double beta;    // Inverse temperature

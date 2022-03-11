@@ -22,27 +22,21 @@
 # CMake scripts are based on the 'app4triqs' TRIQS application skeleton.
 # See https://github.com/TRIQS/app4triqs for more details.
 
-cmake_minimum_required(VERSION 3.3.2 FATAL_ERROR)
-
-cmake_policy(VERSION 3.3.2)
-if(POLICY CMP0074)
-  cmake_policy(SET CMP0074 NEW)
-endif()
+cmake_minimum_required(VERSION 3.12.4 FATAL_ERROR)
+cmake_policy(VERSION 3.12.4)
 if(POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
 endif()
 
-##################
-# Define Project #
-##################
+# ############
+# Define Project
+project(som VERSION 2.0.0 LANGUAGES CXX)
 
-project(SOM VERSION 2.0.0 LANGUAGES CXX)
 get_directory_property(IS_SUBPROJECT PARENT_DIRECTORY)
 
-##############
-# Load TRIQS #
-##############
-find_package(TRIQS 3.0.0 REQUIRED)
+# ############
+# Load TRIQS and CPP2PY
+find_package(TRIQS 3.1 REQUIRED)
 
 # Get the git hash & print status
 triqs_get_git_hash_of_source_dir(PROJECT_GIT_HASH)
@@ -58,119 +52,139 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT OR
       CACHE PATH "Default install path" FORCE)
   set(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT FALSE)
 endif()
-message(STATUS "CMAKE_INSTALL_PREFIX: ${CMAKE_INSTALL_PREFIX}")
+if(NOT IS_SUBPROJECT)
+  message(STATUS "CMAKE_INSTALL_PREFIX: ${CMAKE_INSTALL_PREFIX}")
+endif()
+set(${PROJECT_NAME}_BINARY_DIR ${PROJECT_BINARY_DIR}
+    CACHE STRING "Binary directory of the ${PROJECT_NAME} Project")
 
-#########################
-# External dependencies #
-#########################
+# Make additional Find Modules available
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/share/cmake/Modules)
 
-# We need at least Boost 1.58 (Math Toolkit 2.2.0) for trigamma()
-find_package(Boost 1.58 REQUIRED)
-
-# Detect MPI
-find_package(MPI)
-
-###########
-# Options #
-###########
+# ############
+# CMake Options
 
 # Default to Release build type
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Type of build" FORCE)
 endif()
-message(STATUS "CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
+if(NOT IS_SUBPROJECT)
+  message(STATUS "CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
+endif()
 
-set(CACHE_SIZE 0x4000 CACHE STRING "Size of the cache to store computed LHS")
-add_definitions(-DCACHE_SIZE=${CACHE_SIZE})
+# Python Support
+option(PythonSupport "Build with Python support" ON)
+if(PythonSupport AND NOT TRIQS_WITH_PYTHON_SUPPORT)
+  message(FATAL_ERROR
+          "TRIQS was installed without Python support. "
+          "Cannot build the Python Interface. "
+          "Disable the build with -DPythonSupport=OFF")
+endif()
 
-option(EXT_DEBUG "Enable extended debugging output" OFF)
-if(EXT_DEBUG)
+# Documentation
+option(Build_Documentation "Build documentation" OFF)
+if(Build_Documentation AND NOT PythonSupport)
+  message(FATAL_ERROR
+          "Build_Documentation=ON requires PythonSupport to be enabled")
+endif()
+
+# Testing
+option(Build_Tests "Build tests" ON)
+if(Build_Tests)
+  enable_testing()
+endif()
+
+# Build static libraries by default
+option(BUILD_SHARED_LIBS "Enable compilation of shared libraries" OFF)
+
+# Initial size of LHS cache
+set(Cache_Size 0x4000 CACHE STRING "Size of the cache to store computed LHS")
+add_definitions(-DCACHE_SIZE=${Cache_Size})
+
+option(Ext_Debug "Enable extended debugging output" OFF)
+if(Ext_Debug)
   add_definitions(-DEXT_DEBUG)
   message(STATUS "Extended debugging has been enabled")
-endif(EXT_DEBUG)
+endif(Ext_Debug)
 
-# Export the list of compile commands into compile_commands.json
+# ############
+# Global Compilation Settings
+
+# Export the list of compile-commands into compile_commands.json
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Global compiler options
-add_compile_options(
-  $<$<CONFIG:Debug>:-Og>
-  $<$<CONFIG:Debug>:-ggdb3>
-)
+# Disable compiler extensions
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Provide additional debugging information for Debug builds
+add_compile_options($<$<CONFIG:Debug>:-ggdb3>)
 
 # Create an Interface target for compiler warnings
-if(NOT TARGET project_warnings)
-  add_library(project_warnings INTERFACE)
-endif()
-install(TARGETS project_warnings EXPORT som-targets)
-target_compile_options(project_warnings
+add_library(${PROJECT_NAME}_warnings INTERFACE)
+target_compile_options(${PROJECT_NAME}_warnings
   INTERFACE
     -Wall
     -Wextra
     -Wpedantic
     -Wno-sign-compare
+    $<$<CXX_COMPILER_ID:GNU>:-Wno-comma-subscript>
     $<$<CXX_COMPILER_ID:GNU>:-Wshadow=local>
     $<$<CXX_COMPILER_ID:GNU>:-Wno-attributes>
+    $<$<CXX_COMPILER_ID:Clang>:-Wno-deprecated-comma-subscript>
+    $<$<CXX_COMPILER_ID:Clang>:-Wno-unknown-warning-option>
     $<$<CXX_COMPILER_ID:Clang>:-Wshadow>
     $<$<CXX_COMPILER_ID:Clang>:-Wno-gcc-compat>
+    $<$<CXX_COMPILER_ID:Clang>:-Wno-c++20-extensions>
+    $<$<CXX_COMPILER_ID:AppleClang>:-Wno-deprecated-comma-subscript>
+    $<$<CXX_COMPILER_ID:AppleClang>:-Wno-unknown-warning-option>
     $<$<CXX_COMPILER_ID:AppleClang>:-Wshadow>
     $<$<CXX_COMPILER_ID:AppleClang>:-Wno-gcc-compat>
+    $<$<CXX_COMPILER_ID:AppleClang>:-Wno-c++20-extensions>
 )
 
-#################
-# Build Project #
-#################
+# #############
+# Build Project
 
-# Build and install the som library
-add_subdirectory(c++/som)
+# Find / Build dependencies
+add_subdirectory(deps)
+
+# Build and install the library
+add_subdirectory(c++/${PROJECT_NAME})
 
 # Tests
-option(Build_Tests "Build tests" ON)
-if(Build_Tests AND NOT IS_SUBPROJECT)
-  enable_testing()
+if(Build_Tests)
   add_subdirectory(test)
 endif()
 
-if(TRIQS_WITH_PYTHON_SUPPORT)
-  # Python interface
-  add_subdirectory(python/som)
+# Python
+if(PythonSupport)
+  add_subdirectory(python/${PROJECT_NAME})
+endif()
 
-  # Build the documentation
-  option(Build_Documentation "Build documentation" OFF)
-  if(Build_Documentation AND NOT IS_SUBPROJECT)
-    if(NOT TRIQS_WITH_DOCUMENTATION)
-      message(WARNING "TRIQS was installed without documentation! \
-              Cannot build documentation.")
-    else()
-      message(STATUS "Documentation Build enabled")
-      add_subdirectory(doc)
-    endif()
-  endif()
-else()
-  message(WARNING "TRIQS was installed without Python support. "
-                  "Cannot build the Python interface and documentation.")
+# Docs
+if(Build_Documentation)
+  add_subdirectory(doc)
 endif()
 
 # Additional configuration files
 add_subdirectory(share)
 
-##################
-# Debian Package #
-##################
+# #############
+# Debian Package
 
 option(BUILD_DEBIAN_PACKAGE "Build a deb package" OFF)
 if(BUILD_DEBIAN_PACKAGE AND NOT IS_SUBPROJECT)
   if(NOT CMAKE_INSTALL_PREFIX STREQUAL "/usr")
     message(FATAL_ERROR "CMAKE_INSTALL_PREFIX must be /usr for packaging")
   endif()
-  set(CPACK_PACKAGE_NAME som)
+  set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
   set(CPACK_GENERATOR "DEB")
   set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
-  set(CPACK_PACKAGE_CONTACT "https://github.com/krivenko/som")
+  set(CPACK_PACKAGE_CONTACT "https://github.com/krivenko/${PROJECT_NAME}")
   execute_process(COMMAND dpkg --print-architecture
                   OUTPUT_VARIABLE CMAKE_DEBIAN_PACKAGE_ARCHITECTURE
                   OUTPUT_STRIP_TRAILING_WHITESPACE)
-  set(CPACK_DEBIAN_PACKAGE_DEPENDS "triqs (>= 3.0)")
+  set(CPACK_DEBIAN_PACKAGE_DEPENDS "triqs (>= 3.1)")
   set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
   set(CPACK_DEBIAN_PACKAGE_GENERATE_SHLIBS ON)
   include(CPack)

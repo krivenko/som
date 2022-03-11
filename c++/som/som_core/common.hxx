@@ -34,6 +34,7 @@
 namespace som {
 
 using std::to_string;
+using namespace triqs::mesh;
 using namespace triqs::gfs;
 
 [[noreturn]] inline void fatal_error(std::string const& message) {
@@ -75,7 +76,7 @@ void check_gf_stat(gf_view<MeshType> g, statistic_enum expected_stat) {
 }
 
 template <typename MeshType>
-inline constexpr int kernel_id(observable_kind kind, MeshType) {
+inline constexpr int kernel_id(observable_kind kind) {
   return int(kind) + n_observable_kinds * mesh_traits<MeshType>::index;
 }
 

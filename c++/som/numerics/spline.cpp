@@ -19,18 +19,18 @@
  *
  ******************************************************************************/
 
+#include <cassert>
 #include <cmath>
 #include <limits>
 
-#include <triqs/arrays.hpp>
-#include <triqs/arrays/blas_lapack/gtsv.hpp>
+#include <nda/linalg.hpp>
 #include <triqs/utility/exceptions.hpp>
 
 #include "spline.hpp"
 
 namespace som {
 
-using namespace triqs::arrays;
+using namespace nda;
 
 ////////////
 // spline //
@@ -67,7 +67,8 @@ spline::spline(vector<double> const& x, vector<double> const& y)
   k(s - 1) = 3 * (y(s - 1) - y(s - 2)) /
              ((x(s - 1) - x(s - 2)) * (x(s - 1) - x(s - 2)));
 
-  lapack::gtsv(ld, d, ud, k);
+  if(lapack::gtsv(ld, d, ud, k))
+    TRIQS_RUNTIME_ERROR << "spline: lapack::gtsv() has failed";
   for(size_t i = 0; i < s - 1; ++i) {
     a(i) = k(i) * (x(i + 1) - x(i)) - (y(i + 1) - y(i));
     b(i) = -k(i + 1) * (x(i + 1) - x(i)) + (y(i + 1) - y(i));
@@ -102,7 +103,8 @@ double spline::operator()(double z) const {
 // regular_spline //
 ////////////////////
 
-regular_spline::regular_spline(double x_min, double x_max,
+regular_spline::regular_spline(double x_min,
+                               double x_max,
                                vector<double> const& y)
    : x_min(x_min)
    , x_max(x_max)
@@ -117,17 +119,19 @@ regular_spline::regular_spline(double x_min, double x_max,
         << "regular_spline : x_min and x_max must not coincide ";
   }
 
-  vector<double> ld(s - 1), d(s), ud(s - 1), k(s);
-  d() = 4 / dx;
+  array<double, 1> ld = (1 / dx) * ones<double>(s - 1);
+  array<double, 1> d = (4 / dx) * ones<double>(s);
+  array<double, 1> ud = (1 / dx) * ones<double>(s - 1);
+
+  array<double, 1> k(s);
   d(0) = d(s - 1) = 2 / dx;
-  ld() = 1 / dx;
-  ud() = 1 / dx;
 
   k(0) = 3 * (y(1) - y(0)) / (dx * dx);
   for(int i = 1; i < s - 1; ++i) k(i) = 3 * (y(i + 1) - y(i - 1)) / (dx * dx);
   k(s - 1) = 3 * (y(s - 1) - y(s - 2)) / (dx * dx);
 
-  lapack::gtsv(ld, d, ud, k);
+  if(lapack::gtsv(ld, d, ud, k))
+    TRIQS_RUNTIME_ERROR << "spline: lapack::gtsv() has failed";
   for(int i = 0; i < s - 1; ++i) {
     a(i) = k(i) * dx - (y(i + 1) - y(i));
     b(i) = -k(i + 1) * dx + (y(i + 1) - y(i));

@@ -21,13 +21,15 @@
 
 #include <memory>
 
+#include <nda/nda.hpp>
+#include <nda/mpi.hpp>
+
 #include <triqs/utility/exceptions.hpp>
 
 #include "observables.hpp"
 
 namespace som {
 
-using namespace triqs::arrays;
 using namespace triqs::gfs;
 
 bool is_stat_relevant(observable_kind kind) { return kind != ZeroTemp; }
@@ -131,15 +133,15 @@ void back_transform(observable_kind kind, configuration const& conf,
 }
 
 // Compute the GF tail from a configuration
-triqs::arrays::array<std::complex<double>, 1>
+nda::array<std::complex<double>, 1>
 compute_tail(observable_kind kind, configuration const& conf,
              int max_order, mpi::communicator const& comm) {
   assert(max_order >= 0);
 
   bool bosoncorr = kind == BosonCorr || kind == BosonAutoCorr;
 
-  array<std::complex<double>, 1> tail(max_order + 1);
-  tail() = .0;
+  array<std::complex<double>, 1>
+    tail = zeros<std::complex<double>>(max_order + 1);
 
   long rect_index = 0;
   for(auto const& rect : conf) {

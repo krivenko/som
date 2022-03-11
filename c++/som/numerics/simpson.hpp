@@ -20,7 +20,7 @@
  ******************************************************************************/
 #pragma once
 
-#include <triqs/arrays/array.hpp>
+#include <nda/nda.hpp>
 #include <triqs/utility/numeric_ops.hpp>
 
 namespace som {
@@ -58,9 +58,9 @@ auto adaptive_simpson(F f, X x_min, X x_max, X eps)
 // x_max, if var_lower = true
 template <typename X, typename F>
 auto primitive(F f, X x_min, X x_max, int N, X eps, bool var_lower = false)
-    -> triqs::arrays::array<decltype(f(x_min) * x_min), 1> {
+    -> nda::array<decltype(f(x_min) * x_min), 1> {
   using res_type = decltype(f(x_min) * x_min);
-  triqs::arrays::array<res_type, 1> res(N);
+  nda::array<res_type, 1> res(N);
   auto h = (x_max - x_min) / (N - 1);
   if(var_lower) {
     res(N - 1) = res_type{};

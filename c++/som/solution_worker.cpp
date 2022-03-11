@@ -19,6 +19,7 @@
  *
  ******************************************************************************/
 
+#include <cmath>
 #include <utility>
 
 #include <triqs/utility/numeric_ops.hpp>
@@ -59,8 +60,12 @@ void dist_function::operator++() { ++step; }
 
 template <typename KernelType>
 solution_worker<KernelType>::solution_worker(
-    objective_function<KernelType> const& objf, double norm, cache_index& ci,
-    worker_parameters_t const& params, std::function<bool()> stop_callback, int f)
+    objective_function<KernelType> const& objf,
+    double norm,
+    cache_index& ci,
+    worker_parameters_t const& params,
+    std::function<bool()> stop_callback,
+    int f)
    : ci(ci)
    , verbose_mc(params.verbosity >= 3)
    , f(f)
@@ -82,29 +87,44 @@ solution_worker<KernelType>::solution_worker(
    , weight_min(params.min_rect_weight * norm) {
 
   // Add all elementary updates
-  mc.add_move(update_shift<KernelType>(data, mc.get_rng(), ci, energy_window,
-                                       width_min, weight_min),
-              "update_shift", 1.0);
+  mc.add_move(update_shift<KernelType>(
+                  data, mc.get_rng(), ci, energy_window, width_min, weight_min),
+              "update_shift",
+              1.0);
   mc.add_move(update_change_width<KernelType>(
                   data, mc.get_rng(), ci, energy_window, width_min, weight_min),
-              "update_change_width", 1.0);
+              "update_change_width",
+              1.0);
   mc.add_move(update_change_weight2<KernelType>(
                   data, mc.get_rng(), ci, energy_window, width_min, weight_min),
-              "update_change_weight2", 1.0);
-  mc.add_move(update_insert<KernelType>(data, mc.get_rng(), ci, energy_window,
-                                        width_min, weight_min,
+              "update_change_weight2",
+              1.0);
+  mc.add_move(update_insert<KernelType>(data,
+                                        mc.get_rng(),
+                                        ci,
+                                        energy_window,
+                                        width_min,
+                                        weight_min,
                                         params.max_rects),
-              "update_insert", 1.0);
+              "update_insert",
+              1.0);
   mc.add_move(update_remove_shift<KernelType>(
                   data, mc.get_rng(), ci, energy_window, width_min, weight_min),
-              "update_remove_shift", 1.0);
-  mc.add_move(update_split_shift<KernelType>(data, mc.get_rng(), ci,
-                                             energy_window, width_min,
-                                             weight_min, params.max_rects),
-              "update_split_shift", 1.0);
+              "update_remove_shift",
+              1.0);
+  mc.add_move(update_split_shift<KernelType>(data,
+                                             mc.get_rng(),
+                                             ci,
+                                             energy_window,
+                                             width_min,
+                                             weight_min,
+                                             params.max_rects),
+              "update_split_shift",
+              1.0);
   mc.add_move(update_glue_shift<KernelType>(
                   data, mc.get_rng(), ci, energy_window, width_min, weight_min),
-              "update_glue_shift", 1.0);
+              "update_glue_shift",
+              1.0);
 
   // Reset temporary configuration to global_conf after each global update
   mc.set_after_cycle_duty(std::bind(&solution_worker::reset_temp_conf, this));
@@ -139,8 +159,7 @@ configuration solution_worker<KernelType>::operator()(int init_config_size) {
     TRIQS_RUNTIME_ERROR << "solution_worker: requested configuration size "
                         << init_config_size
                         << " is too big (inconsistent with min_rect_weight = "
-                        << weight_min << " and norm = " << norm
-                        << ")";
+                        << weight_min << " and norm = " << norm << ")";
 
 #ifdef EXT_DEBUG
   std::cerr
@@ -155,8 +174,8 @@ configuration solution_worker<KernelType>::operator()(int init_config_size) {
   for(int i = 0; i < init_config_size; ++i) {
     double center = rng(energy_window.first + width_min / 2,
                         energy_window.second - width_min / 2);
-    double width =
-        rng(width_min, std::min(2 * (center - energy_window.first),
+    double width = rng(width_min,
+                       std::min(2 * (center - energy_window.first),
                                 2 * (energy_window.second - center)));
     double height = rng(init_config_size * weight_min / width, norm / width);
     conf.insert({center, width, height, ci});
@@ -195,7 +214,7 @@ void solution_worker<KernelType>::run(configuration& conf) {
 
   // Start simulation
   data.Z.reset();
-  int res_code = mc.accumulate(f, t, stop_callback);
+  int res_code = mc.accumulate(f, t, stop_callback, MPI_COMM_SELF);
 
   swap(data.global_conf, conf);
   kern.cache_swap(data.global_conf, conf);
@@ -220,8 +239,8 @@ void solution_worker<KernelType>::reset_temp_conf() {
   kern.cache_copy(data.global_conf, data.temp_conf);
 
 #ifdef EXT_DEBUG
-  std::cerr << "Temporary configuration reset to (D = " << data.temp_objf_value
-            << ")" << std::endl;
+  std::cerr << "Temporary configuration reset to (χ = "
+            << std::sqrt(data.temp_objf_value) << ")" << std::endl;
   std::cerr << data.temp_conf << std::endl;
 #endif
 

@@ -20,15 +20,15 @@
  ******************************************************************************/
 #include <vector>
 
-#include <triqs/gfs.hpp>
-#include <triqs/test_tools/arrays.hpp>
+#include <nda/gtest_tools.hpp>
+
+#include <triqs/mesh.hpp>
 
 #include <som/kernels/fermiongf_imtime.hpp>
 #include <som/solution_functionals/objective_function.hpp>
 
 using namespace som;
-using namespace triqs::arrays;
-using namespace triqs::gfs;
+using namespace nda;
 
 const double beta = 2;
 cache_index ci;
@@ -37,7 +37,7 @@ std::vector<rectangle> rects{{-2, 2.6, 0.3, ci},
                              {-0.5, 2.6, 0.5, ci},
                              {2, 2.6, 0.7, ci}};
 
-gf_mesh<imtime> mesh(beta, Fermion, 11);
+triqs::mesh::imtime mesh(beta, triqs::mesh::Fermion, 11);
 
 array<double, 1> GF() {
   array<double, 1> res(mesh.size());
@@ -63,9 +63,9 @@ array<double, 1> S() {
 auto g = GF();
 auto s = S();
 
-kernel<FermionGf, imtime> kern(mesh);
+kernel<FermionGf, triqs::mesh::imtime> kern(mesh);
 
-objective_function<kernel<FermionGf, imtime>> of(kern, g, s);
+objective_function<kernel<FermionGf, triqs::mesh::imtime>> of(kern, g, s);
 
 TEST(objective_function, Change) {
   configuration conf({rects[0], rects[2]}, ci);
@@ -149,5 +149,3 @@ TEST(objective_function, Multiple) {
   cu.apply();
   EXPECT_NEAR(577.133, of(conf), 1e-3);
 }
-
-MAKE_MAIN

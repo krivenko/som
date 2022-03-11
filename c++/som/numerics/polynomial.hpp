@@ -26,7 +26,7 @@
 
 #include <boost/operators.hpp>
 
-#include <triqs/arrays/vector.hpp>
+#include <nda/nda.hpp>
 
 namespace som {
 
@@ -35,7 +35,7 @@ template <typename CoeffType = double, bool AutoLowerDegree = false>
 class polynomial : boost::operators<polynomial<CoeffType, AutoLowerDegree>> {
 
   // Coefficients of the polynomial; the constant term goes first
-  using coeffs_type = triqs::arrays::vector<CoeffType>;
+  using coeffs_type = nda::vector<CoeffType>;
   coeffs_type coeffs_;
 
   constexpr static double auto_lower_degree_tolerance = 1e-16;

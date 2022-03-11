@@ -29,16 +29,14 @@ using namespace triqs::gfs;
 cache_index ci;
 
 TEST(BosonAutoCorr, imtime) {
-  test_kernel<kernel<BosonAutoCorr, imtime>>("bosonautocorr_imtime.h5", ci,
-                                             1e-10);
+  test_kernel<kernel<BosonAutoCorr, imtime>>(
+      "bosonautocorr_imtime.h5", ci, 1e-10);
 }
 TEST(BosonAutoCorr, imfreq) {
-  test_kernel<kernel<BosonAutoCorr, imfreq>>("bosonautocorr_imfreq.h5", ci,
-                                             1e-10);
+  test_kernel<kernel<BosonAutoCorr, imfreq>>(
+      "bosonautocorr_imfreq.h5", ci, 1e-10);
 }
 TEST(BosonAutoCorr, legendre) {
-  test_kernel<kernel<BosonAutoCorr, legendre>>("bosonautocorr_legendre.h5", ci,
-                                               1e-9);
+  test_kernel<kernel<BosonAutoCorr, legendre>>(
+      "bosonautocorr_legendre.h5", ci, 1e-9);
 }
-
-MAKE_MAIN

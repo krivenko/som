@@ -23,8 +23,8 @@
 #include <iostream>
 #include <vector>
 
-#include <triqs/arrays.hpp>
-#include <triqs/gfs.hpp>
+#include <nda/nda.hpp>
+#include <triqs/mesh.hpp>
 
 #include "../numerics/spline.hpp"
 
@@ -34,13 +34,13 @@ namespace som {
 
 // Kernel: zero temperature GF, imaginary time
 template <>
-class kernel<ZeroTemp, triqs::gfs::imtime>
-   : public kernel_base<kernel<ZeroTemp, triqs::gfs::imtime>,
-                        triqs::arrays::array<double, 1>> {
+class kernel<ZeroTemp, triqs::mesh::imtime>
+   : public kernel_base<kernel<ZeroTemp, triqs::mesh::imtime>,
+                        nda::array<double, 1>> {
 
 public:
-  using result_type = triqs::arrays::array<double, 1>;
-  using mesh_type = triqs::gfs::gf_mesh<triqs::gfs::imtime>;
+  using result_type = nda::array<double, 1>;
+  using mesh_type = triqs::mesh::imtime;
   constexpr static observable_kind kind = ZeroTemp;
 
   const double beta = HUGE_VAL; // Inverse temperature (infinity)

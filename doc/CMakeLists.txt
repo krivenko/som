@@ -19,26 +19,37 @@
 #
 ################################################################################
 
-# Path to the Sphinx inventory file of the library
-set(TRIQS_INVENTORY_DIR "${TRIQS_ROOT}/share/doc/triqs" CACHE STRING
-    "Path or URL to a directory containing a Sphinx inventory file of the TRIQS library")
-mark_as_advanced(TRIQS_INVENTORY_DIR)
+# Generate the Sphinx config file
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/conf.py.in
+               ${CMAKE_CURRENT_BINARY_DIR}/conf.py @ONLY)
 
-# generate the conf.py
-configure_file(conf.py.in conf.py)
+# ---------------------------------
+# Top Sphinx target
+# ---------------------------------
+if(NOT DEFINED SPHINXBUILD_EXECUTABLE)
+  find_package(Sphinx 2.1.0 REQUIRED)
+endif()
 
-add_custom_target(docs_sphinx ALL)
+# Find Sphinx extensions
+find_package(SphinxRTDTheme 0.3.0 REQUIRED)
+find_package(MySTParser REQUIRED)
+
+# Sphinx has internal caching, always run it
+add_custom_target(${PROJECT_NAME}_docs_sphinx ALL)
 add_custom_command(
-  TARGET docs_sphinx
+  TARGET ${PROJECT_NAME}_docs_sphinx
   COMMAND PYTHONPATH=${PROJECT_BINARY_DIR}/python:$ENV{PYTHONPATH}
-          ${TRIQS_SPHINXBUILD_EXECUTABLE}
-          -c . -j8 -b html ${CMAKE_CURRENT_SOURCE_DIR} html
+          ${SPHINXBUILD_EXECUTABLE} -j auto -c . -b html
+          ${CMAKE_CURRENT_SOURCE_DIR} html
 )
 
+# ---------------------------------
 # Install
+# ---------------------------------
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html/
-        COMPONENT documentation
-        DESTINATION share/doc/som
-        REGEX "\\.(html|pdf|png|gif|jpg|svg|js|xsl|css|py|txt|inv|bib)$"
-        PATTERN "_*"
+  COMPONENT documentation
+  DESTINATION share/doc/${PROJECT_NAME}
+  FILES_MATCHING
+  REGEX "\\.(html|pdf|png|gif|jpg|svg|js|xsl|css|py|txt|inv|bib|ttf|woff2|eot)$"
+  PATTERN "_*"
 )

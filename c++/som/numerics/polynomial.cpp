@@ -28,7 +28,7 @@
 
 namespace som {
 
-using triqs::arrays::range;
+using nda::range;
 
 ////////////////
 // polynomial //
@@ -56,7 +56,7 @@ polynomial<CoeffType, AutoLowerDegree>::operator+=(polynomial const& p) {
   else if(s1 < s2) {
     coeffs_type tmp(p.coeffs_);
     tmp(range(s1)) += coeffs_;
-    swap(coeffs_, tmp);
+    std::swap(coeffs_, tmp);
   } else // coeffs_.size() == p.coeffs_.size()
     coeffs_ += p.coeffs_;
   if constexpr(AutoLowerDegree) try_lower_degree();
@@ -72,7 +72,7 @@ polynomial<CoeffType, AutoLowerDegree>::operator-=(polynomial const& p) {
   else if(s1 < s2) {
     coeffs_type tmp(-p.coeffs_);
     tmp(range(s1)) += coeffs_;
-    swap(coeffs_, tmp);
+    std::swap(coeffs_, tmp);
   } else // coeffs_.size() == p.coeffs_.size()
     coeffs_ -= p.coeffs_;
   if constexpr(AutoLowerDegree) try_lower_degree();
@@ -119,7 +119,7 @@ bool polynomial<CoeffType, AutoLowerDegree>::try_lower_degree(
   for(; n >= 0 && is_zero(coeffs_[n], tolerance); --n)
     ;
   if(n != coeffs_.size() - 1) {
-    coeffs_ = coeffs_type(coeffs_(range(n + 1)));
+    coeffs_ = make_regular(coeffs_(range(n + 1)));
     return true;
   } else
     return false;

@@ -19,18 +19,17 @@
  *
  ******************************************************************************/
 #include <h5/h5.hpp>
-#include <triqs/test_tools/arrays.hpp>
+#include <nda/gtest_tools.hpp>
 
 #include <som/kernels/fermiongf_imtime.hpp>
 #include <som/solution_worker.hpp>
 
 using namespace som;
-using namespace triqs::arrays;
-using namespace triqs::gfs;
+using namespace nda;
 using triqs::utility::clock_callback;
 
 double beta;
-gf_mesh<imtime> mesh;
+triqs::mesh::imtime mesh;
 array<double, 1> g_tau, s_tau;
 
 struct Env : public ::testing::Environment {
@@ -41,17 +40,17 @@ struct Env : public ::testing::Environment {
     h5_read(arch, "g_tau", g_tau);
     h5_read(arch, "s_tau", s_tau);
 
-    mesh = {beta, Fermion, static_cast<int>(first_dim(g_tau))};
+    mesh = {beta, triqs::mesh::Fermion, static_cast<int>(first_dim(g_tau))};
   }
 };
 ::testing::Environment* const env =
     ::testing::AddGlobalTestEnvironment(new Env);
 
-using obj_function = objective_function<kernel<FermionGf, imtime>>;
+using obj_function = objective_function<kernel<FermionGf, triqs::mesh::imtime>>;
 
 TEST(solution_worker, RandomConfig) {
   cache_index ci;
-  kernel<FermionGf, imtime> kern(mesh);
+  kernel<FermionGf, triqs::mesh::imtime> kern(mesh);
   obj_function of(kern, g_tau, s_tau);
 
   auto params = worker_parameters_t({-3.0, 3.0});
@@ -60,8 +59,8 @@ TEST(solution_worker, RandomConfig) {
   params.min_rect_width = 0.001;
   params.min_rect_weight = 0.001;
 
-  solution_worker<kernel<FermionGf, imtime>> worker(of, 1.0, ci, params,
-                                                    clock_callback(-1), 10);
+  solution_worker<kernel<FermionGf, triqs::mesh::imtime>> worker(
+      of, 1.0, ci, params, clock_callback(-1), 10);
 
   auto solution = worker(10);
 
@@ -74,7 +73,7 @@ TEST(solution_worker, RandomConfig) {
 
 TEST(solution_worker, StartConfig) {
   cache_index ci;
-  kernel<FermionGf, imtime> kern(mesh);
+  kernel<FermionGf, triqs::mesh::imtime> kern(mesh);
   obj_function of(kern, g_tau, s_tau);
 
   auto params = worker_parameters_t({-3.0, 3.0});
@@ -83,8 +82,8 @@ TEST(solution_worker, StartConfig) {
   params.min_rect_width = 0.001;
   params.min_rect_weight = 0.001;
 
-  solution_worker<kernel<FermionGf, imtime>> worker(of, 1.0, ci, params,
-                                                    clock_callback(-1), 10);
+  solution_worker<kernel<FermionGf, triqs::mesh::imtime>> worker(
+      of, 1.0, ci, params, clock_callback(-1), 10);
 
   h5::file arch("solution_worker.ref.h5", 'r');
   configuration init_config(ci);
@@ -97,5 +96,3 @@ TEST(solution_worker, StartConfig) {
 
   EXPECT_EQ(solution_ref, solution);
 }
-
-MAKE_MAIN

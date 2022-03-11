@@ -27,8 +27,8 @@
 #include <boost/preprocessor/seq/enum.hpp>
 #include <boost/preprocessor/seq/size.hpp>
 
+#include <nda/nda.hpp>
 #include <mpi/mpi.hpp>
-#include <triqs/arrays.hpp>
 #include <triqs/gfs.hpp>
 
 #include "../config_update.hpp"
@@ -63,7 +63,7 @@ void back_transform(
     mpi::communicator const& comm = {});
 
 // Compute the GF tail from a configuration
-triqs::arrays::array<std::complex<double>, 1>
+nda::array<std::complex<double>, 1>
 compute_tail(observable_kind kind, configuration const& conf,
              int max_order, mpi::communicator const& comm = {});
 

@@ -23,8 +23,8 @@
 #include <utility>
 #include <vector>
 
-#include <triqs/arrays.hpp>
-#include <triqs/gfs.hpp>
+#include <nda/nda.hpp>
+#include <triqs/mesh/refreq.hpp>
 
 #include "som_core/som_core.hpp"
 
@@ -46,34 +46,38 @@ enum resolution_function : unsigned int {
 /// Spectral integral i_m^{(j)} (Eq. (4) of [1])
 ///
 /// i_m^{(j)} = \int_{-\infty}^\infty dz \bar K(m, z) A^{(j)}(z)
-double spectral_integral(double z_m, double delta_m, configuration const& c,
+double spectral_integral(double z_m,
+                         double delta_m,
+                         configuration const& c,
                          resolution_function r_func);
 
 /// Spectral integrals i_m^{(j)} (Eq. (4) of [1]) for all points z_m
 /// of a regular real frequency mesh.
-triqs::arrays::vector<double>
-spectral_integral(triqs::gfs::gf_mesh<triqs::gfs::refreq> const& mesh,
-                  configuration const& c, resolution_function r_func);
+nda::vector<double> spectral_integral(triqs::mesh::refreq const& mesh,
+                                      configuration const& c,
+                                      resolution_function r_func);
 
 /// Spectral integrals i_m^{(j)} (Eq. (4) of [1]) for an arbitrary set
 /// of real frequency intervals.
-triqs::arrays::vector<double>
+nda::vector<double>
 spectral_integral(std::vector<std::pair<double, double>> const& intervals,
-                  configuration const& c, resolution_function r_func);
+                  configuration const& c,
+                  resolution_function r_func);
 
 /// Spectral averages i_m (Eq. (6) of [1])
 ///
 /// i_m = J^{-1} \sum_{j=1}^J i_m^{(j)}
 
 // Regular real frequency mesh
-triqs::arrays::vector<double>
-spectral_avg(som_core const& cont, int i,
-             triqs::gfs::gf_mesh<triqs::gfs::refreq> const& mesh,
-             resolution_function r_func);
+nda::vector<double> spectral_avg(som_core const& cont,
+                                 int i,
+                                 triqs::mesh::refreq const& mesh,
+                                 resolution_function r_func);
 
 // Arbitrary set of real frequency intervals
-triqs::arrays::vector<double>
-spectral_avg(som_core const& cont, int i,
+nda::vector<double>
+spectral_avg(som_core const& cont,
+             int i,
              std::vector<std::pair<double, double>> const& intervals,
              resolution_function r_func);
 
@@ -82,17 +86,18 @@ spectral_avg(som_core const& cont, int i,
 /// \sigma_m^2 = J^{-1} \usm_{j=1}^J (i_m^{(j)} - i_m)^2
 
 // Regular real frequency mesh
-triqs::arrays::vector<double>
-spectral_disp(som_core const& cont, int i,
-              triqs::gfs::gf_mesh<triqs::gfs::refreq> const& mesh,
-              triqs::arrays::vector<double> const& avg,
-              resolution_function r_func);
+nda::vector<double> spectral_disp(som_core const& cont,
+                                  int i,
+                                  triqs::gfs::refreq const& mesh,
+                                  nda::vector<double> const& avg,
+                                  resolution_function r_func);
 
 // Arbitrary set of real frequency intervals
-triqs::arrays::vector<double>
-spectral_disp(som_core const& cont, int i,
+nda::vector<double>
+spectral_disp(som_core const& cont,
+              int i,
               std::vector<std::pair<double, double>> const& intervals,
-              triqs::arrays::vector<double> const& avg,
+              nda::vector<double> const& avg,
               resolution_function r_func);
 
 /// Spectral correlation matrix \sigma_{mm'} (Eq. (8) of [1])
@@ -100,17 +105,18 @@ spectral_disp(som_core const& cont, int i,
 /// \sigma_{mm'} = J^{-1} \usm_{j=1}^J (i_m^{(j)} - i_m)(i_{m'}^{(j)} - i_{m'})
 
 // Regular real frequency mesh
-triqs::arrays::array<double, 2>
-spectral_corr(som_core const& cont, int i,
-              triqs::gfs::gf_mesh<triqs::gfs::refreq> const& mesh,
-              triqs::arrays::vector<double> const& avg,
-              resolution_function r_func);
+nda::matrix<double> spectral_corr(som_core const& cont,
+                                  int i,
+                                  triqs::mesh::refreq const& mesh,
+                                  nda::vector<double> const& avg,
+                                  resolution_function r_func);
 
 // Arbitrary set of real frequency intervals
-triqs::arrays::array<double, 2>
-spectral_corr(som_core const& cont, int i,
+nda::matrix<double>
+spectral_corr(som_core const& cont,
+              int i,
               std::vector<std::pair<double, double>> const& intervals,
-              triqs::arrays::vector<double> const& avg,
+              nda::vector<double> const& avg,
               resolution_function r_func);
 
 } // namespace som

@@ -22,32 +22,32 @@
 
 #include <cassert>
 
-#include <triqs/arrays.hpp>
+#include <nda/nda.hpp>
 
 // Computation of finite differences
 
 namespace som {
 
 // Forward difference
-template <typename T1, typename T2>
-inline void finite_diff_forward(triqs::arrays::array_const_view<T1, 1> f,
-                                triqs::arrays::array<double, 1> const& x,
-                                triqs::arrays::array_view<T2, 1> output) {
+template <nda::ArrayOfRank<1> AF, nda::ArrayOfRank<1> AOUT>
+inline void finite_diff_forward(AF f,
+                                nda::array<double, 1> const& x,
+                                AOUT output) {
   assert(f.size() == x.size());
   assert(output.size() == x.size() - 1);
-  for(int k : triqs::arrays::range(output.size())) {
+  for(int k : nda::range(output.size())) {
     output(k) = (f(k + 1) - f(k)) / (x(k + 1) - x(k));
   }
 }
 
 // Second order symmetric difference
-template <typename T1, typename T2>
-inline void finite_diff_2_symm(triqs::arrays::array_const_view<T1, 1> f,
-                               triqs::arrays::array<double, 1> const& x,
-                               triqs::arrays::array_view<T2, 1> output) {
+template <nda::ArrayOfRank<1> AF, nda::ArrayOfRank<1> AOUT>
+inline void finite_diff_2_symm(AF f,
+                               nda::array<double, 1> const& x,
+                               AOUT output) {
   assert(f.size() == x.size());
   assert(output.size() == x.size() - 2);
-  for(int k : triqs::arrays::range(output.size())) {
+  for(int k : nda::range(output.size())) {
     output(k) =
         (f(k + 2) * (x(k + 1) - x(k)) + f(k) * (x(k + 2) - x(k + 1)) -
          f(k + 1) * (x(k + 2) - x(k))) /

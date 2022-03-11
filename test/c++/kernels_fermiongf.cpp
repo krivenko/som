@@ -37,5 +37,3 @@ TEST(FermionGf, imfreq) {
 TEST(FermionGf, legendre) {
   test_kernel<kernel<FermionGf, legendre>>("fermiongf_legendre.h5", ci, 1e-10);
 }
-
-MAKE_MAIN

@@ -19,7 +19,7 @@
  *
  ******************************************************************************/
 
-#include <triqs/arrays/vector.hpp>
+#include <nda/nda.hpp>
 
 #include "fit_quality.hpp"
 
@@ -45,7 +45,7 @@ double fit_quality<KernelType>::corr(std::complex<double> z1,
 
 template <typename KernelType>
 double fit_quality<KernelType>::operator()(configuration const& c) const {
-  auto delta = (rhs - kern(c)) / error_bars;
+  rhs_type delta = (rhs - kern(c)) / error_bars;
   int M = first_dim(delta);
   double kappa = 0;
   for(int i = 1; i < M; ++i) kappa += corr(delta(i), delta(i - 1));

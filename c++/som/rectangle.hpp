@@ -24,8 +24,8 @@
 #include <ostream>
 #include <utility>
 
+#include <nda/nda.hpp>
 #include <mpi/mpi.hpp>
-#include <triqs/arrays/vector.hpp>
 
 #include "cache_index.hpp"
 
@@ -105,7 +105,7 @@ public:
   averaged_hilbert_transform(std::complex<double> ea,
                              std::complex<double> eb,
                              bool multiply_by_e = false) const;
-  [[nodiscard]] triqs::arrays::vector<double>
+  [[nodiscard]] nda::vector<double>
   tail_coefficients(long order_min, long order_max,
                     bool multiply_by_e = false) const;
 

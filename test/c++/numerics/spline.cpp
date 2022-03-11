@@ -19,7 +19,7 @@
  *
  ******************************************************************************/
 #include <cmath>
-#include <triqs/test_tools/arrays.hpp>
+#include <nda/gtest_tools.hpp>
 
 #define TRIQS_ARRAYS_ENFORCE_BOUNDCHECK
 #include <som/numerics/spline.hpp>
@@ -28,7 +28,7 @@ using std::abs;
 using std::copysign;
 using std::exp;
 using std::sin;
-using triqs::arrays::vector;
+using nda::vector;
 
 using namespace som;
 
@@ -99,5 +99,3 @@ TEST(spline, regular_spline) {
   }
   EXPECT_ARRAY_NEAR(result, ref, 1e-13);
 }
-
-MAKE_MAIN

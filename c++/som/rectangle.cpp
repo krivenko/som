@@ -28,7 +28,7 @@
 
 namespace som {
 
-using triqs::arrays::vector;
+using nda::vector;
 
 bool rectangle::operator==(rectangle const& r) const {
   using triqs::utility::is_zero;

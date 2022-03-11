@@ -18,15 +18,23 @@
  * SOM. If not, see <http://www.gnu.org/licenses/>.
  *
  ******************************************************************************/
-#include <triqs/test_tools/arrays.hpp>
+#include <sstream>
 
-#include <triqs/gfs.hpp>
+#include <nda/gtest_tools.hpp>
+
+#include <triqs/mesh.hpp>
 
 #include <som/configuration.hpp>
 
-using namespace triqs::arrays;
-using namespace triqs::gfs;
+using namespace nda;
 using namespace som;
+
+#define EXPECT_PRINT(X, Y)                                                     \
+  {                                                                            \
+    std::stringstream ss;                                                      \
+    ss << Y;                                                                   \
+    EXPECT_EQ(X, ss.str());                                                    \
+  }
 
 cache_index ci;
 
@@ -41,7 +49,7 @@ std::string conf2_str =
     "(c:-3, w:2.6, h:0.3),(c:-1.6, w:2.4, h:0.1),(c:2.8, w:2.8, h:0.55)";
 
 TEST(configuration, Evaluation) {
-  gf_mesh<refreq> mesh(-5.0, 5.0, 11);
+  triqs::mesh::refreq mesh(-5.0, 5.0, 11);
   vector<double> ref1 = {.0, .0, 0.3, 0.3, 0.3, 0.6, 1.3, 1.3, 0.7, .0, .0};
   vector<double> ref2 = {.0, 0.3, 0.3, 0.4, 0.1, .0, .0, 0.55, 0.55, 0.55, .0};
 
@@ -52,13 +60,13 @@ TEST(configuration, Evaluation) {
 }
 
 TEST(configuration, Print) {
-  ASSERT_PRINT(conf1_str, conf1);
-  ASSERT_PRINT(conf2_str, conf2);
+  EXPECT_PRINT(conf1_str, conf1);
+  EXPECT_PRINT(conf2_str, conf2);
 }
 
 TEST(configuration, Detached) {
   configuration conf_det({{-2.0, 2.6, 0.3}, {1.3, 2.6, 0.6}, {2.0, 2.6, 0.7}});
-  ASSERT_PRINT(conf1_str, conf_det);
+  EXPECT_PRINT(conf1_str, conf_det);
 }
 
 TEST(configuration, Arithmetics) {
@@ -80,7 +88,5 @@ TEST(configuration, Arithmetics) {
 
 TEST(configuration, normalize) {
   conf2.normalize(2.56);
-  ASSERT_PRINT(conf2_str, conf2);
+  EXPECT_PRINT(conf2_str, conf2);
 }
-
-MAKE_MAIN

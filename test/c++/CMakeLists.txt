@@ -19,31 +19,11 @@
 #
 ################################################################################
 
-# Build Google Test
-add_subdirectory(gtest EXCLUDE_FROM_ALL)
-
 # Copy reference HDF5 files to binary dir
-file(GLOB all_h5_files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.h5)
+file(GLOB_RECURSE all_h5_files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.h5)
 foreach(file ${all_h5_files})
   configure_file(${file} ${file} COPYONLY)
 endforeach()
-
-# List of all tests
-file(GLOB all_tests RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
-
-macro(add_cppcheck_command test_name src)
-  add_custom_command(
-    TARGET ${test_name}
-    COMMAND ${CPPCHECK_EXECUTABLE}
-      --enable=warning,style,performance,portability
-      --std=c++17
-      --template=gcc
-      --inline-suppr
-      --verbose
-      --quiet
-      ${src}
-  )
-endmacro()
 
 # Add a test
 macro(add_som_cpp_test test)
@@ -52,9 +32,12 @@ macro(add_som_cpp_test test)
   get_filename_component(test_dir ${test} DIRECTORY)
   add_executable(${test_name} ${test})
 
+  target_link_libraries(${test_name}
+                        ${PROJECT_NAME}::${PROJECT_NAME}_c
+                        ${PROJECT_NAME}_warnings
+                        gtest_main)
   set_property(TARGET ${test_name} PROPERTY
                RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${test_dir})
-  target_link_libraries(${test_name} som_c gtest_main project_warnings)
 
   if(${ARGC} GREATER 1)
     foreach(numproc ${ARGN})
@@ -76,25 +59,35 @@ macro(add_som_cpp_test test)
 
   # Run cppcheck if found
   if(CPPCHECK_EXECUTABLE)
-    add_cppcheck_command(${test_name} ${CMAKE_CURRENT_SOURCE_DIR}/${test})
+    add_custom_command(
+      TARGET ${test_name}
+      COMMAND ${CPPCHECK_EXECUTABLE}
+      --enable=warning,style,performance,portability
+      --std=c++20
+      --template=gcc
+      --verbose
+      --force
+      --quiet
+      ${CMAKE_CURRENT_SOURCE_DIR}/${test}
+    )
   endif()
 endmacro()
 
 # Simple tests
-set(SIMPLE_TESTS configuration.cpp
+set(simple_tests configuration.cpp
                  objective_function.cpp
                  kernels_fermiongf.cpp
                  kernels_bosoncorr.cpp
                  kernels_bosonautocorr.cpp
                  kernels_zerotemp.cpp
                  solution_worker.cpp)
-foreach(test ${SIMPLE_TESTS})
+foreach(test ${simple_tests})
   add_som_cpp_test(${test})
 endforeach()
 
 # MPI tests
-set(MPI_TESTS global_index_map.cpp spectral_stats.cpp)
-foreach(test ${MPI_TESTS})
+set(mpi_tests global_index_map.cpp spectral_stats.cpp)
+foreach(test ${mpi_tests})
   add_som_cpp_test(${test} 1 2 4)
 endforeach()
 

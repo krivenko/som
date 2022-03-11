@@ -28,7 +28,7 @@
 namespace som {
 
 using std::to_string;
-using triqs::statistics::histogram;
+using triqs::stat::histogram;
 
 /////////////////////////
 // som_core: Accessors //

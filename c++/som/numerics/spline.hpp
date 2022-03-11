@@ -20,21 +20,20 @@
  ******************************************************************************/
 #pragma once
 
-#include <triqs/arrays/vector.hpp>
+#include <nda/nda.hpp>
 
 namespace som {
 
 // Cubic spline interpolator
 class spline {
 
-  triqs::arrays::vector<double> x, y; // vectors of knot coordinates
-  triqs::arrays::vector<double> a, b; // spline coefficients
-  size_t s = 0;                       // size of x and y
+  nda::array<double, 1> x, y; // vectors of knot coordinates
+  nda::array<double, 1> a, b; // spline coefficients
+  size_t s = 0;             // size of x and y
 
 public:
   spline() = default;
-  spline(triqs::arrays::vector<double> const& x,
-         triqs::arrays::vector<double> const& y);
+  spline(nda::vector<double> const& x, nda::vector<double> const& y);
 
   double operator()(double z) const;
 };
@@ -43,15 +42,14 @@ public:
 class regular_spline {
 
   double x_min = 0, x_max = 0; // abscissae of the leftmost and rightmost knots
-  triqs::arrays::vector<double> y;    // vector of knot ordinates
-  triqs::arrays::vector<double> a, b; // spline coefficients
-  size_t s = 0;                       // size of y
-  double dx = 0;                      // mesh step
+  nda::array<double, 1> y;       // vector of knot ordinates
+  nda::array<double, 1> a, b;    // spline coefficients
+  size_t s = 0;                // size of y
+  double dx = 0;               // mesh step
 
 public:
   regular_spline() = default;
-  regular_spline(double x_min, double x_max,
-                 triqs::arrays::vector<double> const& y);
+  regular_spline(double x_min, double x_max, nda::vector<double> const& y);
 
   double operator()(double z) const;
 };

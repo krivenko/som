@@ -23,7 +23,9 @@
 #include <iterator>
 #include <numeric>
 
-#include <triqs/arrays.hpp>
+#include <nda/nda.hpp>
+#include <nda/h5.hpp>
+
 #include <triqs/utility/exceptions.hpp>
 
 #include "configuration.hpp"
@@ -157,10 +159,10 @@ std::ostream& operator<<(std::ostream& os, configuration const& c) {
 
 void h5_write(h5::group gr, std::string const& name,
               configuration const& c) {
-  using triqs::arrays::array;
+  using nda::array;
   array<double, 2> data(c.size(), 3);
   for(int i = 0; i < c.size(); ++i)
-    data(i, triqs::arrays::range()) =
+    data(i, nda::range()) =
         array<double, 1>{c[i].center, c[i].width, c[i].height};
   h5_write(gr, name, data);
   auto ds = gr.open_dataset(name);
@@ -168,7 +170,7 @@ void h5_write(h5::group gr, std::string const& name,
 }
 
 void h5_read(h5::group gr, std::string const& name, configuration& c) {
-  triqs::arrays::array<double, 2> data;
+  nda::array<double, 2> data;
   h5_read(gr, name, data);
   c.clear();
   for(int i = 0; i < first_dim(data); ++i)

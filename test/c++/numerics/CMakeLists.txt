@@ -20,7 +20,7 @@
 ################################################################################
 
 # List of all tests
-file(GLOB_RECURSE all_tests RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
+file(GLOB all_tests RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
 
 foreach(test ${all_tests})
   add_som_cpp_test(${test})

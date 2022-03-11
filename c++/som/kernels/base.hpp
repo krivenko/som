@@ -91,7 +91,7 @@ public:
     // Do we have a precomputed LHS for config_update cu?
     if(!ce.valid) {
       // Cache entry holds the LHS for the *updated configuration*
-      res = operator()(conf);
+      res() = operator()(conf);
 
       auto rect_it = std::begin(cu.new_rects);
       for(int index : cu.changed_indices) {
@@ -112,8 +112,7 @@ public:
 
   // Apply kernel to a configuration ignoring the cache
   inline ResultType apply_wo_caching(configuration const& c) const {
-    ResultType res(first_dim(lhs_cache[0]));
-    res() = 0;
+    ResultType res = ResultType::zeros({first_dim(lhs_cache[0])});
     ResultType tmp(first_dim(lhs_cache[0]));
     for(auto const& r : c) {
       DERIVED->apply(r, tmp);
@@ -129,7 +128,7 @@ public:
   template <typename T1, typename T2>
   void cache_copy(T1 const& from, T2 const& to) const {
     check_cache_size(from.cache_ptr.get_ci());
-    lhs_cache[to.cache_ptr.id] = lhs_cache[from.cache_ptr.id];
+    lhs_cache[to.cache_ptr.id]() = lhs_cache[from.cache_ptr.id];
     to.cache_ptr.deref().valid = true;
   }
 

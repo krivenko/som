@@ -1,4 +1,4 @@
-name: build
+name: Build and deploy
 
 on:
   push:
@@ -17,8 +17,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - {os: ubuntu-18.04, cc: gcc-10, cxx: g++-10}
-          - {os: ubuntu-18.04, cc: clang-10, cxx: clang++-10}
+          - {os: ubuntu-20.04, cc: gcc-10, cxx: g++-10}
+          - {os: ubuntu-20.04, cc: clang-13, cxx: clang++-13}
 
     runs-on: ${{ matrix.os }}
 
@@ -30,12 +30,14 @@ jobs:
 
     - name: Install Ubuntu dependencies
       run: >
+        sudo apt-get install lsb-release wget software-properties-common &&
+        wget -O /tmp/llvm.sh https://apt.llvm.org/llvm.sh &&
+        sudo chmod +x /tmp/llvm.sh && sudo /tmp/llvm.sh 13 &&
         sudo apt-get install
         g++-10
-        clang-10
-        libgfortran3
+        clang-13
+        libgfortran4
         gfortran
-        libboost-all-dev
         openmpi-bin
         openmpi-common
         openmpi-doc
@@ -50,36 +52,41 @@ jobs:
         python3-numpy
         python3-scipy
         python3-matplotlib
-        python3-h5py
+        ipython3
         python3-mpi4py
         python3-mako
-        python3-nbsphinx
-        ipython3
-        libclang-10-dev
-        python3-clang-10
         libjs-mathjax
+
+    - name: Download Boost (a C++20 compatible version)
+      run: |
+           wget -q https://boostorg.jfrog.io/artifactory/main/release/1.78.0/source/boost_1_78_0.tar.bz2
+           tar -xf boost_1_78_0.tar.bz2
+           mv boost_1_78_0 boost
+
+    - name: Install Sphinx, Read the Docs Sphinx Theme and MyST-Parser
+      if: startsWith(matrix.cxx, 'clang')
+      run: |
+           python -m pip install --upgrade pip
+           pip install sphinx sphinx-rtd-theme myst-parser
 
     - name: Build & install TRIQS
       env:
         CC: ${{ matrix.cc }}
         CXX: ${{ matrix.cxx }}
-        LIBCLANG_LOCATION: /usr/lib/x86_64-linux-gnu/libclang-10.so
       run: |
         if [[ "${CXX}" == clang* ]]; then
-          CMAKE_CXX_FLAGS="-stdlib=libc++"
           DOCS="ON"
         else
           DOCS="OFF"
         fi
-        git clone https://github.com/TRIQS/triqs --branch 3.0.x
+        git clone https://github.com/TRIQS/triqs --branch 3.1.x
         mkdir triqs/build && pushd triqs/build
-        cmake ..                                                               \
-          -DCMAKE_BUILD_TYPE=Release                                           \
-          -DCMAKE_INSTALL_PREFIX=$HOME/install                                 \
-          -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS}"                               \
-          -DLIBCLANG_LOCATION=${LIBCLANG_LOCATION}                             \
-          -DMATHJAX_PATH=/usr/share/javascript/mathjax                         \
-          -DBuild_Tests=OFF                                                    \
+        cmake ..                                         \
+          -DCMAKE_BUILD_TYPE=Debug                       \
+          -DCMAKE_INSTALL_PREFIX=$HOME/install           \
+          -DBoost_INCLUDE_DIR=$(readlink -f ../../boost) \
+          -DBuild_Tests=OFF                              \
+          -DMATHJAX_PATH=/usr/share/javascript/mathjax   \
           -DBuild_Documentation=${DOCS}
         make -j2 install VERBOSE=1
         popd
@@ -91,16 +98,14 @@ jobs:
       run: |
         source $HOME/install/share/triqsvars.sh
         if [[ "${CXX}" == clang* ]]; then
-          CMAKE_CXX_FLAGS="-stdlib=libc++"
-          DOCS="OFF" # FIXME
+          DOCS="ON"
         else
           DOCS="OFF"
         fi
         mkdir build && pushd build
         cmake ..                                                               \
-          -DCMAKE_BUILD_TYPE=Release                                           \
-          -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS}"                               \
-          -DTRIQS_INVENTORY_DIR="https://triqs.github.io/triqs/3.0.x"          \
+          -DCMAKE_BUILD_TYPE=Debug                                             \
+          -DBoost_INCLUDE_DIR=$(readlink -f ../../boost)                       \
           -DMATHJAX_PATH=/usr/share/javascript/mathjax                         \
           -DBuild_Documentation=${DOCS}
         make -j2 VERBOSE=1
@@ -108,19 +113,21 @@ jobs:
 
     - name: Test SOM
       run: |
+        sudo sh -c 'echo -e "\nrmaps_base_oversubscribe = 1" >>                \
+          /etc/openmpi/openmpi-mca-params.conf'
         pushd build
         source $HOME/install/share/triqsvars.sh
         ctest --output-on-failure
         popd
 
     - name: Prepare docs for deployment (FIXME)
-      if: startsWith(matrix.cxx, 'clang') && false
+      if: startsWith(matrix.cxx, 'clang')
       run: |
         pushd build
         find doc/html -name "*.html"                                           \
-        -type f -exec sed -i 's/\/usr\/share\/javascript\/mathjax/\/som\/mathjax/g' {} \;
+        -type f -exec sed -i                                                   \
+          's/\/usr\/share\/javascript\/mathjax/\/som\/mathjax/g' {} \;
         cp -r /usr/share/javascript/mathjax doc/html/mathjax
-        touch doc/html/.nojekyll
         popd
 
     - name: Deploy documentation

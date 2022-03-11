@@ -19,10 +19,13 @@
  *
  ******************************************************************************/
 #include <cmath>
-#include <triqs/test_tools/arrays.hpp>
+#include <complex>
+
+#include <nda/gtest_tools.hpp>
 
 #include <som/numerics/dilog.hpp>
 
+using namespace std::complex_literals;
 using som::dilog;
 using std::log;
 
@@ -49,5 +52,3 @@ TEST(dilog, real) {
   EXPECT_CLOSE(-4.198277886858104, dilog(-10));
   EXPECT_CLOSE(-12.23875517731494, dilog(-100));
 }
-
-MAKE_MAIN

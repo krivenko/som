@@ -29,6 +29,9 @@
 #include <boost/preprocessor/seq/elem.hpp>
 #include <boost/preprocessor/seq/enum.hpp>
 
+#include <mpi/mpi.hpp>
+#include <nda/nda.hpp>
+
 #include <triqs/utility/signal_handler.hpp>
 
 #include <som/kernels/all.hpp>
@@ -40,7 +43,7 @@
 
 namespace som {
 
-using triqs::statistics::histogram;
+using triqs::stat::histogram;
 
 void accumulate_parameters_t::validate(observable_kind kind) const {
   worker_parameters_t::validate(kind);
@@ -166,11 +169,11 @@ template <typename KernelType> void som_core::accumulate_impl() {
                          << std::endl;
         }
       }
-      comm.barrier();
+      comm.barrier(0);
 
       // Global minimum of \chi^2_min
       // NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
-      d.objf_min = mpi::all_reduce(d.objf_min, comm, 0, MPI_MIN);
+      d.objf_min = mpi::all_reduce(d.objf_min, comm, MPI_MIN);
       double chi_min = std::sqrt(d.objf_min);
 
       // Recalculate numbers of good and very good solutions
@@ -181,8 +184,8 @@ template <typename KernelType> void som_core::accumulate_impl() {
         if(std::sqrt(s.second) / chi_min <= params.adjust_l_verygood_chi)
           ++n_verygood_solutions;
       }
-      n_good_solutions = mpi::all_reduce(n_good_solutions);
-      n_verygood_solutions = mpi::all_reduce(n_verygood_solutions);
+      n_good_solutions = mpi::all_reduce(n_good_solutions, comm);
+      n_verygood_solutions = mpi::all_reduce(n_verygood_solutions, comm);
 
       if(params.verbosity >= 1) {
         std::cout << "χ_min = " << chi_min << std::endl;
@@ -198,7 +201,7 @@ template <typename KernelType> void som_core::accumulate_impl() {
             double(n_verygood_solutions) / double(n_good_solutions) <
                 params.adjust_l_ratio);
 
-    comm.barrier();
+    comm.barrier(0);
 
     // Recompute the histograms
     if(params.make_histograms) {
@@ -207,7 +210,7 @@ template <typename KernelType> void som_core::accumulate_impl() {
                               params.hist_n_bins);
       histogram& h = *d.histogram;
       for(auto const& s : d.particular_solutions) h << std::sqrt(s.second);
-      h = mpi_reduce(h, comm, 0, true);
+      h = mpi::all_reduce(h, comm);
     }
 
     if(params.verbosity >= 1) {
@@ -228,8 +231,9 @@ void som_core::accumulate(accumulate_parameters_t const& p) {
   accumulate_status = 0;
   try {
 #define IMPL_CASE(r, okmk)                                                     \
-    case(kernel_id(BOOST_PP_SEQ_ELEM(0, okmk), BOOST_PP_SEQ_ELEM(1, okmk){})): \
-      accumulate_impl<kernel<BOOST_PP_SEQ_ENUM(okmk)>>(); break;
+  case(kernel_id<BOOST_PP_SEQ_ELEM(1, okmk)>(BOOST_PP_SEQ_ELEM(0, okmk))):     \
+    accumulate_impl<kernel<BOOST_PP_SEQ_ENUM(okmk)>>();                        \
+    break;
 
     SELECT_KERNEL(IMPL_CASE, som_core::accumulate())
 #undef IMPL_CASE

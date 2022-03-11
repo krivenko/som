@@ -72,17 +72,17 @@ kernel<BosonCorr, imtime>::evaluator::evaluator(
   if(i < s / 2) { // \alpha < 1/2
     if(i == 0) {  // \alpha = 0
       alpha_case = zero;
-      assign_foreach(spline_m_knots, [dx](int xi) {
-        if(xi == n_spline_knots - 1) return .0;
+      nda::for_each(spline_m_knots.shape(), [&spline_m_knots, dx](int xi) {
+        if(xi == n_spline_knots - 1) { spline_m_knots(xi) = 0; return; }
         double x = -x0 + dx * xi;
         double expx = exp(x);
-        return real(dilog(expx)) - pi6 + x * log1p(-expx);
+        spline_m_knots(xi) = real(dilog(expx)) - pi6 + x * log1p(-expx);
       });
-      assign_foreach(spline_p_knots, [dx](int xi) {
-        if(xi == 0) return .0;
+      nda::for_each(spline_p_knots.shape(), [&spline_p_knots, dx](int xi) {
+        if(xi == 0) { spline_p_knots(xi) = 0; return; }
         double x = dx * xi;
         double expx = exp(-x);
-        return pi6 - real(dilog(expx)) + x * log1p(-expx);
+        spline_p_knots(xi) = pi6 - real(dilog(expx)) + x * log1p(-expx);
       });
       tail_coeff = 1 / (M_PI * beta_ * beta_);
     } else { // \alpha \in (0;1/2)
@@ -108,17 +108,17 @@ kernel<BosonCorr, imtime>::evaluator::evaluator(
   } else if(i >= s - s / 2) { // \alpha > 1/2
     if(i == s - 1) {          // \alpha = 1
       alpha_case = one;
-      assign_foreach(spline_m_knots, [dx](int xi) {
-        if(xi == n_spline_knots - 1) return .0;
+      nda::for_each(spline_m_knots.shape(), [&spline_m_knots, dx](int xi) {
+        if(xi == n_spline_knots - 1) { spline_m_knots(xi) = 0; return; }
         double x = -x0 + dx * xi;
         double expx = exp(x);
-        return real(dilog(expx)) - pi6 + x * log1p(-expx);
+        spline_m_knots(xi) = real(dilog(expx)) - pi6 + x * log1p(-expx);
       });
-      assign_foreach(spline_p_knots, [dx](int xi) {
-        if(xi == 0) return .0;
+      nda::for_each(spline_p_knots.shape(), [&spline_p_knots, dx](int xi) {
+        if(xi == 0) { spline_p_knots(xi) = 0; return; }
         double x = dx * xi;
         double expx = exp(-x);
-        return pi6 - real(dilog(expx)) + x * log1p(-expx);
+        spline_p_knots(xi) = pi6 - real(dilog(expx)) + x * log1p(-expx);
       });
       tail_coeff = 1 / (M_PI * beta_ * beta_);
     } else { // \alpha \in (1/2;1)
@@ -144,16 +144,16 @@ kernel<BosonCorr, imtime>::evaluator::evaluator(
   } else { // \alpha = 1/2
     alpha_case = half;
     static const double pi2 = M_PI * M_PI / 2;
-    assign_foreach(spline_m_knots, [dx](int xi) {
-      if(xi == n_spline_knots - 1) return .0;
+    nda::for_each(spline_m_knots.shape(), [&spline_m_knots, dx](int xi) {
+      if(xi == n_spline_knots - 1) { spline_m_knots(xi) = 0; return; }
       double x = -x0 + dx * xi;
-      return -pi2 + x * log(tanh(-x / 4)) - real(dilog(exp(x))) +
+      spline_m_knots(xi) = -pi2 + x * log(tanh(-x / 4)) - real(dilog(exp(x))) +
              4 * real(dilog(exp(x / 2)));
     });
-    assign_foreach(spline_p_knots, [dx](int xi) {
-      if(xi == 0) return .0;
+    nda::for_each(spline_p_knots.shape(), [&spline_p_knots, dx](int xi) {
+      if(xi == 0) { spline_p_knots(xi) = 0; return; }
       double x = dx * xi;
-      return pi2 + x * log(tanh(x / 4)) + real(dilog(exp(-x))) -
+      spline_p_knots(xi) = pi2 + x * log(tanh(x / 4)) + real(dilog(exp(-x))) -
              4 * real(dilog(exp(-x / 2)));
     });
   }

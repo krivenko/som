@@ -21,23 +21,42 @@
 
 add_subdirectory(cmake)
 
-if(NOT CMAKE_INSTALL_PREFIX STREQUAL TRIQS_ROOT)
+if(NOT IS_SUBPROJECT
+  AND NOT CMAKE_INSTALL_PREFIX STREQUAL TRIQS_ROOT
+  AND NOT CMAKE_INSTALL_PREFIX STREQUAL "/usr"
+  AND NOT CMAKE_INSTALL_PREFIX STREQUAL "/usr/local"
+)
 
-  configure_file(som.modulefile.in som.modulefile @ONLY)
-  configure_file(somvars.sh.in somvars.sh @ONLY)
+  if(PythonSupport)
+    set(EXPORT_PYTHON_PATH
+        "export PYTHONPATH=${CMAKE_INSTALL_PREFIX}/${CPP2PY_PYTHON_LIB_DEST_ROOT}:$PYTHONPATH")
+    set(MODFILE_PYTHON_PATH "prepend-path    PYTHONPATH          $root/${CPP2PY_PYTHON_LIB_DEST_ROOT}")
+  endif()
+
+  configure_file(${PROJECT_NAME}.modulefile.in ${PROJECT_NAME}.modulefile @ONLY)
+  configure_file(${PROJECT_NAME}vars.sh.in ${PROJECT_NAME}vars.sh @ONLY)
 
   install(
     FILES
-      ${CMAKE_CURRENT_BINARY_DIR}/som.modulefile
-      ${CMAKE_CURRENT_BINARY_DIR}/somvars.sh
-    DESTINATION share
+      ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.modulefile
+      ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}vars.sh
+    DESTINATION share/${PROJECT_NAME}
   )
 
+  set(vars_sh_path
+      "${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/${PROJECT_NAME}vars.sh")
+  set(modulefile_path "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.modulefile")
   message(STATUS "************************************************************")
   message(STATUS "* Custom install Location. Use:                             ")
   message(STATUS "*                                                           ")
-  message(STATUS "*   source ${CMAKE_INSTALL_PREFIX}/share/somvars.sh         ")
+  message(STATUS "*   source ${vars_sh_path}                                  ")
   message(STATUS "*                                                           ")
   message(STATUS "* to set up the environment variables                       ")
+  if(DEFINED ENV{MODULEPATH})
+    message(STATUS "*                                                         ")
+    message(STATUS "* Consider copying ${modulefile_path}                     ")
+    message(STATUS "*   into your environment module directories              ")
+  endif()
   message(STATUS "************************************************************")
+
 endif()

@@ -27,7 +27,7 @@ module = module_(full_name = "som_core",
                  app_name = "som")
 
 # Imports
-module.add_imports('triqs.gf', 'triqs.statistics.histograms')
+module.add_imports('triqs.gf', 'triqs.stat.histograms')
 
 module.add_include("som/som_core/som_core.hpp")
 
@@ -38,10 +38,10 @@ module.add_preamble("""
 #include <cpp2py/converters/tuple.hpp>
 #include <cpp2py/converters/variant.hpp>
 #include <cpp2py/converters/vector.hpp>
-#include <triqs/cpp2py_converters/arrays.hpp>
+#include <nda_py/cpp2py_converters.hpp>
 #include <triqs/cpp2py_converters/gf.hpp>
 using namespace triqs::gfs;
-using namespace triqs::statistics;
+using namespace triqs::stat;
 using namespace som;
 """)
 
@@ -419,7 +419,7 @@ compute_final_solution_cc_params_conv = converter_(
 )
 
 compute_final_solution_cc_params_conv.add_member(c_name = "refreq_mesh",
-                                                 c_type = "std::variant<gf_mesh<refreq>, triqs::arrays::array<double, 1>>",
+                                                 c_type = "std::variant<triqs::mesh::refreq, nda::array<double, 1>>",
                                                  initializer = """ """,
                                                  doc = """Grid of energy points used in derivative regularization procedure.""")
 
@@ -441,12 +441,12 @@ compute_final_solution_cc_params_conv.add_member(c_name = "good_chi_abs",
 This criterion must be fulfilled together with the one set by `good_chi_rel`.""")
 
 compute_final_solution_cc_params_conv.add_member(c_name = "default_model",
-                                                 c_type = "triqs::arrays::array<double, 1>",
+                                                 c_type = "nda::array<double, 1>",
                                                  initializer = """{}""",
                                                  doc = """Default model of the spectral function evaluated at energy points of `refreq_mesh`.""")
 
 compute_final_solution_cc_params_conv.add_member(c_name = "default_model_weights",
-                                                 c_type = "triqs::arrays::array<double, 1>",
+                                                 c_type = "nda::array<double, 1>",
                                                  initializer = """{}""",
                                                  doc = """Weights determining how much deviations from `default_model` are penalized at each energy point of `refreq_mesh`.""")
 
@@ -631,10 +631,10 @@ module.add_function("void fill_refreq(gf_view<refreq> g_w, observable_kind kind,
 # compute_tail()
 #
 
-module.add_function("triqs::arrays::array<dcomplex, 3> compute_tail(int max_order, som_core cont)",
+module.add_function("nda::array<dcomplex, 3> compute_tail(int max_order, som_core cont)",
                     doc = """Compute tail coefficients from a computed SOM solution""")
 
-module.add_function("triqs::arrays::array<dcomplex, 3> compute_tail(int max_order, observable_kind kind, std::vector<configuration> solutions)",
+module.add_function("nda::array<dcomplex, 3> compute_tail(int max_order, observable_kind kind, std::vector<configuration> solutions)",
                     doc = """Compute tail coefficients from a list of solutions (one solution per diagonal matrix element of the observable)""")
 
 #

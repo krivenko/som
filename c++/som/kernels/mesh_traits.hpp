@@ -23,7 +23,7 @@
 #include <string>
 #include <variant>
 
-#include <triqs/gfs.hpp>
+#include <triqs/mesh.hpp>
 
 namespace som {
 
@@ -33,25 +33,25 @@ namespace som {
 // Mesh traits
 template <typename MeshType> struct mesh_traits;
 
-template <> struct mesh_traits<triqs::gfs::imtime> {
+template <> struct mesh_traits<triqs::mesh::imtime> {
   static constexpr int index = 0;
   inline static std::string name() { return "imaginary time"; }
 };
-template <> struct mesh_traits<triqs::gfs::imfreq> {
+template <> struct mesh_traits<triqs::mesh::imfreq> {
   static constexpr int index = 1;
   inline static std::string name() { return "imaginary frequency"; }
 };
-template <> struct mesh_traits<triqs::gfs::legendre> {
+template <> struct mesh_traits<triqs::mesh::legendre> {
   static constexpr int index = 2;
   inline static std::string name() { return "Legendre"; }
 };
-template <> struct mesh_traits<triqs::gfs::refreq> {
+template <> struct mesh_traits<triqs::mesh::refreq> {
   static constexpr int index = -1;
   inline static std::string name() { return "real frequency"; }
 };
 
-using mesh_variant_t = std::variant<triqs::gfs::gf_mesh<triqs::gfs::imtime>,
-                                    triqs::gfs::gf_mesh<triqs::gfs::imfreq>,
-                                    triqs::gfs::gf_mesh<triqs::gfs::legendre>>;
+using mesh_variant_t = std::variant<triqs::mesh::imtime,
+                                    triqs::mesh::imfreq,
+                                    triqs::mesh::legendre>;
 
 } // namespace som

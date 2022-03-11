@@ -28,8 +28,7 @@
 
 namespace som {
 
-using namespace triqs::arrays;
-using namespace triqs::gfs;
+using namespace nda;
 
 // Overlap of two segments [min_1;max_1] and [min_2;max_2]
 inline double overlap(double min1, double max1, double min2, double max2) {
@@ -39,24 +38,27 @@ inline double overlap(double min1, double max1, double min2, double max2) {
 template <typename F>
 inline double spectral_integral_impl(configuration const& c, F&& f) {
   return std::accumulate(
-      c.begin(), c.end(), .0,
-      [&](double s, struct rectangle const& r) { return s + f(r); });
+      c.begin(), c.end(), .0, [&](double s, struct rectangle const& r) {
+        return s + f(r);
+      });
 }
 
 /////////////////////////
 // spectral_integral() //
 /////////////////////////
 
-double spectral_integral(double z_m, double delta_m, configuration const& c,
+double spectral_integral(double z_m,
+                         double delta_m,
+                         configuration const& c,
                          resolution_function r_func) {
   switch(r_func) {
     case rectangle:
       return spectral_integral_impl(
-          c, [delta_m, z_min = z_m - delta_m / 2,
-              z_max = z_m + delta_m / 2](struct rectangle const& r) {
-            return (r.height / delta_m) * overlap(z_min, z_max,
-                                                  r.left(),
-                                                  r.right());
+          c,
+          [delta_m, z_min = z_m - delta_m / 2, z_max = z_m + delta_m / 2](
+              struct rectangle const& r) {
+            return (r.height / delta_m) *
+                   overlap(z_min, z_max, r.left(), r.right());
           });
     case lorentzian:
       return spectral_integral_impl(
@@ -68,15 +70,14 @@ double spectral_integral(double z_m, double delta_m, configuration const& c,
     case gaussian:
       return spectral_integral_impl(
           c, [z_m, delta_m](struct rectangle const& r) {
-            return (r.height / 2) * (std::erf((r.right() - z_m) /
-                                              (M_SQRT2 * delta_m / 2)) -
-                                     std::erf((r.left() - z_m) /
-                                              (M_SQRT2 * delta_m / 2)));
+            return (r.height / 2) *
+                   (std::erf((r.right() - z_m) / (M_SQRT2 * delta_m / 2)) -
+                    std::erf((r.left() - z_m) / (M_SQRT2 * delta_m / 2)));
           });
   }
 }
 
-vector<double> spectral_integral(gf_mesh<refreq> const& mesh,
+vector<double> spectral_integral(triqs::mesh::refreq const& mesh,
                                  configuration const& c,
                                  resolution_function r_func) {
   vector<double> integrals(mesh.size());
@@ -88,7 +89,8 @@ vector<double> spectral_integral(gf_mesh<refreq> const& mesh,
 
 vector<double>
 spectral_integral(std::vector<std::pair<double, double>> const& intervals,
-                  configuration const& c, resolution_function r_func) {
+                  configuration const& c,
+                  resolution_function r_func) {
   vector<double> integrals(intervals.size());
   for(int m = 0; m < intervals.size(); ++m) {
     double z_m = (intervals[m].first + intervals[m].second) / 2;
@@ -102,12 +104,13 @@ spectral_integral(std::vector<std::pair<double, double>> const& intervals,
 // spectral_avg() //
 ////////////////////
 
-vector<double> spectral_avg(som_core const& cont, int i,
-                            gf_mesh<refreq> const& mesh,
+vector<double> spectral_avg(som_core const& cont,
+                            int i,
+                            triqs::mesh::refreq const& mesh,
                             resolution_function r_func) {
   auto const& solutions = cont.get_particular_solutions(i);
 
-  vector<double> avg(mesh.size(), .0);
+  auto avg = vector<double>::zeros({mesh.size()});
   double de = mesh.delta();
   for(auto e : mesh) {
     for(auto const& s : solutions)
@@ -121,12 +124,13 @@ vector<double> spectral_avg(som_core const& cont, int i,
 }
 
 vector<double>
-spectral_avg(som_core const& cont, int i,
+spectral_avg(som_core const& cont,
+             int i,
              std::vector<std::pair<double, double>> const& intervals,
              resolution_function r_func) {
   auto const& solutions = cont.get_particular_solutions(i);
 
-  vector<double> avg(intervals.size(), .0);
+  auto avg = vector<double>::zeros({static_cast<long>(intervals.size())});
   for(int m = 0; m < intervals.size(); ++m) {
     double z_m = (intervals[m].first + intervals[m].second) / 2;
     double delta_m = intervals[m].second - intervals[m].first;
@@ -144,13 +148,14 @@ spectral_avg(som_core const& cont, int i,
 // spectral_disp() //
 /////////////////////
 
-vector<double> spectral_disp(som_core const& cont, int i,
-                             gf_mesh<refreq> const& mesh,
+vector<double> spectral_disp(som_core const& cont,
+                             int i,
+                             triqs::mesh::refreq const& mesh,
                              vector<double> const& avg,
                              resolution_function r_func) {
   auto const& solutions = cont.get_particular_solutions(i);
 
-  vector<double> disp(mesh.size(), .0);
+  auto disp = vector<double>::zeros({mesh.size()});
   double de = mesh.delta();
   for(auto e : mesh) {
     for(auto const& s : solutions) {
@@ -167,12 +172,14 @@ vector<double> spectral_disp(som_core const& cont, int i,
 }
 
 vector<double>
-spectral_disp(som_core const& cont, int i,
+spectral_disp(som_core const& cont,
+              int i,
               std::vector<std::pair<double, double>> const& intervals,
-              vector<double> const& avg, resolution_function r_func) {
+              vector<double> const& avg,
+              resolution_function r_func) {
   auto const& solutions = cont.get_particular_solutions(i);
 
-  vector<double> disp(intervals.size(), .0);
+  auto disp = vector<double>::zeros({static_cast<long>(intervals.size())});
   for(int m = 0; m < intervals.size(); ++m) {
     double z_m = (intervals[m].first + intervals[m].second) / 2;
     double delta_m = intervals[m].second - intervals[m].first;
@@ -193,15 +200,14 @@ spectral_disp(som_core const& cont, int i,
 /////////////////////
 
 // Regular real frequency mesh
-array<double, 2> spectral_corr(som_core const& cont, int i,
-                               gf_mesh<refreq> const& mesh,
-                               vector<double> const& avg,
-                               resolution_function r_func) {
+matrix<double> spectral_corr(som_core const& cont,
+                             int i,
+                             triqs::mesh::refreq const& mesh,
+                             vector<double> const& avg,
+                             resolution_function r_func) {
   auto const& solutions = cont.get_particular_solutions(i);
 
-  array<double, 2> corr(mesh.size(), mesh.size());
-  corr() = 0;
-
+  auto corr = matrix<double>::zeros({mesh.size(), mesh.size()});
   double de = mesh.delta();
   for(auto e1 : mesh) {
     for(auto e2 : mesh) {
@@ -221,15 +227,16 @@ array<double, 2> spectral_corr(som_core const& cont, int i,
   return corr / n_solutions;
 }
 
-array<double, 2>
-spectral_corr(som_core const& cont, int i,
+matrix<double>
+spectral_corr(som_core const& cont,
+              int i,
               std::vector<std::pair<double, double>> const& intervals,
-              vector<double> const& avg, resolution_function r_func) {
+              vector<double> const& avg,
+              resolution_function r_func) {
   auto const& solutions = cont.get_particular_solutions(i);
 
-  array<double, 2> corr(intervals.size(), intervals.size());
-  corr() = 0;
-
+  auto corr = matrix<double>::zeros({static_cast<long>(intervals.size()),
+                                     static_cast<long>(intervals.size())});
   for(int m1 = 0; m1 < intervals.size(); ++m1) {
     double z_m1 = (intervals[m1].first + intervals[m1].second) / 2;
     double delta_m1 = intervals[m1].second - intervals[m1].first;

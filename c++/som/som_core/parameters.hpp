@@ -26,7 +26,8 @@
 
 #include <mpi/mpi.hpp>
 
-#include <triqs/gfs/meshes.hpp>
+#include <nda/nda.hpp>
+#include <triqs/mesh/refreq.hpp>
 
 #include <som/worker_parameters.hpp>
 
@@ -107,9 +108,7 @@ struct accumulate_parameters_t : public worker_parameters_t {
 struct final_solution_cc_parameters_t {
 
   /// Grid of energy points used in derivative regularization procedure.
-  std::variant<triqs::gfs::gf_mesh<triqs::gfs::refreq>,
-               triqs::arrays::array<double, 1>>
-      refreq_mesh;
+  std::variant<triqs::mesh::refreq, nda::array<double, 1>> refreq_mesh;
 
   /// Verbosity level (max level - 3).
   /// default: 2 on MPI rank 0, 0 otherwise.
@@ -128,11 +127,11 @@ struct final_solution_cc_parameters_t {
 
   /// Default model of the spectral function evaluated at
   /// energy points of `refreq_mesh`.
-  triqs::arrays::array<double, 1> default_model;
+  nda::array<double, 1> default_model;
 
   /// Weights determining how much deviations from `default_model` are penalized
   /// at each energy point of `refreq_mesh`.
-  triqs::arrays::array<double, 1> default_model_weights;
+  nda::array<double, 1> default_model_weights;
 
   /// Maximum allowed number of parameter adjustment iterations.
   int max_iter = 20;
@@ -157,11 +156,9 @@ struct final_solution_cc_parameters_t {
   double der_penalty_coeff = 2.0;
 
   final_solution_cc_parameters_t() = default;
-  explicit final_solution_cc_parameters_t(
-      triqs::gfs::gf_mesh<triqs::gfs::refreq> refreq_mesh)
+  explicit final_solution_cc_parameters_t(triqs::mesh::refreq refreq_mesh)
      : refreq_mesh(std::move(refreq_mesh)) {}
-  explicit final_solution_cc_parameters_t(
-      triqs::arrays::array<double, 1> refreq_mesh)
+  explicit final_solution_cc_parameters_t(nda::array<double, 1> refreq_mesh)
      : refreq_mesh(std::move(refreq_mesh)) {}
 
   // Validate values of parameters

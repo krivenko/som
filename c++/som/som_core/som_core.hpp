@@ -30,9 +30,9 @@
 #include <vector>
 
 #include <mpi/mpi.hpp>
-#include <triqs/arrays/vector.hpp>
+#include <nda/nda.hpp>
 #include <triqs/gfs.hpp>
-#include <triqs/statistics/histograms.hpp>
+#include <triqs/stat/histograms.hpp>
 
 #include "parameters.hpp"
 #include <som/configuration.hpp>
@@ -59,17 +59,17 @@ public:
   // Mesh of the input functions
   mesh_variant_t mesh;
 
-  using histogram_t = triqs::statistics::histogram;
+  using histogram_t = triqs::stat::histogram;
 
   // Input/output data (one structure per diagonal matrix element of g)
   struct data_t {
 
-    using input_data_r_t = triqs::arrays::array<double, 1>;
-    using input_data_c_t = triqs::arrays::array<std::complex<double>, 1>;
+    using input_data_r_t = nda::array<double, 1>;
+    using input_data_c_t = nda::array<std::complex<double>, 1>;
 
     template <typename Mesh>
     using input_data_t = std::conditional_t<
-        std::is_same<Mesh, triqs::gfs::gf_mesh<triqs::gfs::imfreq>>::value,
+        std::is_same<Mesh, triqs::mesh::imfreq>::value,
         input_data_c_t, input_data_r_t>;
 
     // The right-hand side of the Fredholm integral equation
@@ -148,17 +148,17 @@ public:
   som_core(triqs::gfs::gf_const_view<triqs::gfs::imtime> g_tau,
            triqs::gfs::gf_const_view<triqs::gfs::imtime> S_tau,
            observable_kind kind = FermionGf,
-           triqs::arrays::vector<double> const& norms = {});
+           nda::vector<double> const& norms = {});
   /// Construct on imaginary-frequency quantities
   som_core(triqs::gfs::gf_const_view<triqs::gfs::imfreq> g_iw,
            triqs::gfs::gf_const_view<triqs::gfs::imfreq> S_iw,
            observable_kind kind = FermionGf,
-           triqs::arrays::vector<double> const& norms = {});
+           nda::vector<double> const& norms = {});
   /// Construct on quantities in Legendre polynomial basis
   som_core(triqs::gfs::gf_const_view<triqs::gfs::legendre> g_l,
            triqs::gfs::gf_const_view<triqs::gfs::legendre> S_l,
            observable_kind kind = FermionGf,
-           triqs::arrays::vector<double> const& norms = {});
+           nda::vector<double> const& norms = {});
 
   // Automatically adjust the number of global updates (F)
   TRIQS_WRAP_ARG_AS_DICT int adjust_f(adjust_f_parameters_t const& p);
@@ -247,11 +247,11 @@ void fill_refreq(triqs::gfs::gf_view<triqs::gfs::refreq> g_w,
                  bool with_binning = false);
 
 /// Compute tail coefficients from a computed SOM solution
-[[nodiscard]] triqs::arrays::array<std::complex<double>, 3>
+[[nodiscard]] nda::array<std::complex<double>, 3>
 compute_tail(int max_order, som_core const& cont);
 /// Compute tail coefficients from a list of solutions
 /// (one solution per a diagonal matrix element of the observable)
-[[nodiscard]] triqs::arrays::array<std::complex<double>, 3>
+[[nodiscard]] nda::array<std::complex<double>, 3>
 compute_tail(int max_order, observable_kind kind,
              std::vector<configuration> const& solutions);
 

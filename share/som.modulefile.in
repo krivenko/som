@@ -1,13 +1,14 @@
 #%Module1.0
 #
-# To be installed as ${MODULEPATH}/som/@SOM_VERSION@
+# To be installed as ${MODULEPATH}/@PROJECT_NAME@/@PROJECT_VERSION@
 
-set     name        som
-set     version     @SOM_VERSION@
+set     name        @PROJECT_NAME@
+set     version     @PROJECT_VERSION@
 set     root        @CMAKE_INSTALL_PREFIX@
 set     git_hash    @PROJECT_GIT_HASH@
 
-set     url         "https://github.com/krivenko/som"
+
+set     url         "https://github.com/krivenko/@PROJECT_NAME@"
 set     description "SOM: Stochastic Optimization Method for Analytic Continuation."
 
 module-whatis   "$description"
@@ -27,13 +28,13 @@ prereq triqs/@TRIQS_VERSION@
 # Only one version of som can be loaded at a time
 conflict $name
 
-setenv          SOM_ROOT      $root
-setenv          SOM_VERSION   $version
-setenv          SOM_GIT_HASH  $git_hash
+setenv          @PROJECT_NAME@_ROOT      $root
+setenv          @PROJECT_NAME@_VERSION   $version
+setenv          @PROJECT_NAME@_GIT_HASH  $git_hash
 
 prepend-path    PATH                $root/bin
 prepend-path    CPLUS_INCLUDE_PATH  $root/include
 prepend-path    LIBRARY_PATH        $root/lib
 prepend-path    LD_LIBRARY_PATH     $root/lib
-prepend-path    PYTHONPATH          $root/@TRIQS_PYTHON_LIB_DEST_ROOT@
-prepend-path    CMAKE_PREFIX_PATH   $root/lib/cmake/som
+prepend-path    CMAKE_PREFIX_PATH   $root
+@MODFILE_PYTHON_PATH@

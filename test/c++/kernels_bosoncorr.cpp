@@ -37,5 +37,3 @@ TEST(BosonCorr, imfreq) {
 TEST(BosonCorr, legendre) {
   test_kernel<kernel<BosonCorr, legendre>>("bosoncorr_legendre.h5", ci, 1e-10);
 }
-
-MAKE_MAIN

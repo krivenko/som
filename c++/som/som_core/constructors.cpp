@@ -54,9 +54,9 @@ som_core::data_t::data_t(Mesh const& mesh, cache_index& ci)
    , error_bars(input_data_t<Mesh>(mesh.size()))
    , final_solution(ci) {}
 
-template som_core::data_t::data_t(gf_mesh<imtime> const&, cache_index&);
-template som_core::data_t::data_t(gf_mesh<imfreq> const&, cache_index&);
-template som_core::data_t::data_t(gf_mesh<legendre> const&, cache_index&);
+template som_core::data_t::data_t(triqs::mesh::imtime const&, cache_index&);
+template som_core::data_t::data_t(triqs::mesh::imfreq const&, cache_index&);
+template som_core::data_t::data_t(triqs::mesh::legendre const&, cache_index&);
 
 template <typename... GfOpts>
 void som_core::data_t::init_input(int i, gf_const_view<GfOpts...> g,

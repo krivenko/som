@@ -54,11 +54,11 @@ The compilation of SOM can be configured using CMake-options::
 +-------------------------------------------------------------+------------------------------------+
 | Build the documentation locally                             | -DBuild_Documentation=ON           |
 +-------------------------------------------------------------+------------------------------------+
-| Initial size of the cache to store computed LHS             | -DCACHE_SIZE=0x4000                |
+| Initial size of the cache to store computed LHS             | -DCache_Size=0x4000                |
 +-------------------------------------------------------------+------------------------------------+
 | Build in Debugging Mode                                     | -DCMAKE_BUILD_TYPE=Debug           |
 +-------------------------------------------------------------+------------------------------------+
-| Enable extended debugging output (*developers only*)        | -DEXT_DEBUG=ON                     |
+| Enable extended debugging output (*developers only*)        | -DExt_Debug=ON                     |
 +-------------------------------------------------------------+------------------------------------+
 | Run static analyzer tools (``clang-tidy`` and ``cppcheck``) | -DANALYZE_SOURCES=ON               |
 | as part of compilation process (*developers only*)          |                                    |

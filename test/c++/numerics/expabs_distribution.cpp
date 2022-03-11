@@ -18,8 +18,8 @@
  * SOM. If not, see <http://www.gnu.org/licenses/>.
  *
  ******************************************************************************/
+#include <gtest/gtest.h>
 #include <triqs/mc_tools.hpp>
-#include <triqs/test_tools/arrays.hpp>
 
 #include <utility>
 #include <vector>
@@ -98,5 +98,3 @@ TEST(expabs_distribution, main) {
     }
   }
 }
-
-MAKE_MAIN

@@ -23,8 +23,8 @@
 #include <iostream>
 #include <vector>
 
-#include <triqs/arrays.hpp>
-#include <triqs/gfs.hpp>
+#include <nda/nda.hpp>
+#include <triqs/mesh.hpp>
 
 #include "../numerics/polynomial.hpp"
 #include "../numerics/spline.hpp"
@@ -35,9 +35,9 @@ namespace som {
 
 // Kernel: zero temperature GF, Legendre basis
 template <>
-class kernel<ZeroTemp, triqs::gfs::legendre>
-   : public kernel_base<kernel<ZeroTemp, triqs::gfs::legendre>,
-                        triqs::arrays::array<double, 1>> {
+class kernel<ZeroTemp, triqs::mesh::legendre>
+   : public kernel_base<kernel<ZeroTemp, triqs::mesh::legendre>,
+                        nda::array<double, 1>> {
 
   // Tolerance levels for function evaluation
   static constexpr double tolerance = 1e-14;
@@ -70,8 +70,8 @@ class kernel<ZeroTemp, triqs::gfs::legendre>
   double Lambda(int l, double Omega) const;
 
 public:
-  using result_type = triqs::arrays::array<double, 1>;
-  using mesh_type = triqs::gfs::gf_mesh<triqs::gfs::legendre>;
+  using result_type = nda::array<double, 1>;
+  using mesh_type = triqs::mesh::legendre;
   constexpr static observable_kind kind = ZeroTemp;
 
   const double beta = HUGE_VAL; // Inverse temperature (infinity)

@@ -20,15 +20,21 @@
  ******************************************************************************/
 #pragma once
 
+#include <complex>
 #include <string>
+
 #include <h5/h5.hpp>
-#include <triqs/test_tools/arrays.hpp>
+#include <nda/gtest_tools.hpp>
+#include <nda/nda.hpp>
+
 #include <triqs/utility/is_complex.hpp>
 
+using namespace std::complex_literals;
 using namespace som;
+using nda::array;
+using nda::range;
+using nda::vector;
 using triqs::is_complex;
-using triqs::arrays::array;
-using triqs::arrays::vector;
 
 namespace som {
 
@@ -53,7 +59,8 @@ h5_read_mathematica_array(h5::group g, std::string const& name) {
 
 // test_kernel()
 template <typename KernelType>
-void test_kernel(std::string const& filename, cache_index& ci,
+void test_kernel(std::string const& filename,
+                 cache_index& ci,
                  double tolerance) {
 
   h5::file file(filename, 'r');

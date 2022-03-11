@@ -25,7 +25,7 @@
 
 namespace som {
 
-using namespace triqs::gfs;
+using namespace triqs::mesh;
 
 kernel<BosonAutoCorr, imfreq>::kernel(
     kernel<BosonAutoCorr, imfreq>::mesh_type const& mesh)

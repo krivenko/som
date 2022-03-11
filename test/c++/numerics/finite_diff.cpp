@@ -19,21 +19,24 @@
  *
  ******************************************************************************/
 #include <cmath>
-#include <triqs/test_tools/arrays.hpp>
+
+#include <nda/nda.hpp>
+#include <nda/gtest_tools.hpp>
 
 #define TRIQS_ARRAYS_ENFORCE_BOUNDCHECK
 #include <som/numerics/finite_diff.hpp>
 
-using namespace triqs::arrays;
+using namespace nda;
 using namespace som;
 
-array<double, 1> const x =
-    make_immutable_array([](int n) { return n + 0.1 * n * n; }, range(11));
+// TODO: linspace()?
+array<double, 1> const n = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+array<double, 1> const x = n + 0.1 * n * n;
 array<double, 1> f = exp(x / 5);
 
 TEST(finite_diff, finite_diff_forward) {
   array<double, 1> result(f.size() - 1);
-  finite_diff_forward(triqs::make_const_view(f), x, result());
+  finite_diff_forward(make_const_view(f), x, result());
   array<double, 1> ref = {0.2237061187158007,
                           0.2846135935427021,
                           0.37693190887020506,
@@ -49,7 +52,7 @@ TEST(finite_diff, finite_diff_forward) {
 
 TEST(finite_diff, finite_2_symm) {
   array<double, 1> result(f.size() - 2);
-  finite_diff_2_symm(triqs::make_const_view(f), x, result());
+  finite_diff_2_symm(make_const_view(f), x, result());
   array<double, 1> ref = {0.05075622902241774,
                           0.06594165380535928,
                           0.08919032820421023,
@@ -61,5 +64,3 @@ TEST(finite_diff, finite_2_symm) {
                           1.2720157449591143};
   EXPECT_ARRAY_NEAR(result, ref, 1e-12);
 }
-
-MAKE_MAIN

@@ -50,7 +50,7 @@
 #define EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL_IMPL(_, ARGS)                    \
   extern template class BOOST_PP_SEQ_ELEM(                                     \
       0, ARGS)<kernel<BOOST_PP_SEQ_ELEM(1, ARGS),                              \
-                      triqs::gfs::BOOST_PP_SEQ_ELEM(2, ARGS)>>;
+                      triqs::mesh::BOOST_PP_SEQ_ELEM(2, ARGS)>>;
 #define EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL(NAME)                            \
   BOOST_PP_SEQ_FOR_EACH_PRODUCT(EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL_IMPL,    \
                                 ((NAME))(ALL_OBSERVABLES)(ALL_INPUT_MESHES))
@@ -61,7 +61,7 @@
 #define INSTANTIATE_CLASS_FOR_EACH_KERNEL_IMPL(_, ARGS)                        \
   template class BOOST_PP_SEQ_ELEM(                                            \
       0, ARGS)<kernel<BOOST_PP_SEQ_ELEM(1, ARGS),                              \
-                      triqs::gfs::BOOST_PP_SEQ_ELEM(2, ARGS)>>;
+                      triqs::mesh::BOOST_PP_SEQ_ELEM(2, ARGS)>>;
 #define INSTANTIATE_CLASS_FOR_EACH_KERNEL(NAME)                                \
   BOOST_PP_SEQ_FOR_EACH_PRODUCT(INSTANTIATE_CLASS_FOR_EACH_KERNEL_IMPL,        \
                                 ((NAME))(ALL_OBSERVABLES)(ALL_INPUT_MESHES))

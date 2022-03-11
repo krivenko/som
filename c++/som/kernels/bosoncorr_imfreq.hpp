@@ -23,8 +23,8 @@
 #include <complex>
 #include <iostream>
 
-#include <triqs/arrays.hpp>
-#include <triqs/gfs.hpp>
+#include <nda/nda.hpp>
+#include <triqs/mesh.hpp>
 
 #include "base.hpp"
 
@@ -32,13 +32,13 @@ namespace som {
 
 // Kernel: bosonic correlator, Matsubara frequencies
 template <>
-class kernel<BosonCorr, triqs::gfs::imfreq>
-   : public kernel_base<kernel<BosonCorr, triqs::gfs::imfreq>,
-                        triqs::arrays::array<std::complex<double>, 1>> {
+class kernel<BosonCorr, triqs::mesh::imfreq>
+   : public kernel_base<kernel<BosonCorr, triqs::mesh::imfreq>,
+                        nda::array<std::complex<double>, 1>> {
 
 public:
-  using result_type = triqs::arrays::array<std::complex<double>, 1>;
-  using mesh_type = triqs::gfs::gf_mesh<triqs::gfs::imfreq>;
+  using result_type = nda::array<std::complex<double>, 1>;
+  using mesh_type = triqs::mesh::imfreq;
   constexpr static observable_kind kind = BosonCorr;
 
   const double beta;    // Inverse temperature

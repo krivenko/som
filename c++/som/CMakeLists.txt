@@ -20,31 +20,39 @@
 ################################################################################
 
 # Find all .cpp files in subdirectories
-file(GLOB_RECURSE cpp_sources RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
+file(GLOB_RECURSE sources *.cpp)
 
 # Set up compilation of those files into a shared library
-add_library(som_c ${cpp_sources})
+add_library(${PROJECT_NAME}_c ${sources})
+add_library(${PROJECT_NAME}::${PROJECT_NAME}_c ALIAS ${PROJECT_NAME}_c)
 
-# Link against TRIQS and enable warnings
-target_link_libraries(som_c PUBLIC triqs PRIVATE project_warnings)
+# Link against triqs and enable warnings
+target_link_libraries(${PROJECT_NAME}_c PUBLIC triqs
+                      PRIVATE $<BUILD_INTERFACE:${PROJECT_NAME}_warnings>)
 
-# Configure compilation
-target_compile_options(som_c PUBLIC -fPIC)
-target_include_directories(som_c PUBLIC
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/c++>
+# Configure target and compilation
+set_target_properties(${PROJECT_NAME}_c PROPERTIES
+  POSITION_INDEPENDENT_CODE ON
+  VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 )
-target_compile_definitions(som_c PUBLIC
-  SOM_GIT_HASH=${PROJECT_GIT_HASH}
-  TRIQS_GIT_HASH=${TRIQS_GIT_HASH}
-  $<$<CONFIG:Debug>:TRIQS_DEBUG>
-  $<$<CONFIG:Debug>:TRIQS_ARRAYS_ENFORCE_BOUNDCHECK>
-)
+target_include_directories(${PROJECT_NAME}_c PUBLIC
+                           $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/c++>)
+target_include_directories(${PROJECT_NAME}_c SYSTEM INTERFACE
+                           $<INSTALL_INTERFACE:${CMAKE_INSTALL_PREFIX}/include>)
+target_compile_definitions(${PROJECT_NAME}_c PUBLIC
+                           SOM_GIT_HASH=${PROJECT_GIT_HASH}
+                           TRIQS_GIT_HASH=${TRIQS_GIT_HASH}
+                           $<$<CONFIG:Debug>:SOM_DEBUG>
+                           $<$<CONFIG:Debug>:TRIQS_DEBUG>
+                           $<$<CONFIG:Debug>:TRIQS_ARRAYS_ENFORCE_BOUNDCHECK>
+                          )
 
 # Install library and headers
-install(TARGETS som_c EXPORT som-targets DESTINATION lib)
+install(TARGETS ${PROJECT_NAME}_c
+        EXPORT ${PROJECT_NAME}-targets DESTINATION lib)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-  DESTINATION include
-  FILES_MATCHING PATTERN "*.hpp"
+        DESTINATION include
+        FILES_MATCHING PATTERN "*.hpp"
 )
 
 # ========= Static Analyzer Checks ==========
@@ -61,37 +69,32 @@ if(ANALYZE_SOURCES)
   # Run clang-tidy if found
   if(CLANG_TIDY_EXECUTABLE)
     message(STATUS "clang-tidy found: ${CLANG_TIDY_EXECUTABLE}")
-    if(${CMAKE_VERSION} VERSION_LESS 3.6.0)
-      message(WARNING
-              "Static analysis with clang-tidy requires CMake 3.6 or newer")
-      unset(CLANG_TIDY_EXECUTABLE)
-    else()
-      set_target_properties(som_c PROPERTIES
-                            CXX_CLANG_TIDY "${CLANG_TIDY_EXECUTABLE}")
-    endif()
+    set_target_properties(${PROJECT_NAME}_c PROPERTIES
+                          CXX_CLANG_TIDY "${CLANG_TIDY_EXECUTABLE}")
   else()
-    message(STATUS "clang-tidy not found in $PATH. \
-            Please consider installing clang-tidy for additional checks!")
+    message(STATUS "clang-tidy not found in $PATH. "
+            "Please consider installing clang-tidy for additional checks!")
   endif()
 
   # Run cppcheck if found
   if(CPPCHECK_EXECUTABLE)
     message(STATUS "cppcheck found: ${CPPCHECK_EXECUTABLE}")
     add_custom_command(
-      TARGET som_c
-      COMMAND ${CPPCHECK_EXECUTABLE}
-        --enable=warning,style,performance,portability
-        --std=c++17
-        --template=gcc
-        --inline-suppr
-        --verbose
-        --force
-        --quiet
-        ${cpp_sources}
-      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+        TARGET ${PROJECT_NAME}_c
+        COMMAND ${CPPCHECK_EXECUTABLE}
+          --enable=warning,style,performance,portability
+          --std=c++20
+          --template=gcc
+          --inline-suppr
+          --verbose
+          --force
+          --quiet
+          ${sources}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    )
   else()
-    message(STATUS "cppcheck not found in $PATH. \
-            Please consider installing cppcheck for additional checks!")
+    message(STATUS "cppcheck not found in $PATH. "
+            "Please consider installing cppcheck for additional checks!")
   endif()
 
 endif()
@@ -105,13 +108,13 @@ if(ASAN)
   if(NOT TARGET asan)
     find_package(sanitizer REQUIRED "asan")
   endif()
-  target_link_libraries(som_c PUBLIC asan)
-  install(TARGETS asan EXPORT som-targets)
+  target_link_libraries(${PROJECT_NAME}_c PUBLIC $<BUILD_INTERFACE:asan>)
+  install(TARGETS asan EXPORT ${PROJECT_NAME}-targets)
 endif()
 if(UBSAN)
   if(NOT TARGET ubsan)
     find_package(sanitizer REQUIRED "ubsan")
   endif()
-  target_link_libraries(som_c PUBLIC ubsan)
-  install(TARGETS ubsan EXPORT som-targets)
+  target_link_libraries(${PROJECT_NAME}_c PUBLIC ubsan)
+  install(TARGETS ubsan EXPORT ${PROJECT_NAME}-targets)
 endif()

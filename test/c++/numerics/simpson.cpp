@@ -18,7 +18,8 @@
  * SOM. If not, see <http://www.gnu.org/licenses/>.
  *
  ******************************************************************************/
-#include <triqs/test_tools/arrays.hpp>
+#include <nda/nda.hpp>
+#include <nda/gtest_tools.hpp>
 
 #include <cmath>
 
@@ -42,19 +43,17 @@ TEST(simpson, sin_inv_x) {
 
 TEST(simpson, primitive) {
   auto f = [](double x) { return x * x; };
-  triqs::arrays::array<double, 1> ref(11);
+  nda::array<double, 1> ref(11);
 
-  assign_foreach(ref, [](int i) {
+  nda::for_each(ref.shape(), [&ref](int i) {
     double y = 0.1 + 0.1 * i;
-    return y * y * y / 3 - 0.001 / 3;
+    ref(i) = y * y * y / 3 - 0.001 / 3;
   });
   EXPECT_ARRAY_NEAR(ref, primitive(f, 0.1, 1.1, 11, 1e-10, false), 1e-10);
 
-  assign_foreach(ref, [](int i) {
+  nda::for_each(ref.shape(), [&ref](int i) {
     double y = -1.1 + 0.1 * i;
-    return y * y * y / 3 + 0.001 / 3;
+    ref(i) = y * y * y / 3 + 0.001 / 3;
   });
   EXPECT_ARRAY_NEAR(ref, primitive(f, -1.1, -0.1, 11, 1e-10, true), 1e-10);
 }
-
-MAKE_MAIN

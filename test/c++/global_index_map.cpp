@@ -19,16 +19,22 @@
  *
  ******************************************************************************/
 
-#include <triqs/test_tools/arrays.hpp>
+#include <iostream>
+
+#include <gtest/gtest.h>
 
 #include <som/global_index_map.hpp>
 
 using namespace som;
 
 int main(int argc, char **argv) {
-  mpi::environment env(argc, argv);
   ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
+  if(mpi::has_env) {
+    mpi::environment env(argc, argv);
+    std::cout << "MPI environment detected" << std::endl;
+    return RUN_ALL_TESTS();
+  } else
+    return RUN_ALL_TESTS();
 }
 
 TEST(global_index_map, global_index_map) {

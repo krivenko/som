@@ -1,3 +1,19 @@
+# Copyright (c) 2019-2020 Simons Foundation
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You may obtain a copy of the License at
+#     https://www.gnu.org/licenses/gpl-3.0.txt
+# Author: Nils Wentzell
+
 # Recursively fetch all targets that the interface of a target depends upon
 macro(get_all_interface_targets name target)
   get_property(TARGET_LINK_LIBRARIES TARGET ${target} PROPERTY INTERFACE_LINK_LIBRARIES)
@@ -29,13 +45,26 @@ macro(get_property_recursive)
 endmacro()
 
 # Recursively fetch all compiler flags attached to the interface of a target
-macro(extract_flags target)
+macro(extract_flags)
+
+  cmake_parse_arguments(ARG "BUILD_INTERFACE" "" "" ${ARGN})
+
+  set(target ${ARGV0})
+  unset(${target}_CXXFLAGS)
+  unset(${target}_LDFLAGS)
 
   get_property_recursive(opts TARGET ${target} PROPERTY INTERFACE_COMPILE_OPTIONS)
   foreach(opt ${opts})
     set(${target}_LDFLAGS "${${target}_LDFLAGS} ${opt}")
     set(${target}_CXXFLAGS "${${target}_CXXFLAGS} ${opt}")
   endforeach()
+
+  get_property_recursive(cxx_features TARGET ${target} PROPERTY INTERFACE_COMPILE_FEATURES)
+  if(cxx_std_20 IN_LIST cxx_features)
+    set(${target}_CXXFLAGS "${${target}_CXXFLAGS} -std=c++20")
+  elseif(cxx_std_17 IN_LIST cxx_features)
+    set(${target}_CXXFLAGS "${${target}_CXXFLAGS} -std=c++17")
+  endif()
 
   get_property_recursive(defs TARGET ${target} PROPERTY INTERFACE_COMPILE_DEFINITIONS)
   foreach(def ${defs})
@@ -56,14 +85,39 @@ macro(extract_flags target)
 
   get_property_recursive(libs TARGET ${target} PROPERTY INTERFACE_LINK_LIBRARIES)
   foreach(lib ${libs})
-    if(NOT TARGET ${lib})
+    if(NOT TARGET ${lib} AND NOT IS_DIRECTORY ${lib})
       set(${target}_LDFLAGS "${${target}_LDFLAGS} ${lib}")
     endif()
   endforeach()
 
-  # We have to replace generator expressions explicitly
-  string(REGEX REPLACE "\\$<INSTALL_INTERFACE:([^ ]*)>" "\\1" ${target}_LDFLAGS "${${target}_LDFLAGS}")
-  string(REGEX REPLACE "\\$<INSTALL_INTERFACE:([^ ]*)>" "\\1" ${target}_CXXFLAGS "${${target}_CXXFLAGS}")
+  # ==== We have to replace generator expressions explicitly ====
+
+  if(ARG_BUILD_INTERFACE)
+    string(REGEX REPLACE "\\$<BUILD_INTERFACE:([^ ]*)>" "\\1" ${target}_LDFLAGS "${${target}_LDFLAGS}")
+    string(REGEX REPLACE "\\$<BUILD_INTERFACE:([^ ]*)>" "\\1" ${target}_CXXFLAGS "${${target}_CXXFLAGS}")
+  else()
+    string(REGEX REPLACE "\\$<INSTALL_INTERFACE:([^ ]*)>" "\\1" ${target}_LDFLAGS "${${target}_LDFLAGS}")
+    string(REGEX REPLACE "\\$<INSTALL_INTERFACE:([^ ]*)>" "\\1" ${target}_CXXFLAGS "${${target}_CXXFLAGS}")
+  endif()
+
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    string(REGEX REPLACE "\\$<\\$<CXX_COMPILER_ID:GNU>:([^ ]*)>" "\\1" ${target}_LDFLAGS "${${target}_LDFLAGS}")
+    string(REGEX REPLACE "\\$<\\$<CXX_COMPILER_ID:GNU>:([^ ]*)>" "\\1" ${target}_CXXFLAGS "${${target}_CXXFLAGS}")
+  elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    string(REGEX REPLACE "\\$<\\$<CXX_COMPILER_ID:Clang>:([^ ]*)>" "\\1" ${target}_LDFLAGS "${${target}_LDFLAGS}")
+    string(REGEX REPLACE "\\$<\\$<CXX_COMPILER_ID:Clang>:([^ ]*)>" "\\1" ${target}_CXXFLAGS "${${target}_CXXFLAGS}")
+  elseif(CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+    string(REGEX REPLACE "\\$<\\$<CXX_COMPILER_ID:AppleClang>:([^ ]*)>" "\\1" ${target}_LDFLAGS "${${target}_LDFLAGS}")
+    string(REGEX REPLACE "\\$<\\$<CXX_COMPILER_ID:AppleClang>:([^ ]*)>" "\\1" ${target}_CXXFLAGS "${${target}_CXXFLAGS}")
+  endif()
+
+  # Remove all remaining generator expressions
   string(REGEX REPLACE " [^ ]*\\$<[^ ]*:[^>]*>" "" ${target}_LDFLAGS "${${target}_LDFLAGS}")
   string(REGEX REPLACE " [^ ]*\\$<[^ ]*:[^>]*>" "" ${target}_CXXFLAGS "${${target}_CXXFLAGS}")
+
+  # Filter out system directories from LDFLAGS and CXXFLAGS
+  string(REGEX REPLACE " -L/usr/lib " " " ${target}_LDFLAGS "${${target}_LDFLAGS}")
+  string(REGEX REPLACE " -I/usr/include " " " ${target}_CXXFLAGS "${${target}_CXXFLAGS}")
+  string(REGEX REPLACE " -isystem/usr/include " " " ${target}_CXXFLAGS "${${target}_CXXFLAGS}")
+
 endmacro()

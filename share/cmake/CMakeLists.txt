@@ -19,13 +19,15 @@
 #
 ################################################################################
 
-configure_file(som-config.cmake.in som-config.cmake @ONLY)
-configure_file(som-config-version.cmake.in som-config-version.cmake @ONLY)
+configure_file(${PROJECT_NAME}-config.cmake.in ${PROJECT_NAME}-config.cmake @ONLY)
+configure_file(${PROJECT_NAME}-config-version.cmake.in ${PROJECT_NAME}-config-version.cmake @ONLY)
 install(
   FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/som-config.cmake
-    ${CMAKE_CURRENT_BINARY_DIR}/som-config-version.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
   DESTINATION lib/cmake/som
 )
 
-install(EXPORT som-targets NAMESPACE som:: DESTINATION lib/cmake/som)
+install(EXPORT ${PROJECT_NAME}-targets
+        NAMESPACE ${PROJECT_NAME}::
+        DESTINATION lib/cmake/${PROJECT_NAME})

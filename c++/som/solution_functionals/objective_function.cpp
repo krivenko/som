@@ -19,7 +19,7 @@
  *
  ******************************************************************************/
 
-#include <triqs/arrays/vector.hpp>
+#include <nda/nda.hpp>
 
 #include "objective_function.hpp"
 
