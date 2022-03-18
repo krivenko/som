@@ -119,7 +119,7 @@ bool polynomial<CoeffType, AutoLowerDegree>::try_lower_degree(
   for(; n >= 0 && is_zero(coeffs_[n], tolerance); --n)
     ;
   if(n != coeffs_.size() - 1) {
-    coeffs_ = coeffs_(range(n + 1));
+    coeffs_ = coeffs_type(coeffs_(range(n + 1)));
     return true;
   } else
     return false;
