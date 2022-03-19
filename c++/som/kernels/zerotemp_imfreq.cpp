@@ -48,7 +48,7 @@ std::ostream& operator<<(std::ostream& os,
   os << "Statistics = "
      << (kern.mesh.domain().statistic == Fermion ? "Fermion" : "Boson") << ", "
      << R"(Δω = )" << (2 * M_PI) / kern.mesh.domain().beta << ", "
-     << kern.mesh.size() << " Matsubara frequencies.";
+     << kern.mesh.size() << " Matsubara frequencies";
   return os;
 }
 

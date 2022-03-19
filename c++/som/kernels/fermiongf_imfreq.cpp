@@ -49,7 +49,7 @@ std::ostream& operator<<(std::ostream& os,
                          kernel<FermionGf, imfreq> const& kern) {
   os << R"(A(ϵ) -> G(iω), )";
   os << R"(β = )" << kern.beta << ", " << kern.mesh.size()
-     << " Matsubara frequencies.";
+     << " Matsubara frequencies";
   return os;
 }
 

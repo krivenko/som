@@ -54,7 +54,7 @@ std::ostream& operator<<(std::ostream& os,
                          kernel<BosonCorr, imfreq> const& kern) {
   os << R"(A(ϵ) -> χ(iΩ), )";
   os << R"(β = )" << kern.beta << ", " << kern.mesh.size()
-     << " Matsubara frequencies.";
+     << " Matsubara frequencies";
   return os;
 }
 

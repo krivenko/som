@@ -137,7 +137,7 @@ std::ostream& operator<<(std::ostream& os,
                          kernel<BosonAutoCorr, legendre> const& kern) {
   os << R"(A(ϵ) -> χ_{sym}(ℓ), )";
   os << R"(β = )" << kern.beta << ", " << kern.mesh.size()
-     << " Legendre coefficients.";
+     << " Legendre coefficients";
   return os;
 }
 

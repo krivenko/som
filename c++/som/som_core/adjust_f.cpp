@@ -74,12 +74,11 @@ int som_core::adjust_f_impl(adjust_f_parameters_t const& p) {
     auto stop_callback = triqs::utility::clock_callback(p.max_time);
 
     if(p.verbosity > 0) {
-      std::cout << "Constructing integral kernel... " << std::flush;
+      mpi_cout(comm) << "Constructing integral kernel... " << std::endl;
     }
     KernelType kernel(m);
     if(p.verbosity > 0) {
-      std::cout << "done" << std::endl;
-      std::cout << "Kernel: " << kernel << std::endl;
+      mpi_cout(comm) << "Constructed kernel: " << kernel << std::endl;
     }
 
     // Find solution for each component of GF
@@ -87,8 +86,8 @@ int som_core::adjust_f_impl(adjust_f_parameters_t const& p) {
       auto& d = data[n];
 
       if(p.verbosity > 0)
-        std::cout << "Running algorithm for observable component [" << n << ","
-                  << n << "]" << std::endl;
+        mpi_cout(comm) << "Running algorithm for observable component [" << n
+                       << "," << n << "]" << std::endl;
 
       auto const& rhs = d.get_rhs<mesh_t>();
       auto const& error_bars = d.get_error_bars<mesh_t>();
@@ -104,10 +103,11 @@ int som_core::adjust_f_impl(adjust_f_parameters_t const& p) {
         if(F >= p.f_range.second) {
           F = p.f_range.second;
           if(p.verbosity >= 1)
-            std::cout << "WARNING: Upper bound of f_range has been reached,"
-                         " will use F = " +
-                             std::to_string(F)
-                      << std::endl;
+            mpi_cout(comm)
+                << "WARNING: Upper bound of f_range has been reached,"
+                   " will use F = " +
+                       std::to_string(F)
+                << std::endl;
           break;
         }
 
@@ -137,14 +137,14 @@ int som_core::adjust_f_impl(adjust_f_parameters_t const& p) {
         l_good = mpi::all_reduce(l_good, comm);
 
         if(p.verbosity >= 1)
-          std::cout << "F = " << F << ", " << l_good
-                    << R"( solutions with κ > )" << p.kappa << " (out of "
-                    << p.l << ")" << std::endl;
+          mpi_cout(comm) << "F = " << F << ", " << l_good
+                         << R"( solutions with κ > )" << p.kappa << " (out of "
+                         << p.l << ")" << std::endl;
 
         // Converged
         if(l_good > p.l / 2) {
           if(p.verbosity >= 1)
-            std::cout << "F = " << F << " is enough." << std::endl;
+            mpi_cout(comm) << "F = " << F << " is enough." << std::endl;
           break;
         }
       }
@@ -164,8 +164,8 @@ int som_core::adjust_f(adjust_f_parameters_t const& p) {
   p.validate(kind);
 
   if(p.verbosity >= 1) {
-    std::cout << "Adjusting the number of global updates F using " << p.l
-              << " particular solutions ..." << std::endl;
+    mpi_cout(comm) << "Adjusting the number of global updates F using " << p.l
+                   << " particular solutions ..." << std::endl;
   }
 
 #define IMPL_CASE(r, okmk)                                                     \

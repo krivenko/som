@@ -129,7 +129,7 @@ std::ostream& operator<<(std::ostream& os,
                          kernel<ZeroTemp, legendre> const& kern) {
   os << R"(A(ϵ) -> G_{T=0}(ℓ), )";
   os << R"(τ_{max} = )" << kern.tau_max << ", " << kern.mesh.size()
-     << " Legendre coefficients.";
+     << " Legendre coefficients";
   return os;
 }
 

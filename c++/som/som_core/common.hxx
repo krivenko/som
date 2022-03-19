@@ -41,10 +41,6 @@ using namespace triqs::gfs;
   TRIQS_RUNTIME_ERROR << "som_core: " << message;
 }
 
-inline void warning(std::string const& message) {
-  std::cout << "WARNING: " << message << std::endl;
-}
-
 inline std::ostream& mpi_cout(mpi::communicator const& comm) {
   return (std::cout << "[Rank " << comm.rank() << "] ");
 }

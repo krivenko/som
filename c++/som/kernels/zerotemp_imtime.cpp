@@ -55,7 +55,7 @@ std::ostream& operator<<(std::ostream& os,
   os << "Statistics = "
      << (kern.mesh.domain().statistic == Fermion ? "Fermion" : "Boson") << ", "
      << R"(τ_{max} = )" << kern.mesh.domain().beta << ", "
-     << kern.mesh.size() << R"( τ-points.)";
+     << kern.mesh.size() << R"( τ-points)";
   return os;
 }
 

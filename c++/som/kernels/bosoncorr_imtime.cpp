@@ -219,7 +219,7 @@ std::ostream& operator<<(std::ostream& os,
                          kernel<BosonCorr, imtime> const& kern) {
   os << R"(A(ϵ) -> χ(τ), )";
   os << R"(β = )" << kern.beta << ", " << kern.mesh.size()
-     << R"( τ-points.)";
+     << R"( τ-points)";
   return os;
 }
 

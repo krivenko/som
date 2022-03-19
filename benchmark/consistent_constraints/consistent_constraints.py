@@ -48,7 +48,10 @@ default_model = np.exp(-(w ** 2) / (2 * (D/2)**2)) / np.sqrt(2*np.pi*(D/2)**2)
 cfs_cc_params['default_model'] = default_model
 cfs_cc_params['default_model_weights'] = 1e-4 * np.ones(n_w)
 
-print("--- Prepare input ---")
+def print_master(msg):
+    if mpi.rank == 0: print(msg)
+
+print_master("--- Prepare input ---")
 g_iw  = GfImFreq(beta = beta, n_points = n_iw, indices = indices)
 g_iw << SemiCircular(D)
 
@@ -70,30 +73,30 @@ def make_output(cont):
 
     return {'g_iw_rec' : g_iw_rec, 'g_w' : g_w, 'g_tail' : g_tail}
 
-print("--- Accumulate particular solutions ---")
+print_master("--- Accumulate particular solutions ---")
 accumulate_time = time.perf_counter()
 cont = Som(g_iw, S_iw)
 cont.accumulate(**accumulate_params)
 accumulate_time = time.perf_counter() - accumulate_time
 
-print("--- Run compute_final_solution() ---")
+print_master("--- Run compute_final_solution() ---")
 cfs_time = time.perf_counter()
 chi2 = cont.compute_final_solution(good_chi_rel=good_chi_rel,
                                    good_chi_abs=good_chi_abs)
 cfs_time = time.perf_counter() - cfs_time
 
-print("--- Generate SOM output ---")
+print_master("--- Generate SOM output ---")
 som_output = make_output(cont)
 
-print("--- Run compute_final_solution_cc() ---")
+print_master("--- Run compute_final_solution_cc() ---")
 cfs_cc_time = time.perf_counter()
 chi2_cc = cont.compute_final_solution_cc(**cfs_cc_params)
 cfs_cc_time = time.perf_counter() - cfs_cc_time
 
-print("--- Generate SOCC output ---")
+print_master("--- Generate SOCC output ---")
 socc_output = make_output(cont)
 
-print("--- Save results ---")
+print_master("--- Save results ---")
 if mpi.is_master_node():
     with HDFArchive('consistent_constraints.h5', 'w') as arch:
         arch.create_group('input')
