@@ -33,10 +33,10 @@ namespace som {
 using namespace triqs::gfs;
 
 // Make coefficient of a Bessel polynomial a_k(l+1/2)
-static double make_a(int k, int l) {
+static double make_a(long k, long l) {
   double a = 1;
-  for(int i = 1; i <= k; ++i) {
-    double t = l - k + 2 * i;
+  for(long i = 1; i <= k; ++i) {
+    auto t = double(l - k + 2 * i);
     a *= (t - 1) * t / double(2 * i);
   }
   return a;
@@ -46,15 +46,15 @@ static double make_a(int k, int l) {
 // kernel<BosonCorr, legendre>::evaluator //
 ////////////////////////////////////////////
 
-kernel<BosonCorr, legendre>::evaluator::evaluator(int l, double x0_start,
+kernel<BosonCorr, legendre>::evaluator::evaluator(long l, double x0_start,
                                                   double beta)
-   : log_coeff(-0.5 * l * (l + 1))
+   : log_coeff(-0.5 * double(l * (l + 1)))
    , pref((2 / (M_PI * beta)) * std::sqrt(2 * l + 1)) {
 
   // Integrand, x i_l(x) / sinh(x)
   auto integrand = [l](double x) {
     if(x == 0) return (l == 0 ? 1.0 : 0.0);
-    double val = boost::math::cyl_bessel_i(l + 0.5, x);
+    double val = boost::math::cyl_bessel_i(double(l) + 0.5, x);
     return val * std::sqrt(M_PI / (2 * x)) * x / std::sinh(x);
   };
 
@@ -126,7 +126,7 @@ void kernel<BosonCorr, legendre>::apply(rectangle const& rect,
     res(l.linear_index()) = rect.height * (Lambda(l, e2) - Lambda(l, e1));
 }
 
-double kernel<BosonCorr, legendre>::Lambda(int l, double Omega) const {
+double kernel<BosonCorr, legendre>::Lambda(long l, double Omega) const {
   return -((l % 2) ? 1.0 : std::copysign(1.0, -Omega)) *
          evaluators[l](std::abs(Omega) * beta / 2);
 }

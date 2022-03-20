@@ -58,7 +58,7 @@ class kernel<ZeroTemp, triqs::mesh::legendre>
     double high_energy_x0;            // log(x0) + high_energy_pol(1/x0)
     double sqrt_pref;                 // (-1)^(l+1) sqrt(2*l+1) prefactor
 
-    evaluator(int l, double x0_start);
+    evaluator(long l, double x0_start);
 
     double operator()(double x) const;
   };
@@ -67,17 +67,18 @@ class kernel<ZeroTemp, triqs::mesh::legendre>
   std::vector<evaluator> evaluators;
 
   // Integrated kernel \Lambda(l,\Omega)
-  double Lambda(int l, double Omega) const;
+  double Lambda(long l, double Omega) const;
 
 public:
   using result_type = nda::array<double, 1>;
   using mesh_type = triqs::mesh::legendre;
   constexpr static observable_kind kind = ZeroTemp;
 
-  const double beta = HUGE_VAL; // Inverse temperature (infinity)
+private:
   const mesh_type mesh;         // Legendre coefficients mesh
   const double tau_max;         // Max imaginary time
 
+public:
   explicit kernel(mesh_type const& mesh);
 
   // Apply to a rectangle

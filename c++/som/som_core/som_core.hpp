@@ -39,22 +39,22 @@
 #include <som/kernels/mesh_traits.hpp>
 #include <som/kernels/observables.hpp>
 
+namespace testing { class spectral_stats_test; }
+
 namespace som {
 
 class som_core {
 
-// Only for unit testing
-#ifdef SOM_TESTING
-public:
+  // For unit testing
+  friend class testing::spectral_stats_test;
   som_core() = default;
-#endif
 
   // LHS cache index
   // Must be sure this object is destroyed after all other members
   cache_index ci;
 
   // Kind of the observable, GF/Susceptibility/Conductivity
-  observable_kind kind;
+  observable_kind kind = {};
 
   // Mesh of the input functions
   mesh_variant_t mesh;
@@ -101,7 +101,7 @@ public:
 
     // Initialize 'rhs', 'error_bars' and 'norm'
     template <typename... GfOpts>
-    void init_input(int i, triqs::gfs::gf_const_view<GfOpts...> g,
+    void init_input(long i, triqs::gfs::gf_const_view<GfOpts...> g,
                     triqs::gfs::gf_const_view<GfOpts...> S, double norm_);
 
     // Typed access to 'rhs'
@@ -180,12 +180,12 @@ public:
   );
 
   /// Set of parameters used in the last call to accumulate()
-  accumulate_parameters_t get_last_accumulate_parameters() const {
+  [[nodiscard]] accumulate_parameters_t get_last_accumulate_parameters() const {
     return params;
   }
 
   /// Status of the accumulate() on exit
-  int get_accumulate_status() const { return accumulate_status; }
+  [[nodiscard]] int get_accumulate_status() const { return accumulate_status; }
 
   /// Accumulate particular solutions and compute the final solution using
   /// the standard SOM criterion
@@ -195,7 +195,7 @@ public:
   [[nodiscard]] observable_kind get_observable_kind() const { return kind; }
 
   /// Matrix dimension of the observable
-  [[nodiscard]] int get_dim() const { return data.size(); }
+  [[nodiscard]] long get_dim() const { return long(data.size()); }
 
   /// MPI communicator
   [[nodiscard]] mpi::communicator const& get_comm() const { return comm; }
@@ -203,17 +203,17 @@ public:
   /// Accumulated particular solutions for the i-th diagonal matrix element.
   /// The returned list of solutions is rank-local.
   [[nodiscard]] std::vector<std::pair<configuration, double>> const&
-  get_particular_solutions(int i) const;
+  get_particular_solutions(long i) const;
 
   /// Final solution for the i-th diagonal matrix element
-  [[nodiscard]] configuration const& get_solution(int i) const;
+  [[nodiscard]] configuration const& get_solution(long i) const;
 
   /// Final solutions
   [[nodiscard]] std::vector<configuration> get_solutions() const;
 
   /// Value of the objective function :math:`\chi^2` of the final solution
   /// for the i-th diagonal matrix element.
-  [[nodiscard]] double get_objf(int i) const;
+  [[nodiscard]] double get_objf(long i) const;
 
   /// Values of the objective function :math:`\chi^2` of the final solutions
   /// (one value per a diagonal matrix element of the observable).
@@ -221,7 +221,7 @@ public:
 
   /// Accumulated objective function histogram for the i-th diagonal matrix
   /// element of the observable
-  [[nodiscard]] std::optional<histogram_t> const& get_histogram(int i) const;
+  [[nodiscard]] std::optional<histogram_t> const& get_histogram(long i) const;
 
   /// Accumulated objective function histogram for all diagonal matrix
   /// elements of the observable

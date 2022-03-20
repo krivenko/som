@@ -28,15 +28,19 @@
 
 namespace som {
 
+std::vector<std::size_t> init_range_size(mpi::communicator const& comm,
+                                         std::size_t local_block_size) {
+  std::vector<std::size_t> tmp{local_block_size};
+  return mpi::all_gather(std::move(tmp), comm);
+}
+
 global_index_map::global_index_map(mpi::communicator const& comm,
-                                   int local_block_size)
-   : range_start_(comm.size(), 0), range_size_(comm.size()), size_(0) {
-  std::vector<int> tmp{local_block_size};
-  range_size_ = mpi::all_gather(std::move(tmp), comm);
-  std::partial_sum(range_size_.begin(),
-                   range_size_.end() - 1,
-                   range_start_.begin() + 1);
-  size_ = std::accumulate(range_size_.begin(), range_size_.end(), 0);
+                                   std::size_t local_block_size)
+   : range_start_(comm.size(), 0)
+   , range_size_(init_range_size(comm, local_block_size))
+   , size_(std::accumulate(range_size_.begin(), range_size_.end(), 0)) {
+  std::partial_sum(
+      range_size_.begin(), range_size_.end() - 1, range_start_.begin() + 1);
 }
 
 } // namespace som

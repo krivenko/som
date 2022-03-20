@@ -24,16 +24,17 @@
 
 #include "./test_kernel.hpp"
 
-using namespace triqs::gfs;
+class ZeroTemp_test : public ::testing::Test {
+protected:
+  cache_index ci;
+};
 
-cache_index ci;
-
-TEST(FermionGf, imtime) {
+TEST_F(ZeroTemp_test, imtime) {
   test_kernel<kernel<ZeroTemp, imtime>>("zerotemp_imtime.h5", ci, 1e-10);
 }
-TEST(FermionGf, imfreq) {
+TEST_F(ZeroTemp_test, imfreq) {
   test_kernel<kernel<ZeroTemp, imfreq>>("zerotemp_imfreq.h5", ci, 1e-10);
 }
-TEST(FermionGf, legendre) {
+TEST_F(ZeroTemp_test, legendre) {
   test_kernel<kernel<ZeroTemp, legendre>>("zerotemp_legendre.h5", ci, 1e-10);
 }

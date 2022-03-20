@@ -24,31 +24,32 @@
 #include <som/kernels/fermiongf_imtime.hpp>
 #include <som/solution_worker.hpp>
 
-using namespace som;
 using namespace nda;
+using namespace som;
 using triqs::utility::clock_callback;
 
-double beta;
-triqs::mesh::imtime mesh;
-array<double, 1> g_tau, s_tau;
+struct solution_worker_test : public ::testing::Test {
+protected:
+  double beta = {};
+  triqs::mesh::imtime mesh;
+  array<double, 1> g_tau, s_tau;
 
-struct Env : public ::testing::Environment {
-  virtual void SetUp() override {
+  using obj_function =
+      objective_function<kernel<FermionGf, triqs::mesh::imtime>>;
+
+public:
+  solution_worker_test() {
     h5::file arch("solution_worker.ref.h5", 'r');
 
     h5_read(arch, "beta", beta);
     h5_read(arch, "g_tau", g_tau);
     h5_read(arch, "s_tau", s_tau);
 
-    mesh = {beta, triqs::mesh::Fermion, static_cast<int>(first_dim(g_tau))};
+    mesh = {beta, triqs::mesh::Fermion, first_dim(g_tau)};
   }
 };
-::testing::Environment* const env =
-    ::testing::AddGlobalTestEnvironment(new Env);
 
-using obj_function = objective_function<kernel<FermionGf, triqs::mesh::imtime>>;
-
-TEST(solution_worker, RandomConfig) {
+TEST_F(solution_worker_test, RandomConfig) {
   cache_index ci;
   kernel<FermionGf, triqs::mesh::imtime> kern(mesh);
   obj_function of(kern, g_tau, s_tau);
@@ -71,7 +72,7 @@ TEST(solution_worker, RandomConfig) {
   EXPECT_EQ(solution_ref, solution);
 }
 
-TEST(solution_worker, StartConfig) {
+TEST_F(solution_worker_test, StartConfig) {
   cache_index ci;
   kernel<FermionGf, triqs::mesh::imtime> kern(mesh);
   obj_function of(kern, g_tau, s_tau);

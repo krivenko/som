@@ -27,47 +27,58 @@
 #include <som/kernels/fermiongf_imtime.hpp>
 #include <som/solution_functionals/objective_function.hpp>
 
-using namespace som;
 using namespace nda;
+using namespace som;
 
-const double beta = 2;
-cache_index ci;
-std::vector<rectangle> rects{{-2, 2.6, 0.3, ci},
-                             {1.3, 2.6, 0.6, ci},
-                             {-0.5, 2.6, 0.5, ci},
-                             {2, 2.6, 0.7, ci}};
+class objective_function_test : public ::testing::Test {
 
-triqs::mesh::imtime mesh(beta, triqs::mesh::Fermion, 11);
+  const double beta = 2;
+  triqs::mesh::imtime mesh;
+  kernel<FermionGf, triqs::mesh::imtime> kern;
 
-array<double, 1> GF() {
-  array<double, 1> res(mesh.size());
-  for(auto pt : mesh) {
-    size_t i = pt.linear_index();
-    auto tau = double(pt);
-    res(i) = -0.5 * (std::exp(-tau * 1.3) / (1 + std::exp(-beta * 1.3)) +
-                     std::exp(tau * 0.7) / (1 + std::exp(beta * 0.7)));
+  array<double, 1> GF() {
+    array<double, 1> res(mesh.size());
+    for(auto pt : mesh) {
+      size_t i = pt.linear_index();
+      auto tau = double(pt);
+      res(i) = -0.5 * (std::exp(-tau * 1.3) / (1 + std::exp(-beta * 1.3)) +
+                       std::exp(tau * 0.7) / (1 + std::exp(beta * 0.7)));
+    }
+    return res;
   }
-  return res;
-}
 
-array<double, 1> S() {
-  array<double, 1> res(mesh.size());
-  for(auto pt : mesh) {
-    size_t i = pt.linear_index();
-    auto tau = double(pt);
-    res(i) = 0.05 * std::exp(-std::abs(tau - 0.5 * beta));
+  array<double, 1> S() {
+    array<double, 1> res(mesh.size());
+    for(auto pt : mesh) {
+      size_t i = pt.linear_index();
+      auto tau = double(pt);
+      res(i) = 0.05 * std::exp(-std::abs(tau - 0.5 * beta));
+    }
+    return res;
   }
-  return res;
-}
 
-auto g = GF();
-auto s = S();
+  array<double, 1> g;
+  array<double, 1> s;
 
-kernel<FermionGf, triqs::mesh::imtime> kern(mesh);
+protected:
+  cache_index ci;
+  std::vector<rectangle> rects = {{-2, 2.6, 0.3, ci},
+                                  {1.3, 2.6, 0.6, ci},
+                                  {-0.5, 2.6, 0.5, ci},
+                                  {2, 2.6, 0.7, ci}};
 
-objective_function<kernel<FermionGf, triqs::mesh::imtime>> of(kern, g, s);
+  objective_function<kernel<FermionGf, triqs::mesh::imtime>> of;
 
-TEST(objective_function, Change) {
+public:
+  objective_function_test()
+     : mesh(beta, triqs::mesh::Fermion, 11)
+     , kern(mesh)
+     , g(GF())
+     , s(S())
+     , of(kern, g, s) {}
+};
+
+TEST_F(objective_function_test, Change) {
   configuration conf({rects[0], rects[2]}, ci);
 
   EXPECT_NEAR(586.079, of(conf), 1e-3);
@@ -86,7 +97,7 @@ TEST(objective_function, Change) {
   EXPECT_NEAR(991.805, of(conf), 1e-3);
 }
 
-TEST(objective_function, Add) {
+TEST_F(objective_function_test, Add) {
   configuration conf({rects[0], rects[1]}, ci);
 
   EXPECT_NEAR(393.205, of(conf), 1e-3);
@@ -105,7 +116,7 @@ TEST(objective_function, Add) {
   EXPECT_NEAR(2797.053, of(conf), 1e-3);
 }
 
-TEST(objective_function, Remove) {
+TEST_F(objective_function_test, Remove) {
   configuration conf({rects[0], rects[1], rects[2]}, ci);
 
   EXPECT_NEAR(1715.986, of(conf), 1e-3);
@@ -124,7 +135,7 @@ TEST(objective_function, Remove) {
   EXPECT_NEAR(393.205, of(conf), 1e-3);
 }
 
-TEST(objective_function, Multiple) {
+TEST_F(objective_function_test, Multiple) {
   configuration conf({rects[0], rects[1]}, ci);
 
   EXPECT_NEAR(393.205, of(conf), 1e-3);

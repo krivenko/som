@@ -32,19 +32,23 @@ namespace som {
 class global_index_map {
 
   // Parameters of global index ranges corresponding to MPI ranks.
-  std::vector<int> range_start_;
-  std::vector<int> range_size_;
+  std::vector<std::size_t> range_start_;
+  std::vector<std::size_t> range_size_;
   // Total number of global index values.
-  int size_;
+  std::size_t size_;
 
 public:
-  global_index_map(mpi::communicator const& comm, int local_block_size);
+  global_index_map(mpi::communicator const& comm, std::size_t local_block_size);
 
-  int range_start(int rank) const { return range_start_[rank]; }
-  int range_size(int rank) const { return range_size_[rank]; }
-  int size() const { return size_; }
+  [[nodiscard]] std::size_t range_start(int rank) const {
+    return range_start_[rank];
+  }
+  [[nodiscard]] std::size_t range_size(int rank) const {
+    return range_size_[rank];
+  }
+  [[nodiscard]] std::size_t size() const { return size_; }
 
-  inline int operator()(int rank, int local_index) const {
+  inline std::size_t operator()(int rank, std::size_t local_index) const {
     assert(local_index < range_size_[rank]);
     return range_start_[rank] + local_index;
   }

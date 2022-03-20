@@ -25,9 +25,9 @@
 #include <string>
 #include <vector>
 
+#include <h5/h5.hpp>
 #include <mpi/mpi.hpp>
 #include <mpi/vector.hpp>
-#include <h5/h5.hpp>
 
 #include "cache_index.hpp"
 #include "rectangle.hpp"
@@ -66,10 +66,9 @@ private:
   void replace(int index, rectangle const& r);
 
 public:
-
   // Construct a new configuration unbound from a LHS cache
   configuration() = default;
-  configuration(std::initializer_list<rectangle> const& l);
+  explicit configuration(std::initializer_list<rectangle> const& l);
 
   explicit configuration(cache_index& ci,
                          int reserved_rects = default_max_rects);
@@ -78,11 +77,12 @@ public:
   configuration(configuration&& c) noexcept;
   configuration& operator=(configuration const& c);
   configuration& operator=(configuration&& c) noexcept;
+  ~configuration() = default;
 
   // Number of rectangles
-  [[nodiscard]] int size() const { return rects.size(); }
+  [[nodiscard]] std::size_t size() const { return rects.size(); }
   // Maximum number of rectangles
-  [[nodiscard]] int max_size() const { return rects.capacity(); }
+  [[nodiscard]] std::size_t max_size() const { return rects.capacity(); }
   // Norm of this configuration
   [[nodiscard]] double norm() const;
 
@@ -124,7 +124,9 @@ public:
 
   // MPI reduce
   friend configuration
-  mpi_reduce(configuration const& c, mpi::communicator comm = {}, int root = 0,
+  mpi_reduce(configuration const& c,
+             mpi::communicator comm = {},
+             int root = 0,
              bool all = false,
              MPI_Op = MPI_SUM // NOLINT(cppcoreguidelines-pro-type-cstyle-cast)
   ) {
@@ -141,8 +143,8 @@ public:
 
   // HDF5
   static std::string hdf5_format() { return "SomConfiguration"; }
-  friend void h5_write(h5::group gr, std::string const& name,
-                       configuration const& c);
+  friend void
+  h5_write(h5::group gr, std::string const& name, configuration const& c);
   friend void h5_read(h5::group gr, std::string const& name, configuration& c);
   static configuration h5_read_construct(h5::group gr, std::string const& name);
 };

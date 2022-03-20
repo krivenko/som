@@ -65,9 +65,9 @@ double series_2(double r) {
   static const int kmax = 100;
   double rk = r;
   double sum = 0.5 * r;
-  int k;
-  double ds;
-  for(k = 2; k < kmax_head; ++k) {
+  double ds; // NOLINT(cppcoreguidelines-init-variables)
+  int k = 2;
+  for(; k < kmax_head; ++k) {
     rk *= r;
     ds = rk / (k * k * (k + 1.0));
     sum += ds;
@@ -89,7 +89,7 @@ double series_2(double r) {
 // assumes: -1 < x < 1
 double dilog_series_2(double x) {
   double res = series_2(x);
-  double t;
+  double t; // NOLINT(cppcoreguidelines-init-variables)
   static const double small_x_threshold = 0.01;
   if(x > small_x_threshold) {
     t = (1.0 - x) * std::log(1.0 - x) / x;

@@ -30,11 +30,13 @@
 #include <triqs/utility/is_complex.hpp>
 
 using namespace std::complex_literals;
-using namespace som;
+using namespace triqs::mesh;
 using nda::array;
 using nda::range;
 using nda::vector;
 using triqs::is_complex;
+
+using namespace som;
 
 namespace som {
 
@@ -85,7 +87,7 @@ void test_kernel(std::string const& filename,
     KernelType kern(mesh);
     ci.invalidate_all();
 
-    for(int i : range(conf.size()))
+    for(auto i : range(long(conf.size())))
       EXPECT_TRUE(
           array_are_close(results(i, range()), kern(conf[i]), tolerance));
   }

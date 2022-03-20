@@ -60,7 +60,7 @@ class kernel<BosonAutoCorr, triqs::mesh::legendre>
     double high_energy_x0; // x - log_coeff * log(x0) + high_energy_pol(1/x0)
     double pref;           // (2/(\pi*\beta)) * sqrt(2*l+1) prefactor
 
-    evaluator(int l, double x0_start, double beta);
+    evaluator(long l, double x0_start, double beta);
 
     double operator()(double x) const;
   };
@@ -69,16 +69,18 @@ class kernel<BosonAutoCorr, triqs::mesh::legendre>
   std::vector<evaluator> evaluators;
 
   // Integrated kernel \Lambda(l,\Omega)
-  double Lambda(int l, double Omega) const;
+  double Lambda(long l, double Omega) const;
 
 public:
   using result_type = nda::array<double, 1>;
   using mesh_type = triqs::mesh::legendre;
   constexpr static observable_kind kind = BosonAutoCorr;
 
+private:
   const double beta;    // Inverse temperature
   const mesh_type mesh; // Legendre coefficients mesh
 
+public:
   explicit kernel(mesh_type const& mesh);
 
   // Apply to a rectangle

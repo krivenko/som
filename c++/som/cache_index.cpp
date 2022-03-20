@@ -28,23 +28,23 @@
 namespace som {
 
 void cache_index::extend() {
-  int cap = entries.size();
-  int new_cap = cap + CACHE_SIZE;
+  std::size_t cap = entries.size();
+  std::size_t new_cap = cap + CACHE_SIZE;
 #ifdef EXT_DEBUG
   std::cerr << "Extending LHS cache from " << cap << " to " << new_cap
             << " entries." << std::endl;
 #endif
   entries.reserve(new_cap);
-  for(int id = cap; id < new_cap; ++id) {
+  for(std::size_t id = cap; id < new_cap; ++id) {
     entries.emplace_back();
     spare_ids.push(new_cap - 1 + cap - id);
   }
 }
 
 // Acquire ownership over a free cache entry
-int cache_index::acquire() {
+std::size_t cache_index::acquire() {
   if(spare_ids.empty()) extend();
-  int id = spare_ids.top();
+  std::size_t id = spare_ids.top();
   spare_ids.pop();
   auto& e = entries[id];
   ++e.refcount;

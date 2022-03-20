@@ -29,7 +29,7 @@
 using namespace som;
 using namespace triqs::mc_tools;
 
-double poly(double x, std::vector<double> coeffs) {
+double poly(double x, std::vector<double> const& coeffs) {
   double res = 0;
   double p = 1;
   for(auto c : coeffs) {
@@ -39,7 +39,7 @@ double poly(double x, std::vector<double> coeffs) {
   return res;
 }
 
-TEST(expabs_distribution, main) {
+TEST(expabs_distribution_test, main) {
   random_generator rng;
   int n_samples = 1e7;
 

@@ -24,8 +24,8 @@
 #include <ostream>
 #include <utility>
 
-#include <nda/nda.hpp>
 #include <mpi/mpi.hpp>
+#include <nda/nda.hpp>
 
 #include "cache_index.hpp"
 
@@ -47,32 +47,19 @@ struct rectangle {
   cache_entry_ptr cache_ptr;
 
 public:
-
   // Construct a new rectangle unbound from a LHS cache
   inline rectangle(double center, double width, double height)
-     : center(center)
-     , width(width)
-     , height(height)
-     {}
+     : center(center), width(width), height(height) {}
 
   // Construct a new rectangle and bind it to a new cache entry
   inline rectangle(double center, double width, double height, cache_index& ci)
-     : center(center)
-     , width(width)
-     , height(height)
-     , cache_ptr(ci)
-     {}
+     : center(center), width(width), height(height), cache_ptr(ci) {}
 
   rectangle(rectangle const& r) = default;
   rectangle(rectangle&& r) noexcept = default;
+  ~rectangle() = default;
 
-  inline rectangle& operator=(rectangle const& r) {
-    center = r.center;
-    width = r.width;
-    height = r.height;
-    cache_ptr = r.cache_ptr;
-    return *this;
-  }
+  inline rectangle& operator=(rectangle const& r) = default;
   inline rectangle& operator=(rectangle&& r) noexcept {
     using std::swap;
     swap(center, r.center);
@@ -106,7 +93,8 @@ public:
                              std::complex<double> eb,
                              bool multiply_by_e = false) const;
   [[nodiscard]] nda::vector<double>
-  tail_coefficients(long order_min, long order_max,
+  tail_coefficients(long order_min,
+                    long order_max,
                     bool multiply_by_e = false) const;
 
   // Output stream insertion

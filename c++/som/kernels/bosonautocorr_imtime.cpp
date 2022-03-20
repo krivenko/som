@@ -92,8 +92,8 @@ kernel<BosonAutoCorr, imtime>::evaluator::evaluator(
     alpha_case = other;
     double shift = trigamma(1 + alpha) + trigamma(2 - alpha);
     spline_knots[0] = 0;
-    for(int xi : range(1, n_spline_knots)) {
-      double x = dx * xi;
+    for(auto xi : range(1, n_spline_knots)) {
+      double x = dx * double(xi);
       spline_knots[xi] =
           -aux_sum([this](int n) { return -(n + 1 + alpha); }, x) -
           aux_sum([this](int n) { return -(n + 2 - alpha); }, x) + shift;

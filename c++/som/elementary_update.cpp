@@ -78,10 +78,20 @@ void elementary_update<KernelType>::select_parameter_change(bool consider_opt) {
   }
 }
 
+// Manually set selected_parameter_change and update new_objf_value
+template <typename KernelType>
+void elementary_update<KernelType>::set_parameter_change(
+    parameter_change_t parameter_change) {
+  // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-constant-array-index)
+  new_objf_value[parameter_change] = data.objf(update[parameter_change]);
+  selected_parameter_change = parameter_change;
+}
+
 // Returns Metropolis ratio for the currently selected update
 template <typename KernelType>
 double elementary_update<KernelType>::transition_probability() const {
   double old_d = data.temp_objf_value;
+  // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-constant-array-index)
   double new_d = new_objf_value[selected_parameter_change];
   return new_d < old_d ? 1.0 : data.Z(old_d / new_d);
 }
@@ -89,8 +99,11 @@ double elementary_update<KernelType>::transition_probability() const {
 template <typename KernelType>
 #ifdef EXT_DEBUG
 elementary_update<KernelType>::elementary_update(
-    mc_data<KernelType>& data, random_generator& rng, cache_index& ci,
-    std::pair<double, double> energy_window, double width_min,
+    mc_data<KernelType>& data,
+    random_generator& rng,
+    cache_index& ci,
+    std::pair<double, double> energy_window,
+    double width_min,
     double weight_min)
    : data(data)
    , rng(rng)
@@ -99,7 +112,6 @@ elementary_update<KernelType>::elementary_update(
    , energy_window(std::move(energy_window))
    , width_min(width_min)
    , weight_min(weight_min)
-   ,
 #else
 elementary_update<KernelType>::elementary_update(mc_data<KernelType>& data,
                                                  random_generator& rng,
@@ -108,9 +120,8 @@ elementary_update<KernelType>::elementary_update(mc_data<KernelType>& data,
    , rng(rng)
    , ci(ci)
    , kern(data.objf.get_kernel())
-   ,
 #endif
-   generate_parameter_change(rng, data.gamma)
+   , dist(rng, data.gamma)
    , update{config_update(data.temp_conf, ci),
             config_update(data.temp_conf, ci),
             config_update(data.temp_conf, ci)}
@@ -120,10 +131,12 @@ elementary_update<KernelType>::elementary_update(mc_data<KernelType>& data,
 //----------------
 
 template <typename KernelType> double elementary_update<KernelType>::accept() {
-  // Update temporary configuration ...
+  // Update temporary configuration and its objective function value
+  // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-constant-array-index)
   update[selected_parameter_change].apply();
+  // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-constant-array-index)
   kern.cache_copy(update[selected_parameter_change], data.temp_conf);
-  // and its objective function value
+  // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-constant-array-index)
   data.temp_objf_value = new_objf_value[selected_parameter_change];
 
   // Reset all considered updates
@@ -159,8 +172,8 @@ template <typename KernelType> double elementary_update<KernelType>::accept() {
 #ifdef EXT_DEBUG
     std::cerr << "Copying temporary configuration to global configuration "
               << "(χ(temp) = " << std::sqrt(data.temp_objf_value)
-              << ", χ(global) = " << std::sqrt(data.global_objf_value)
-              << ")" << std::endl;
+              << ", χ(global) = " << std::sqrt(data.global_objf_value) << ")"
+              << std::endl;
 #endif
     data.global_conf = data.temp_conf;
     kern.cache_copy(data.temp_conf, data.global_conf);

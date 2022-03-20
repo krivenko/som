@@ -35,10 +35,10 @@ using som::polynomial;
     EXPECT_EQ(X, ss.str());                                                    \
   }
 
-template <typename Polynomial> class polynomials_case : public ::testing::Test {
+template <typename Polynomial> class polynomials_test : public ::testing::Test {
 
 public:
-  polynomials_case() = default;
+  polynomials_test() = default;
 
   void test_empty() {
     Polynomial p;
@@ -68,7 +68,7 @@ public:
 
   void test_try_lower_degree() {
     Polynomial p{1., 3., -2., 5., 0., 2.0, 0., 0.};
-/*
+
     if constexpr(Polynomial::auto_lower_degree)
       EXPECT_EQ(5, p.degree());
     else
@@ -82,7 +82,7 @@ public:
     else
       EXPECT_EQ(4, p.size());
     p.try_lower_degree();
-    EXPECT_EQ(0, p.size());*/
+    EXPECT_EQ(0, p.size());
   }
 
   void test_print() {
@@ -158,20 +158,21 @@ public:
 };
 
 using polynomial_types =
-    ::testing::Types<polynomial<double, true>, polynomial<double, false>,
+    ::testing::Types<polynomial<double, true>,
+                     polynomial<double, false>,
                      polynomial<std::complex<double>, true>,
                      polynomial<std::complex<double>, false>>;
 
 #pragma GCC diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
-TYPED_TEST_SUITE(polynomials_case, polynomial_types);
-TYPED_TEST(polynomials_case, test_empty) { this->test_empty(); }
-TYPED_TEST(polynomials_case, test_degree5) { this->test_degree5(); }
-TYPED_TEST(polynomials_case, test_try_lower_degree) {
+TYPED_TEST_SUITE(polynomials_test, polynomial_types);
+TYPED_TEST(polynomials_test, test_empty) { this->test_empty(); }
+TYPED_TEST(polynomials_test, test_degree5) { this->test_degree5(); }
+TYPED_TEST(polynomials_test, test_try_lower_degree) {
   this->test_try_lower_degree();
 }
-TYPED_TEST(polynomials_case, test_print) { this->test_print(); }
-TYPED_TEST(polynomials_case, test_arithmetics) { this->test_arithmetics(); }
-TYPED_TEST(polynomials_case, test_derivative) { this->test_derivative(); }
-TYPED_TEST(polynomials_case, test_antiderivative) {
+TYPED_TEST(polynomials_test, test_print) { this->test_print(); }
+TYPED_TEST(polynomials_test, test_arithmetics) { this->test_arithmetics(); }
+TYPED_TEST(polynomials_test, test_derivative) { this->test_derivative(); }
+TYPED_TEST(polynomials_test, test_antiderivative) {
   this->test_antiderivative();
 }

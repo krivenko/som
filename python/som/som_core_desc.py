@@ -551,7 +551,7 @@ Accumulate particular solutions and compute the final solution using the standar
 #
 
 c.add_method(name = "particular_solutions",
-             signature = "std::vector<std::pair<configuration, double>> get_particular_solutions (int i)",
+             signature = "std::vector<std::pair<configuration, double>> get_particular_solutions (long i)",
              doc = """Accumulated particular solutions and their respective values of the objective function :math:`\chi^2` for the i-th diagonal matrix element.
 The returned list includes only those solutions stored locally in the calling MPI process.""")
 
@@ -560,7 +560,7 @@ The returned list includes only those solutions stored locally in the calling MP
 #
 
 c.add_method(name = "solution",
-             signature = "configuration get_solution (int i)",
+             signature = "configuration get_solution (long i)",
              doc = """Final solution for the i-th diagonal matrix element of the observable""")
 
 c.add_property(name = "solutions",
@@ -572,7 +572,7 @@ c.add_property(name = "solutions",
 #
 
 c.add_method(name = "objf",
-             signature = "double get_objf (int i)",
+             signature = "double get_objf (long i)",
              doc = """Value of the objective function :math:`\chi^2` of the final solution for the i-th diagonal matrix element""")
 
 c.add_property(name = "objf_list",
@@ -584,7 +584,7 @@ c.add_property(name = "objf_list",
 #
 
 c.add_method(name = "histogram",
-             signature = "std::optional<histogram> get_histogram(int i)",
+             signature = "std::optional<histogram> get_histogram(long i)",
              doc = """Accumulated :math:`\chi` histogram for the i-th diagonal matrix element of the observable""")
 
 c.add_property(name = "histograms",
@@ -600,7 +600,7 @@ c.add_property(name = "observable_kind",
                doc = """Kind of the observable""")
 
 c.add_property(name = "dim",
-               getter = cfunction("int get_dim()"),
+               getter = cfunction("long get_dim()"),
                doc = """Matrix dimension of the observable""")
 
 c.add_property(name = "last_accumulate_parameters",

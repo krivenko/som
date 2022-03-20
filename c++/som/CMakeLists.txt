@@ -45,6 +45,7 @@ target_compile_definitions(${PROJECT_NAME}_c PUBLIC
                            $<$<CONFIG:Debug>:SOM_DEBUG>
                            $<$<CONFIG:Debug>:TRIQS_DEBUG>
                            $<$<CONFIG:Debug>:TRIQS_ARRAYS_ENFORCE_BOUNDCHECK>
+                           $<$<CONFIG:Debug>:NDA_ENFORCE_BOUNDCHECK>
                           )
 
 # Install library and headers

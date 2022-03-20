@@ -75,6 +75,7 @@ public:
     // Do we have a precomputed LHS for configuration c?
     if(!ce.valid) {
       res() = 0;
+      // cppcheck-suppress useStlAlgorithm
       for(auto const& r : c) res += operator()(r);
       ce.valid = true;
     }

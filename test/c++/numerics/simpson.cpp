@@ -28,7 +28,7 @@
 using namespace som;
 using namespace std;
 
-TEST(simpson, exp_sin) {
+TEST(simpson_test, exp_sin) {
   auto f = [](double x) { return exp(2 * x) * sin(3 * x); };
 
   double ref = exp(6) * (2 * sin(9) - 3 * cos(9)) / 13;
@@ -36,12 +36,12 @@ TEST(simpson, exp_sin) {
   EXPECT_NEAR(ref, adaptive_simpson(f, 1.0, 3.0, 1e-10), 1e-10);
 }
 
-TEST(simpson, sin_inv_x) {
+TEST(simpson_test, sin_inv_x) {
   auto f = [](double x) { return sin(1 / x) / (1 + 2 * x + x * x); };
   EXPECT_NEAR(0.162985567, adaptive_simpson(f, 0.01, 1.0, 1e-10), 1e-9);
 }
 
-TEST(simpson, primitive) {
+TEST(simpson_test, primitive) {
   auto f = [](double x) { return x * x; };
   nda::array<double, 1> ref(11);
 

@@ -46,7 +46,7 @@ private:
   // Cache entry descriptors
   std::vector<entry> entries;
   // Pool of descriptors not referenced by any objects
-  std::stack<int> spare_ids;
+  std::stack<std::size_t> spare_ids;
 
   void extend();
 
@@ -55,21 +55,21 @@ public:
   cache_index() { extend(); }
 
   // Acquire ownership over a free cache entry
-  int acquire();
+  std::size_t acquire();
 
   // Increase reference count for cache entry id
-  inline void incref(int id) { ++entries[id].refcount; }
+  inline void incref(std::size_t id) { ++entries[id].refcount; }
 
   // Decrease reference count
-  inline void decref(int id) {
+  inline void decref(std::size_t id) {
     auto& e = entries[id];
     --e.refcount;
     if(e.refcount == 0) spare_ids.push(id);
   }
 
   // Access to entries
-  inline entry& operator[](int id) { return entries[id]; }
-  inline entry const& operator[](int id) const { return entries[id]; }
+  inline entry& operator[](std::size_t id) { return entries[id]; }
+  inline entry const& operator[](std::size_t id) const { return entries[id]; }
 
   // Current size of the index
   [[nodiscard]] inline std::size_t size() const { return entries.size(); }
@@ -85,21 +85,24 @@ public:
 
 // Pointer to a cache entry
 struct cache_entry_ptr {
-  cache_index * ci = nullptr; // Cache index the entry is part of
-  int id = 0;                 // ID of the entry
+  cache_index* ci = nullptr; // Cache index the entry is part of
+  std::size_t id = 0;        // ID of the entry
 
   // Construct a null pointer
   cache_entry_ptr() = default;
   // Construct a valid pointer
-  inline cache_entry_ptr(cache_index& ci) : ci(&ci), id(ci.acquire()) {}
+  inline explicit cache_entry_ptr(cache_index& ci)
+     : ci(&ci), id(ci.acquire()) {}
   // Destroy the pointer
-  inline ~cache_entry_ptr() { if(ci) ci->decref(id); }
+  inline ~cache_entry_ptr() {
+    if(ci) ci->decref(id);
+  }
   // Copy-constructor
   inline cache_entry_ptr(cache_entry_ptr const& p) : ci(p.ci), id(p.id) {
     if(ci) ci->incref(id);
   }
   // Move-constructor
-  inline cache_entry_ptr(cache_entry_ptr && p) noexcept : ci(p.ci), id(p.id) {
+  inline cache_entry_ptr(cache_entry_ptr&& p) noexcept : ci(p.ci), id(p.id) {
     if(ci) ci->incref(id);
   }
   // Copy-assignment
@@ -122,19 +125,21 @@ struct cache_entry_ptr {
   inline operator bool() const { return ci != nullptr; }
 
   // Dereference this pointer
-  inline cache_index::entry & deref() const {
+  [[nodiscard]] inline cache_index::entry& deref() const {
     assert(ci);
     return (*ci)[id];
   }
 
   // Dereference 'ci'
-  inline cache_index& get_ci() const {
+  [[nodiscard]] inline cache_index& get_ci() const {
     assert(ci);
     return *ci;
   }
 
   // Mark the pointee as invalid
-  inline void invalidate_entry() { if(ci) (*ci)[id].valid = false; }
+  inline void invalidate_entry() {
+    if(ci) (*ci)[id].valid = false;
+  }
 };
 
 } // namespace som

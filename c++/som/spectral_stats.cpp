@@ -74,6 +74,7 @@ double spectral_integral(double z_m,
                    (std::erf((r.right() - z_m) / (M_SQRT2 * delta_m / 2)) -
                     std::erf((r.left() - z_m) / (M_SQRT2 * delta_m / 2)));
           });
+    default: TRIQS_RUNTIME_ERROR << "Unknown resolution function" << r_func;
   }
 }
 
@@ -105,7 +106,7 @@ spectral_integral(std::vector<std::pair<double, double>> const& intervals,
 ////////////////////
 
 vector<double> spectral_avg(som_core const& cont,
-                            int i,
+                            long i,
                             triqs::mesh::refreq const& mesh,
                             resolution_function r_func) {
   auto const& solutions = cont.get_particular_solutions(i);
@@ -118,19 +119,19 @@ vector<double> spectral_avg(som_core const& cont,
   }
 
   avg = mpi::all_reduce(avg, cont.get_comm());
-  int n_solutions = mpi::all_reduce(solutions.size(), cont.get_comm());
+  auto n_solutions = mpi::all_reduce(solutions.size(), cont.get_comm());
 
   return avg / n_solutions;
 }
 
 vector<double>
 spectral_avg(som_core const& cont,
-             int i,
+             long i,
              std::vector<std::pair<double, double>> const& intervals,
              resolution_function r_func) {
   auto const& solutions = cont.get_particular_solutions(i);
 
-  auto avg = vector<double>::zeros({static_cast<long>(intervals.size())});
+  auto avg = vector<double>::zeros({long(intervals.size())});
   for(int m = 0; m < intervals.size(); ++m) {
     double z_m = (intervals[m].first + intervals[m].second) / 2;
     double delta_m = intervals[m].second - intervals[m].first;
@@ -139,7 +140,7 @@ spectral_avg(som_core const& cont,
   }
 
   avg = mpi::all_reduce(avg, cont.get_comm());
-  int n_solutions = mpi::all_reduce(solutions.size(), cont.get_comm());
+  auto n_solutions = mpi::all_reduce(solutions.size(), cont.get_comm());
 
   return avg / n_solutions;
 }
@@ -149,7 +150,7 @@ spectral_avg(som_core const& cont,
 /////////////////////
 
 vector<double> spectral_disp(som_core const& cont,
-                             int i,
+                             long i,
                              triqs::mesh::refreq const& mesh,
                              vector<double> const& avg,
                              resolution_function r_func) {
@@ -166,20 +167,20 @@ vector<double> spectral_disp(som_core const& cont,
   }
 
   disp = mpi::all_reduce(disp, cont.get_comm());
-  int n_solutions = mpi::all_reduce(solutions.size(), cont.get_comm());
+  auto n_solutions = mpi::all_reduce(solutions.size(), cont.get_comm());
 
   return disp / n_solutions;
 }
 
 vector<double>
 spectral_disp(som_core const& cont,
-              int i,
+              long i,
               std::vector<std::pair<double, double>> const& intervals,
               vector<double> const& avg,
               resolution_function r_func) {
   auto const& solutions = cont.get_particular_solutions(i);
 
-  auto disp = vector<double>::zeros({static_cast<long>(intervals.size())});
+  auto disp = vector<double>::zeros({long(intervals.size())});
   for(int m = 0; m < intervals.size(); ++m) {
     double z_m = (intervals[m].first + intervals[m].second) / 2;
     double delta_m = intervals[m].second - intervals[m].first;
@@ -190,7 +191,7 @@ spectral_disp(som_core const& cont,
   }
 
   disp = mpi::all_reduce(disp, cont.get_comm());
-  int n_solutions = mpi::all_reduce(solutions.size(), cont.get_comm());
+  auto n_solutions = mpi::all_reduce(solutions.size(), cont.get_comm());
 
   return disp / n_solutions;
 }
@@ -201,7 +202,7 @@ spectral_disp(som_core const& cont,
 
 // Regular real frequency mesh
 matrix<double> spectral_corr(som_core const& cont,
-                             int i,
+                             long i,
                              triqs::mesh::refreq const& mesh,
                              vector<double> const& avg,
                              resolution_function r_func) {
@@ -222,21 +223,21 @@ matrix<double> spectral_corr(som_core const& cont,
   }
 
   corr = mpi::all_reduce(corr, cont.get_comm());
-  int n_solutions = mpi::all_reduce(solutions.size(), cont.get_comm());
+  auto n_solutions = mpi::all_reduce(solutions.size(), cont.get_comm());
 
   return corr / n_solutions;
 }
 
 matrix<double>
 spectral_corr(som_core const& cont,
-              int i,
+              long i,
               std::vector<std::pair<double, double>> const& intervals,
               vector<double> const& avg,
               resolution_function r_func) {
   auto const& solutions = cont.get_particular_solutions(i);
 
-  auto corr = matrix<double>::zeros({static_cast<long>(intervals.size()),
-                                     static_cast<long>(intervals.size())});
+  auto corr =
+      matrix<double>::zeros({long(intervals.size()), long(intervals.size())});
   for(int m1 = 0; m1 < intervals.size(); ++m1) {
     double z_m1 = (intervals[m1].first + intervals[m1].second) / 2;
     double delta_m1 = intervals[m1].second - intervals[m1].first;
@@ -254,7 +255,7 @@ spectral_corr(som_core const& cont,
   }
 
   corr = mpi::all_reduce(corr, cont.get_comm());
-  int n_solutions = mpi::all_reduce(solutions.size(), cont.get_comm());
+  auto n_solutions = mpi::all_reduce(solutions.size(), cont.get_comm());
 
   return corr / n_solutions;
 }

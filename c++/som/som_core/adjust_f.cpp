@@ -97,8 +97,8 @@ int som_core::adjust_f_impl(adjust_f_parameters_t const& p) {
 
       int F = F_max;
 
-      int l_good;
-      for(l_good = 0;; l_good = 0, F *= 2) {
+      int l_good = 0;
+      for(;; l_good = 0, F *= 2) {
         // Upper bound of f_range is reached
         if(F >= p.f_range.second) {
           F = p.f_range.second;
@@ -114,7 +114,7 @@ int som_core::adjust_f_impl(adjust_f_parameters_t const& p) {
         solution_worker<KernelType> worker(of, d.norm, ci, p, stop_callback, F);
         auto& rng = worker.get_rng();
 
-        int n_sol;
+        int n_sol = {};
         for(int i = 0; (n_sol = comm.rank() + i * comm.size()) < p.l; ++i) {
           if(p.verbosity >= 2) {
             mpi_cout(comm) << "Accumulation of particular solution " << n_sol

@@ -21,7 +21,7 @@
 #include <cmath>
 #include <nda/gtest_tools.hpp>
 
-#define TRIQS_ARRAYS_ENFORCE_BOUNDCHECK
+#define NDA_ENFORCE_BOUNDCHECK
 #include <som/numerics/spline.hpp>
 
 using std::abs;
@@ -35,9 +35,9 @@ using namespace som;
 // Function to interpolate
 double f(double x) { return 2 * exp(-0.5 * (x - 1) * (x - 1)) * sin(0.5 * x); }
 
-const int N = 20001;
-const double xmin = -10, xmax = 10;
-const double h = (xmax - xmin) / (N - 1);
+int const N = 20001;
+double const xmin = -10, xmax = 10;
+double const h = (xmax - xmin) / (N - 1);
 
 // Regular mesh
 double r_mesh(int i) { return xmin + i * h; }
@@ -51,7 +51,7 @@ double ir_mesh2(int i) {
   return 0.6 * (x + copysign(1 - 1 * exp(-5 * abs(x)), x));
 }
 
-TEST(spline, spline) {
+TEST(spline_test, spline) {
   vector<double> x(N), y(N);
 
   for(int i = 0; i < N; ++i) {
@@ -77,7 +77,7 @@ TEST(spline, spline) {
   EXPECT_ARRAY_NEAR(result, ref, 1e-9);
 }
 
-TEST(spline, regular_spline) {
+TEST(spline_test, regular_spline) {
   vector<double> y(N);
 
   for(int i = 0; i < N; ++i) y(i) = f(r_mesh(i));

@@ -33,10 +33,10 @@ namespace som {
 using namespace triqs::gfs;
 
 // Make coefficient of a Bessel polynomial a_k(l+1/2)
-static double make_a(int k, int l) {
+static double make_a(long k, long l) {
   double a = 1;
-  for(int i = 1; i <= k; ++i) {
-    double t = l - k + 2 * i;
+  for(long i = 1; i <= k; ++i) {
+    auto t = double(l - k + 2 * i);
     a *= (t - 1) * t / double(2 * i);
   }
   return a;
@@ -46,20 +46,20 @@ static double make_a(int k, int l) {
 // kernel<BosonAutoCorr, legendre>::evaluator //
 ////////////////////////////////////////////////
 
-kernel<BosonAutoCorr, legendre>::evaluator::evaluator(int l, double x0_start,
+kernel<BosonAutoCorr, legendre>::evaluator::evaluator(long l, double x0_start,
                                                       double beta)
-   : log_coeff(-0.5 * l * (l + 1))
+   : log_coeff(-0.5 * double(l * (l + 1)))
    , pref((4 / (M_PI * beta)) * std::sqrt(2 * l + 1)) {
 
   // Integrand, x i_l(x) / sinh(x)
   auto integrand = [l](double x) {
     if(x == 0) return (l == 0 ? 1.0 : 0.0);
-    double val = boost::math::cyl_bessel_i(l + 0.5, x);
+    double val = boost::math::cyl_bessel_i(double(l) + 0.5, x);
     return val * std::sqrt(M_PI / (2 * x)) * x / std::sinh(x);
   };
 
   vector<double> tail_coeffs(l + 1);
-  for(int k = 0; k <= l; ++k)
+  for(long k = 0; k <= l; ++k)
     tail_coeffs[k] = ((k % 2) ? -1 : 1) * make_a(k, l);
   polynomial<> integrand_tail(tail_coeffs);
 
@@ -79,8 +79,8 @@ kernel<BosonAutoCorr, legendre>::evaluator::evaluator(int l, double x0_start,
   vector<double> int_tail_coeffs(l);
   if(l > 0) {
     int_tail_coeffs[0] = 0;
-    for(int k = 1; k <= l - 1; ++k)
-      int_tail_coeffs[k] = -tail_coeffs[k + 1] / k;
+    for(long k = 1; k <= l - 1; ++k)
+      int_tail_coeffs[k] = -tail_coeffs[k + 1] / double(k);
   }
   high_energy_pol = polynomial<>(int_tail_coeffs);
 
@@ -129,7 +129,7 @@ void kernel<BosonAutoCorr, legendre>::apply(rectangle const& rect,
   }
 }
 
-double kernel<BosonAutoCorr, legendre>::Lambda(int l, double Omega) const {
+double kernel<BosonAutoCorr, legendre>::Lambda(long l, double Omega) const {
   return evaluators[l / 2](Omega * beta / 2);
 }
 

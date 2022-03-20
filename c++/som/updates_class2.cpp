@@ -40,7 +40,11 @@ template <typename KernelType> double update_insert<KernelType>::attempt() {
   std::cerr << "* Proposing update_insert (D)" << std::endl;
 #endif
 
-  int size = eu::data.temp_conf.size();
+  auto& data = eu::get_data();
+  auto& rng = eu::get_rng(); // cppcheck-suppress constVariable
+  auto& ci = eu::get_ci();   // cppcheck-suppress constVariable
+
+  int size = data.temp_conf.size();
   if(size == max_rects) {
 #ifdef EXT_DEBUG
     std::cerr << "Too many rectangles in the temporary configuration"
@@ -49,8 +53,8 @@ template <typename KernelType> double update_insert<KernelType>::attempt() {
     return 0;
   }
 
-  int t = eu::rng(size);
-  auto const& rect = eu::data.temp_conf[t];
+  int t = rng(size);
+  auto const& rect = data.temp_conf[t];
 #ifdef EXT_DEBUG
   std::cerr << "Selected rectangle: " << rect << " [" << t << "]" << std::endl;
 #endif
@@ -64,31 +68,30 @@ template <typename KernelType> double update_insert<KernelType>::attempt() {
 
   double snew_max = rect.norm() - weight_min;
 
-  double cnew = eu::rng(cnew_min, cnew_max);
+  double cnew = rng(cnew_min, cnew_max);
   double w_max =
       2 * std::min(energy_window.second - cnew, cnew - energy_window.first);
-  double wnew = eu::rng(width_min, w_max);
+  double wnew = rng(width_min, w_max);
 
   double snew = eu::generate_parameter_change(weight_min, snew_max);
   double hnew = snew / wnew;
 
-  eu::update[eu::full].change_rectangle(
-      t, {rect.center, rect.width, rect.height - snew / rect.width, eu::ci});
-  eu::update[eu::full].add_rectangle({cnew, wnew, hnew, eu::ci});
+  eu::get_update(eu::full).change_rectangle(
+      t, {rect.center, rect.width, rect.height - snew / rect.width, ci});
+  eu::get_update(eu::full).add_rectangle({cnew, wnew, hnew, ci});
 
   if(snew / 2 < weight_min) { // We cannot optimize w.r.t. snew in this case
-    eu::new_objf_value[eu::full] = eu::data.objf(eu::update[eu::full]);
-    eu::selected_parameter_change = eu::full;
+    eu::set_parameter_change(eu::full);
 
 #ifdef EXT_DEBUG
     std::cerr << "snew_min = " << weight_min << ", snew_max = " << snew_max
               << ", snew = " << snew << std::endl;
 #endif
   } else {
-    eu::update[eu::half].change_rectangle(
-        t, {rect.center, rect.width, rect.height - (snew / 2) / rect.width,
-            eu::ci});
-    eu::update[eu::half].add_rectangle({cnew, wnew, hnew / 2, eu::ci});
+    eu::get_update(eu::half).change_rectangle(
+        t,
+        {rect.center, rect.width, rect.height - (snew / 2) / rect.width, ci});
+    eu::get_update(eu::half).add_rectangle({cnew, wnew, hnew / 2, ci});
 
     auto snew_opt = eu::optimize_parameter_change(snew, width_min, snew_max);
 
@@ -101,18 +104,17 @@ template <typename KernelType> double update_insert<KernelType>::attempt() {
     if(snew_opt.first) {
       snew = snew_opt.second;
       hnew = snew / wnew;
-      eu::update[eu::opt].change_rectangle(
-          t,
-          {rect.center, rect.width, rect.height - snew / rect.width, eu::ci});
-      eu::update[eu::opt].add_rectangle({cnew, wnew, hnew, eu::ci});
+      eu::get_update(eu::opt).change_rectangle(
+          t, {rect.center, rect.width, rect.height - snew / rect.width, ci});
+      eu::get_update(eu::opt).add_rectangle({cnew, wnew, hnew, ci});
     }
 
     eu::select_parameter_change(snew_opt.first);
   }
 
 #ifdef EXT_DEBUG
-  std::cerr << "selected_parameter_change = " << eu::selected_parameter_change
-            << std::endl;
+  std::cerr << "selected_parameter_change = "
+            << eu::get_selected_parameter_change() << std::endl;
 #endif
 
   return eu::transition_probability();
@@ -130,7 +132,11 @@ double update_remove_shift<KernelType>::attempt() {
   std::cerr << "* Proposing update_remove_shift (E)" << std::endl;
 #endif
 
-  int size = eu::data.temp_conf.size();
+  auto& data = eu::get_data();
+  auto& rng = eu::get_rng(); // cppcheck-suppress constVariable
+  auto& ci = eu::get_ci();   // cppcheck-suppress constVariable
+
+  int size = data.temp_conf.size();
   if(size < 2) {
 #ifdef EXT_DEBUG
     std::cerr << "Not enough rectangles to change" << std::endl;
@@ -138,25 +144,32 @@ double update_remove_shift<KernelType>::attempt() {
     return 0;
   }
 
-  int t1 = eu::rng(size), t2;
-  while((t2 = eu::rng(size)) == t1)
+  int t1 = rng(size);
+  int t2; // NOLINT(cppcoreguidelines-init-variables)
+  while((t2 = rng(size)) == t1)
     ;
-  auto const& rect1 = eu::data.temp_conf[t1];
-  auto const& rect2 = eu::data.temp_conf[t2];
+  auto const& rect1 = data.temp_conf[t1];
+  auto const& rect2 = data.temp_conf[t2];
 
   double dc2_min = energy_window.first - rect2.left();
   double dc2_max = energy_window.second - rect2.right();
   double dc2 = eu::generate_parameter_change(dc2_min, dc2_max);
   if(dc2 == 0) return 0;
 
-  eu::update[eu::full].change_rectangle(
-      t2, {rect2.center + dc2, rect2.width,
-           rect2.height + rect1.norm() / rect2.width, eu::ci});
-  eu::update[eu::full].remove_rectangle(t1);
-  eu::update[eu::half].change_rectangle(
-      t2, {rect2.center + dc2 / 2, rect2.width,
-           rect2.height + rect1.norm() / rect2.width, eu::ci});
-  eu::update[eu::half].remove_rectangle(t1);
+  eu::get_update(eu::full).change_rectangle(
+      t2,
+      {rect2.center + dc2,
+       rect2.width,
+       rect2.height + rect1.norm() / rect2.width,
+       ci});
+  eu::get_update(eu::full).remove_rectangle(t1);
+  eu::get_update(eu::half).change_rectangle(
+      t2,
+      {rect2.center + dc2 / 2,
+       rect2.width,
+       rect2.height + rect1.norm() / rect2.width,
+       ci});
+  eu::get_update(eu::half).remove_rectangle(t1);
 
   auto dc2_opt = eu::optimize_parameter_change(dc2, dc2_min, dc2_max);
 
@@ -172,17 +185,20 @@ double update_remove_shift<KernelType>::attempt() {
 
   if(dc2_opt.first) {
     dc2 = dc2_opt.second;
-    eu::update[eu::opt].change_rectangle(
-        t2, {rect2.center + dc2, rect2.width,
-             rect2.height + rect1.norm() / rect2.width, eu::ci});
-    eu::update[eu::opt].remove_rectangle(t1);
+    eu::get_update(eu::opt).change_rectangle(
+        t2,
+        {rect2.center + dc2,
+         rect2.width,
+         rect2.height + rect1.norm() / rect2.width,
+         ci});
+    eu::get_update(eu::opt).remove_rectangle(t1);
   }
 
   eu::select_parameter_change(dc2_opt.first);
 
 #ifdef EXT_DEBUG
-  std::cerr << "selected_parameter_change = " << eu::selected_parameter_change
-            << std::endl;
+  std::cerr << "selected_parameter_change = "
+            << eu::get_selected_parameter_change() << std::endl;
 #endif
 
   return eu::transition_probability();
@@ -200,7 +216,11 @@ double update_split_shift<KernelType>::attempt() {
   std::cerr << "* Proposing update_split_shift (F)" << std::endl;
 #endif
 
-  int size = eu::data.temp_conf.size();
+  auto& data = eu::get_data();
+  auto& rng = eu::get_rng(); // cppcheck-suppress constVariable
+  auto& ci = eu::get_ci();   // cppcheck-suppress constVariable
+
+  int size = data.temp_conf.size();
   if(size == max_rects) {
 #ifdef EXT_DEBUG
     std::cerr << "Too many rectangles in the temporary configuration"
@@ -209,8 +229,8 @@ double update_split_shift<KernelType>::attempt() {
     return 0;
   }
 
-  int t = eu::rng(size);
-  auto const& rect = eu::data.temp_conf[t];
+  int t = rng(size);
+  auto const& rect = data.temp_conf[t];
 
 #ifdef EXT_DEBUG
   std::cerr << "Selected rectangle: " << rect << " [" << t << "]" << std::endl;
@@ -231,7 +251,7 @@ double update_split_shift<KernelType>::attempt() {
   double w_min = std::max(width_min, weight_min / rect.height);
   double w_max =
       std::min(rect.width - width_min, rect.width - weight_min / rect.height);
-  double w1 = eu::rng(w_min, w_max);
+  double w1 = rng(w_min, w_max);
   double w2 = rect.width - w1;
   double c1 = rect.left() + w1 / 2;
   double c2 = rect.right() - w2 / 2;
@@ -245,12 +265,12 @@ double update_split_shift<KernelType>::attempt() {
     if(dc1 == 0) return 0;
     double dc2 = -dc1 * w1 / w2;
 
-    eu::update[eu::full].change_rectangle(t,
-                                          {c1 + dc1, w1, rect.height, eu::ci});
-    eu::update[eu::full].add_rectangle({c2 + dc2, w2, rect.height, eu::ci});
-    eu::update[eu::half].change_rectangle(
-        t, {c1 + dc1 / 2, w1, rect.height, eu::ci});
-    eu::update[eu::half].add_rectangle({c2 + dc2 / 2, w2, rect.height, eu::ci});
+    eu::get_update(eu::full).change_rectangle(t,
+                                              {c1 + dc1, w1, rect.height, ci});
+    eu::get_update(eu::full).add_rectangle({c2 + dc2, w2, rect.height, ci});
+    eu::get_update(eu::half).change_rectangle(
+        t, {c1 + dc1 / 2, w1, rect.height, ci});
+    eu::get_update(eu::half).add_rectangle({c2 + dc2 / 2, w2, rect.height, ci});
 
     auto dc1_opt = eu::optimize_parameter_change(dc1, dc1_min, dc1_max);
 
@@ -263,9 +283,9 @@ double update_split_shift<KernelType>::attempt() {
     if(dc1_opt.first) {
       dc1 = dc1_opt.second;
       dc2 = -dc1 * w1 / w2;
-      eu::update[eu::opt].change_rectangle(t,
-                                           {c1 + dc1, w1, rect.height, eu::ci});
-      eu::update[eu::opt].add_rectangle({c2 + dc2, w2, rect.height, eu::ci});
+      eu::get_update(eu::opt).change_rectangle(t,
+                                               {c1 + dc1, w1, rect.height, ci});
+      eu::get_update(eu::opt).add_rectangle({c2 + dc2, w2, rect.height, ci});
     }
 
     eu::select_parameter_change(dc1_opt.first);
@@ -279,12 +299,12 @@ double update_split_shift<KernelType>::attempt() {
     if(dc2 == 0) return 0;
     double dc1 = -dc2 * w2 / w1;
 
-    eu::update[eu::full].change_rectangle(t,
-                                          {c1 + dc1, w1, rect.height, eu::ci});
-    eu::update[eu::full].add_rectangle({c2 + dc2, w2, rect.height, eu::ci});
-    eu::update[eu::half].change_rectangle(
-        t, {c1 + dc1 / 2, w1, rect.height, eu::ci});
-    eu::update[eu::half].add_rectangle({c2 + dc2 / 2, w2, rect.height, eu::ci});
+    eu::get_update(eu::full).change_rectangle(t,
+                                              {c1 + dc1, w1, rect.height, ci});
+    eu::get_update(eu::full).add_rectangle({c2 + dc2, w2, rect.height, ci});
+    eu::get_update(eu::half).change_rectangle(
+        t, {c1 + dc1 / 2, w1, rect.height, ci});
+    eu::get_update(eu::half).add_rectangle({c2 + dc2 / 2, w2, rect.height, ci});
 
     auto dc2_opt = eu::optimize_parameter_change(dc2, dc2_min, dc2_max);
 
@@ -297,17 +317,17 @@ double update_split_shift<KernelType>::attempt() {
     if(dc2_opt.first) {
       dc2 = dc2_opt.second;
       dc1 = -dc2 * w2 / w1;
-      eu::update[eu::opt].change_rectangle(t,
-                                           {c1 + dc1, w1, rect.height, eu::ci});
-      eu::update[eu::opt].add_rectangle({c2 + dc2, w2, rect.height, eu::ci});
+      eu::get_update(eu::opt).change_rectangle(t,
+                                               {c1 + dc1, w1, rect.height, ci});
+      eu::get_update(eu::opt).add_rectangle({c2 + dc2, w2, rect.height, ci});
     }
 
     eu::select_parameter_change(dc2_opt.first);
   }
 
 #ifdef EXT_DEBUG
-  std::cerr << "selected_parameter_change = " << eu::selected_parameter_change
-            << std::endl;
+  std::cerr << "selected_parameter_change = "
+            << eu::get_selected_parameter_change() << std::endl;
 #endif
 
   return eu::transition_probability();
@@ -324,7 +344,11 @@ template <typename KernelType> double update_glue_shift<KernelType>::attempt() {
   std::cerr << "* Proposing move_glue_shift (G)" << std::endl;
 #endif
 
-  int size = eu::data.temp_conf.size();
+  auto& data = eu::get_data();
+  auto& rng = eu::get_rng(); // cppcheck-suppress constVariable
+  auto& ci = eu::get_ci();   // cppcheck-suppress constVariable
+
+  int size = data.temp_conf.size();
   if(size < 2) {
 #ifdef EXT_DEBUG
     std::cerr << "Not enough rectangles to glue" << std::endl;
@@ -332,11 +356,12 @@ template <typename KernelType> double update_glue_shift<KernelType>::attempt() {
     return 0;
   }
 
-  int t1 = eu::rng(size), t2;
-  while((t2 = eu::rng(size)) == t1)
+  int t1 = rng(size);
+  int t2; // NOLINT(cppcoreguidelines-init-variables)
+  while((t2 = rng(size)) == t1)
     ;
-  auto const& rect1 = eu::data.temp_conf[t1];
-  auto const& rect2 = eu::data.temp_conf[t2];
+  auto const& rect1 = data.temp_conf[t1];
+  auto const& rect2 = data.temp_conf[t2];
 
   double w = (rect1.width + rect2.width) / 2;
   double s1 = rect1.norm(), s2 = rect2.norm();
@@ -349,8 +374,8 @@ template <typename KernelType> double update_glue_shift<KernelType>::attempt() {
   double dc = eu::generate_parameter_change(dc_min, dc_max);
   if(dc == 0) return 0;
 
-  eu::update[eu::full].change_rectangle(t1, {c + dc, w, h, eu::ci});
-  eu::update[eu::full].remove_rectangle(t2);
+  eu::get_update(eu::full).change_rectangle(t1, {c + dc, w, h, ci});
+  eu::get_update(eu::full).remove_rectangle(t2);
 
 #ifdef EXT_DEBUG
   std::cerr << "Selected rectangles: " << rect1 << " [" << t1 << "]"
@@ -358,8 +383,7 @@ template <typename KernelType> double update_glue_shift<KernelType>::attempt() {
 #endif
 
   if(dc_min * dc_max > 0) { // In this case dc/2 can be outside [dc_min; dc_max]
-    eu::new_objf_value[eu::full] = eu::data.objf(eu::update[eu::full]);
-    eu::selected_parameter_change = eu::full;
+    eu::set_parameter_change(eu::full);
 
 #ifdef EXT_DEBUG
     std::cerr << "dc_min = " << dc_min << ", dc_max = " << dc_max
@@ -368,8 +392,8 @@ template <typename KernelType> double update_glue_shift<KernelType>::attempt() {
 
 
   } else {
-    eu::update[eu::half].change_rectangle(t1, {c + dc / 2, w, h, eu::ci});
-    eu::update[eu::half].remove_rectangle(t2);
+    eu::get_update(eu::half).change_rectangle(t1, {c + dc / 2, w, h, ci});
+    eu::get_update(eu::half).remove_rectangle(t2);
 
     auto dc_opt = eu::optimize_parameter_change(dc, dc_min, dc_max);
 
@@ -380,16 +404,16 @@ template <typename KernelType> double update_glue_shift<KernelType>::attempt() {
 
     if(dc_opt.first) {
       dc = dc_opt.second;
-      eu::update[eu::opt].change_rectangle(t1, {c + dc, w, h, eu::ci});
-      eu::update[eu::opt].remove_rectangle(t2);
+      eu::get_update(eu::opt).change_rectangle(t1, {c + dc, w, h, ci});
+      eu::get_update(eu::opt).remove_rectangle(t2);
     }
 
     eu::select_parameter_change(dc_opt.first);
   }
 
 #ifdef EXT_DEBUG
-  std::cerr << "selected_parameter_change = " << eu::selected_parameter_change
-            << std::endl;
+  std::cerr << "selected_parameter_change = "
+            << eu::get_selected_parameter_change() << std::endl;
 #endif
 
   return eu::transition_probability();

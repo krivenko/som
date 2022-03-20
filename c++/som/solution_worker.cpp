@@ -19,6 +19,7 @@
  *
  ******************************************************************************/
 
+#include <cassert>
 #include <cmath>
 #include <utility>
 
@@ -36,6 +37,7 @@ using namespace triqs::mc_tools;
 // dist_function //
 ///////////////////
 
+// NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
 dist_function::dist_function(random_generator& rng, int T, double d_max)
    : rng(rng), T(T), d_max(d_max) {
   reset();
@@ -81,7 +83,7 @@ solution_worker<KernelType>::solution_worker(
           params.gamma}
    , kern(objf.get_kernel())
    , energy_window(params.energy_window)
-   , norm(norm)
+   , norm(norm) // cppcheck-suppress selfInitialization
    , width_min(params.min_rect_width *
                (params.energy_window.second - params.energy_window.first))
    , weight_min(params.min_rect_weight * norm) {
@@ -127,7 +129,7 @@ solution_worker<KernelType>::solution_worker(
               1.0);
 
   // Reset temporary configuration to global_conf after each global update
-  mc.set_after_cycle_duty(std::bind(&solution_worker::reset_temp_conf, this));
+  mc.set_after_cycle_duty([this] { reset_temp_conf(); });
 }
 
 template <typename KernelType>
@@ -168,7 +170,7 @@ configuration solution_worker<KernelType>::operator()(int init_config_size) {
       << std::endl;
 #endif
 
-  auto& rng = mc.get_rng();
+  auto& rng = mc.get_rng(); // cppcheck-suppress constVariable
 
   configuration conf(ci);
   for(int i = 0; i < init_config_size; ++i) {

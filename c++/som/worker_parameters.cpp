@@ -41,8 +41,7 @@ void worker_parameters_t::validate(observable_kind kind) const {
     fatal_error("Wrong energy window [" + to_string(energy_window.first) + ";" +
                 to_string(energy_window.second) + "]");
 
-  double e_min, e_max;
-  std::tie(e_min, e_max) = max_energy_window(kind);
+  auto [e_min, e_max] = max_energy_window(kind);
   if(energy_window.first < e_min) {
     fatal_error("Left boundary of the energy window " +
                 to_string(energy_window.first) +

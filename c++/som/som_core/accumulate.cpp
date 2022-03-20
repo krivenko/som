@@ -129,9 +129,9 @@ template <typename KernelType> void som_core::accumulate_impl() {
     d.final_solution.clear();
 
     int n_sol_max = 0; // Number of solutions to be accumulated
-    int n_sol, i = 0;  // Global and rank-local indices of solution
-    int n_good_solutions,
-        n_verygood_solutions; // Number of good and very good solutions
+    int n_sol = 0, i = 0;  // Global and rank-local indices of solution
+    int n_good_solutions = 0,
+        n_verygood_solutions = 0; // Number of good and very good solutions
     do {
       if(params.adjust_l) {
         n_sol_max += params.adjust_l_range.first;

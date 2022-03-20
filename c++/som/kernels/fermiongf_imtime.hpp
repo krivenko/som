@@ -76,10 +76,10 @@ private:
   // List of integrated kernels for all \alpha
   std::vector<evaluator> lambdas;
 
-public:
   const double beta;    // Inverse temperature
   const mesh_type mesh; // Matsubara time mesh
 
+public:
   explicit kernel(mesh_type const& mesh);
 
   // Apply to a rectangle

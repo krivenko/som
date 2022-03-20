@@ -24,16 +24,17 @@
 
 #include "./test_kernel.hpp"
 
-using namespace triqs::gfs;
+class BosonCorr_test : public ::testing::Test {
+protected:
+  cache_index ci;
+};
 
-cache_index ci;
-
-TEST(BosonCorr, imtime) {
+TEST_F(BosonCorr_test, imtime) {
   test_kernel<kernel<BosonCorr, imtime>>("bosoncorr_imtime.h5", ci, 1e-10);
 }
-TEST(BosonCorr, imfreq) {
+TEST_F(BosonCorr_test, imfreq) {
   test_kernel<kernel<BosonCorr, imfreq>>("bosoncorr_imfreq.h5", ci, 1e-10);
 }
-TEST(BosonCorr, legendre) {
+TEST_F(BosonCorr_test, legendre) {
   test_kernel<kernel<BosonCorr, legendre>>("bosoncorr_legendre.h5", ci, 1e-10);
 }

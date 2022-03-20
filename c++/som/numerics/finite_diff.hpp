@@ -35,7 +35,7 @@ inline void finite_diff_forward(AF f,
                                 AOUT output) {
   assert(f.size() == x.size());
   assert(output.size() == x.size() - 1);
-  for(int k : nda::range(output.size())) {
+  for(auto k : nda::range(output.size())) {
     output(k) = (f(k + 1) - f(k)) / (x(k + 1) - x(k));
   }
 }
@@ -47,7 +47,7 @@ inline void finite_diff_2_symm(AF f,
                                AOUT output) {
   assert(f.size() == x.size());
   assert(output.size() == x.size() - 2);
-  for(int k : nda::range(output.size())) {
+  for(auto k : nda::range(output.size())) {
     output(k) =
         (f(k + 2) * (x(k + 1) - x(k)) + f(k) * (x(k + 2) - x(k + 1)) -
          f(k + 1) * (x(k + 2) - x(k))) /

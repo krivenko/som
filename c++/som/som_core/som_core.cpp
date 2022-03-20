@@ -20,6 +20,7 @@
  ******************************************************************************/
 
 #include <algorithm>
+#include <iterator>
 #include <limits>
 
 #include "common.hxx"
@@ -35,13 +36,13 @@ using triqs::stat::histogram;
 /////////////////////////
 
 std::vector<std::pair<configuration, double>> const&
-som_core::get_particular_solutions(int i) const {
+som_core::get_particular_solutions(long i) const {
   if(i >= data.size())
     fatal_error("Matrix element index " + to_string(i) + " out of bounds");
   return data[i].particular_solutions;
 }
 
-configuration const& som_core::get_solution(int i) const {
+configuration const& som_core::get_solution(long i) const {
   if(i >= data.size())
     fatal_error("Matrix element index " + to_string(i) + " out of bounds");
   return data[i].final_solution;
@@ -50,11 +51,13 @@ configuration const& som_core::get_solution(int i) const {
 std::vector<configuration> som_core::get_solutions() const {
   std::vector<configuration> conf;
   conf.reserve(data.size());
-  for(auto const& d : data) conf.emplace_back(d.final_solution);
+  std::transform(data.begin(), data.end(), std::back_inserter(conf),
+                 [](auto const& d) { return d.final_solution; });
+
   return conf;
 }
 
-double som_core::get_objf(int i) const {
+double som_core::get_objf(long i) const {
   if(i >= data.size())
     fatal_error("Matrix element index " + to_string(i) + " out of bounds");
   return data[i].objf_final;
@@ -67,7 +70,7 @@ std::vector<double> som_core::get_objf() const {
   return objf;
 }
 
-std::optional<histogram> const& som_core::get_histogram(int i) const {
+std::optional<histogram> const& som_core::get_histogram(long i) const {
   if(i >= data.size())
     fatal_error("Matrix element index " + to_string(i) + " out of bounds");
   return data[i].histogram;
@@ -77,8 +80,9 @@ std::optional<std::vector<histogram>> som_core::get_histograms() const {
   if(data.back().histogram) {
     std::vector<histogram> histograms;
     histograms.reserve(data.size());
-    for(auto const& d : data) histograms.emplace_back(*d.histogram);
-    return std::move(histograms);
+    std::transform(data.begin(), data.end(), std::back_inserter(histograms),
+    [](auto const& d) { return *d.histogram; });
+    return {histograms};
   } else
     return {};
 }

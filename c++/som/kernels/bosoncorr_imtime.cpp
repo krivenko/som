@@ -89,8 +89,8 @@ kernel<BosonCorr, imtime>::evaluator::evaluator(
       alpha_case = small;
       // Fill spline_m_knots
       double shift = trigamma(1 - alpha);
-      for(int xi : range(0, n_spline_knots - 1)) {
-        double x = -x0 + dx * xi;
+      for(auto xi : range(0, n_spline_knots - 1)) {
+        double x = -x0 + dx * double(xi);
         spline_m_knots[xi] =
             aux_sum([this](int n) { return n + 1 - alpha; }, x) - shift;
       }
@@ -98,8 +98,8 @@ kernel<BosonCorr, imtime>::evaluator::evaluator(
       // Fill spline_p_knots
       shift = trigamma(1 + alpha);
       spline_p_knots[0] = 0;
-      for(int xi : range(1, n_spline_knots)) {
-        double x = dx * xi;
+      for(auto xi : range(1, n_spline_knots)) {
+        double x = dx * double(xi);
         spline_p_knots[xi] =
             -aux_sum([this](int n) { return -(n + 1 + alpha); }, x) + shift;
       }
@@ -110,7 +110,7 @@ kernel<BosonCorr, imtime>::evaluator::evaluator(
       alpha_case = one;
       nda::for_each(spline_m_knots.shape(), [&spline_m_knots, dx](int xi) {
         if(xi == n_spline_knots - 1) { spline_m_knots(xi) = 0; return; }
-        double x = -x0 + dx * xi;
+        double x = -x0 + dx * double(xi);
         double expx = exp(x);
         spline_m_knots(xi) = real(dilog(expx)) - pi6 + x * log1p(-expx);
       });
@@ -125,8 +125,8 @@ kernel<BosonCorr, imtime>::evaluator::evaluator(
       alpha_case = big;
       // Fill spline_m_knots
       double shift = trigamma(2 - alpha);
-      for(int xi : range(0, n_spline_knots - 1)) {
-        double x = -x0 + dx * xi;
+      for(auto xi : range(0, n_spline_knots - 1)) {
+        double x = -x0 + dx * double(xi);
         spline_m_knots[xi] =
             aux_sum([this](int n) { return n + 2 - alpha; }, x) - shift;
       }
@@ -134,8 +134,8 @@ kernel<BosonCorr, imtime>::evaluator::evaluator(
       // Fill spline_p_knots
       shift = trigamma(alpha);
       spline_p_knots[0] = 0;
-      for(int xi : range(1, n_spline_knots)) {
-        double x = dx * xi;
+      for(auto xi : range(1, n_spline_knots)) {
+        double x = dx * double(xi);
         spline_p_knots[xi] =
             -aux_sum([this](int n) { return -(n + alpha); }, x) + shift;
       }

@@ -57,6 +57,7 @@ struct config_update {
   config_update(config_update&& cu) noexcept;
   config_update& operator=(config_update const&) = delete;
   config_update& operator=(config_update&&) = delete;
+  ~config_update() = default;
 
   void add_rectangle(rectangle const& r);
   void add_rectangle(rectangle&& r);

@@ -20,6 +20,7 @@
  ******************************************************************************/
 #pragma once
 
+#include <cmath>
 #include <exception>
 #include <functional>
 
@@ -79,11 +80,11 @@ public:
 template <typename KernelType> struct mc_data {
   objective_function<KernelType> const& objf; // Objective function
   configuration temp_conf;                    // Temporary configuration
-  configuration global_conf; // Configuration selected by global updates
-  double temp_objf_value;    // \chi^2(temp_conf)
-  double global_objf_value;  // \chi^2(global_conf)
-  dist_function Z;           // Distribution function Z(x)
-  const double gamma;        // Proposal probability parameter :math:`\gamma`
+  configuration global_conf;      // Configuration selected by global updates
+  double temp_objf_value = NAN;   // \chi^2(temp_conf)
+  double global_objf_value = NAN; // \chi^2(global_conf)
+  dist_function Z;                // Distribution function Z(x)
+  const double gamma = NAN; // Proposal probability parameter :math:`\gamma`
 };
 
 template <typename KernelType> class solution_worker {
@@ -109,9 +110,12 @@ template <typename KernelType> class solution_worker {
   double weight_min; // Minimal weight of a rectangle
 
 public:
-  solution_worker(objective_function<KernelType> const& objf, double norm,
-                  cache_index& ci, worker_parameters_t const& params,
-                  std::function<bool()> stop_callback, int f);
+  solution_worker(objective_function<KernelType> const& objf,
+                  double norm,
+                  cache_index& ci,
+                  worker_parameters_t const& params,
+                  std::function<bool()> stop_callback,
+                  int f);
 
   // Start from a given configuration
   configuration operator()(configuration const& init_config);

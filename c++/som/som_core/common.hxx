@@ -46,7 +46,7 @@ inline std::ostream& mpi_cout(mpi::communicator const& comm) {
 }
 
 template <typename MeshType>
-void check_gf_dim(gf_const_view<MeshType> g, int expected_dim) {
+void check_gf_dim(gf_const_view<MeshType> g, std::size_t expected_dim) {
   auto shape = g.target_shape();
   if(shape[0] != expected_dim || shape[1] != expected_dim)
     fatal_error("expected a " + mesh_traits<MeshType>::name() +
@@ -54,7 +54,7 @@ void check_gf_dim(gf_const_view<MeshType> g, int expected_dim) {
                 to_string(expected_dim) + "x" + to_string(expected_dim));
 }
 template <typename MeshType>
-void check_gf_dim(gf_view<MeshType> g, int expected_dim) {
+void check_gf_dim(gf_view<MeshType> g, std::size_t expected_dim) {
   check_gf_dim(make_const_view(g), expected_dim);
 }
 
@@ -72,12 +72,12 @@ void check_gf_stat(gf_view<MeshType> g, statistic_enum expected_stat) {
 }
 
 template <typename MeshType>
-inline constexpr int kernel_id(observable_kind kind) {
-  return int(kind) + n_observable_kinds * mesh_traits<MeshType>::index;
+inline constexpr std::size_t kernel_id(observable_kind kind) {
+  return std::size_t(kind) + n_observable_kinds * mesh_traits<MeshType>::index;
 }
 
-inline int kernel_id(observable_kind kind, mesh_variant_t const& mesh) {
-  return int(kind) + n_observable_kinds * mesh.index();
+inline std::size_t kernel_id(observable_kind kind, mesh_variant_t const& mesh) {
+  return std::size_t(kind) + n_observable_kinds * mesh.index();
 }
 
 #define FOR_EACH_KERNEL(F)                                                     \

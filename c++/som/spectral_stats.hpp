@@ -70,14 +70,14 @@ spectral_integral(std::vector<std::pair<double, double>> const& intervals,
 
 // Regular real frequency mesh
 nda::vector<double> spectral_avg(som_core const& cont,
-                                 int i,
+                                 long i,
                                  triqs::mesh::refreq const& mesh,
                                  resolution_function r_func);
 
 // Arbitrary set of real frequency intervals
 nda::vector<double>
 spectral_avg(som_core const& cont,
-             int i,
+             long i,
              std::vector<std::pair<double, double>> const& intervals,
              resolution_function r_func);
 
@@ -87,7 +87,7 @@ spectral_avg(som_core const& cont,
 
 // Regular real frequency mesh
 nda::vector<double> spectral_disp(som_core const& cont,
-                                  int i,
+                                  long i,
                                   triqs::gfs::refreq const& mesh,
                                   nda::vector<double> const& avg,
                                   resolution_function r_func);
@@ -95,7 +95,7 @@ nda::vector<double> spectral_disp(som_core const& cont,
 // Arbitrary set of real frequency intervals
 nda::vector<double>
 spectral_disp(som_core const& cont,
-              int i,
+              long i,
               std::vector<std::pair<double, double>> const& intervals,
               nda::vector<double> const& avg,
               resolution_function r_func);
@@ -106,7 +106,7 @@ spectral_disp(som_core const& cont,
 
 // Regular real frequency mesh
 nda::matrix<double> spectral_corr(som_core const& cont,
-                                  int i,
+                                  long i,
                                   triqs::mesh::refreq const& mesh,
                                   nda::vector<double> const& avg,
                                   resolution_function r_func);
@@ -114,7 +114,7 @@ nda::matrix<double> spectral_corr(som_core const& cont,
 // Arbitrary set of real frequency intervals
 nda::matrix<double>
 spectral_corr(som_core const& cont,
-              int i,
+              long i,
               std::vector<std::pair<double, double>> const& intervals,
               nda::vector<double> const& avg,
               resolution_function r_func);

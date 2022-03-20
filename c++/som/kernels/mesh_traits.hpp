@@ -34,19 +34,19 @@ namespace som {
 template <typename MeshType> struct mesh_traits;
 
 template <> struct mesh_traits<triqs::mesh::imtime> {
-  static constexpr int index = 0;
+  static constexpr std::size_t index = 0;
   inline static std::string name() { return "imaginary time"; }
 };
 template <> struct mesh_traits<triqs::mesh::imfreq> {
-  static constexpr int index = 1;
+  static constexpr std::size_t index = 1;
   inline static std::string name() { return "imaginary frequency"; }
 };
 template <> struct mesh_traits<triqs::mesh::legendre> {
-  static constexpr int index = 2;
+  static constexpr std::size_t index = 2;
   inline static std::string name() { return "Legendre"; }
 };
 template <> struct mesh_traits<triqs::mesh::refreq> {
-  static constexpr int index = -1;
+  static constexpr std::size_t index = -1;
   inline static std::string name() { return "real frequency"; }
 };
 

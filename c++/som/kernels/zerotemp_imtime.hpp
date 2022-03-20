@@ -43,9 +43,10 @@ public:
   using mesh_type = triqs::mesh::imtime;
   constexpr static observable_kind kind = ZeroTemp;
 
-  const double beta = HUGE_VAL; // Inverse temperature (infinity)
+private:
   const mesh_type mesh;         // Matsubara time mesh
 
+public:
   explicit kernel(mesh_type const& mesh);
 
   // Apply to a rectangle

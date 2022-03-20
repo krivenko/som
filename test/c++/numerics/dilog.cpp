@@ -29,7 +29,7 @@ using namespace std::complex_literals;
 using som::dilog;
 using std::log;
 
-TEST(dilog, real) {
+TEST(dilog_test, real) {
   EXPECT_CLOSE(-7.323953199000 - 14.467568824831i, dilog(100.0));
   EXPECT_CLOSE(0.5363012873579 - 7.2337844124155i, dilog(10.0));
   EXPECT_CLOSE(1.7837191612666 - 5.0561983221119i, dilog(5.0));

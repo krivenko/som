@@ -26,7 +26,6 @@
 
 #include <nda/gtest_tools.hpp>
 
-#define SOM_TESTING
 #include <som/spectral_stats.hpp>
 
 using namespace nda;
@@ -42,16 +41,15 @@ int main(int argc, char **argv) {
     return RUN_ALL_TESTS();
 }
 
-class spectral_stats : public ::testing::Test {
+class ::testing::spectral_stats_test : public ::testing::Test {
 protected:
   som_core cont;
-
   triqs::mesh::refreq mesh = {-5.0, 5.0, 5};
   std::vector<std::pair<double, double>> interv = {{-5.0, -3.0},
                                                    {-1.0, 1.0},
                                                    {3.0, 5.0}};
 
-  spectral_stats() {
+  spectral_stats_test() {
     cont.data.resize(
         2,
         som_core::data_t(triqs::mesh::imfreq{1.0, triqs::mesh::Fermion, 2},
@@ -69,7 +67,9 @@ protected:
   }
 };
 
-TEST_F(spectral_stats, spectral_integral) {
+using namespace testing;
+
+TEST_F(spectral_stats_test, spectral_integral) {
   configuration c{{0, 1, 2}, {1, 4, 1}, {3, 2, 3}};
 
   EXPECT_NEAR(spectral_integral(2.0, 1.5, c, rectangle), 2.5, 1e-10);
@@ -93,7 +93,7 @@ TEST_F(spectral_stats, spectral_integral) {
   EXPECT_ARRAY_NEAR(spectral_integral(interv, c, gaussian), ref, 1e-10);
 }
 
-TEST_F(spectral_stats, spectral_avg_mesh) {
+TEST_F(spectral_stats_test, spectral_avg_mesh) {
   vector<double> ref(mesh.size());
 
   ref = {0., 0., 1.74, 2.88, 0.18};
@@ -112,7 +112,7 @@ TEST_F(spectral_stats, spectral_avg_mesh) {
   EXPECT_ARRAY_NEAR(spectral_avg(cont, 1, mesh, gaussian), ref, 1e-10);
 }
 
-TEST_F(spectral_stats, spectral_avg_intervals) {
+TEST_F(spectral_stats_test, spectral_avg_intervals) {
   vector<double> ref(interv.size());
 
   ref = {0., 2., 1.35};
@@ -131,7 +131,7 @@ TEST_F(spectral_stats, spectral_avg_intervals) {
   EXPECT_ARRAY_NEAR(spectral_avg(cont, 1, interv, gaussian), ref, 1e-10);
 }
 
-TEST_F(spectral_stats, spectral_disp_mesh) {
+TEST_F(spectral_stats_test, spectral_disp_mesh) {
   vector<double> avg(mesh.size());
   vector<double> ref(mesh.size());
 
@@ -157,7 +157,7 @@ TEST_F(spectral_stats, spectral_disp_mesh) {
   EXPECT_ARRAY_NEAR(spectral_disp(cont, 1, mesh, avg, gaussian), ref, 1e-10);
 }
 
-TEST_F(spectral_stats, spectral_disp_intervals) {
+TEST_F(spectral_stats_test, spectral_disp_intervals) {
   vector<double> avg(interv.size());
   vector<double> ref(interv.size());
 
@@ -185,7 +185,7 @@ TEST_F(spectral_stats, spectral_disp_intervals) {
   EXPECT_ARRAY_NEAR(spectral_disp(cont, 1, interv, avg, gaussian), ref, 1e-10);
 }
 
-TEST_F(spectral_stats, spectral_corr_mesh) {
+TEST_F(spectral_stats_test, spectral_corr_mesh) {
   vector<double> avg(mesh.size());
   array<double, 2> ref(mesh.size(), mesh.size());
 
@@ -251,7 +251,7 @@ TEST_F(spectral_stats, spectral_corr_mesh) {
   EXPECT_ARRAY_NEAR(spectral_corr(cont, 1, mesh, avg, gaussian), ref, 1e-10);
 }
 
-TEST_F(spectral_stats, spectral_corr_intervals) {
+TEST_F(spectral_stats_test, spectral_corr_intervals) {
   vector<double> avg(interv.size());
   array<double, 2> ref(interv.size(), interv.size());
 

@@ -23,7 +23,7 @@
 #include <nda/nda.hpp>
 #include <nda/gtest_tools.hpp>
 
-#define TRIQS_ARRAYS_ENFORCE_BOUNDCHECK
+#define NDA_ENFORCE_BOUNDCHECK
 #include <som/numerics/finite_diff.hpp>
 
 using namespace nda;
@@ -32,9 +32,9 @@ using namespace som;
 // TODO: linspace()?
 array<double, 1> const n = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 array<double, 1> const x = n + 0.1 * n * n;
-array<double, 1> f = exp(x / 5);
+array<double, 1> const f = exp(x / 5);
 
-TEST(finite_diff, finite_diff_forward) {
+TEST(finite_diff_test, finite_diff_forward) {
   array<double, 1> result(f.size() - 1);
   finite_diff_forward(make_const_view(f), x, result());
   array<double, 1> ref = {0.2237061187158007,
@@ -50,7 +50,7 @@ TEST(finite_diff, finite_diff_forward) {
   EXPECT_ARRAY_NEAR(result, ref, 1e-12);
 }
 
-TEST(finite_diff, finite_2_symm) {
+TEST(finite_diff_test, finite_2_symm) {
   array<double, 1> result(f.size() - 2);
   finite_diff_2_symm(make_const_view(f), x, result());
   array<double, 1> ref = {0.05075622902241774,

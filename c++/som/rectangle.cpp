@@ -48,8 +48,7 @@ std::complex<double> rectangle::hilbert_transform(std::complex<double> z,
     return -height * (width + z * std::log((right() - z) / (left() - z)));
   else
     // -h \int_{c-w/2}^{c+w/2} d\epsilon' \frac{1}{\epsilon' - z - i0}
-    return -height *
-           std::log((right() - z) / (left() - z));
+    return -height * std::log((right() - z) / (left() - z));
 }
 
 std::complex<double>
@@ -61,29 +60,28 @@ rectangle::averaged_hilbert_transform(std::complex<double> ea,
   if(multiply_by_e) {
     // -h \frac{1}{e_b - e_a} \int_{e_a}^{e_b} dz
     //    \int_{c-w/2}^{c+w/2} d\epsilon' \frac{\epsilon'}{\epsilon' - z - i0}
-    return - (height * width / 2)
-           - (height / (2 * (eb - ea))) * (
-              (ra * ra - eb * eb) * std::log(ra - eb) +
-              (rb * rb - ea * ea) * std::log(rb - ea) -
-              (rb * rb - eb * eb) * std::log(rb - eb) -
-              (ra * ra - ea * ea) * std::log(ra - ea)
-           );
+    return -(height * width / 2) -
+           (height / (2 * (eb - ea))) *
+               ((ra * ra - eb * eb) * std::log(ra - eb) +
+                (rb * rb - ea * ea) * std::log(rb - ea) -
+                (rb * rb - eb * eb) * std::log(rb - eb) -
+                (ra * ra - ea * ea) * std::log(ra - ea));
   } else {
     // -h \frac{1}{e_b - e_a} \int_{e_a}^{e_b} dz
     //    \int_{c-w/2}^{c+w/2} d\epsilon' \frac{1}{\epsilon' - z - i0}
-    return (height / (eb - ea)) * ((ra - ea) * std::log(ra - ea) +
-                                   (rb - eb) * std::log(rb - eb) -
-                                   (rb - ea) * std::log(rb - ea) -
-                                   (ra - eb) * std::log(ra - eb));
+    return (height / (eb - ea)) *
+           ((ra - ea) * std::log(ra - ea) + (rb - eb) * std::log(rb - eb) -
+            (rb - ea) * std::log(rb - ea) - (ra - eb) * std::log(ra - eb));
   }
 }
 
-vector<double> rectangle::tail_coefficients(long order_min, long order_max,
+vector<double> rectangle::tail_coefficients(long order_min,
+                                            long order_max,
                                             bool multiply_by_e) const {
   vector<double> data(order_max - order_min + 1);
   double e1 = left(), e2 = right();
-  double e1n, e2n;
-  int denom_shift;
+  double e1n, e2n; // NOLINT(cppcoreguidelines-init-variables)
+  int denom_shift; // NOLINT(cppcoreguidelines-init-variables)
   if(multiply_by_e) {
     e1n = e1;
     e2n = e2;
@@ -120,12 +118,12 @@ MPI_Datatype mpi_type<som::rectangle::pod_t>::get() noexcept {
   static MPI_Datatype dt;
   if(!type_committed) {
     std::array<int, 3> blocklengths = {1, 1, 1};
-    std::array<MPI_Aint, 3> displacements = {0, sizeof(double),
-                                             2 * sizeof(double)};
+    std::array<MPI_Aint, 3> displacements = {
+        0, sizeof(double), 2 * sizeof(double)};
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
     std::array<MPI_Datatype, 3> types = {MPI_DOUBLE, MPI_DOUBLE, MPI_DOUBLE};
-    MPI_Type_create_struct(3, blocklengths.data(), displacements.data(),
-                           types.data(), &dt);
+    MPI_Type_create_struct(
+        3, blocklengths.data(), displacements.data(), types.data(), &dt);
     MPI_Type_commit(&dt);
     type_committed = true;
   }

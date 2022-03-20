@@ -41,9 +41,11 @@ public:
   using mesh_type = triqs::mesh::imfreq;
   constexpr static observable_kind kind = BosonAutoCorr;
 
+private:
   const double beta;    // Inverse temperature
   const mesh_type mesh; // Matsubara frequency mesh
 
+public:
   explicit kernel(mesh_type const& mesh);
 
   // Apply to a rectangle

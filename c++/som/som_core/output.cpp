@@ -44,7 +44,7 @@ void fill_refreq(gf_view<refreq> g_w,
   auto kind = cont.get_observable_kind();
   auto gf_dim = cont.get_dim();
   check_gf_dim(g_w, gf_dim);
-  for(int i : range(gf_dim)) {
+  for(auto i : range(gf_dim)) {
     back_transform(kind,
                    cont.get_solution(i),
                    slice_target_to_scalar(g_w, i, i),
@@ -58,9 +58,9 @@ void fill_refreq(gf_view<refreq> g_w,
                  observable_kind kind,
                  std::vector<configuration> const& solutions,
                  bool with_binning) {
-  auto gf_dim = solutions.size();
+  auto gf_dim = long(solutions.size());
   check_gf_dim(g_w, gf_dim);
-  for(int i : range(gf_dim)) {
+  for(auto i : range(gf_dim)) {
     back_transform(kind,
                    solutions[i],
                    slice_target_to_scalar(g_w, i, i),
@@ -76,7 +76,7 @@ array<dcomplex, 3> compute_tail(int max_order, som_core const& cont) {
   auto kind = cont.get_observable_kind();
   auto gf_dim = cont.get_dim();
   array<dcomplex, 3> tail(max_order + 1, gf_dim, gf_dim);
-  for(int i : range(gf_dim)) {
+  for(auto i : range(gf_dim)) {
     tail(range(), i, i) =
       som::compute_tail(kind, cont.get_solution(i), max_order, cont.get_comm());
   }
@@ -86,9 +86,9 @@ array<dcomplex, 3> compute_tail(int max_order, som_core const& cont) {
 array<dcomplex, 3> compute_tail(int max_order,
                                 observable_kind kind,
                                 std::vector<configuration> const& solutions) {
-  auto gf_dim = solutions.size();
+  auto gf_dim = long(solutions.size());
   array<dcomplex, 3> tail(max_order + 1, gf_dim, gf_dim);
-  for(int i : range(gf_dim)) {
+  for(auto i : range(gf_dim)) {
     tail(range(), i, i) = som::compute_tail(kind, solutions[i], max_order);
   }
   return tail;
@@ -98,23 +98,23 @@ array<dcomplex, 3> compute_tail(int max_order,
 // reconstruct() //
 ///////////////////
 
-void fill_data(gf_view<imtime> g_tau, int i, vector<double> const& data) {
+void fill_data(gf_view<imtime> g_tau, long i, vector<double> const& data) {
   g_tau.data()(range(), i, i) = data;
 }
 
-void fill_data(gf_view<imfreq> g_iw, int i, vector<dcomplex> const& data) {
+void fill_data(gf_view<imfreq> g_iw, long i, vector<dcomplex> const& data) {
   auto g_positive_freq = positive_freq_view(g_iw);
   g_positive_freq.data()(range(), i, i) = data;
   g_iw = make_gf_from_real_gf(make_const_view(g_positive_freq));
 }
 
-void fill_data(gf_view<legendre> g_l, int i, vector<double> const& data) {
+void fill_data(gf_view<legendre> g_l, long i, vector<double> const& data) {
   g_l.data()(range(), i, i) = data;
 }
 
 template <typename MeshType, typename Solutions>
 void reconstruct_impl(gf_view<MeshType> g,
-                      int gf_dim,
+                      long gf_dim,
                       observable_kind kind,
                       Solutions const& sols) {
   check_gf_dim(g, gf_dim);
@@ -125,7 +125,7 @@ void reconstruct_impl(gf_view<MeshType> g,
 #define FILL_DATA_CASE(r, d, ok)                                               \
   case ok: {                                                                   \
     kernel<ok, MeshType> kern(g.mesh());                                       \
-    for(int i : range(gf_dim)) {                                               \
+    for(auto i : range(gf_dim)) {                                               \
       if constexpr(std::is_same_v<Solutions, som_core>)                        \
         fill_data(g, i, kern.apply_wo_caching(sols.get_solution(i)));          \
       else                                                                     \
@@ -153,17 +153,17 @@ void reconstruct(gf_view<legendre> g, som_core const& cont) {
 void reconstruct(gf_view<imtime> g,
                  observable_kind kind,
                  std::vector<configuration> const& solutions) {
-  reconstruct_impl(g, solutions.size(), kind, solutions);
+  reconstruct_impl(g, long(solutions.size()), kind, solutions);
 }
 void reconstruct(gf_view<imfreq> g,
                  observable_kind kind,
                  std::vector<configuration> const& solutions) {
-  reconstruct_impl(g, solutions.size(), kind, solutions);
+  reconstruct_impl(g, long(solutions.size()), kind, solutions);
 }
 void reconstruct(gf_view<legendre> g,
                  observable_kind kind,
                  std::vector<configuration> const& solutions) {
-  reconstruct_impl(g, solutions.size(), kind, solutions);
+  reconstruct_impl(g, long(solutions.size()), kind, solutions);
 }
 
 } // namespace som

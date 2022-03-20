@@ -59,7 +59,7 @@ template som_core::data_t::data_t(triqs::mesh::imfreq const&, cache_index&);
 template som_core::data_t::data_t(triqs::mesh::legendre const&, cache_index&);
 
 template <typename... GfOpts>
-void som_core::data_t::init_input(int i, gf_const_view<GfOpts...> g,
+void som_core::data_t::init_input(long i, gf_const_view<GfOpts...> g,
                                   gf_const_view<GfOpts...> S, double norm_) {
   using mesh_t = typename gf_const_view<GfOpts...>::mesh_t;
   std::get<input_data_t<mesh_t>>(rhs)() = g.data()(range(), i, i);
@@ -89,8 +89,8 @@ som_core::som_core(gf_const_view<imtime> g_tau, gf_const_view<imtime> S_tau,
   gf<imtime, matrix_real_valued> g_tau_real = real(g_tau),
                                  S_tau_real = real(S_tau);
 
-  int gf_dim = g_tau.target_shape()[0];
-  for(int i : range(gf_dim)) {
+  auto gf_dim = g_tau.target_shape()[0];
+  for(auto i : range(gf_dim)) {
     data[i].init_input(i, make_const_view(g_tau_real),
                        make_const_view(S_tau_real),
                        norms.size() > 0 ? norms[i] : 1.0);
@@ -114,8 +114,8 @@ som_core::som_core(gf_const_view<imfreq> g_iw, gf_const_view<imfreq> S_iw,
   auto S_iw_pos = positive_freq_view(S_iw);
   check_input_gf(g_iw_pos, S_iw_pos);
 
-  int gf_dim = g_iw_pos.target_shape()[0];
-  for(int i : range(gf_dim)) {
+  auto gf_dim = g_iw_pos.target_shape()[0];
+  for(auto i : range(gf_dim)) {
     data[i].init_input(i, g_iw_pos, S_iw_pos,
                        norms.size() > 0 ? norms[i] : 1.0);
   }
@@ -135,8 +135,8 @@ som_core::som_core(gf_const_view<legendre> g_l, gf_const_view<legendre> S_l,
     fatal_error("Legendre " + observable_name(kind) + " must be real");
   gf<legendre, matrix_real_valued> g_l_real = real(g_l), S_l_real = real(S_l);
 
-  int gf_dim = g_l_real.target_shape()[0];
-  for(int i : range(gf_dim)) {
+  auto gf_dim = g_l_real.target_shape()[0];
+  for(auto i : range(gf_dim)) {
     data[i].init_input(i, make_const_view(g_l_real), make_const_view(S_l_real),
                        norms.size() > 0 ? norms[i] : 1.0);
   }

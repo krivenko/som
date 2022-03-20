@@ -36,19 +36,26 @@ using namespace som;
     EXPECT_EQ(X, ss.str());                                                    \
   }
 
-cache_index ci;
+class configuration_test : public ::testing::Test {
+protected:
+  cache_index ci;
+  configuration conf1 = {
+      {{-2.0, 2.6, 0.3, ci}, {1.3, 2.6, 0.6, ci}, {2.0, 2.6, 0.7, ci}},
+      ci};
+  configuration conf2 = {
+      {{-3.0, 2.6, 0.3, ci}, {-1.6, 2.4, 0.1, ci}, {2.8, 2.8, 0.55, ci}},
+      ci};
 
-configuration
-    conf1({{-2.0, 2.6, 0.3, ci}, {1.3, 2.6, 0.6, ci}, {2.0, 2.6, 0.7, ci}}, ci);
-std::string conf1_str =
-    "(c:-2, w:2.6, h:0.3),(c:1.3, w:2.6, h:0.6),(c:2, w:2.6, h:0.7)";
-configuration
-    conf2({{-3.0, 2.6, 0.3, ci}, {-1.6, 2.4, 0.1, ci}, {2.8, 2.8, 0.55, ci}},
-          ci);
-std::string conf2_str =
-    "(c:-3, w:2.6, h:0.3),(c:-1.6, w:2.4, h:0.1),(c:2.8, w:2.8, h:0.55)";
+  std::string const conf1_str =
+      "(c:-2, w:2.6, h:0.3),(c:1.3, w:2.6, h:0.6),(c:2, w:2.6, h:0.7)";
+  std::string const conf2_str =
+      "(c:-3, w:2.6, h:0.3),(c:-1.6, w:2.4, h:0.1),(c:2.8, w:2.8, h:0.55)";
 
-TEST(configuration, Evaluation) {
+public:
+  configuration_test() = default;
+};
+
+TEST_F(configuration_test, Evaluation) {
   triqs::mesh::refreq mesh(-5.0, 5.0, 11);
   vector<double> ref1 = {.0, .0, 0.3, 0.3, 0.3, 0.6, 1.3, 1.3, 0.7, .0, .0};
   vector<double> ref2 = {.0, 0.3, 0.3, 0.4, 0.1, .0, .0, 0.55, 0.55, 0.55, .0};
@@ -59,17 +66,17 @@ TEST(configuration, Evaluation) {
   }
 }
 
-TEST(configuration, Print) {
+TEST_F(configuration_test, Print) {
   EXPECT_PRINT(conf1_str, conf1);
   EXPECT_PRINT(conf2_str, conf2);
 }
 
-TEST(configuration, Detached) {
+TEST_F(configuration_test, Detached) {
   configuration conf_det({{-2.0, 2.6, 0.3}, {1.3, 2.6, 0.6}, {2.0, 2.6, 0.7}});
   EXPECT_PRINT(conf1_str, conf_det);
 }
 
-TEST(configuration, Arithmetics) {
+TEST_F(configuration_test, Arithmetics) {
   EXPECT_PRINT(conf1_str + "," + conf2_str, conf1 + conf2);
 
   EXPECT_PRINT("(c:-2, w:2.6, h:0.6),(c:1.3, w:2.6, h:1.2),(c:2, w:2.6, h:1.4)",
@@ -86,7 +93,7 @@ TEST(configuration, Arithmetics) {
       conf2);
 }
 
-TEST(configuration, normalize) {
+TEST_F(configuration_test, normalize) {
   conf2.normalize(2.56);
   EXPECT_PRINT(conf2_str, conf2);
 }
