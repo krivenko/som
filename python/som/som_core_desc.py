@@ -479,6 +479,12 @@ compute_final_solution_cc_params_conv.add_member(c_name = "der_penalty_coeff",
                                                  initializer = """2.0""",
                                                  doc = """Coefficient used to increase the regularization parameters that penalize large derivatives of the solution.""")
 
+compute_final_solution_cc_params_conv.add_member(c_name = "svd_rcond",
+                                                 c_type = "double",
+                                                 initializer = """-1""",
+                                                 doc = """In the minimization of the CC quadratic form, a singular value :math:`\sigma_j` of its matrix is
+treated as zero if :math:`\sigma_j / \sigma_\mathrm{max}` is below this threshold. By default, the threshold is equal to the machine precision.""")
+
 module.add_converter(compute_final_solution_cc_params_conv)
 
 #
@@ -531,6 +537,10 @@ Compute the final solution using the SOCC protocol
 +-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
 | der_penalty_coeff     | float         | 2.0                           | Coefficient used to increase the regularization parameters that penalize large derivatives of         |
 |                       |               |                               | the solution (:math:`f`).                                                                             |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| svd_rcond             | float         | -1                            | In the minimization of the CC quadratic form, a singular value :math:`\sigma_j` of its matrix is      |
+|                       |               |                               | treated as zero if :math:`\sigma_j / \sigma_\mathrm{{max}}` is below this threshold.                    |
+|                       |               |                               | By default, the threshold is equal to the machine precision.                                          |
 +-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
 """)
 

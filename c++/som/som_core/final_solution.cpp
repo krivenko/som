@@ -33,6 +33,7 @@
 #include <som/global_index_map.hpp>
 #include <som/kernels/all.hpp>
 #include <som/numerics/finite_diff.hpp>
+#include <som/numerics/lls_worker.hpp>
 #include <som/solution_functionals/objective_function.hpp>
 
 #include "common.hxx"
@@ -224,7 +225,7 @@ void update_O_mat(array<double, 2>& A_j_local_block,
                   global_index_map const& index_map,
                   mpi::communicator const& comm,
                   bool verbose,
-                  matrix<double>& O_mat) {
+                  matrix<double, nda::F_layout>& O_mat) {
   int const j_block1 = comm.rank();
   auto const J1 = first_dim(A_j_local_block);
   assert(first_dim(Ap_j_local_block) == J1);
@@ -364,7 +365,10 @@ vector<double> cc_protocol(
                            comm);
 
   // Matrix of the quadratic form
-  matrix<double> O_mat(J, J);
+  matrix<double, nda::F_layout> O_mat(J, J);
+
+  // Linear least squares worker
+  auto worker = lls_worker(int(J), int(J));
 
   int iter = 0;
   for(; iter < p.max_iter; ++iter) {
@@ -387,8 +391,11 @@ vector<double> cc_protocol(
                  O_mat);
 
     // Minimize the functional
-    inverse_in_place(O_mat);
-    c = O_mat * b;
+    int O_mat_rank = worker(O_mat, b, c, p.svd_rcond);
+    if(p.verbosity >= 1)
+      mpi_cout(comm)
+          << "    Effective rank of the matrix of the CC quadratic form is "
+          << O_mat_rank << std::endl;
 
     //
     // Update regularization parameters

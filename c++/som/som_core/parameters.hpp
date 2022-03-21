@@ -155,6 +155,12 @@ struct final_solution_cc_parameters_t {
   /// large derivatives of the solution.
   double der_penalty_coeff = 2.0;
 
+  /// In the minimization of the CC quadratic form, a singular value
+  /// :math:`\sigma_j` of its matrix is treated as zero if
+  /// :math:`\sigma_j / \sigma_\mathrm{max}` is below this threshold.
+  /// By default, the threshold is equal to the machine precision.
+  double svd_rcond = -1;
+
   final_solution_cc_parameters_t() = default;
   explicit final_solution_cc_parameters_t(triqs::mesh::refreq refreq_mesh)
      : refreq_mesh(std::move(refreq_mesh)) {}
