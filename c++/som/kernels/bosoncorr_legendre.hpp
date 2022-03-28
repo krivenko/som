@@ -69,7 +69,7 @@ class kernel<BosonCorr, triqs::mesh::legendre>
   std::vector<evaluator> evaluators;
 
   // Integrated kernel \Lambda(l,\Omega)
-  double Lambda(long l, double Omega) const;
+  [[nodiscard]] double Lambda(long l, double Omega) const;
 
 public:
   using result_type = nda::array<double, 1>;
