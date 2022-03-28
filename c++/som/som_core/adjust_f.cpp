@@ -54,7 +54,7 @@ void adjust_f_parameters_t::validate(observable_kind kind) const {
                 to_string(l) + ")");
 
   if(kappa <= 0 || kappa > 0.5)
-    fatal_error("Parameter kappa = " + to_string(kappa) + " is not in (0;0.5]");
+    fatal_error("Parameter kappa = " + to_string(kappa) + " is not in ]0;0.5]");
 }
 
 //////////////////////////

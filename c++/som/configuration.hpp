@@ -93,7 +93,7 @@ public:
   [[nodiscard]] double operator()(double e) const;
 
   // Access a rectangle by index
-  rectangle const& operator[](int index) const { return rects[index]; }
+  rectangle const& operator[](std::size_t index) const { return rects[index]; }
 
   // Equality
   bool operator==(configuration const& c) const { return rects == c.rects; }

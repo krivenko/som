@@ -34,16 +34,25 @@ class update_shift : public elementary_update<KernelType> {
 
 public:
   update_shift(mc_data<KernelType>& data,
-               triqs::mc_tools::random_generator& rng, cache_index& ci,
+               triqs::mc_tools::random_generator& rng,
+               cache_index& ci,
+               std::shared_ptr<typename eu::cc_update_t> cc_update,
                std::pair<double, double> energy_window,
 #ifdef EXT_DEBUG
-               double width_min, double weight_min)
-     : elementary_update<KernelType>(data, rng, ci, energy_window, width_min,
+               double width_min,
+               double weight_min)
+     : elementary_update<KernelType>(data,
+                                     rng,
+                                     ci,
+                                     cc_update,
+                                     energy_window,
+                                     width_min,
                                      weight_min)
      ,
 #else
-               double, double)
-     : elementary_update<KernelType>(data, rng, ci)
+               double,
+               double)
+     : elementary_update<KernelType>(data, rng, ci, cc_update)
      ,
 #endif
      energy_window(std::move(energy_window)) {
@@ -65,16 +74,25 @@ class update_change_width : public elementary_update<KernelType> {
 
 public:
   update_change_width(mc_data<KernelType>& data,
-                      triqs::mc_tools::random_generator& rng, cache_index& ci,
+                      triqs::mc_tools::random_generator& rng,
+                      cache_index& ci,
+                      std::shared_ptr<typename eu::cc_update_t> cc_update,
                       std::pair<double, double> energy_window,
 #ifdef EXT_DEBUG
-                      double width_min, double weight_min)
-     : elementary_update<KernelType>(data, rng, ci, energy_window, width_min,
+                      double width_min,
+                      double weight_min)
+     : elementary_update<KernelType>(data,
+                                     rng,
+                                     ci,
+                                     cc_update,
+                                     energy_window,
+                                     width_min,
                                      weight_min)
      ,
 #else
-                      double width_min, double)
-     : elementary_update<KernelType>(data, rng, ci)
+                      double width_min,
+                      double)
+     : elementary_update<KernelType>(data, rng, ci, cc_update)
      ,
 #endif
      energy_window(std::move(energy_window))
@@ -96,17 +114,26 @@ class update_change_weight2 : public elementary_update<KernelType> {
 
 public:
   update_change_weight2(mc_data<KernelType>& data,
-                        triqs::mc_tools::random_generator& rng, cache_index& ci,
+                        triqs::mc_tools::random_generator& rng,
+                        cache_index& ci,
+                        std::shared_ptr<typename eu::cc_update_t> cc_update,
 #ifdef EXT_DEBUG
                         std::pair<double, double> const& energy_window,
-                        double width_min, double weight_min)
-     : elementary_update<KernelType>(data, rng, ci, std::move(energy_window),
-                                     width_min, weight_min)
+                        double width_min,
+                        double weight_min)
+     : elementary_update<KernelType>(data,
+                                     rng,
+                                     ci,
+                                     cc_update,
+                                     std::move(energy_window),
+                                     width_min,
+                                     weight_min)
      ,
 #else
-                        std::pair<double, double> const&, double,
+                        std::pair<double, double> const&,
+                        double,
                         double weight_min)
-     : elementary_update<KernelType>(data, rng, ci)
+     : elementary_update<KernelType>(data, rng, ci, cc_update)
      ,
 #endif
      weight_min(weight_min) {

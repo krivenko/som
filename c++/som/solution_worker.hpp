@@ -23,6 +23,7 @@
 #include <cmath>
 #include <exception>
 #include <functional>
+#include <memory>
 
 #include <triqs/mc_tools.hpp>
 
@@ -31,6 +32,7 @@
 #include "cache_index.hpp"
 #include "configuration.hpp"
 #include "solution_functionals/objective_function.hpp"
+#include "update_cc.hpp"
 #include "worker_parameters.hpp"
 
 namespace som {
@@ -70,10 +72,13 @@ class dist_function {
   int step;
 
 public:
-  dist_function(triqs::mc_tools::random_generator& rng, int T, int T1,
+  dist_function(triqs::mc_tools::random_generator& rng,
+                int T,
+                int T1,
                 double d_max);
 
   double operator()(double x) const;
+  [[nodiscard]] int current_step() const { return step; }
   [[nodiscard]] bool in_stage_a() const;
   void reset();
   void operator++();
@@ -111,6 +116,10 @@ template <typename KernelType> class solution_worker {
   double norm;       // Norm of the sought solution
   double width_min;  // Minimal width of a rectangle
   double weight_min; // Minimal weight of a rectangle
+
+  // Consistent constraints update (optional)
+  using cc_update_t = update_consistent_constraints<KernelType>;
+  std::shared_ptr<cc_update_t> cc_update;
 
 public:
   solution_worker(objective_function<KernelType> const& objf,

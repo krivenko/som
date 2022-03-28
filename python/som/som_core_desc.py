@@ -150,6 +150,11 @@ def add_worker_parameters(conv):
                     initializer = """50""",
                     doc = """Number of elementary updates per global update (:math:`T`).\nBigger values make the algorithm more ergodic.""")
 
+    conv.add_member(c_name = "cc_update",
+                    c_type = "bool",
+                    initializer = """false""",
+                    doc = """Enable Consistent Constraints updates.""")
+
     conv.add_member(c_name = "random_seed",
                     c_type = "int",
                     initializer = """34788 + 928374 * mpi::communicator().rank()""",
@@ -190,6 +195,67 @@ def add_worker_parameters(conv):
                     initializer = """2""",
                     doc = """Proposal probability parameter :math:`\gamma`.""")
 
+    conv.add_member(c_name = "cc_update_cycle_length",
+                    c_type = "int",
+                    initializer = """10""",
+                    doc = """CC update: Number of proposed elementary updates between two successive CC updates
+(only during stage A of a global update).""")
+
+    conv.add_member(c_name = "cc_update_max_iter",
+                    c_type = "int",
+                    initializer = """30""",
+                    doc = """CC update: Maximum allowed number of height adjustment iterations.""")
+
+    conv.add_member(c_name = "cc_update_rect_norm_variation_tol",
+                    c_type = "double",
+                    initializer = """1e-3""",
+                    doc = """CC update: The height adjustment procedure stops when variation of every
+rectangle norm between two consecutive iterations is below this value.
+This parameter is measured in units of the requested solution norm.""")
+
+    conv.add_member(c_name = "cc_update_height_penalty_max",
+                    c_type = "double",
+                    initializer = """1e3""",
+                    doc = """CC update: Maximum value of the regularization parameters :math:`Q_0(k)`
+that penalize negative heights.
+Measured in units of (energy window width) / (solution norm).""")
+
+    conv.add_member(c_name = "cc_update_height_penalty_divisor",
+                    c_type = "double",
+                    initializer = """10""",
+                    doc = """CC update: Divisor used to reduce the regularization parameters
+:math:`Q_0(k)` that penalize negative heights.""")
+
+    conv.add_member(c_name = "cc_update_der_penalty_init",
+                    c_type = "double",
+                    initializer = """1.0""",
+                    doc = """CC update: Initial value of the regularization parameters :math:`Q_1(k)`
+and :math:`Q_2(k)` that penalize large derivatives of a solution.
+Measured in units of (energy window width)^2 / (solution norm) for
+:math:`Q_1(k)` and in units of (energy window width)^3 / (solution norm)
+for :math:`Q_2(k)`.""")
+
+    conv.add_member(c_name = "cc_update_der_penalty_threshold",
+                    c_type = "double",
+                    initializer = """0.1""",
+                    doc = """CC update: Sets the threshold value of the products :math:`|Q_1(k) A'(k)|`
+and :math:`Q_2(k) A''(k)`, above which derivative regularization
+parameters :math:`Q_1(k)` and :math:`Q_2(k)` need to be reduced.""")
+
+    conv.add_member(c_name = "cc_update_der_penalty_increase_coeff",
+                    c_type = "double",
+                    initializer = """2.0""",
+                    doc = """CC update: Coefficient used to increase the regularization parameters
+:math:`Q_1(k)` and :math:`Q_2(k)` that penalize large derivatives of
+a solution.""")
+
+    conv.add_member(c_name = "cc_update_der_penalty_limiter",
+                    c_type = "double",
+                    initializer = """1e3""",
+                    doc = """CC update: Coefficient that limits growth of the regularization parameters
+:math:`Q_1(k)` and :math:`Q_2(k)` that penalize large derivatives of
+a solution.""")
+
 #
 # Common fragments of docstrings
 #
@@ -205,43 +271,77 @@ Fine tuning options
 """.strip()
 
 docstring_params_table_header = """
-+-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
-| Parameter Name        | Type          | Default                       | Documentation                                                                                         |
-+=======================+===============+===============================+=======================================================================================================+
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| Parameter Name                       | Type          | Default           | Documentation                                                                                      |
++======================================+===============+===================+====================================================================================================+
 """.strip()
 
 docstring_worker_params_main = """
-| energy_window         | (float,float) | --                            | Estimated lower and upper bounds of the spectrum.                                                     |
-|                       |               |                               | Negative values of the lower bound will be reset to 0 for BosonAutoCorr and ZeroTemp observables.     |
-+-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
-| max_time              | int           | -1 = infinite                 | Maximum runtime in seconds, use -1 to set infinite.                                                   |
-+-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
-| verbosity             | int           | 2 on MPI rank 0, 0 otherwise. | Verbosity level (max level - 3).                                                                      |
-+-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
-| t                     | int           | 50                            | Number of elementary updates per global update (:math:`T`).                                           |
-|                       |               |                               | Bigger values make the algorithm more ergodic.                                                        |
-+-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| energy_window                        | (float,float) | --                | Estimated lower and upper bounds of the spectrum.                                                  |
+|                                      |               |                   | Negative values of the lower bound will be reset to 0 for BosonAutoCorr and ZeroTemp observables.  |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| max_time                             | int           | -1 = infinite     | Maximum runtime in seconds, use -1 to set infinite.                                                |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| verbosity                            | int           | 2 on MPI rank 0,  | Verbosity level (max level - 3).                                                                   |
+|                                      |               | 0 otherwise.      |                                                                                                    |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| t                                    | int           | 50                | Number of elementary updates per global update (:math:`T`).                                        |
+|                                      |               |                   | Bigger values make the algorithm more ergodic.                                                     |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| cc_update                            | bool          | False             | Enable Consistent Constraints updates.                                                             |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
 """.strip()
 
 docstring_worker_params_fine = """
-| random_seed           | int           | 34788 + 928374 * MPI.rank     | Seed for random number generator.                                                                     |
-+-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
-| random_name           | str           | ""                            | Name of random number generator (MT19937 by default).                                                 |
-+-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
-| max_rects             | int           | 60                            | Maximum number of rectangles in a particular solution (:math:`K_{max}`), should be below 70.          |
-+-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
-| min_rect_width        | float         | 1e-3                          | Minimal width of a rectangle, in units of the energy window width.                                    |
-+-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
-| min_rect_weight       | float         | 1e-3                          | Minimal weight of a rectangle, in units of the requested solution norm.                               |
-+-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
-| t1                    | int           | -1                            | Number of elementary updates in the first stage of a global update.                                   |
-|                       |               |                               | When set to -1, the number of elementary updates will be chosen randomly for each global update from  |
-|                       |               |                               | the :math:`[1; T[` range.                                                                             |
-+-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
-| distrib_d_max         | float         | 2                             | Maximal parameter of the power-law distribution function for the Metropolis algorithm.                |
-+-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
-| gamma                 | float         | 2                             | Proposal probability parameter :math:`\gamma`.                                                        |
-+-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| random_seed                          | int           | 34788 +           |                                                                                                    |
+|                                      |               | 928374 * MPI.rank | Seed for random number generator.                                                                  |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| random_name                          | str           | ""                | Name of random number generator (MT19937 by default).                                              |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| max_rects                            | int           | 60                | Maximum number of rectangles in a particular solution (:math:`K_{max}`), should be below 70.       |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| min_rect_width                       | float         | 1e-3              | Minimal width of a rectangle, in units of the energy window width.                                 |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| min_rect_weight                      | float         | 1e-3              | Minimal weight of a rectangle, in units of the requested solution norm.                            |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| t1                                   | int           | -1                | Number of elementary updates in the first stage of a global update.                                |
+|                                      |               |                   | When set to -1, the number of elementary updates will be chosen randomly for each global update    |
+|                                      |               |                   | from the :math:`[1; T[` range.                                                                     |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| distrib_d_max                        | float         | 2.0               | Maximal parameter of the power-law distribution function for the Metropolis algorithm.             |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| gamma                                | float         | 2.0               | Proposal probability parameter :math:`\gamma`.                                                     |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| cc_update_cycle_length               | int           | 10                | CC update: Number of proposed elementary updates between two successive CC updates                 |
+|                                      |               |                   | (only during stage A of a global update).                                                          |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| cc_update_max_iter                   | int           | 30                | CC update: Maximum allowed number of height adjustment iterations.                                 |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| cc_update_rect_norm_variation_tol    | float         | 1e-3              | CC update: The height adjustment procedure stops when variation of every rectangle norm between    |
+|                                      |               |                   | two consecutive iterations is below this value. This parameter is measured in units of the         |
+|                                      |               |                   | requested solution norm.                                                                           |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| cc_update_height_penalty_max         | float         | 1e3               | CC update: Maximum value of the regularization parameters :math:`Q_0(k)` that penalize negative    |
+|                                      |               |                   | heights. Measured in units of (energy window width) / (solution norm).                             |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| cc_update_height_penalty_divisor     | float         | 10.0              | CC update: Divisor used to reduce the regularization parameters :math:`Q_0(k)` that penalize       |
+|                                      |               |                   | negative heights.                                                                                  |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| cc_update_der_penalty_init           | float         | 1.0               | CC update: Initial value of the regularization parameters :math:`Q_1(k)` and :math:`Q_2(k)` that   |
+|                                      |               |                   | penalize large derivatives of a solution.                                                          |
+|                                      |               |                   | Measured in units of (energy window width)^2 / (solution norm) for :math:`Q_1(k)` and              |
+|                                      |               |                   | in units of (energy window width)^3 / (solution norm) for :math:`Q_2(k)`.                          |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| cc_update_der_penalty_threshold      | float         | 0.1               | CC update: Sets the threshold value of the products :math:`|Q_1(k) A'(k)|` and                     |
+|                                      |               |                   | :math:`Q_2(k) A''(k)`, above which derivative regularization parameters :math:`Q_1(k)` and         |
+|                                      |               |                   | :math:`Q_2(k)` need to be reduced.                                                                 |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| cc_update_der_penalty_increase_coeff | float         | 2.0               | CC update: Coefficient used to increase the regularization parameters :math:`Q_1(k)` and           |
+|                                      |               |                   | :math:`Q_2(k)` that penalize large derivatives of a solution.                                      |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| cc_update_der_penalty_limiter        | float         | 1e3               | CC update: Coefficient that limits growth of the regularization parameters :math:`Q_1(k)` and      |
+|                                      |               |                   | :math:`Q_2(k)` that penalize large derivatives of a solution.                                      |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
 """.strip()
 
 #
@@ -285,17 +385,17 @@ Automatically adjust the number of global updates :math:`F`
 
 {docstring_params_table_header}
 {docstring_worker_params_main}
-| f_range               | (int,int)     | (100,5000)                    | Search range for the number of global updates.                                                        |
-+-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| f_range                              | (int,int)     | (100,5000)        | Search range for the number of global updates.                                                     |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
 
 {docstring_params_header_fine}
 
 {docstring_params_table_header}
 {docstring_worker_params_fine}
-| l                     | int           | 20                            | Number of particular solutions used to adjust :math:`F`.                                              |
-+-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
-| kappa                 | float         | 0.25                          | Limiting value of :math:`\kappa` used to adjust :math:`F`.                                            |
-+-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| l                                    | int           | 20                | Number of particular solutions used to adjust :math:`F`.                                           |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| kappa                                | float         | 0.25              | Limiting value of :math:`\kappa` used to adjust :math:`F`.                                         |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
 """)
 
 #
@@ -375,32 +475,32 @@ docstring_accumulate = fr"""
 
 {docstring_params_table_header}
 {docstring_worker_params_main}
-| l                     | int           | 2000                          | Number of particular solutions to accumulate (:math:`L`); ignored if `adjust_l = True`.               |
-|                       |               |                               | Bigger values reduce noise in the final solution / make it smoother.                                  |
-+-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
-| adjust_l              | bool          | False                         | Automatically adjust the number of particular solutions to accumulate.                                |
-+-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
-| make_histograms       | bool          | False                         | Accumulate histograms of :math:`\chi` values.                                                         |
-+-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| l                                    | int           | 2000              | Number of particular solutions to accumulate (:math:`L`); ignored if `adjust_l = True`.            |
+|                                      |               |                   | Bigger values reduce noise in the final solution / make it smoother.                               |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| adjust_l                             | bool          | False             | Automatically adjust the number of particular solutions to accumulate.                             |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| make_histograms                      | bool          | False             | Accumulate histograms of :math:`\chi` values.                                                      |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
 
 {docstring_params_header_fine}
 
 {docstring_params_table_header}
 {docstring_worker_params_fine}
-| adjust_l_range        | (int,int)     | (100,2000)                    | Search range for the number of particular solutions to accumulate.                                    |
-+-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
-| adjust_l_good_chi     | float         | 2.0                           | Maximal ratio :math:`\chi/\chi_\mathrm{{min}}` for a particular solution to be considered good.         |
-+-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
-| adjust_l_verygood_chi | float         | 4/3                           | Maximal ratio :math:`\chi/\chi_\mathrm{{min}}` for a particular solution to be considered very good.    |
-+-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
-| adjust_l_ratio        | float         | 0.95                          | Critical ratio :math:`N_\mathrm{{very good}}/N_\mathrm{{good}}` to stop                                   |
-|                       |               |                               | the :math:`L`-adjustment procedure.                                                                   |
-+-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
-| hist_max              | float         | 2.0                           | Right boundary of the histograms, in units of :math:`\chi_\mathrm{{min}}`                               |
-|                       |               |                               | (left boundary is always set to :math:`\chi_\mathrm{{min}}`).                                           |
-+-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
-| hist_n_bins           | int           | 100                           | Number of bins for the histograms.                                                                    |
-+-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| adjust_l_range                       | (int,int)     | (100,2000)        | Search range for the number of particular solutions to accumulate.                                 |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| adjust_l_good_chi                    | float         | 2.0               | Maximal ratio :math:`\chi/\chi_\mathrm{{min}}` for a particular solution to be considered good.      |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| adjust_l_verygood_chi                | float         | 4/3               | Maximal ratio :math:`\chi/\chi_\mathrm{{min}}` for a particular solution to be considered very good. |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| adjust_l_ratio                       | float         | 0.95              | Critical ratio :math:`N_\mathrm{{very good}}/N_\mathrm{{good}}` to stop                                |
+|                                      |               |                   | the :math:`L`-adjustment procedure.                                                                |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| hist_max                             | float         | 2.0               | Right boundary of the histograms, in units of :math:`\chi_\mathrm{{min}}`                            |
+|                                      |               |                   | (left boundary is always set to :math:`\chi_\mathrm{{min}}`).                                        |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
+| hist_n_bins                          | int           | 100               | Number of bins for the histograms.                                                                 |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
 """
 
 c.add_method("""void accumulate(**som::accumulate_parameters_t)""",
@@ -514,8 +614,9 @@ module.add_converter(compute_final_solution_cc_params_conv)
 # SomCore.compute_final_solution_cc()
 #
 
+# TODO: Pass `release_GIL_and_enable_signal = True` when https://github.com/TRIQS/cpp2py/issues/44
+# is resolved.
 c.add_method("std::vector<double> compute_final_solution_cc(**som::final_solution_cc_parameters_t)",
-             #release_GIL_and_enable_signal = True, FIXME
              doc = f"""
 Compute the final solution using the SOCC protocol
 ==================================================
@@ -550,12 +651,12 @@ Compute the final solution using the SOCC protocol
 {docstring_params_header_fine}
 
 {docstring_params_table_header}
-| ew_penalty_coeff      | float         | 1                             | Coefficient of the term that penalizes large deviations from the equal-weight superposition.          |
+| ew_penalty_coeff      | float         | 1.0                           | Coefficient of the term that penalizes large deviations from the equal-weight superposition.          |
 +-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
 | amp_penalty_max       | float         | 1e3                           | Maximum value of the regularization parameter that penalizes negative values of                       |
 |                       |               |                               | the spectral function (:math:`\mathcal{{Q}}`).                                                          |
 +-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
-| amp_penalty_divisor   | float         | 10                            | Divisor used to reduce the regularization parameter that penalizes negative values of                 |
+| amp_penalty_divisor   | float         | 10.0                          | Divisor used to reduce the regularization parameter that penalizes negative values of                 |
 |                       |               |                               | the spectral function.                                                                                |
 +-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
 | der_penalty_init      | float         | 0.1                           | Initial value of the regularization parameters that penalize large derivatives of the solution        |

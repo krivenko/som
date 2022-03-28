@@ -6,6 +6,8 @@ import triqs.utility.mpi as mpi
 from som import Som, fill_refreq, compute_tail, reconstruct
 import time
 
+arch_name = 'consistent_constraints.np%d.h5' % mpi.world.size
+
 # Parameters
 beta = 20
 indices = [0]
@@ -27,11 +29,16 @@ accumulate_params['f'] = 200
 accumulate_params['l'] = 1000
 accumulate_params['make_histograms'] = True
 
+accumulate_cc_params = accumulate_params.copy()
+accumulate_cc_params['cc_update'] = True
+accumulate_cc_params['cc_update_cycle_length'] = 20
+
 good_chi_rel = 2.0
 good_chi_abs = np.inf
 
 cfs_cc_iterations = []
 
+# Monitoring function for compute_final_solution_cc()
 def monitor_f(c, AQ, ApD, AppB):
     if mpi.rank == 0:
         A_k, Q_k = AQ
@@ -54,7 +61,7 @@ cfs_cc_params['max_iter'] = 100
 cfs_cc_params['ew_penalty_coeff'] = 1
 cfs_cc_params['amp_penalty_max'] = 1e3
 cfs_cc_params['amp_penalty_divisor'] = 10
-cfs_cc_params['der_penalty_init'] = 1e-3
+cfs_cc_params['der_penalty_init'] = 0.1
 cfs_cc_params['der_penalty_coeff'] = 2.0
 cfs_cc_params['monitor'] = monitor_f
 
@@ -69,17 +76,6 @@ def print_master(msg):
     if mpi.rank == 0: print(msg)
     mpi.barrier()
 
-print_master("--- Prepare input ---")
-g_iw  = GfImFreq(beta = beta, n_points = n_iw, indices = indices)
-g_iw << SemiCircular(D)
-
-prng = np.random.RandomState(123456789)
-g_iw.data[:] += abs_error * 2*(prng.rand(*g_iw.data.shape) - 0.5)
-g_iw.data[:] = 0.5*(g_iw.data[:,:,:] + np.conj(g_iw.data[::-1,:,:]))
-
-S_iw = g_iw.copy()
-S_iw.data[:] = abs_error
-
 def make_output(cont):
     g_iw_rec = g_iw.copy()
     reconstruct(g_iw_rec, cont)
@@ -91,6 +87,31 @@ def make_output(cont):
 
     return {'g_iw_rec' : g_iw_rec, 'g_w' : g_w, 'g_tail' : g_tail}
 
+print_master("--- Prepare input ---")
+g_iw  = GfImFreq(beta = beta, n_points = n_iw, indices = indices)
+g_iw << SemiCircular(D)
+
+prng = np.random.RandomState(123456789)
+g_iw.data[:] += abs_error * 2*(prng.rand(*g_iw.data.shape) - 0.5)
+g_iw.data[:] = 0.5*(g_iw.data[:,:,:] + np.conj(g_iw.data[::-1,:,:]))
+
+S_iw = g_iw.copy()
+S_iw.data[:] = abs_error
+
+print_master("--- Save input data ---")
+if mpi.is_master_node():
+    with HDFArchive(arch_name, 'w') as arch:
+        arch.create_group('input')
+        gr = arch['input']
+        gr['abs_error'] = abs_error
+        gr['D'] = D
+        gr['g_iw'] = g_iw
+        gr['S_iw'] = S_iw
+
+#
+# CC updates disabled
+#
+
 print_master("--- Accumulate particular solutions ---")
 accumulate_time = time.perf_counter()
 cont = Som(g_iw, S_iw)
@@ -100,7 +121,8 @@ accumulate_time = time.perf_counter() - accumulate_time
 print_master("--- Run compute_final_solution() ---")
 cfs_time = time.perf_counter()
 chi2 = cont.compute_final_solution(good_chi_rel=good_chi_rel,
-                                   good_chi_abs=good_chi_abs)
+                                   good_chi_abs=good_chi_abs,
+                                   verbosity=1)
 cfs_time = time.perf_counter() - cfs_time
 
 print_master("--- Generate SOM output ---")
@@ -116,22 +138,15 @@ socc_output = make_output(cont)
 
 print_master("--- Save results ---")
 if mpi.is_master_node():
-    arch_name = 'consistent_constraints.np%d.h5' % mpi.world.size
-    with HDFArchive(arch_name, 'w') as arch:
-        arch.create_group('input')
-        # Save input data
-        input_gr = arch['input']
-        input_gr['abs_error'] = abs_error
-        input_gr['D'] = D
-        input_gr['g_iw'] = g_iw
-        input_gr['S_iw'] = S_iw
-        # accumulate()
-        arch['accumulate_params'] = cont.last_accumulate_parameters
-        arch['accumulate_time'] = accumulate_time
-        arch['histograms'] = cont.histograms
+    with HDFArchive(arch_name, 'a') as arch:
+        arch.create_group('cc_update_off')
+        gr = arch['cc_update_off']
+        gr['accumulate_params'] = cont.last_accumulate_parameters
+        gr['accumulate_time'] = accumulate_time
+        gr['histograms'] = cont.histograms
         # SOM output
-        arch.create_group('som_output')
-        som_output_gr = arch['som_output']
+        gr.create_group('som_output')
+        som_output_gr = gr['som_output']
         som_output_gr['params'] = {'good_chi_rel' : good_chi_rel,
                                    'good_chi_abs' : good_chi_abs}
         som_output_gr['chi2'] = chi2
@@ -140,10 +155,70 @@ if mpi.is_master_node():
         som_output_gr['g_w'] = som_output['g_w']
         som_output_gr['g_tail'] = som_output['g_tail']
         # SOCC output
-        arch.create_group('socc_output')
-        socc_output_gr = arch['socc_output']
-        del cfs_cc_params['monitor']
-        socc_output_gr['params'] = cfs_cc_params
+        gr.create_group('socc_output')
+        socc_output_gr = gr['socc_output']
+        socc_output_gr['params'] = \
+            dict(filter(lambda kv: kv[0] != 'monitor', cfs_cc_params.items()))
+        socc_output_gr['chi2'] = chi2_cc
+        socc_output_gr['elapsed_time'] = cfs_cc_time
+        socc_output_gr['g_iw_rec'] = socc_output['g_iw_rec']
+        socc_output_gr['g_w'] = socc_output['g_w']
+        socc_output_gr['g_tail'] = socc_output['g_tail']
+        socc_output_gr['iterations'] = cfs_cc_iterations
+
+#
+# CC updates enabled
+#
+
+cfs_cc_iterations.clear()
+
+print_master("--- Accumulate particular solutions with CC updates ---")
+accumulate_time = time.perf_counter()
+cont = Som(g_iw, S_iw)
+cont.accumulate(**accumulate_cc_params)
+accumulate_time = time.perf_counter() - accumulate_time
+
+print_master("--- Run compute_final_solution() ---")
+cfs_time = time.perf_counter()
+chi2 = cont.compute_final_solution(good_chi_rel=good_chi_rel,
+                                   good_chi_abs=good_chi_abs,
+                                   verbosity=1)
+cfs_time = time.perf_counter() - cfs_time
+
+print_master("--- Generate SOM output ---")
+som_output = make_output(cont)
+
+print_master("--- Run compute_final_solution_cc() ---")
+cfs_cc_time = time.perf_counter()
+chi2_cc = cont.compute_final_solution_cc(**cfs_cc_params)
+cfs_cc_time = time.perf_counter() - cfs_cc_time
+
+print_master("--- Generate SOCC output ---")
+socc_output = make_output(cont)
+
+print_master("--- Save results ---")
+if mpi.is_master_node():
+    with HDFArchive(arch_name, 'a') as arch:
+        arch.create_group('cc_update_on')
+        gr = arch['cc_update_on']
+        gr['accumulate_params'] = cont.last_accumulate_parameters
+        gr['accumulate_time'] = accumulate_time
+        gr['histograms'] = cont.histograms
+        # SOM output
+        gr.create_group('som_output')
+        som_output_gr = gr['som_output']
+        som_output_gr['params'] = {'good_chi_rel' : good_chi_rel,
+                                   'good_chi_abs' : good_chi_abs}
+        som_output_gr['chi2'] = chi2
+        som_output_gr['elapsed_time'] = cfs_time
+        som_output_gr['g_iw_rec'] = som_output['g_iw_rec']
+        som_output_gr['g_w'] = som_output['g_w']
+        som_output_gr['g_tail'] = som_output['g_tail']
+        # SOCC output
+        gr.create_group('socc_output')
+        socc_output_gr = gr['socc_output']
+        socc_output_gr['params'] = \
+            dict(filter(lambda kv: kv[0] != 'monitor', cfs_cc_params.items()))
         socc_output_gr['chi2'] = chi2_cc
         socc_output_gr['elapsed_time'] = cfs_cc_time
         socc_output_gr['g_iw_rec'] = socc_output['g_iw_rec']

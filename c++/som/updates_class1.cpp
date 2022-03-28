@@ -33,6 +33,7 @@ namespace som {
 //////////////////
 
 template <typename KernelType> double update_shift<KernelType>::attempt() {
+  eu::attempt_cc_update();
 
 #ifdef EXT_DEBUG
   std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>" << std::endl;
@@ -87,6 +88,7 @@ template <typename KernelType> double update_shift<KernelType>::attempt() {
 // Change of width without change of weight (elementary update B)
 template <typename KernelType>
 double update_change_width<KernelType>::attempt() {
+  eu::attempt_cc_update();
 
 #ifdef EXT_DEBUG
   std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>" << std::endl;
@@ -154,6 +156,7 @@ double update_change_width<KernelType>::attempt() {
 
 template <typename KernelType>
 double update_change_weight2<KernelType>::attempt() {
+  eu::attempt_cc_update();
 
 #ifdef EXT_DEBUG
   std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>" << std::endl;

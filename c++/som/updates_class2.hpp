@@ -38,16 +38,25 @@ class update_insert : public elementary_update<KernelType> {
 
 public:
   update_insert(mc_data<KernelType>& data,
-                triqs::mc_tools::random_generator& rng, cache_index& ci,
-                std::pair<double, double> energy_window, double width_min,
-                double weight_min, int max_rects)
+                triqs::mc_tools::random_generator& rng,
+                cache_index& ci,
+                std::shared_ptr<typename eu::cc_update_t> cc_update,
+                std::pair<double, double> energy_window,
+                double width_min,
+                double weight_min,
+                int max_rects)
      :
 #ifdef EXT_DEBUG
-     elementary_update<KernelType>(data, rng, ci, energy_window, width_min,
+     elementary_update<KernelType>(data,
+                                   rng,
+                                   ci,
+                                   cc_update,
+                                   energy_window,
+                                   width_min,
                                    weight_min)
      ,
 #else
-     elementary_update<KernelType>(data, rng, ci)
+     elementary_update<KernelType>(data, rng, ci, cc_update)
      ,
 #endif
      energy_window(std::move(energy_window))
@@ -73,16 +82,25 @@ class update_remove_shift : public elementary_update<KernelType> {
 
 public:
   update_remove_shift(mc_data<KernelType>& data,
-                      triqs::mc_tools::random_generator& rng, cache_index& ci,
+                      triqs::mc_tools::random_generator& rng,
+                      cache_index& ci,
+                      std::shared_ptr<typename eu::cc_update_t> cc_update,
                       std::pair<double, double> energy_window,
 #ifdef EXT_DEBUG
-                      double width_min, double weight_min)
-     : elementary_update<KernelType>(data, rng, ci, energy_window, width_min,
+                      double width_min,
+                      double weight_min)
+     : elementary_update<KernelType>(data,
+                                     rng,
+                                     ci,
+                                     cc_update,
+                                     energy_window,
+                                     width_min,
                                      weight_min)
      ,
 #else
-                      double, double)
-     : elementary_update<KernelType>(data, rng, ci)
+                      double,
+                      double)
+     : elementary_update<KernelType>(data, rng, ci, cc_update)
      ,
 #endif
      energy_window(std::move(energy_window)) {
@@ -106,16 +124,25 @@ class update_split_shift : public elementary_update<KernelType> {
 
 public:
   update_split_shift(mc_data<KernelType>& data,
-                     triqs::mc_tools::random_generator& rng, cache_index& ci,
-                     std::pair<double, double> energy_window, double width_min,
-                     double weight_min, int max_rects)
+                     triqs::mc_tools::random_generator& rng,
+                     cache_index& ci,
+                     std::shared_ptr<typename eu::cc_update_t> cc_update,
+                     std::pair<double, double> energy_window,
+                     double width_min,
+                     double weight_min,
+                     int max_rects)
      :
 #ifdef EXT_DEBUG
-     elementary_update<KernelType>(data, rng, ci, energy_window, width_min,
+     elementary_update<KernelType>(data,
+                                   rng,
+                                   ci,
+                                   cc_update,
+                                   energy_window,
+                                   width_min,
                                    weight_min)
      ,
 #else
-     elementary_update<KernelType>(data, rng, ci)
+     elementary_update<KernelType>(data, rng, ci, cc_update)
      ,
 #endif
      energy_window(std::move(energy_window))
@@ -139,16 +166,25 @@ class update_glue_shift : public elementary_update<KernelType> {
 
 public:
   update_glue_shift(mc_data<KernelType>& data,
-                    triqs::mc_tools::random_generator& rng, cache_index& ci,
+                    triqs::mc_tools::random_generator& rng,
+                    cache_index& ci,
+                    std::shared_ptr<typename eu::cc_update_t> cc_update,
                     std::pair<double, double> energy_window,
 #ifdef EXT_DEBUG
-                    double width_min, double weight_min)
-     : elementary_update<KernelType>(data, rng, ci, energy_window, width_min,
+                    double width_min,
+                    double weight_min)
+     : elementary_update<KernelType>(data,
+                                     rng,
+                                     ci,
+                                     cc_update,
+                                     energy_window,
+                                     width_min,
                                      weight_min)
      ,
 #else
-                    double, double)
-     : elementary_update<KernelType>(data, rng, ci)
+                    double,
+                    double)
+     : elementary_update<KernelType>(data, rng, ci, cc_update)
      ,
 #endif
      energy_window(std::move(energy_window)) {

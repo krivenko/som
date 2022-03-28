@@ -62,18 +62,17 @@ void worker_parameters_t::validate(observable_kind kind) const {
         "Maximum number of rectangles must be positive (got max_rects = " +
         to_string(max_rects) + ")");
 
-  if(min_rect_width <= 0 || min_rect_width >= 1)
+  if(min_rect_width < 0 || min_rect_width >= 1)
     fatal_error("min_rect_width = " + to_string(min_rect_width) +
-                " must be in ]0;1)");
+                " must be in [0;1[");
 
-  if(min_rect_weight <= 0 || min_rect_weight > 1)
+  if(min_rect_weight < 0 || min_rect_weight > 1)
     fatal_error("min_rect_weight = " + to_string(min_rect_weight) +
-                " must be in ]0;1]");
+                " must be in [0;1]");
 
-  if(t1 < 0 || t1 > t)
-    fatal_error("Number of updates in the first stage, t1 = " +
-                to_string(t1) + " must be in [0;t] = [0;" +
-                to_string(t) + "]");
+  if(t1 < -1 || t1 > t)
+    fatal_error("Number of updates in the first stage, t1 = " + to_string(t1) +
+                " must be in [0;t] = [0;" + to_string(t) + "]");
 
   if(distrib_d_max < 1)
     fatal_error("Parameter distrib_d_max = " + to_string(distrib_d_max) +
@@ -84,6 +83,60 @@ void worker_parameters_t::validate(observable_kind kind) const {
         "Proposal probability parameter gamma must be positive"
         " (got gamma = " +
         to_string(gamma) + ")");
+
+  if(cc_update) {
+    if(cc_update_cycle_length <= 0)
+      fatal_error("CC parameter cc_update_cycle_length must be positive, got " +
+                  to_string(cc_update_cycle_length));
+
+    if(cc_update_max_iter <= 0)
+      fatal_error("CC parameter cc_update_max_iter must be positive, got " +
+                  to_string(cc_update_max_iter));
+
+    if(cc_update_rect_norm_variation_tol <= 0)
+      fatal_error(
+          "CC parameter cc_update_rect_norm_variation_tol must be positive, "
+          "got " +
+          to_string(cc_update_rect_norm_variation_tol));
+
+    if(cc_update_height_penalty_max <= 0)
+      fatal_error(
+          "CC parameter cc_update_height_penalty_max must be positive, got " +
+          to_string(cc_update_height_penalty_max));
+
+    if(cc_update_height_penalty_divisor <= 1)
+      fatal_error(
+          "CC parameter cc_update_height_penalty_divisor must exceed 1.0, "
+          "got " +
+          to_string(cc_update_height_penalty_divisor));
+
+    if(cc_update_der_penalty_init <= 0)
+      fatal_error(
+          "CC parameter cc_update_der_penalty_init must be positive, got " +
+          to_string(cc_update_der_penalty_init));
+
+    if(cc_update_der_penalty_threshold <= 0)
+      fatal_error(
+          "CC parameter cc_update_der_penalty_threshold must be positive, "
+          "got " +
+          to_string(cc_update_der_penalty_threshold));
+
+    if(cc_update_der_penalty_increase_coeff <= 1)
+      fatal_error(
+          "CC parameter cc_update_der_penalty_increase_coeff must exceed 1.0, "
+          "got " +
+          to_string(cc_update_der_penalty_increase_coeff));
+
+    if(cc_update_der_penalty_limiter <= 1)
+      fatal_error(
+          "CC parameter cc_update_der_penalty_limiter must exceed 1.0, got " +
+          to_string(cc_update_der_penalty_limiter));
+
+    if(cc_update_rect_norm_variation_tol > min_rect_weight)
+      std::cout << "WARNING: cc_update_rect_norm_variation_tol should normally "
+                   "be set below min_rect_weight"
+                << std::endl;
+  }
 }
 
 } // namespace som

@@ -34,6 +34,7 @@ namespace som {
 
 // Adding a new rectangle (elementary update D)
 template <typename KernelType> double update_insert<KernelType>::attempt() {
+  eu::attempt_cc_update();
 
 #ifdef EXT_DEBUG
   std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>" << std::endl;
@@ -126,6 +127,7 @@ template <typename KernelType> double update_insert<KernelType>::attempt() {
 
 template <typename KernelType>
 double update_remove_shift<KernelType>::attempt() {
+  eu::attempt_cc_update();
 
 #ifdef EXT_DEBUG
   std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>" << std::endl;
@@ -210,6 +212,7 @@ double update_remove_shift<KernelType>::attempt() {
 
 template <typename KernelType>
 double update_split_shift<KernelType>::attempt() {
+  eu::attempt_cc_update();
 
 #ifdef EXT_DEBUG
   std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>" << std::endl;
@@ -338,6 +341,7 @@ double update_split_shift<KernelType>::attempt() {
 ///////////////////////
 
 template <typename KernelType> double update_glue_shift<KernelType>::attempt() {
+  eu::attempt_cc_update();
 
 #ifdef EXT_DEBUG
   std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>" << std::endl;

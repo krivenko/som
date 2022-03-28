@@ -39,10 +39,7 @@ using namespace triqs::mc_tools;
 
 // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
 dist_function::dist_function(random_generator& rng, int T, int T1, double d_max)
-   : rng(rng)
-   , T1_fixed(T1 != -1)
-   , T1_max(T1_fixed ? T1 : T)
-   , d_max(d_max) {
+   : rng(rng), T1_fixed(T1 != -1), T1_max(T1_fixed ? T1 : T), d_max(d_max) {
   reset();
 }
 
@@ -87,7 +84,9 @@ solution_worker<KernelType>::solution_worker(
           {{}, ci},
           0,
           0,
-          dist_function(mc.get_rng(), params.t, params.t1,
+          dist_function(mc.get_rng(),
+                        params.t,
+                        params.t1,
                         params.distrib_d_max),
           params.gamma}
    , kern(objf.get_kernel())
@@ -95,45 +94,91 @@ solution_worker<KernelType>::solution_worker(
    , norm(norm) // cppcheck-suppress selfInitialization
    , width_min(params.min_rect_width *
                (params.energy_window.second - params.energy_window.first))
-   , weight_min(params.min_rect_weight * norm) {
+   , weight_min(params.min_rect_weight * norm)
+   , cc_update(params.cc_update
+                   ? std::make_shared<cc_update_t>(
+                         data,
+                         mc.get_rng(),
+                         norm,
+                         energy_window,
+                         width_min,
+                         weight_min,
+                         params.cc_update_cycle_length,
+                         params.max_rects,
+                         params.cc_update_max_iter,
+                         params.cc_update_rect_norm_variation_tol,
+                         params.cc_update_height_penalty_max,
+                         params.cc_update_height_penalty_divisor,
+                         params.cc_update_der_penalty_init,
+                         params.cc_update_der_penalty_threshold,
+                         params.cc_update_der_penalty_increase_coeff,
+                         params.cc_update_der_penalty_limiter)
+                   : nullptr) {
 
   // Add all elementary updates
-  mc.add_move(update_shift<KernelType>(
-                  data, mc.get_rng(), ci, energy_window, width_min, weight_min),
+  mc.add_move(update_shift<KernelType>(data,
+                                       mc.get_rng(),
+                                       ci,
+                                       cc_update,
+                                       energy_window,
+                                       width_min,
+                                       weight_min),
               "update_shift",
               1.0);
-  mc.add_move(update_change_width<KernelType>(
-                  data, mc.get_rng(), ci, energy_window, width_min, weight_min),
+  mc.add_move(update_change_width<KernelType>(data,
+                                              mc.get_rng(),
+                                              ci,
+                                              cc_update,
+                                              energy_window,
+                                              width_min,
+                                              weight_min),
               "update_change_width",
               1.0);
-  mc.add_move(update_change_weight2<KernelType>(
-                  data, mc.get_rng(), ci, energy_window, width_min, weight_min),
+  mc.add_move(update_change_weight2<KernelType>(data,
+                                                mc.get_rng(),
+                                                ci,
+                                                cc_update,
+                                                energy_window,
+                                                width_min,
+                                                weight_min),
               "update_change_weight2",
               1.0);
   mc.add_move(update_insert<KernelType>(data,
                                         mc.get_rng(),
                                         ci,
+                                        cc_update,
                                         energy_window,
                                         width_min,
                                         weight_min,
                                         params.max_rects),
               "update_insert",
               1.0);
-  mc.add_move(update_remove_shift<KernelType>(
-                  data, mc.get_rng(), ci, energy_window, width_min, weight_min),
+  mc.add_move(update_remove_shift<KernelType>(data,
+                                              mc.get_rng(),
+                                              ci,
+                                              cc_update,
+                                              energy_window,
+                                              width_min,
+                                              weight_min),
               "update_remove_shift",
               1.0);
   mc.add_move(update_split_shift<KernelType>(data,
                                              mc.get_rng(),
                                              ci,
+                                             cc_update,
                                              energy_window,
                                              width_min,
                                              weight_min,
                                              params.max_rects),
               "update_split_shift",
               1.0);
-  mc.add_move(update_glue_shift<KernelType>(
-                  data, mc.get_rng(), ci, energy_window, width_min, weight_min),
+  mc.add_move(update_glue_shift<KernelType>(data,
+                                            mc.get_rng(),
+                                            ci,
+                                            cc_update,
+                                            energy_window,
+                                            width_min,
+                                            weight_min),
               "update_glue_shift",
               1.0);
 
@@ -230,8 +275,16 @@ void solution_worker<KernelType>::run(configuration& conf) {
   swap(data.global_conf, conf);
   kern.cache_swap(data.global_conf, conf);
 
-  // NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
-  if(verbose_mc) mc.collect_results(MPI_COMM_SELF);
+  if(verbose_mc) {
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
+    mc.collect_results(MPI_COMM_SELF);
+    if(cc_update) {
+      std::cout << "Times update_consistent_constraints has been proposed: "
+                << cc_update->get_n_proposed() << std::endl;
+      std::cout << "Acceptance rate for update_consistent_constraints: "
+                << cc_update->get_acceptance_rate() << std::endl;
+    }
+  }
 
   // Stopped prematurely
   if(res_code) throw(stopped(res_code));

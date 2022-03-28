@@ -40,13 +40,16 @@ template <typename KernelType> class objective_function {
   rhs_type const& error_bars;
 
 public:
-  objective_function(KernelType const& kern, rhs_type const& rhs,
+  objective_function(KernelType const& kern,
+                     rhs_type const& rhs,
                      rhs_type const& error_bars);
 
   double operator()(configuration const& c) const;
   double operator()(config_update const& cu) const;
 
   [[nodiscard]] KernelType const& get_kernel() const { return kern; }
+  [[nodiscard]] rhs_type const& get_rhs() const { return rhs; }
+  [[nodiscard]] rhs_type const& get_error_bars() const { return error_bars; }
 };
 
 EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL(objective_function)

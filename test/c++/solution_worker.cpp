@@ -30,6 +30,8 @@ using triqs::utility::clock_callback;
 
 struct solution_worker_test : public ::testing::Test {
 protected:
+  h5::file arch;
+
   double beta = {};
   triqs::mesh::imtime mesh;
   array<double, 1> g_tau, s_tau;
@@ -38,8 +40,7 @@ protected:
       objective_function<kernel<FermionGf, triqs::mesh::imtime>>;
 
 public:
-  solution_worker_test() {
-    h5::file arch("solution_worker.ref.h5", 'r');
+  solution_worker_test() : arch("solution_worker.ref.h5", 'r') {
 
     h5_read(arch, "beta", beta);
     h5_read(arch, "g_tau", g_tau);
@@ -66,7 +67,6 @@ TEST_F(solution_worker_test, RandomConfig) {
   auto solution = worker(10);
 
   configuration solution_ref(ci);
-  h5::file arch("solution_worker.ref.h5", 'r');
   h5_read(arch, "RandomConfig_output", solution_ref);
 
   EXPECT_EQ(solution_ref, solution);
@@ -86,7 +86,6 @@ TEST_F(solution_worker_test, StartConfig) {
   solution_worker<kernel<FermionGf, triqs::mesh::imtime>> worker(
       of, 1.0, ci, params, clock_callback(-1), 10);
 
-  h5::file arch("solution_worker.ref.h5", 'r');
   configuration init_config(ci);
   h5_read(arch, "StartConfig_input", init_config);
 
@@ -94,6 +93,57 @@ TEST_F(solution_worker_test, StartConfig) {
 
   configuration solution_ref(ci);
   h5_read(arch, "StartConfig_output", solution_ref);
+
+  EXPECT_EQ(solution_ref, solution);
+}
+
+TEST_F(solution_worker_test, RandomConfig_CC) {
+  cache_index ci;
+  kernel<FermionGf, triqs::mesh::imtime> kern(mesh);
+  obj_function of(kern, g_tau, s_tau);
+
+  auto params = worker_parameters_t({-3.0, 3.0});
+  params.random_seed = 963162;
+  params.t = 1000;
+  params.t1 = 800;
+  params.min_rect_width = 0.001;
+  params.min_rect_weight = 0.001;
+  params.cc_update = true;
+
+  solution_worker<kernel<FermionGf, triqs::mesh::imtime>> worker(
+      of, 1.0, ci, params, clock_callback(-1), 10);
+
+  auto solution = worker(10);
+
+  configuration solution_ref(ci);
+  h5_read(arch, "RandomConfig_output_CC", solution_ref);
+
+  EXPECT_EQ(solution_ref, solution);
+}
+
+TEST_F(solution_worker_test, StartConfig_CC) {
+  cache_index ci;
+  kernel<FermionGf, triqs::mesh::imtime> kern(mesh);
+  obj_function of(kern, g_tau, s_tau);
+
+  auto params = worker_parameters_t({-3.0, 3.0});
+  params.random_seed = 963162;
+  params.t = 1000;
+  params.t1 = 800;
+  params.min_rect_width = 0.001;
+  params.min_rect_weight = 0.001;
+  params.cc_update = true;
+
+  solution_worker<kernel<FermionGf, triqs::mesh::imtime>> worker(
+      of, 1.0, ci, params, clock_callback(-1), 10);
+
+  configuration init_config(ci);
+  h5_read(arch, "StartConfig_input", init_config);
+
+  auto solution = worker(init_config);
+
+  configuration solution_ref(ci);
+  h5_read(arch, "StartConfig_output_CC", solution_ref);
 
   EXPECT_EQ(solution_ref, solution);
 }

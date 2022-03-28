@@ -102,6 +102,7 @@ elementary_update<KernelType>::elementary_update(
     mc_data<KernelType>& data,
     random_generator& rng,
     cache_index& ci,
+    std::shared_ptr<cc_update_t> cc_update,
     std::pair<double, double> energy_window,
     double width_min,
     double weight_min)
@@ -113,15 +114,18 @@ elementary_update<KernelType>::elementary_update(
    , width_min(width_min)
    , weight_min(weight_min)
 #else
-elementary_update<KernelType>::elementary_update(mc_data<KernelType>& data,
-                                                 random_generator& rng,
-                                                 cache_index& ci)
+elementary_update<KernelType>::elementary_update(
+    mc_data<KernelType>& data,
+    random_generator& rng,
+    cache_index& ci,
+    std::shared_ptr<cc_update_t> cc_update)
    : data(data)
    , rng(rng)
    , ci(ci)
    , kern(data.objf.get_kernel())
 #endif
    , dist(rng, data.gamma)
+   , cc_update(std::move(cc_update))
    , update{config_update(data.temp_conf, ci),
             config_update(data.temp_conf, ci),
             config_update(data.temp_conf, ci)}

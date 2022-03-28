@@ -54,6 +54,9 @@ struct worker_parameters_t {
   /// Number of elementary updates per global update (:math:`T`).
   int t = 50;
 
+  /// Enable Consistent Constraints updates.
+  bool cc_update = false;
+
   /////////////////////////
   // Fine tuning options //
   /////////////////////////
@@ -87,6 +90,49 @@ struct worker_parameters_t {
 
   /// Proposal probability parameter :math:`\gamma`.
   double gamma = 2;
+
+  /// CC update: Number of proposed elementary updates between two successive
+  /// CC updates (only during stage A of a global update).
+  int cc_update_cycle_length = 10;
+
+  /// CC update: Maximum allowed number of height adjustment iterations.
+  int cc_update_max_iter = 30;
+
+  /// CC update: The height adjustment procedure stops when variation of every
+  /// rectangle norm between two consecutive iterations is below this value.
+  /// This parameter is measured in units of the requested solution norm.
+  double cc_update_rect_norm_variation_tol = 1e-3;
+
+  /// CC update: Maximum value of the regularization parameters :math:`Q_0(k)`
+  /// that penalize negative heights.
+  /// Measured in units of (energy window width) / (solution norm).
+  double cc_update_height_penalty_max = 1e3;
+
+  /// CC update: Divisor used to reduce the regularization parameters
+  /// :math:`Q_0(k)` that penalize negative heights.
+  double cc_update_height_penalty_divisor = 10;
+
+  /// CC update: Initial value of the regularization parameters :math:`Q_1(k)`
+  /// and :math:`Q_2(k)` that penalize large derivatives of a solution.
+  /// Measured in units of (energy window width)^2 / (solution norm) for
+  /// :math:`Q_1(k)` and in units of (energy window width)^3 / (solution norm)
+  /// for :math:`Q_2(k)`.
+  double cc_update_der_penalty_init = 1;
+
+  /// CC update: Sets the threshold value of the products :math:`|Q_1(k) A'(k)|`
+  /// and :math:`Q_2(k) A''(k)`, above which derivative regularization
+  /// parameters :math:`Q_1(k)` and :math:`Q_2(k)` need to be reduced.
+  double cc_update_der_penalty_threshold = 0.1;
+
+  /// CC update: Coefficient used to increase the regularization parameters
+  /// :math:`Q_1(k)` and :math:`Q_2(k)` that penalize large derivatives of
+  /// a solution.
+  double cc_update_der_penalty_increase_coeff = 2;
+
+  /// CC update: Coefficient that limits growth of the regularization parameters
+  /// :math:`Q_1(k)` and :math:`Q_2(k)` that penalize large derivatives of
+  /// a solution.
+  double cc_update_der_penalty_limiter = 1e3;
 
   worker_parameters_t() = default;
   explicit worker_parameters_t(std::pair<double, double> energy_window)
