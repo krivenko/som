@@ -76,6 +76,11 @@ struct worker_parameters_t {
   /// Minimal weight of a rectangle, in units of the requested solution norm.
   double min_rect_weight = 1e-3;
 
+  /// Number of elementary updates in the first stage of a global update.
+  /// When set to -1 (default), the number of elementary updates will be chosen
+  /// randomly for each global update from the :math:`[1; T[` range.
+  int t1 = -1;
+
   /// Maximal parameter of the power-law distribution function for the
   /// Metropolis algorithm.
   double distrib_d_max = 2;

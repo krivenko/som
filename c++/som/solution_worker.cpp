@@ -38,18 +38,26 @@ using namespace triqs::mc_tools;
 ///////////////////
 
 // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
-dist_function::dist_function(random_generator& rng, int T, double d_max)
-   : rng(rng), T(T), d_max(d_max) {
+dist_function::dist_function(random_generator& rng, int T, int T1, double d_max)
+   : rng(rng)
+   , T1_fixed(T1 != -1)
+   , T1_max(T1_fixed ? T1 : T)
+   , d_max(d_max) {
   reset();
 }
 
 double dist_function::operator()(double x) const {
-  return std::pow(x, step < T1 ? 1 + d1 : 1 + d2);
+  return std::pow(x, in_stage_a() ? 1 + d1 : 1 + d2);
 }
+
+bool dist_function::in_stage_a() const { return step < T1; }
 
 void dist_function::reset() {
   step = 0;
-  T1 = int(rng(1, T));
+  if(T1_fixed)
+    T1 = T1_max;
+  else
+    T1 = int(rng(1, T1_max));
   d1 = rng(1);
   d2 = rng(1, d_max);
 }
@@ -79,7 +87,8 @@ solution_worker<KernelType>::solution_worker(
           {{}, ci},
           0,
           0,
-          dist_function(mc.get_rng(), params.t, params.distrib_d_max),
+          dist_function(mc.get_rng(), params.t, params.t1,
+                        params.distrib_d_max),
           params.gamma}
    , kern(objf.get_kernel())
    , energy_window(params.energy_window)

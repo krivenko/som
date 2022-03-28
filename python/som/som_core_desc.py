@@ -175,6 +175,11 @@ def add_worker_parameters(conv):
                     initializer = """1e-3""",
                     doc = """Minimal weight of a rectangle, in units of the requested solution norm.""")
 
+    conv.add_member(c_name = "t1",
+                    c_type = "int",
+                    initializer = """-1""",
+                    doc = """Number of elementary updates in the first stage of a global update.""")
+
     conv.add_member(c_name = "distrib_d_max",
                     c_type = "double",
                     initializer = """2""",
@@ -228,6 +233,10 @@ docstring_worker_params_fine = """
 | min_rect_width        | float         | 1e-3                          | Minimal width of a rectangle, in units of the energy window width.                                    |
 +-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
 | min_rect_weight       | float         | 1e-3                          | Minimal weight of a rectangle, in units of the requested solution norm.                               |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| t1                    | int           | -1                            | Number of elementary updates in the first stage of a global update.                                   |
+|                       |               |                               | When set to -1, the number of elementary updates will be chosen randomly for each global update from  |
+|                       |               |                               | the :math:`[1; T[` range.                                                                             |
 +-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
 | distrib_d_max         | float         | 2                             | Maximal parameter of the power-law distribution function for the Metropolis algorithm.                |
 +-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+

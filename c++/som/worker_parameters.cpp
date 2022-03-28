@@ -64,11 +64,16 @@ void worker_parameters_t::validate(observable_kind kind) const {
 
   if(min_rect_width <= 0 || min_rect_width >= 1)
     fatal_error("min_rect_width = " + to_string(min_rect_width) +
-                " must be in (0;1)");
+                " must be in ]0;1)");
 
   if(min_rect_weight <= 0 || min_rect_weight > 1)
     fatal_error("min_rect_weight = " + to_string(min_rect_weight) +
-                " must be in (0;1]");
+                " must be in ]0;1]");
+
+  if(t1 < 0 || t1 > t)
+    fatal_error("Number of updates in the first stage, t1 = " +
+                to_string(t1) + " must be in [0;t] = [0;" +
+                to_string(t) + "]");
 
   if(distrib_d_max < 1)
     fatal_error("Parameter distrib_d_max = " + to_string(distrib_d_max) +

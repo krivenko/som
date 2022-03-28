@@ -57,21 +57,24 @@ struct stopped : public std::exception {
   }
 };
 
-// Distribution function Z(x), see eq. (46)
+// Distribution function Z(x), see Eq. (46)
 class dist_function {
 
   triqs::mc_tools::random_generator& rng;
 
-  const int T;
+  const bool T1_fixed;
+  const int T1_max;
   int T1;
   const double d_max;
   double d1, d2;
   int step;
 
 public:
-  dist_function(triqs::mc_tools::random_generator& rng, int T, double d_max);
+  dist_function(triqs::mc_tools::random_generator& rng, int T, int T1,
+                double d_max);
 
   double operator()(double x) const;
+  [[nodiscard]] bool in_stage_a() const;
   void reset();
   void operator++();
 };
