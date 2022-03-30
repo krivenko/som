@@ -38,6 +38,7 @@ module.add_preamble("""
 #include <cpp2py/converters/tuple.hpp>
 #include <cpp2py/converters/variant.hpp>
 #include <cpp2py/converters/vector.hpp>
+#include <cpp2py/converters/function.hpp>
 #include <nda_py/cpp2py_converters.hpp>
 #include <triqs/cpp2py_converters/gf.hpp>
 using namespace triqs::gfs;
@@ -485,6 +486,17 @@ compute_final_solution_cc_params_conv.add_member(c_name = "svd_rcond",
                                                  doc = """In the minimization of the CC quadratic form, a singular value :math:`\sigma_j` of its matrix is
 treated as zero if :math:`\sigma_j / \sigma_\mathrm{max}` is below this threshold. By default, the threshold is equal to the machine precision.""")
 
+compute_final_solution_cc_params_conv.add_member(c_name = "monitor",
+                                                 c_type = "som::final_solution_cc_parameters_t::monitor_t",
+                                                 initializer = """{}""",
+                                                 doc = """Monitor function called at each parameter adjustment iteration.
+It takes the following arguments,
+- Current list of expansion coefficients :math:`c`;
+- Amplitudes of the spectrum and respective regularization parameters as a :math:`(A_k, Q_k)` pair;
+- Derivatives of the spectrum and respective regularization parameters as a :math:`(A'_k, D_k)` pair;
+- Second derivatives of the spectrum and respective regularization parameters as a :math:`(A''_k, B_k)` pair.
+Returning `True` from the function stops the adjustment procedure.""")
+
 module.add_converter(compute_final_solution_cc_params_conv)
 
 #
@@ -541,6 +553,14 @@ Compute the final solution using the SOCC protocol
 | svd_rcond             | float         | -1                            | In the minimization of the CC quadratic form, a singular value :math:`\sigma_j` of its matrix is      |
 |                       |               |                               | treated as zero if :math:`\sigma_j / \sigma_\mathrm{{max}}` is below this threshold.                    |
 |                       |               |                               | By default, the threshold is equal to the machine precision.                                          |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| monitor               | function      | --                            | Monitor function called at each parameter adjustment iteration. It takes 4 arguments,                 |
+|                       |               |                               | - Current list of expansion coefficients :math:`c`;                                                   |
+|                       |               |                               | - Amplitudes of the spectrum and respective regularization parameters as a :math:`(A_k, Q_k)` pair;   |
+|                       |               |                               | - Derivatives of the spectrum and respective regularization parameters as a :math:`(A'_k, D_k)` pair; |
+|                       |               |                               | - Second derivatives of the spectrum and respective regularization parameters as a                    |
+|                       |               |                               |   :math:`(A''_k, B_k)` pair.                                                                          |
+|                       |               |                               | Returning `True` from the function stops the adjustment procedure.                                    |
 +-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
 """)
 

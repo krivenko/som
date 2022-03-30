@@ -30,6 +30,22 @@ accumulate_params['make_histograms'] = True
 good_chi_rel = 2.0
 good_chi_abs = np.inf
 
+cfs_cc_iterations = []
+
+def monitor_f(c, AQ, ApD, AppB):
+    if mpi.rank == 0:
+        A_k, Q_k = AQ
+        Ap_k, D_k = ApD
+        App_k, B_k = AppB
+        cfs_cc_iterations.append({'c': c,
+                                  'A_k': A_k,
+                                  'Q_k': Q_k,
+                                  'Ap_k': Ap_k,
+                                  'D_k': D_k,
+                                  'App_k': App_k,
+                                  'B_k': B_k})
+    return False
+
 cfs_cc_params = {'refreq_mesh' : refreq_mesh,
                  'good_chi_rel' : good_chi_rel,
                  'good_chi_abs' : good_chi_abs}
@@ -40,6 +56,7 @@ cfs_cc_params['amp_penalty_max'] = 1e6
 cfs_cc_params['amp_penalty_divisor'] = 100
 cfs_cc_params['der_penalty_init'] = 1e-3
 cfs_cc_params['der_penalty_coeff'] = 2.0
+cfs_cc_params['monitor'] = monitor_f
 
 # SOCC default model
 w = np.array([float(w) for w in refreq_mesh])
@@ -50,6 +67,7 @@ cfs_cc_params['default_model_weights'] = 1e-4 * np.ones(n_w)
 
 def print_master(msg):
     if mpi.rank == 0: print(msg)
+    mpi.barrier()
 
 print_master("--- Prepare input ---")
 g_iw  = GfImFreq(beta = beta, n_points = n_iw, indices = indices)
@@ -98,7 +116,8 @@ socc_output = make_output(cont)
 
 print_master("--- Save results ---")
 if mpi.is_master_node():
-    with HDFArchive('consistent_constraints.h5', 'w') as arch:
+    arch_name = 'consistent_constraints.np%d.h5' % mpi.world.size
+    with HDFArchive(arch_name, 'w') as arch:
         arch.create_group('input')
         # Save input data
         input_gr = arch['input']
@@ -123,9 +142,11 @@ if mpi.is_master_node():
         # SOCC output
         arch.create_group('socc_output')
         socc_output_gr = arch['socc_output']
+        del cfs_cc_params['monitor']
         socc_output_gr['params'] = cfs_cc_params
         socc_output_gr['chi2'] = chi2_cc
         socc_output_gr['elapsed_time'] = cfs_cc_time
         socc_output_gr['g_iw_rec'] = socc_output['g_iw_rec']
         socc_output_gr['g_w'] = socc_output['g_w']
         socc_output_gr['g_tail'] = socc_output['g_tail']
+        socc_output_gr['iterations'] = cfs_cc_iterations

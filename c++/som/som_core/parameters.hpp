@@ -21,6 +21,7 @@
 #pragma once
 
 #include <cmath>
+#include <functional>
 #include <utility>
 #include <variant>
 
@@ -160,6 +161,24 @@ struct final_solution_cc_parameters_t {
   /// :math:`\sigma_j / \sigma_\mathrm{max}` is below this threshold.
   /// By default, the threshold is equal to the machine precision.
   double svd_rcond = -1;
+
+  using monitor_t = std::function<bool(
+      nda::vector<double>,
+      std::pair<nda::array<double, 1>, nda::array<double, 1>>,
+      std::pair<nda::array<double, 1>, nda::array<double, 1>>,
+      std::pair<nda::array<double, 1>, nda::array<double, 1>>)>;
+
+  /// Monitor function called at each parameter adjustment iteration.
+  /// It takes the following arguments,
+  /// - Current list of expansion coefficients :math:`c`;
+  /// - Amplitudes of the spectral function and respective regularization
+  ///   parameters as a :math:`(A_k, Q_k)` pair;
+  /// - Derivatives of the spectral function and respective regularization
+  ///   parameters as a :math:`(A'_k, D_k)` pair;
+  /// - Second derivatives of the spectral function and respective
+  ///   regularization parameters as a :math:`(A''_k, B_k)` pair.
+  /// Returning `true` from the function stops the adjustment procedure.
+  monitor_t monitor;
 
   final_solution_cc_parameters_t() = default;
   explicit final_solution_cc_parameters_t(triqs::mesh::refreq refreq_mesh)

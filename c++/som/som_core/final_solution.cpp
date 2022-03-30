@@ -400,14 +400,6 @@ vector<double> cc_protocol(
           << "    Effective rank of the matrix of the CC quadratic form is "
           << O_mat_rank << std::endl;
 
-    //
-    // Update regularization parameters
-    //
-
-    DD *= p.der_penalty_coeff;
-    D_k *= p.der_penalty_coeff;
-    B_k *= p.der_penalty_coeff;
-
     // Linear combination of particular solutions: Rank-local stage
     if(my_J != 0) {
       nda::clef::placeholder<0> j_;
@@ -427,6 +419,42 @@ vector<double> cc_protocol(
     Ap_k = mpi::all_reduce(Ap_k, comm);
     App_k = mpi::all_reduce(App_k, comm);
 
+    double diff = std::abs(sum(c) - 1);
+
+    if(p.monitor) {
+      bool stop = p.monitor(c, {A_k, Q_k}, {Ap_k, D_k}, {App_k, B_k});
+      if(stop) {
+        if(p.verbosity >= 1) {
+          double sum_abs = sum(abs(c));
+          mpi_cout(comm)
+              << "  Monitor function returned true, stopping iterations"
+              << ": |sum(c) - 1| = " << diff << ", sum(abs(c)) = " << sum_abs
+              << std::endl;
+        }
+        break;
+      }
+    }
+
+    if(p.verbosity >= 1) {
+      double sum_abs = sum(abs(c));
+      mpi_cout(comm) << "  End of iteration " << (iter + 1)
+                     << ": |sum(c) - 1| = " << diff
+                     << ", sum(abs(c)) = " << sum_abs << std::endl;
+    }
+
+    if(diff < convergence_tol) {
+      if(p.verbosity >= 1) mpi_cout(comm) << "Convergence reached" << std::endl;
+      break;
+    }
+
+    //
+    // Update regularization parameters
+    //
+
+    DD *= p.der_penalty_coeff;
+    D_k *= p.der_penalty_coeff;
+    B_k *= p.der_penalty_coeff;
+
     // Update Q
     for(auto k : range(A_k.size())) {
       if(A_k(k) < 0)
@@ -445,19 +473,6 @@ vector<double> cc_protocol(
     for(auto k : range(App_k.size())) {
       double val = std::abs(App_k(k));
       if(B_k(k) * val > DD) B_k(k) = DD / val;
-    }
-
-    double diff = std::abs(sum(c) - 1);
-    if(p.verbosity >= 1) {
-      double sum_abs = sum(abs(c));
-      mpi_cout(comm) << "  End of iteration " << (iter + 1)
-                     << ": |sum(c) - 1| = " << diff
-                     << ", sum(abs(c)) = " << sum_abs << std::endl;
-    }
-
-    if(diff < convergence_tol) {
-      if(p.verbosity >= 1) mpi_cout(comm) << "Convergence reached" << std::endl;
-      break;
     }
   }
 
