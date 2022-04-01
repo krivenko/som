@@ -279,7 +279,7 @@ void update_O_mat(array<double, 2>& A_j_local_block,
       for(auto j2_local : range(J2)) {
         auto j2 = index_map(j_block2, j2_local);
 
-        O_mat(j1, j2) += sum(Q_k * A_j_block1(j1_local, range()) *
+        O_mat(j1, j2) += sum(Q_k * Q_k * A_j_block1(j1_local, range()) *
                              A_j_block2(j2_local, range()));
         O_mat(j1, j2) += sum(D_k * D_k * Ap_j_block1(j1_local, range()) *
                              Ap_j_block2(j2_local, range()));

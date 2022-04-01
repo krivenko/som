@@ -142,11 +142,11 @@ struct final_solution_cc_parameters_t {
 
   /// Maximum value of the regularization parameter that penalizes
   /// negative values of the spectral function.
-  double amp_penalty_max = 1e6;
+  double amp_penalty_max = 1e3;
 
   /// Divisor used to reduce the regularization parameter that penalizes
   /// negative values of the spectral function.
-  double amp_penalty_divisor = 100;
+  double amp_penalty_divisor = 10;
 
   /// Initial value of the regularization parameters that penalize large
   /// derivatives of the solution.

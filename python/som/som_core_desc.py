@@ -462,12 +462,12 @@ compute_final_solution_cc_params_conv.add_member(c_name = "unity_sum_coeff",
 
 compute_final_solution_cc_params_conv.add_member(c_name = "amp_penalty_max",
                                                  c_type = "double",
-                                                 initializer = """1e6""",
+                                                 initializer = """1e3""",
                                                  doc = """Maximum value of the regularization parameter that penalizes negative values of the spectral function.""")
 
 compute_final_solution_cc_params_conv.add_member(c_name = "amp_penalty_divisor",
                                                  c_type = "double",
-                                                 initializer = """100""",
+                                                 initializer = """10""",
                                                  doc = """Divisor used to reduce the regularization parameter that penalizes negative values of the spectral function.""")
 
 compute_final_solution_cc_params_conv.add_member(c_name = "der_penalty_init",
@@ -538,10 +538,10 @@ Compute the final solution using the SOCC protocol
 {docstring_params_table_header}
 | unity_sum_coeff       | float         | 1e6                           | Coefficient of the term that enforces the unity sum constraint (:math:`\mathcal{{U}}`).                 |
 +-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
-| amp_penalty_max       | float         | 1e6                           | Maximum value of the regularization parameter that penalizes negative values of                       |
+| amp_penalty_max       | float         | 1e3                           | Maximum value of the regularization parameter that penalizes negative values of                       |
 |                       |               |                               | the spectral function (:math:`\mathcal{{Q}}`).                                                          |
 +-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
-| amp_penalty_divisor   | float         | 100                           | Divisor used to reduce the regularization parameter that penalizes negative values of                 |
+| amp_penalty_divisor   | float         | 10                            | Divisor used to reduce the regularization parameter that penalizes negative values of                 |
 |                       |               |                               | the spectral function.                                                                                |
 +-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
 | der_penalty_init      | float         | 1e-3                          | Initial value of the regularization parameters that penalize large derivatives of the solution        |
