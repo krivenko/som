@@ -222,7 +222,8 @@ void h5_read(h5::group gr, std::string const& name, configuration& c) {
 
 configuration
 make_nonoverlapping(configuration const& c,
-                    std::pair<double, double> const& energy_window) {
+                    std::pair<double, double> const& energy_window,
+                    double width_min) {
   std::set<double> boundaries;
   for(auto const& r : c.rects) {
     boundaries.emplace(r.center - r.width / 2);
@@ -237,8 +238,9 @@ make_nonoverlapping(configuration const& c,
   auto it_left = boundaries.begin();
   auto it_right = boundaries.begin();
   for(++it_right; it_right != boundaries.end(); ++it_left, ++it_right) {
-    double center = (*it_left + *it_right) / 2;
     double width = *it_right - *it_left;
+    if(width < width_min) continue;
+    double center = (*it_left + *it_right) / 2;
     double height = c(center);
     if(c.cache_ptr)
       nonoverlapping.insert(

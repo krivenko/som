@@ -123,6 +123,15 @@ TEST_F(configuration_test, make_nonoverlapping) {
                     ci);
   auto nonoverlapping = make_nonoverlapping(conf, {-3.0, 5.0});
   EXPECT_EQ(nonoverlapping, ref);
+
+  configuration ref_width_min({{-1.75, 1.5, 1.0, ci},
+                               {-0.5, 1.0, 4.0, ci},
+                               {1.1, 2.2, 1.0, ci},
+                               {2.85, 1.3, 3.0, ci},
+                               {4.5, 1.0, 0.0, ci}},
+                              ci);
+  auto nonoverlapping_width_min = make_nonoverlapping(conf, {-3.0, 5.0}, 0.6);
+  EXPECT_EQ(nonoverlapping_width_min, ref_width_min);
 }
 
 TEST_F(configuration_test, strip_rect_heights) {

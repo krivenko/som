@@ -133,12 +133,10 @@ public:
   [[nodiscard]] const_iterator cbegin() const { return rects.cbegin(); }
   [[nodiscard]] const_iterator cend() const { return rects.cend(); }
 
-  // Convert a given configuration into a non-overlapping configuration of
-  // rectangles with possibly zero heights.
-  // (Section II.A of O. Goulko et al. Phys. Rev. B 95, 014102 (2017)).
   friend configuration
   make_nonoverlapping(configuration const& c,
-                      std::pair<double, double> const& energy_window);
+                      std::pair<double, double> const& energy_window,
+                      double);
 
   // stream insertion
   friend std::ostream& operator<<(std::ostream& os, configuration const& c);
@@ -169,5 +167,15 @@ public:
   friend void h5_read(h5::group gr, std::string const& name, configuration& c);
   static configuration h5_read_construct(h5::group gr, std::string const& name);
 };
+
+// Convert a given configuration into a non-overlapping configuration of
+// rectangles with possibly zero heights.
+// (Section II.A of O. Goulko et al. Phys. Rev. B 95, 014102 (2017)).
+// Argument width_min can be used to omit narrow rectangles from
+// the resulting non-overlapping configuration.
+configuration
+make_nonoverlapping(configuration const& c,
+                    std::pair<double, double> const& energy_window,
+                    double width_min = 0);
 
 } // namespace som
