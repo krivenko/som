@@ -137,8 +137,9 @@ struct final_solution_cc_parameters_t {
   /// Maximum allowed number of parameter adjustment iterations.
   int max_iter = 20;
 
-  /// Coefficient of the term that enforces the unity sum constraint.
-  double unity_sum_coeff = 1e6;
+  /// Coefficient of the term that penalizes large deviations from the
+  /// equal-weight superposition.
+  double ew_penalty_coeff = 1;
 
   /// Maximum value of the regularization parameter that penalizes
   /// negative values of the spectral function.
@@ -149,18 +150,12 @@ struct final_solution_cc_parameters_t {
   double amp_penalty_divisor = 10;
 
   /// Initial value of the regularization parameters that penalize large
-  /// derivatives of the solution.
+  /// derivatives of the spectral function.
   double der_penalty_init = 1e-3;
 
   /// Coefficient used to increase the regularization parameters that penalize
-  /// large derivatives of the solution.
+  /// large derivatives of the spectral function.
   double der_penalty_coeff = 2.0;
-
-  /// In the minimization of the CC quadratic form, a singular value
-  /// :math:`\sigma_j` of its matrix is treated as zero if
-  /// :math:`\sigma_j / \sigma_\mathrm{max}` is below this threshold.
-  /// By default, the threshold is equal to the machine precision.
-  double svd_rcond = -1;
 
   using monitor_t = std::function<bool(
       nda::vector<double>,

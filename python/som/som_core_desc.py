@@ -455,10 +455,11 @@ compute_final_solution_cc_params_conv.add_member(c_name = "max_iter",
                                                  c_type = "int",
                                                  initializer = """20""",
                                                  doc = """Maximum allowed number of parameter adjustment iterations.""")
-compute_final_solution_cc_params_conv.add_member(c_name = "unity_sum_coeff",
+
+compute_final_solution_cc_params_conv.add_member(c_name = "ew_penalty_coeff",
                                                  c_type = "double",
-                                                 initializer = """1e6""",
-                                                 doc = """Coefficient of the term that enforces the unity sum constraint.""")
+                                                 initializer = """1""",
+                                                 doc = """Coefficient of the term that penalizes large deviations from the equal-weight superposition.""")
 
 compute_final_solution_cc_params_conv.add_member(c_name = "amp_penalty_max",
                                                  c_type = "double",
@@ -479,12 +480,6 @@ compute_final_solution_cc_params_conv.add_member(c_name = "der_penalty_coeff",
                                                  c_type = "double",
                                                  initializer = """2.0""",
                                                  doc = """Coefficient used to increase the regularization parameters that penalize large derivatives of the solution.""")
-
-compute_final_solution_cc_params_conv.add_member(c_name = "svd_rcond",
-                                                 c_type = "double",
-                                                 initializer = """-1""",
-                                                 doc = """In the minimization of the CC quadratic form, a singular value :math:`\sigma_j` of its matrix is
-treated as zero if :math:`\sigma_j / \sigma_\mathrm{max}` is below this threshold. By default, the threshold is equal to the machine precision.""")
 
 compute_final_solution_cc_params_conv.add_member(c_name = "monitor",
                                                  c_type = "som::final_solution_cc_parameters_t::monitor_t",
@@ -536,7 +531,7 @@ Compute the final solution using the SOCC protocol
 {docstring_params_header_fine}
 
 {docstring_params_table_header}
-| unity_sum_coeff       | float         | 1e6                           | Coefficient of the term that enforces the unity sum constraint (:math:`\mathcal{{U}}`).                 |
+| ew_penalty_coeff      | float         | 1                             | Coefficient of the term that penalizes large deviations from the equal-weight superposition.          |
 +-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
 | amp_penalty_max       | float         | 1e3                           | Maximum value of the regularization parameter that penalizes negative values of                       |
 |                       |               |                               | the spectral function (:math:`\mathcal{{Q}}`).                                                          |
@@ -549,10 +544,6 @@ Compute the final solution using the SOCC protocol
 +-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
 | der_penalty_coeff     | float         | 2.0                           | Coefficient used to increase the regularization parameters that penalize large derivatives of         |
 |                       |               |                               | the solution (:math:`f`).                                                                             |
-+-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
-| svd_rcond             | float         | -1                            | In the minimization of the CC quadratic form, a singular value :math:`\sigma_j` of its matrix is      |
-|                       |               |                               | treated as zero if :math:`\sigma_j / \sigma_\mathrm{{max}}` is below this threshold.                    |
-|                       |               |                               | By default, the threshold is equal to the machine precision.                                          |
 +-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
 | monitor               | function      | --                            | Monitor function called at each parameter adjustment iteration. It takes 4 arguments,                 |
 |                       |               |                               | - Current list of expansion coefficients :math:`c`;                                                   |

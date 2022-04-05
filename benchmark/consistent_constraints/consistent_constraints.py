@@ -50,8 +50,8 @@ cfs_cc_params = {'refreq_mesh' : refreq_mesh,
                  'good_chi_rel' : good_chi_rel,
                  'good_chi_abs' : good_chi_abs}
 cfs_cc_params['verbosity'] = 2
-cfs_cc_params['max_iter'] = 10
-cfs_cc_params['unity_sum_coeff'] = 1e6
+cfs_cc_params['max_iter'] = 100
+cfs_cc_params['ew_penalty_coeff'] = 1
 cfs_cc_params['amp_penalty_max'] = 1e3
 cfs_cc_params['amp_penalty_divisor'] = 10
 cfs_cc_params['der_penalty_init'] = 1e-3
