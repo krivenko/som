@@ -23,6 +23,7 @@
 #include <cassert>
 #include <cmath>
 #include <iostream>
+#include <optional>
 #include <string>
 #include <tuple>
 
@@ -32,8 +33,8 @@
 
 #include <som/global_index_map.hpp>
 #include <som/kernels/all.hpp>
-#include <som/numerics/finite_diff.hpp>
 #include <som/numerics/ecqp_worker.hpp>
+#include <som/numerics/finite_diff.hpp>
 #include <som/solution_functionals/objective_function.hpp>
 
 #include "common.hxx"
@@ -299,10 +300,11 @@ void update_O_mat(array<double, 2>& A_j_local_block,
   O_mat += U;
 }
 
-vector<double> cc_protocol(
+std::vector<vector<double>> cc_protocol(
     std::vector<std::pair<configuration, double>> const& particular_solutions,
     std::vector<std::size_t> const& good_solution_indices,
     array<double, 1> const e_k_list,
+    double convergence_tol,
     final_solution_cc_parameters_t const& p,
     global_index_map const& index_map,
     mpi::communicator const& comm) {
@@ -351,10 +353,8 @@ vector<double> cc_protocol(
   // Total number of selected particular solutions (summed over all ranks)
   auto const J = index_map.size();
 
-  // Coefficients c_j
-  vector<double> c = (1.0 / double(J)) * ones<double>(J);
-  vector<double> c_prev = c;
-  auto const my_c_view = c(range(my_j_start, my_j_start + my_j_size));
+  // List of coefficients c_j, one element per iteration
+  std::vector<vector<double>> c_list{(1.0 / double(J)) * ones<double>(J)};
 
   // Prepare RHS vector
   auto f = make_rhs_vector(A_block,
@@ -368,14 +368,11 @@ vector<double> cc_protocol(
   matrix<double, nda::F_layout> O_mat(J, J);
 
   // Equality Constrained Quadratic Programming worker
-  nda::matrix<double, nda::F_layout> c_sum_cons_matrix = nda::ones<double>(1, J);
+  nda::matrix<double, nda::F_layout> c_sum_cons_matrix =
+      nda::ones<double>(1, J);
   nda::vector<double> c_sum_cons_rhs = {1};
   auto worker = ecqp_worker(int(J), 1);
 
-  std::vector<double> diff_c;
-  std::vector<double> rel_residue;
-  diff_c.reserve(p.max_iter - 1);
-  rel_residue.reserve(p.max_iter - 1);
   int iter = 0;
   for(; iter < p.max_iter; ++iter) {
     if(p.verbosity >= 1)
@@ -396,8 +393,12 @@ vector<double> cc_protocol(
                  p.verbosity >= 2,
                  O_mat);
 
+    c_list.emplace_back(J);
+    auto& c = c_list.back();
+    auto const my_c_view = c(range(my_j_start, my_j_start + my_j_size));
+
     // Minimize the functional
-    double residue = worker(O_mat, f, c_sum_cons_matrix, c_sum_cons_rhs, c);
+    worker(O_mat, f, c_sum_cons_matrix, c_sum_cons_rhs, c);
 
     // Linear combination of particular solutions: Rank-local stage
     if(my_J != 0) {
@@ -418,20 +419,19 @@ vector<double> cc_protocol(
     Ap_k = mpi::all_reduce(Ap_k, comm);
     App_k = mpi::all_reduce(App_k, comm);
 
-    double sum_abs = sum(abs(c));
-    diff_c.push_back(max_element(abs(c - c_prev)));
-    rel_residue.push_back(std::abs(residue / dot(c, O_mat * c)));
+    double diff_c = max_element(abs(c - c_list[iter]));
+    std::optional<double> sum_abs;
+    if(p.monitor || p.verbosity >= 1) { sum_abs.emplace(sum(abs(c))); }
 
     if(p.monitor) {
-      bool stop = p.monitor(c, {A_k, Q_k}, {Ap_k, D_k}, {App_k, B_k});
+      bool stop =
+          p.monitor(c_list.back(), {A_k, Q_k}, {Ap_k, D_k}, {App_k, B_k});
       if(stop) {
         if(p.verbosity >= 1) {
           mpi_cout(comm)
               << "  Monitor function returned true, stopping iterations: "
-              << "|(c^T O c - 2 f^T c) / c^T O c| = " << rel_residue.back()
-              << ", sum(|c|) = " << sum_abs
-              << ", max(|c - c_{prev}|) = " << diff_c.back()
-              << std::endl;
+              << "max(|c_" << (iter + 1) << " - c_" << iter << "|) = " << diff_c
+              << ", sum(|c|) = " << *sum_abs << std::endl;
         }
         break;
       }
@@ -439,19 +439,15 @@ vector<double> cc_protocol(
 
     if(p.verbosity >= 1) {
       mpi_cout(comm) << "  End of iteration " << (iter + 1) << ": "
-              << "|(c^T O c - 2 f^T c) / c^T O c| = " << rel_residue.back()
-              << ", sum(|c|) = " << sum_abs
-              << ", max(|c - c_{prev}|) = " << diff_c.back()
-              << std::endl;
+                     << "max(|c_" << (iter + 1) << " - c_" << iter
+                     << "|) = " << diff_c << ", sum(|c|) = " << *sum_abs
+                     << std::endl;
     }
 
-    if(iter > 0 && rel_residue[iter] > rel_residue[iter - 1]) {
-      std::swap(c, c_prev);
+    if(iter > 0 && diff_c < convergence_tol) {
       if(p.verbosity >= 1) mpi_cout(comm) << "Convergence reached" << std::endl;
       break;
     }
-
-    std::swap(c_prev, c);
 
     //
     // Update regularization parameters
@@ -485,7 +481,7 @@ vector<double> cc_protocol(
   if(p.verbosity >= 1 && iter == p.max_iter)
     mpi_cout(comm) << "Maximum number of iterations reached" << std::endl;
 
-  return c;
+  return c_list;
 }
 
 template <typename KernelType>
@@ -513,42 +509,91 @@ std::vector<double> som_core::compute_final_solution_cc_impl(
     std::vector<std::size_t> good_solution_indices;
     good_solution_indices.reserve(d.particular_solutions.size());
     double chi_min = std::sqrt(d.objf_min);
+
+    auto is_good = [chi_min, &p](double chi2) {
+      double chi = std::sqrt(chi2);
+      return chi / chi_min <= p.good_chi_rel && chi <= p.good_chi_abs;
+    };
+
     for(auto const& [s_index, s] : enumerate(d.particular_solutions)) {
-      double chi = std::sqrt(s.second);
-      if(chi / chi_min <= p.good_chi_rel && chi <= p.good_chi_abs)
-        good_solution_indices.emplace_back(s_index);
+      if(is_good(s.second)) good_solution_indices.emplace_back(s_index);
     }
+
+    global_index_map index_map(comm, good_solution_indices.size());
+    if(index_map.size() == 0)
+      TRIQS_RUNTIME_ERROR
+          << "No particular solution could be selected, try accumulating more "
+             "solutions, and/or increasing values of good_chi_rel/good_chi_abs";
 
     if(p.verbosity > 1)
       mpi_cout(comm) << "Selected " << good_solution_indices.size()
-                     << " good solutions" << std::endl;
+                     << " good solutions on this rank and " << index_map.size()
+                     << " good solutions in total" << std::endl;
 
-    global_index_map index_map(comm, good_solution_indices.size());
+    // Convergence tolerance for CC iterations
+    using mesh_t = typename KernelType::mesh_type;
+    double convergence_tol =
+        min_element(abs(d.get_error_bars<mesh_t>() / d.get_rhs<mesh_t>()));
+    if(p.verbosity > 1)
+      mpi_cout(comm) << "Convergence tolerance is " << convergence_tol
+                     << std::endl;
 
     // Compute coefficients c_j using CC optimization protocol
-    auto c = cc_protocol(d.particular_solutions,
-                         good_solution_indices,
-                         e_k_list,
-                         p,
-                         index_map,
-                         comm);
+    auto c_list = cc_protocol(d.particular_solutions,
+                              good_solution_indices,
+                              e_k_list,
+                              convergence_tol,
+                              p,
+                              index_map,
+                              comm);
+
+    mesh_t const& m = std::get<mesh_t>(mesh);
+    KernelType kernel(m);
+    objective_function<KernelType> of(
+        kernel, d.get_rhs<mesh_t>(), d.get_error_bars<mesh_t>());
+
+    configuration sol(ci);
+    auto const j_range_start = index_map.range_start(comm.rank());
+    int iter = c_list.size() - 1;
+    for(; iter >= 0; --iter) {
+      auto const& c = c_list[iter];
+      for(auto const& [j, s_index] : enumerate(good_solution_indices)) {
+        sol += c(j_range_start + j) * d.particular_solutions[s_index].first;
+      }
+      sol = mpi::all_reduce(sol, comm);
+
+      double chi2 = of(sol);
+      if(p.verbosity >= 2) {
+        mpi_cout(comm)
+            << "Linear combination of particular solutions from iteration "
+            << iter << ": χ = " << std::sqrt(chi2) << std::endl;
+      }
+      if(is_good(chi2)) break;
+
+      sol.clear();
+    }
+
+    if(iter < 0) {
+      ci.invalidate_all();
+      TRIQS_RUNTIME_ERROR << "Could not construct the final solution, try "
+                             "increasing values of good_chi_rel/good_chi_abs";
+    }
 
     if(p.verbosity >= 1) {
       mpi_cout(comm)
-          << "Forming the resulting linear combination of particular solutions"
-          << std::endl;
+          << "Forming the resulting linear combination of particular solutions "
+             "using coefficients from iteration "
+          << iter << std::endl;
       if(p.verbosity >= 2)
-        mpi_cout(comm) << "Coefficients of the linear combination: " << c
-                       << std::endl;
+        mpi_cout(comm)
+            << "Coefficients of the linear combination from iteration " << iter
+            << ": " << c_list[iter] << std::endl;
     }
 
-    configuration sol_sum(ci);
-    auto const j_range_start = index_map.range_start(comm.rank());
-    for(auto const& [j, s_index] : enumerate(good_solution_indices)) {
-      sol_sum += c(j_range_start + j) * d.particular_solutions[s_index].first;
-    }
-    d.final_solution = mpi::all_reduce(sol_sum, comm);
+    d.final_solution = sol;
   }
+
+  ci.invalidate_all();
 
   return compute_objf_final();
 }
