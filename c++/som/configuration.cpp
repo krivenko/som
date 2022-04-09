@@ -161,6 +161,47 @@ void configuration::prune(double width_min, double weight_min) {
   cache_ptr.invalidate_entry();
 }
 
+void configuration::redistribute_small_rects_weight(double weight_min) {
+  int sweep_direction = 1;
+  bool weight_transfer_occured = {};
+
+  auto transfer_weight = [this, weight_min, &weight_transfer_occured](int from,
+                                                                      int to) {
+    rectangle& r = rects[from];
+    double norm = r.norm();
+    if(norm < weight_min && r.height != 0) {
+      auto& next_r = rects[to];
+      next_r.height += norm / next_r.width;
+      r.height = 0;
+      weight_transfer_occured = true;
+    }
+  };
+
+  int i = 0;
+  do {
+    if(size() < 2) return;
+    weight_transfer_occured = false;
+
+    for(; (sweep_direction == 1) ? (i < size() - 1) : (i > 0);
+        i += sweep_direction) {
+      transfer_weight(i, i + sweep_direction);
+    }
+    transfer_weight(i, i - sweep_direction);
+
+    sweep_direction = -sweep_direction;
+    i += sweep_direction;
+
+    // Remove all rectangles with zero height.
+    rects.erase(
+        std::remove_if(rects.begin(),
+                       rects.end(),
+                       [=](rectangle const& r) { return r.height == 0; }),
+        rects.end());
+  } while(weight_transfer_occured);
+
+  cache_ptr.invalidate_entry();
+}
+
 void configuration::strip_rect_heights(nda::vector<double>& heights) {
   assert(rects.size() == heights.size());
   for(int i = 0; i < rects.size(); ++i) {

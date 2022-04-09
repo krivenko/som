@@ -119,6 +119,10 @@ public:
   // below `weight_min`.
   void prune(double width_min, double weight_min);
 
+  // Remove rectangles with |norm()| < weight_min and transfer their weight to
+  // other rectangles.
+  void redistribute_small_rects_weight(double weight_min);
+
   // Reset heights of all rectangles to 1 and write their original heights
   // into the argument.
   void strip_rect_heights(nda::vector<double>& heights);

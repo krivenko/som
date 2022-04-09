@@ -111,6 +111,35 @@ TEST_F(configuration_test, prune) {
   EXPECT_EQ(conf, ref);
 }
 
+TEST_F(configuration_test, redistribute_small_rects_weight) {
+  configuration conf1({{1.0, 0.1, 0, ci},
+                       {2.0, 0.2, 0.01, ci},
+                       {3.0, 0.3, 2.0, ci},
+                       {4.0, 0.4, -0.01, ci},
+                       {5.0, 0.5, 0.015, ci}},
+                      ci);
+  conf1.redistribute_small_rects_weight(0.08);
+  EXPECT_EQ(conf1, configuration({{3.0, 0.3, 2.0183333333333335}}));
+
+  configuration conf2({{1.0, 0.1, 0, ci},
+                       {2.0, 0.2, 0, ci},
+                       {3.0, 0.3, 2, ci},
+                       {4.0, 0.4, 0, ci},
+                       {5.0, 0.5, 0, ci}},
+                      ci);
+  conf2.redistribute_small_rects_weight(0.001);
+  EXPECT_EQ(conf2, configuration({{3.0, 0.3, 2.0}}));
+
+  configuration conf3({{1.0, 0.1, 0, ci},
+                       {2.0, 0.2, 0, ci},
+                       {3.0, 0.3, 0, ci},
+                       {4.0, 0.4, 0, ci},
+                       {5.0, 0.5, 0, ci}},
+                      ci);
+  conf3.redistribute_small_rects_weight(0.001);
+  EXPECT_EQ(conf3, configuration());
+}
+
 TEST_F(configuration_test, make_nonoverlapping) {
   configuration conf({{0.5, 6.0, 1.0}, {3.1, 1.8, 2.0}, {-0.5, 1.0, 3.0}}, ci);
   configuration ref({{-2.75, 0.5, 0.0, ci},
