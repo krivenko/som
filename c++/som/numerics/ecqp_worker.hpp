@@ -53,10 +53,10 @@ class ecqp_worker {
 public:
   ecqp_worker(int N, int N_constraints);
 
-  double operator()(nda::matrix<double, nda::F_layout> const& Q,
-                    nda::vector<double> const& f,
-                    nda::matrix<double, nda::F_layout> const& L,
-                    nda::vector<double> const& d,
+  double operator()(nda::matrix_const_view<double, nda::F_layout> Q,
+                    nda::vector_const_view<double> f,
+                    nda::matrix_const_view<double, nda::F_layout> L,
+                    nda::vector_const_view<double> d,
                     nda::vector<double>& x);
 };
 
