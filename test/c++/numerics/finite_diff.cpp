@@ -20,8 +20,8 @@
  ******************************************************************************/
 #include <cmath>
 
-#include <nda/nda.hpp>
 #include <nda/gtest_tools.hpp>
+#include <nda/nda.hpp>
 
 #define NDA_ENFORCE_BOUNDCHECK
 #include <som/numerics/finite_diff.hpp>
@@ -48,6 +48,12 @@ TEST(finite_diff_test, finite_diff_forward) {
                           4.724126607940005,
                           8.285770693825526};
   EXPECT_ARRAY_NEAR(result, ref, 1e-12);
+
+  array<double, 1> dx(x.size() - 1);
+  for(auto i : range(x.size() - 1)) dx(i) = x(i + 1) - x(i);
+
+  finite_diff_forward_dx(make_const_view(f), dx, result());
+  EXPECT_ARRAY_NEAR(result, ref, 1e-12);
 }
 
 TEST(finite_diff_test, finite_2_symm) {
@@ -62,5 +68,11 @@ TEST(finite_diff_test, finite_2_symm) {
                           0.44649932894673083,
                           0.7386071083337036,
                           1.2720157449591143};
+  EXPECT_ARRAY_NEAR(result, ref, 1e-12);
+
+  array<double, 1> dx(x.size() - 1);
+  for(auto i : range(x.size() - 1)) dx(i) = x(i + 1) - x(i);
+
+  finite_diff_2_symm_dx(make_const_view(f), dx, result());
   EXPECT_ARRAY_NEAR(result, ref, 1e-12);
 }

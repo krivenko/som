@@ -30,9 +30,8 @@ namespace som {
 
 // Forward difference
 template <nda::ArrayOfRank<1> AF, nda::ArrayOfRank<1> AOUT>
-inline void finite_diff_forward(AF f,
-                                nda::array<double, 1> const& x,
-                                AOUT output) {
+inline void
+finite_diff_forward(AF f, nda::array<double, 1> const& x, AOUT output) {
   assert(f.size() == x.size());
   assert(output.size() == x.size() - 1);
   for(auto k : nda::range(output.size())) {
@@ -40,11 +39,21 @@ inline void finite_diff_forward(AF f,
   }
 }
 
+// Forward difference computed from f(x) and dx_k = x_{k+1} - x_k
+template <nda::ArrayOfRank<1> AF, nda::ArrayOfRank<1> AOUT>
+inline void
+finite_diff_forward_dx(AF f, nda::array<double, 1> const& dx, AOUT output) {
+  assert(f.size() == dx.size() + 1);
+  assert(output.size() == dx.size());
+  for(auto k : nda::range(output.size())) {
+    output(k) = (f(k + 1) - f(k)) / dx(k);
+  }
+}
+
 // Second order symmetric difference
 template <nda::ArrayOfRank<1> AF, nda::ArrayOfRank<1> AOUT>
-inline void finite_diff_2_symm(AF f,
-                               nda::array<double, 1> const& x,
-                               AOUT output) {
+inline void
+finite_diff_2_symm(AF f, nda::array<double, 1> const& x, AOUT output) {
   assert(f.size() == x.size());
   assert(output.size() == x.size() - 2);
   for(auto k : nda::range(output.size())) {
@@ -52,6 +61,19 @@ inline void finite_diff_2_symm(AF f,
         (f(k + 2) * (x(k + 1) - x(k)) + f(k) * (x(k + 2) - x(k + 1)) -
          f(k + 1) * (x(k + 2) - x(k))) /
         (0.5 * (x(k + 2) - x(k)) * (x(k + 2) - x(k + 1)) * (x(k + 1) - x(k)));
+  }
+}
+
+// Second order symmetric difference from f(x) and dx_k = x_{k+1} - x_k
+template <nda::ArrayOfRank<1> AF, nda::ArrayOfRank<1> AOUT>
+inline void
+finite_diff_2_symm_dx(AF f, nda::array<double, 1> const& dx, AOUT output) {
+  assert(f.size() == dx.size() + 1);
+  assert(output.size() == f.size() - 2);
+  for(auto k : nda::range(output.size())) {
+    output(k) =
+        (f(k + 2) * dx(k) + f(k) * dx(k + 1) - f(k + 1) * (dx(k + 1) + dx(k))) /
+        (0.5 * (dx(k + 1) + dx(k)) * dx(k + 1) * dx(k));
   }
 }
 
