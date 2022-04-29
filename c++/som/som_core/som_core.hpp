@@ -39,7 +39,9 @@
 #include <som/kernels/mesh_traits.hpp>
 #include <som/kernels/observables.hpp>
 
-namespace testing { class spectral_stats_test; }
+namespace testing {
+class spectral_stats_test;
+}
 
 namespace som {
 
@@ -68,9 +70,10 @@ class som_core {
     using input_data_c_t = nda::array<std::complex<double>, 1>;
 
     template <typename Mesh>
-    using input_data_t = std::conditional_t<
-        std::is_same<Mesh, triqs::mesh::imfreq>::value,
-        input_data_c_t, input_data_r_t>;
+    using input_data_t =
+        std::conditional_t<std::is_same<Mesh, triqs::mesh::imfreq>::value,
+                           input_data_c_t,
+                           input_data_r_t>;
 
     // The right-hand side of the Fredholm integral equation
     std::variant<input_data_r_t, input_data_c_t> rhs;
@@ -101,8 +104,10 @@ class som_core {
 
     // Initialize 'rhs', 'error_bars' and 'norm'
     template <typename... GfOpts>
-    void init_input(long i, triqs::gfs::gf_const_view<GfOpts...> g,
-                    triqs::gfs::gf_const_view<GfOpts...> S, double norm_);
+    void init_input(long i,
+                    triqs::gfs::gf_const_view<GfOpts...> g,
+                    triqs::gfs::gf_const_view<GfOpts...> S,
+                    double norm_);
 
     // Typed access to 'rhs'
     template <typename Mesh> input_data_t<Mesh> const& get_rhs() const {
@@ -140,8 +145,8 @@ class som_core {
 
   // Implementation details of compute_final_solution_cc_impl()
   template <typename KernelType>
-  std::vector<double> compute_final_solution_cc_impl(
-    final_solution_cc_parameters_t const& params);
+  std::vector<double>
+  compute_final_solution_cc_impl(final_solution_cc_parameters_t const& params);
 
 public:
   /// Construct on imaginary-time quantities
@@ -171,13 +176,13 @@ public:
   /// :math:`\chi/\chi_{min} \leq good_chi_rel` *and*
   /// :math:`\chi \leq good_chi_abs`.
   std::vector<double> compute_final_solution(double good_chi_rel = 2.0,
-                                             double good_chi_abs = HUGE_VAL);
+                                             double good_chi_abs = HUGE_VAL,
+                                             int verbosity = 0);
 
   /// Compute the final solution using the SOCC protocol
   TRIQS_WRAP_ARG_AS_DICT
-  std::vector<double> compute_final_solution_cc(
-    final_solution_cc_parameters_t const& p
-  );
+  std::vector<double>
+  compute_final_solution_cc(final_solution_cc_parameters_t const& p);
 
   /// Set of parameters used in the last call to accumulate()
   [[nodiscard]] accumulate_parameters_t get_last_accumulate_parameters() const {
@@ -238,7 +243,8 @@ public:
 
 /// Fill a real-frequency observable from a computed SOM solution
 void fill_refreq(triqs::gfs::gf_view<triqs::gfs::refreq> g_w,
-                 som_core const& cont, bool with_binning = false);
+                 som_core const& cont,
+                 bool with_binning = false);
 /// Fill a real-frequency observable from a list of solutions
 /// (one solution per a diagonal matrix element of the observable)
 void fill_refreq(triqs::gfs::gf_view<triqs::gfs::refreq> g_w,
@@ -252,7 +258,8 @@ compute_tail(int max_order, som_core const& cont);
 /// Compute tail coefficients from a list of solutions
 /// (one solution per a diagonal matrix element of the observable)
 [[nodiscard]] nda::array<std::complex<double>, 3>
-compute_tail(int max_order, observable_kind kind,
+compute_tail(int max_order,
+             observable_kind kind,
              std::vector<configuration> const& solutions);
 
 /// Reconstruct an observable in the imaginary-time representation

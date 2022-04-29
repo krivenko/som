@@ -94,19 +94,31 @@ std::vector<double> som_core::compute_objf_final() {
 ////////////////////////////////////////
 
 std::vector<double> som_core::compute_final_solution(double good_chi_rel,
-                                                     double good_chi_abs) {
+                                                     double good_chi_abs,
+                                                     int verbosity) {
   for(auto n : range(long(data.size()))) {
+    if(verbosity > 0) {
+      mpi_cout(comm) << "Constructing the final solution "
+                        "for observable component ["
+                     << n << "," << n << "]" << std::endl;
+    }
+
     auto& d = data[n];
 
     configuration sol_sum(ci);
 
     // Rank-local stage of summation
     std::size_t n_good_solutions = 0;
-    double chi_min = std::sqrt(d.objf_min);
+    double const chi_min = std::sqrt(d.objf_min);
+    double const chi_c = std::min(good_chi_abs, chi_min * good_chi_rel);
+    if(verbosity > 0) {
+      mpi_cout(comm) << "Good solution threshold χ_c = " << chi_c << std::endl;
+    }
+
     for(auto const& s : d.particular_solutions) {
       // Pick only good solutions
       double chi = std::sqrt(s.second);
-      if(chi / chi_min <= good_chi_rel && chi <= good_chi_abs) {
+      if(chi <= chi_c) {
         sol_sum += s.first;
         ++n_good_solutions;
       }
@@ -114,6 +126,19 @@ std::vector<double> som_core::compute_final_solution(double good_chi_rel,
 
     // Sum over all processes
     n_good_solutions = mpi::all_reduce(n_good_solutions, comm);
+
+    if(n_good_solutions == 0)
+      TRIQS_RUNTIME_ERROR
+          << "No good solution could be selected, try accumulating more "
+             "solutions, and/or set a higher threshold χ_c by increasing "
+             "values of good_chi_rel/good_chi_abs";
+    else {
+      if(verbosity > 0) {
+        mpi_cout(comm) << "Selected " << n_good_solutions << " good solutions"
+                       << std::endl;
+      }
+    }
+
     d.final_solution = mpi::all_reduce(sol_sum, comm);
     d.final_solution *= 1.0 / double(n_good_solutions);
   }

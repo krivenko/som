@@ -407,7 +407,7 @@ Accumulate particular solutions
 # SomCore.compute_final_solution()
 #
 
-c.add_method("std::vector<double> compute_final_solution(double good_chi_rel = 2.0, double good_chi_abs = HUGE_VAL)",
+c.add_method("std::vector<double> compute_final_solution(double good_chi_rel = 2.0, double good_chi_abs = HUGE_VAL, int verbosity = 0)",
              doc = """Select particular solutions according to the standard SOM criterion and compute the final solution""")
 
 #
