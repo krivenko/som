@@ -135,7 +135,11 @@ struct final_solution_cc_parameters_t {
   nda::array<double, 1> default_model_weights;
 
   /// Maximum allowed number of parameter adjustment iterations.
-  int max_iter = 20;
+  int max_iter = 50;
+
+  /// Stop parameter adjustment iterations when expansion coefficients
+  /// :math:`c_j` make the sum :math:`\sum_j |c_j|` exceed this value.
+  double max_sum_abs_c = 2.0;
 
   /// Coefficient of the term that penalizes large deviations from the
   /// equal-weight superposition.
@@ -150,8 +154,9 @@ struct final_solution_cc_parameters_t {
   double amp_penalty_divisor = 10;
 
   /// Initial value of the regularization parameters that penalize large
-  /// derivatives of the spectral function.
-  double der_penalty_init = 1e-3;
+  /// derivatives of the spectral function. Before this parameter is used,
+  /// it is divided by the number of selected particular solutions.
+  double der_penalty_init = 0.1;
 
   /// Coefficient used to increase the regularization parameters that penalize
   /// large derivatives of the spectral function.

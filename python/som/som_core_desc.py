@@ -453,8 +453,14 @@ compute_final_solution_cc_params_conv.add_member(c_name = "default_model_weights
 
 compute_final_solution_cc_params_conv.add_member(c_name = "max_iter",
                                                  c_type = "int",
-                                                 initializer = """20""",
+                                                 initializer = """50""",
                                                  doc = """Maximum allowed number of parameter adjustment iterations.""")
+
+compute_final_solution_cc_params_conv.add_member(c_name = "max_sum_abs_c",
+                                                 c_type = "double",
+                                                 initializer = """2.0""",
+                                                 doc = """Stop parameter adjustment iterations when expansion coefficients :math:`c_j`
+make the sum :math:`\sum_j |c_j|` exceed this value.""")
 
 compute_final_solution_cc_params_conv.add_member(c_name = "ew_penalty_coeff",
                                                  c_type = "double",
@@ -473,8 +479,9 @@ compute_final_solution_cc_params_conv.add_member(c_name = "amp_penalty_divisor",
 
 compute_final_solution_cc_params_conv.add_member(c_name = "der_penalty_init",
                                                  c_type = "double",
-                                                 initializer = """1.0""",
-                                                 doc = """Initial value of the regularization parameters that penalize large derivatives of the solution.""")
+                                                 initializer = """0.1""",
+                                                 doc = """Initial value of the regularization parameters that penalize large derivatives of the solution.
+Before this parameter is used, it is divided by the number of selected particular solutions.""")
 
 compute_final_solution_cc_params_conv.add_member(c_name = "der_penalty_coeff",
                                                  c_type = "double",
@@ -525,7 +532,10 @@ Compute the final solution using the SOCC protocol
 | default_model_weights | Real 1D array | []                            | Weights determining how much deviations from `default_model` are penalized at each energy point       |
 |                       |               |                               | (:math:`T_k`).                                                                                        |
 +-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
-| max_iter              | int           | 20                            | Maximum allowed number of parameter adjustment iterations.                                            |
+| max_iter              | int           | 50                            | Maximum allowed number of parameter adjustment iterations.                                            |
++-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
+| max_sum_abs_c         | float         | 2.0                           | Stop parameter adjustment iterations when expansion coefficients :math:`c_j` make the sum             |
+|                       |               |                               | :math:`\sum_j |c_j|` exceed this value.                                                               |
 +-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
 
 {docstring_params_header_fine}
@@ -539,8 +549,9 @@ Compute the final solution using the SOCC protocol
 | amp_penalty_divisor   | float         | 10                            | Divisor used to reduce the regularization parameter that penalizes negative values of                 |
 |                       |               |                               | the spectral function.                                                                                |
 +-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
-| der_penalty_init      | float         | 1e-3                          | Initial value of the regularization parameters that penalize large derivatives of the solution        |
-|                       |               |                               | (:math:`\mathcal{{D}}`).                                                                                |
+| der_penalty_init      | float         | 0.1                           | Initial value of the regularization parameters that penalize large derivatives of the solution        |
+|                       |               |                               | (:math:`\mathcal{{D}}`). Before this parameter is used, it is divided by the number of selected         |
+|                       |               |                               | particular solutions.                                                                                 |
 +-----------------------+---------------+-------------------------------+-------------------------------------------------------------------------------------------------------+
 | der_penalty_coeff     | float         | 2.0                           | Coefficient used to increase the regularization parameters that penalize large derivatives of         |
 |                       |               |                               | the solution (:math:`f`).                                                                             |
