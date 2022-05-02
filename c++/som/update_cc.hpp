@@ -76,6 +76,9 @@ template <typename KernelType> class update_consistent_constraints {
   // Proposed non-overlapping configuration.
   configuration proposed_conf;
 
+  // range(K), range(K - 1), range(K - 2)
+  nda::range r_K, r_K1, r_K2;
+
   // Objective function value for the proposed configuration.
   double new_objf_value = NAN;
 
@@ -108,7 +111,9 @@ template <typename KernelType> class update_consistent_constraints {
   nda::matrix<double, nda::F_layout> O_mat;
 
   // Matrix of quadratic form \chi^2 + O.
-  nda::matrix<double, nda::F_layout> QF_mat;
+  // This array serves as a preallocated buffer of size max_rects * max_rects,
+  // matrix view of it with shape (K, K) is constructed in optimize_heights().
+  nda::array<double, 1> QF_mat_data;
 
   // First derivative of the proposed configuration.
   nda::array<double, 1> conf_1st_der;
@@ -117,7 +122,7 @@ template <typename KernelType> class update_consistent_constraints {
 
   // Prepare matrix of quadratic form \chi^2 and coefficients of
   // linear shifts in \chi^2.
-  void prepare_chi2_data(configuration const& conf);
+  void prepare_chi2_data();
 
   // Compute matrix of regularizing quadratic form O.
   void compute_O_mat();

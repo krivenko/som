@@ -202,7 +202,7 @@ void configuration::redistribute_small_rects_weight(double weight_min) {
   cache_ptr.invalidate_entry();
 }
 
-void configuration::strip_rect_heights(nda::vector<double>& heights) {
+void configuration::strip_rect_heights(nda::vector_view<double> heights) {
   assert(rects.size() == heights.size());
   for(int i = 0; i < rects.size(); ++i) {
     auto& r = rects[i];
@@ -215,7 +215,8 @@ void configuration::strip_rect_heights(nda::vector<double>& heights) {
   cache_ptr.invalidate_entry();
 }
 
-void configuration::update_rect_heights(nda::vector<double> const& heights) {
+void configuration::update_rect_heights(
+    nda::vector_const_view<double> heights) {
   assert(size() == heights.size());
   for(int i = 0; i < rects.size(); ++i) {
     auto& r = rects[i];

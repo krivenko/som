@@ -125,10 +125,10 @@ public:
 
   // Reset heights of all rectangles to 1 and write their original heights
   // into the argument.
-  void strip_rect_heights(nda::vector<double>& heights);
+  void strip_rect_heights(nda::vector_view<double> heights);
 
   // Update heights of all rectangles from the argument.
-  void update_rect_heights(nda::vector<double> const& heights);
+  void update_rect_heights(nda::vector_const_view<double> heights);
 
   // constant iterator
   using const_iterator = std::vector<rectangle>::const_iterator;

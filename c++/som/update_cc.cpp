@@ -88,7 +88,21 @@ update_consistent_constraints<KernelType>::update_consistent_constraints(
 #ifdef EXT_DEBUG
    , chi2_const(std::real(sum(chi2_rhs_prefactors * data.objf.get_rhs())))
 #endif
-   , proposed_conf(data.temp_conf.cache_ptr.get_ci()) {
+   , proposed_conf(data.temp_conf.cache_ptr.get_ci())
+   , int_kernel(max_rects, N)
+   , chi2_mat(max_rects, max_rects)
+   , chi2_rhs(max_rects)
+   , widths(max_rects)
+   , delta_c(max_rects)
+   , heights_prev(max_rects)
+   , heights(max_rects)
+   , Q0(max_rects)
+   , Q1(max_rects - 1)
+   , Q2(max_rects - 2)
+   , O_mat(max_rects, max_rects)
+   , QF_mat_data(max_rects * max_rects)
+   , conf_1st_der(max_rects - 1)
+   , conf_2nd_der(max_rects - 2) {
 }
 
 template <typename KernelType>
@@ -148,19 +162,20 @@ double update_consistent_constraints<KernelType>::attempt() {
 #endif
 
   auto K = long(proposed_conf.size());
-  heights_prev.resize(K);
-  heights.resize(K);
-  proposed_conf.strip_rect_heights(heights);
+  r_K = range(K);
+  r_K1 = range(K - 1);
+  r_K2 = range(K - 2);
+
+  proposed_conf.strip_rect_heights(heights(r_K));
 
   // Extract widths of the rectangles
-  widths.resize(K);
-  for(auto k : range(K)) { widths(k) = proposed_conf[k].width; }
+  for(auto k : r_K) { widths(k) = proposed_conf[k].width; }
 
-  prepare_chi2_data(proposed_conf);
+  prepare_chi2_data();
 
   optimize_heights();
 
-  for(auto k : range(K)) {
+  for(auto k : r_K) {
     double rect_norm = heights(k) * widths(k);
     if(rect_norm < -weight_min) {
 #ifdef EXT_DEBUG
@@ -172,7 +187,7 @@ double update_consistent_constraints<KernelType>::attempt() {
     }
   }
 
-  proposed_conf.update_rect_heights(heights);
+  proposed_conf.update_rect_heights(heights(r_K));
   proposed_conf.redistribute_small_rects_weight(weight_min);
 
   new_objf_value = data.objf(proposed_conf);
@@ -254,24 +269,18 @@ void update_consistent_constraints<KernelType>::reject() {
 }
 
 template <typename KernelType>
-void update_consistent_constraints<KernelType>::prepare_chi2_data(
-    configuration const& conf) {
-  auto K = long(conf.size());
-
+void update_consistent_constraints<KernelType>::prepare_chi2_data() {
   // Compute integrated kernels
-  int_kernel.resize(K, N);
-  for(auto k : range(K)) kern.apply(proposed_conf[k], int_kernel(k, range()));
+  for(auto k : r_K) kern.apply(proposed_conf[k], int_kernel(k, range()));
 
   // Fill chi2_rhs
-  chi2_rhs.resize(K);
-  for(auto k : range(K)) {
+  for(auto k : r_K) {
     chi2_rhs(k) = std::real(sum(chi2_rhs_prefactors * int_kernel(k, range())));
   }
 
   // Fill chi2_mat
-  chi2_mat.resize(K, K);
-  for(auto k1 : range(K)) {
-    for(auto k2 : range(K)) {
+  for(auto k1 : r_K) {
+    for(auto k2 : r_K) {
       chi2_mat(k1, k2) =
           std::real(sum(chi2_mat_prefactors * conj(int_kernel(k1, range())) *
                         int_kernel(k2, range())));
@@ -280,27 +289,27 @@ void update_consistent_constraints<KernelType>::prepare_chi2_data(
 
 #ifdef EXT_DEBUG
   using triqs::utility::is_zero;
-  if(!is_zero(max_element(abs(chi2_mat - transpose(chi2_mat))), 1e-10))
-    TRIQS_RUNTIME_ERROR << "Matrix χ is not symmetric, χ = " << chi2_mat;
+  auto chi2_mat_view = chi2_mat(r_K, r_K);
+  if(!is_zero(max_element(abs(chi2_mat_view - transpose(chi2_mat_view))),
+              1e-10))
+    TRIQS_RUNTIME_ERROR << "Matrix χ is not symmetric, χ = " << chi2_mat_view;
 #endif
 }
 
 template <typename KernelType>
 void update_consistent_constraints<KernelType>::compute_O_mat() {
-  auto K = long(proposed_conf.size());
-
-  O_mat() = 0;
+  O_mat(r_K, r_K) = 0;
 
   // Contribution from the amplitude regularization functional
   // O_0 = sum_k Q_0(\epsilon_k)^2 |A(\epsilon_k)|^2
-  for(auto k : range(K)) {
+  for(auto k : r_K) {
     double const Q0k = Q0(k);
     O_mat(k, k) += Q0k * Q0k;
   }
 
   // Contribution from the derivative regularization functional
   // O_1 = sum_k Q_1(\epsilon_k)^2 |A'(\epsilon_k)|^2
-  for(auto k : range(K - 1)) {
+  for(auto k : r_K1) {
     double const frac = Q1(k) / delta_c(k);
     double const val = frac * frac;
     O_mat(k, k) += val;
@@ -311,27 +320,31 @@ void update_consistent_constraints<KernelType>::compute_O_mat() {
 
   // Contribution from the second derivative regularization functional
   // O_2 = sum_k Q_2(\epsilon_k)^2 |A''(\epsilon_k)|^2
-  for(auto k : range(1, K - 1)) {
-    double const Q2k = Q2(k - 1);
+  for(auto k : r_K2) {
+    double const Q2k = Q2(k);
     double const coeff = 4 * Q2k * Q2k;
-    double const delta_km1 = delta_c(k - 1);
-    double const delta_kp1 = delta_c(k);
+    double const delta_km1 = delta_c(k);
+    double const delta_kp1 = delta_c(k + 1);
     double const delta_k = delta_km1 + delta_kp1;
-    O_mat(k - 1, k - 1) += coeff / (delta_km1 * delta_km1 * delta_k * delta_k);
-    O_mat(k + 1, k + 1) += coeff / (delta_kp1 * delta_kp1 * delta_k * delta_k);
-    O_mat(k, k) += coeff / (delta_km1 * delta_km1 * delta_kp1 * delta_kp1);
-    O_mat(k - 1, k + 1) += coeff / (delta_km1 * delta_kp1 * delta_k * delta_k);
-    O_mat(k + 1, k - 1) += coeff / (delta_km1 * delta_kp1 * delta_k * delta_k);
-    O_mat(k - 1, k) += -coeff / (delta_km1 * delta_km1 * delta_kp1 * delta_k);
-    O_mat(k, k - 1) += -coeff / (delta_km1 * delta_km1 * delta_kp1 * delta_k);
-    O_mat(k, k + 1) += -coeff / (delta_km1 * delta_kp1 * delta_kp1 * delta_k);
-    O_mat(k + 1, k) += -coeff / (delta_km1 * delta_kp1 * delta_kp1 * delta_k);
+    O_mat(k, k) += coeff / (delta_km1 * delta_km1 * delta_k * delta_k);
+    O_mat(k + 2, k + 2) += coeff / (delta_kp1 * delta_kp1 * delta_k * delta_k);
+    O_mat(k + 1, k + 1) +=
+        coeff / (delta_km1 * delta_km1 * delta_kp1 * delta_kp1);
+    O_mat(k, k + 2) += coeff / (delta_km1 * delta_kp1 * delta_k * delta_k);
+    O_mat(k + 2, k) += coeff / (delta_km1 * delta_kp1 * delta_k * delta_k);
+    O_mat(k, k + 1) += -coeff / (delta_km1 * delta_km1 * delta_kp1 * delta_k);
+    O_mat(k + 1, k) += -coeff / (delta_km1 * delta_km1 * delta_kp1 * delta_k);
+    O_mat(k + 1, k + 2) +=
+        -coeff / (delta_km1 * delta_kp1 * delta_kp1 * delta_k);
+    O_mat(k + 2, k + 1) +=
+        -coeff / (delta_km1 * delta_kp1 * delta_kp1 * delta_k);
   }
 
 #ifdef EXT_DEBUG
   using triqs::utility::is_zero;
-  if(!is_zero(max_element(abs(O_mat - transpose(O_mat))), 1e-10))
-    TRIQS_RUNTIME_ERROR << "Matrix O is not symmetric, O = " << O_mat;
+  auto O_mat_view = O_mat(r_K, r_K);
+  if(!is_zero(max_element(abs(O_mat_view - transpose(O_mat_view))), 1e-10))
+    TRIQS_RUNTIME_ERROR << "Matrix O is not symmetric, O = " << O_mat_view;
 #endif
 }
 
@@ -340,23 +353,16 @@ void update_consistent_constraints<KernelType>::optimize_heights() {
   auto K = long(proposed_conf.size());
 
   // Compute distances between centers of adjacent rectangles
-  delta_c.resize(K - 1);
-  for(auto k : range(K - 1)) {
+  for(auto k : r_K1) {
     delta_c(k) = proposed_conf[k + 1].center - proposed_conf[k].center;
   }
 
-  Q0.resize(K);
-  Q0() = 0;
-  Q1.resize(K - 1);
-  Q1() = Q1_init;
-  Q2.resize(K - 2);
-  Q2() = Q2_init;
+  Q0(r_K) = 0;
+  Q1(r_K1) = Q1_init;
+  Q2(r_K2) = Q2_init;
 
-  O_mat.resize(K, K);
-  QF_mat.resize(K, K);
-
-  conf_1st_der.resize(K - 1);
-  conf_2nd_der.resize(K - 2);
+  auto QF_mat_view =
+      matrix_view<double, nda::F_layout>({K, K}, QF_mat_data.data());
 
   double const C = Q12_threshold / std::sqrt(K - 1);
 
@@ -372,19 +378,23 @@ void update_consistent_constraints<KernelType>::optimize_heights() {
 
     // Update the heights
     compute_O_mat();
-    QF_mat() = chi2_mat + O_mat;
+    QF_mat_view() = chi2_mat(r_K, r_K) + O_mat(r_K, r_K);
 #ifdef EXT_DEBUG
     double QF =
 #endif
-        worker(QF_mat, chi2_rhs, widths_matrix_view, norm_vector_view, heights);
+        worker(QF_mat_view,
+               chi2_rhs(r_K),
+               widths_matrix_view,
+               norm_vector_view,
+               heights(r_K));
 
-    double norm_diff_max =
-        sum(abs((make_array_view(heights) - make_array_view(heights_prev)) *
-                widths)) /
-        norm;
+    double norm_diff_max = sum(abs((make_array_view(heights(r_K)) -
+                                    make_array_view(heights_prev(r_K))) *
+                                   widths(r_K))) /
+                           norm;
 
 #ifdef EXT_DEBUG
-    double O = nda::blas::dot(heights, O_mat * heights);
+    double O = nda::blas::dot(heights(r_K), O_mat(r_K, r_K) * heights(r_K));
     double chi2 = QF + chi2_const - O;
 
     std::cerr << "  Iteration " << (iter + 1) << " out of " << max_iter << ": "
@@ -394,7 +404,8 @@ void update_consistent_constraints<KernelType>::optimize_heights() {
 
     if(norm_diff_max < rect_norm_variation_tol) {
 #ifdef EXT_DEBUG
-      nda::array<double, 1> rectangle_norms = make_array_view(heights) * widths;
+      nda::array<double, 1> rectangle_norms =
+          make_array_view(heights(r_K)) * widths(r_K);
       std::cerr << "Convergence reached, rectangle norms = " << rectangle_norms
                 << std::endl;
 #endif
@@ -402,14 +413,13 @@ void update_consistent_constraints<KernelType>::optimize_heights() {
     }
 
     // Update amplitude regularization parameters
-    for(auto k : range(K))
-      Q0(k) = (heights(k) < 0) ? Q0_max : (Q0(k) / Q0_divisor);
+    for(auto k : r_K) Q0(k) = (heights(k) < 0) ? Q0_max : (Q0(k) / Q0_divisor);
 
     // Update 1st derivative regularization parameters
-    finite_diff_forward_dx(heights(), delta_c(), conf_1st_der());
+    finite_diff_forward_dx(heights(r_K), delta_c(r_K1), conf_1st_der(r_K1));
 
-    double Q1_limit = Q12_limiter * min_element(Q1);
-    for(auto k : range(K - 1)) {
+    double Q1_limit = Q12_limiter * min_element(Q1(r_K1));
+    for(auto k : r_K1) {
       double d = std::abs(conf_1st_der(k));
       if(d > C / Q1(k))
         Q1(k) = C / d;
@@ -419,10 +429,10 @@ void update_consistent_constraints<KernelType>::optimize_heights() {
     }
 
     // Update 2nd derivative regularization parameters
-    finite_diff_2_symm_dx(heights(), delta_c(), conf_2nd_der());
+    finite_diff_2_symm_dx(heights(r_K), delta_c(r_K1), conf_2nd_der(r_K2));
 
-    double Q2_limit = Q12_limiter * min_element(Q2);
-    for(auto k : range(K - 2)) {
+    double Q2_limit = Q12_limiter * min_element(Q2(r_K2));
+    for(auto k : r_K2) {
       double d = std::abs(conf_2nd_der(k));
       if(d > C / Q2(k))
         Q2(k) = C / d;
@@ -434,8 +444,8 @@ void update_consistent_constraints<KernelType>::optimize_heights() {
 
 #ifdef EXT_DEBUG
   if(iter == max_iter) {
-    std::cerr << "Maximum number of iterations reached, heights = " << heights
-              << std::endl;
+    std::cerr << "Maximum number of iterations reached, heights = "
+              << heights(r_K) << std::endl;
   }
 #endif
 }

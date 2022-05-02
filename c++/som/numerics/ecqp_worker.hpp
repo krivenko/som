@@ -57,7 +57,7 @@ public:
                     nda::vector_const_view<double> f,
                     nda::matrix_const_view<double, nda::F_layout> L,
                     nda::vector_const_view<double> d,
-                    nda::vector<double>& x);
+                    nda::vector_view<double> x);
 };
 
 } // namespace som

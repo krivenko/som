@@ -129,7 +129,7 @@ double ecqp_worker::operator()(nda::matrix_const_view<double, nda::F_layout> Q,
                                nda::vector_const_view<double> f,
                                nda::matrix_const_view<double, nda::F_layout> L,
                                nda::vector_const_view<double> d,
-                               nda::vector<double> &x) {
+                               nda::vector_view<double> x) {
   assert(first_dim(Q) == N);
   assert(second_dim(Q) == N);
   assert(f.size() == N);
