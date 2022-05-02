@@ -1,5 +1,6 @@
 \documentclass[]{article}
 \usepackage{amsmath}
+\usepackage{amsfonts}
 \usepackage{graphicx}
 \usepackage[bookmarks]{hyperref}
 \usepackage[a4paper, total={7in, 8in}]{geometry}
@@ -583,15 +584,62 @@ When binning is used to perform projection of an observable onto a real frequenc
 \end{multline}
 where $\epsilon_\pm = c \pm w/2$ are edges of the rectangle.
 
-\begin{thebibliography}{9}
-\bibitem{som_lecture}
+\section{Equality-constrained quadratic programming}
+\label{ecqp}
 
+Both consistent-constraints updates (Section II.A of \cite{socc_paper}) and  construction of the final solution using the consistent-constraints protocol (Section II.B of \cite{socc_paper}) involve solving equality constrained quadratic programs. By definition, an equality-constrained quadratic programming is the process of minimizing a multivariate quadratic function
+\begin{eqnarray}\label{ecqp:objective_function}
+    \mathbf{x}^T \hat Q \mathbf{x} - 2\mathbf{f}^T\mathbf{x}
+\end{eqnarray}
+w.r.t. a real vector $\mathbf{x}\in\mathbb{R}^N$ subject to a system of $P$ equality constraints
+\begin{equation}\label{ecqp:constraints}
+    \hat L \mathbf{x} = \mathbf{d}.
+\end{equation}
+Here, $\hat Q$ is a real symmetric positive-definite $N\times N$ matrix, $\mathbf{f}\in\mathbb{R}^N$, $\hat L$ is a real $P \times N$ matrix, and $d \in \mathbb{R}^N$.
+
+Such programs can always be reduced to equality-constrained least squares problems via the Cholesky decomposition of $\hat Q$,
+\begin{equation}
+    \hat Q = \hat A^T \hat A
+\end{equation}
+with an upper triangular $N\times N$ matrix $\hat A$, whose diagonal entries are positive. Let us consider an objective function of a general least-squares problem with the matrix $\hat A$ and a right-hand-side $\mathbf{b}\in \mathbb{R}^N$,
+\begin{equation}
+    ||\hat A\mathbf{x} - \mathbf{b}||_2 =
+    (\hat A\mathbf{x} - \mathbf{b})^T (\hat A\mathbf{x} - \mathbf{b}) =
+    \mathbf{x}^T \hat A^T \hat A \mathbf{x} -
+    \mathbf{b}^T \hat A\mathbf{x} - \mathbf{x}^T \hat A^T\mathbf{b}
+    + |\mathbf{b}|^2.
+\end{equation}
+By comparing this expression with (\ref{ecqp:objective_function}), we easily establish equivalence of the two objective functions,
+\begin{equation}
+    ||\hat A\mathbf{x} - \mathbf{b}||_2 =
+    \mathbf{x}^T \hat Q \mathbf{x} - 2\mathbf{f}^T\mathbf{x} + |\mathbf{b}|^2,
+    \textrm{ where } \mathbf{f} = \hat A^T\mathbf{b}.
+\end{equation}
+
+A special class called \verb|ecqp_worker| solves the quadratic program
+(\ref{ecqp:objective_function}--\ref{ecqp:constraints}) by calling a few LAPACK routines:
+\begin{enumerate}
+    \item Cholesky decomposition of matrix $\hat Q$: LAPACK routine \verb|dpotrf|;
+
+    \item Solution of the linear system $\hat A^T\mathbf{b} = \mathbf{f}$ to get the RHS $\mathbf{b}$: LAPACK routine \verb|dtrsm|.
+
+    \item Equality-constrained minimization of the least squares objective function $||\hat A\mathbf{x} - \mathbf{b}||_2$: LAPACK routine \verb|dgglse|.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+
+\bibitem{som_lecture}
 Eva Pavarini, Erik Koch, Frithjof Anders, and Mark Jarrell (eds.)
 {\it Correlated Electrons: From Models to Materials
 Modeling and Simulation}, Vol. 2, Chapter 14.
 Verlag des Forschungszentrum Jülich, 2012,
 ISBN 978-3-89336-796-2
 \url{https://www.cond-mat.de/events/correl12/manuscripts/mishchenko.pdf}
+
+\bibitem{socc_paper}
+Olga Goulko, Andrey S. Mishchenko, Lode Pollet, Nikolay Prokof'ev, and Boris Svistunov.
+{\it Numerical analytic continuation: Answers to well-posed questions},
+\href{https://doi.org/10.1103/PhysRevB.95.014102}{Phys. Rev. B {\bf 95}, 014102 (2017)}.
 
 \end{thebibliography}
 
