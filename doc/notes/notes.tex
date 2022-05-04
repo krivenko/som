@@ -758,6 +758,142 @@ CC protocol iterations are organized as follows.
 \end{enumerate}
 The last vector $\mathbf{h}^\mathrm{new}$ obtained during iterations is taken to be the optimization result $\mathbf{h}^\mathrm{(opt)}$.
 
+\section{Construction of final solution using the consistent-constraints protocol}
+\label{final_solution_cc}
+
+SOM accumulates particular solutions $A_j(\epsilon)$, selects those
+fulfilling $\chi^2[A_j] \leq \chi^2_c$ ($\chi_c$ is set by user) and construct a final solution $A(\epsilon)$ as a linear combination
+\begin{equation}
+    A(\epsilon) = \sum_{j=1}^J c_j A_j(\epsilon), \quad
+    \sum_{j=1}^J c_j = 1.
+\end{equation}
+Prior to SOM 2.0, the only available choice of the coefficients was $c_j = J^{-1}, \forall j=\overline{1,J}$. SOM 2.0 features an optimization procedure, which finds a vector of coefficients $\mathbf{c}$ resulting in a smoother final solution. It also allows to bias the final solution towards a user-provided default model.
+
+The optimization procedure minimizes a quadratic function of $\mathbf{c}$ depending on a few sets of regularization parameters,
+\begin{equation}
+    O[\mathbf{c}; Q_k, D_k, B_k, T_k, A_T(\epsilon_k), U] =
+        O_Q[\mathbf{c}; Q_k] +
+        O_D[\mathbf{c}; D_k] +
+        O_B[\mathbf{c}; B_k] +
+        O_T[\mathbf{c}; T_k, A_T(\epsilon)] +
+        O_U[\mathbf{c}; U].
+\end{equation}
+\begin{itemize}
+    \item $O_Q[\mathbf{c}; Q_k]$ penalizes large amplitudes in the final solution,
+    \begin{equation}
+        O_Q[\mathbf{c}; Q_k] = \sum_{k=1}^K Q_k^2 A(\epsilon_k)^2 =
+        \mathbf{c}^T \hat O_Q \mathbf{c}, \quad
+        (\hat O_Q)_{jj'} = \sum_{k=1}^K Q_k^2 A_j(\epsilon_k) A_{j'}(\epsilon_k).
+    \end{equation}
+
+    \item $O_D[\mathbf{c}; D_k]$ penalizes large 1st derivatives of the final solution,
+    \begin{equation}
+        O_D[\mathbf{c}; D_k] = \sum_{k=1}^{K-1} D_k^2 |A'(\epsilon_k)|^2 =
+        \mathbf{c}^T \hat O_D \mathbf{c}, \quad
+        (\hat O_D)_{jj'} = \sum_{k=1}^{K-1} D_k^2 A'_j(\epsilon_k) A'_{j'}(\epsilon_k).
+    \end{equation}
+
+    \item $O_B[\mathbf{c}; B_k]$ penalizes large 2nd derivatives of the final solution,
+    \begin{equation}
+        O_B[\mathbf{c}; B_k] = \sum_{k=2}^{K-1} B_{k-1}^2 |A''(\epsilon_k)|^2 =
+        \mathbf{c}^T \hat O_B \mathbf{c}, \quad
+        (\hat O_B)_{jj'} = \sum_{k=2}^{K-1} B_{k-1}^2 A''_j(\epsilon_k) A''_{j'}(\epsilon_k).
+    \end{equation}
+
+    \item $O_T[\mathbf{c}; T_k, A_T(\epsilon)]$ penalizes deviations from a predefined default model (``target'') $A_T(\epsilon)$,
+    \begin{align}
+        O_T[\mathbf{c}; T_k, A_T(\epsilon)] &= \sum_{k=1}^K T_k
+            [A(\epsilon_k) - A_T(\epsilon_k)]^2 =
+            \mathbf{c}^T \hat O_T \mathbf{c} - 2\mathbf{f}_T^T \mathbf{c} + \mathrm{const},\\
+        (\hat O_T)_{jj'} &= \sum_{k=1}^K T_k A_j(\epsilon_k) A_{j'}(\epsilon_k),
+        \quad
+        (\mathbf{f}_T)_j = \sum_{k=1}^K T_k A_j(\epsilon_k) A_T(\epsilon_k).
+    \end{align}
+
+    \item $O_U[\mathbf{c}; U]$ penalizes deviations from the equal weight superposition $c_j = 1/J$,
+    \begin{align}
+        O_U[\mathbf{c}; U] &= U \sum_{j=1}^J (c_j - 1/J)^2 =
+        \mathbf{c}^T \hat O_U \mathbf{c} - 2\mathbf{f}_U^T \mathbf{c} + \mathrm{const},\\
+        (\hat O_U)_{jj'} &= U \delta_{jj'},\quad
+        (\mathbf{f}_U)_j = U / J.
+\end{align}
+\end{itemize}
+
+Values of spectral functions $A_j(\epsilon)$ and their derivatives are computed on a user-supplied uniform or non-uniform energy grid $\{\epsilon_k\}$. The following finite-difference approximations are used for the derivatives,
+\begin{align}
+    A'_j(\epsilon_k) &\approx
+        \frac{A_j(\epsilon_{k+1}) - A_j(\epsilon_k)}{\epsilon_{k+1} - \epsilon_k},\\
+    A''_j(\epsilon_k) &\approx
+        \frac{A_j(\epsilon_{k+1})(\epsilon_k - \epsilon_{k-1}) +
+              A_j(\epsilon_{k-1})(\epsilon_{k+1} - \epsilon_{k}) -
+              A_j(\epsilon_{k})(\epsilon_{k+1} - \epsilon_{k-1})}
+             {(1/2)(\epsilon_{k+1} - \epsilon_{k-1})
+                   (\epsilon_{k+1} - \epsilon_{k})
+                   (\epsilon_{k} - \epsilon_{k-1})}.
+\end{align}
+
+The iterative optimization procedure proceeds as follows.
+\begin{enumerate}
+    \item Precompute values of $A_j(\epsilon_k)$, $A'_j(\epsilon_k)$ and $A''_j(\epsilon_k)$.
+
+    \item Using user-supplied parameters $A_T(\epsilon_k) =$ \verb|default_model|, $T_k =$ \verb|default_model_weights| and\\ $U=$ \verb|ew_penalty_coeff|, precompute $\mathbf{f} = \mathbf{f}_T + \mathbf{f}_U$.
+
+    \item Initialize regularization parameters according to
+    \begin{align*}
+        \mathcal{D} &= (\mathtt{der\_penalty\_init}) / J,\\
+        Q_k &= 0 \\
+        D_k &= \mathcal{D},\\
+        B_k &= \mathcal{D}.
+    \end{align*}
+
+    \item Use the regularization parameters to compute matrix $\hat O = \hat O_Q + \hat O_D + \hat O_B + \hat O_T + \hat O_U$.
+    
+    \item Minimize a quadratic function
+    \begin{equation}
+        \mathbf{c}^T \hat O \mathbf{c} -2\mathbf{f}^T\mathbf{c}
+    \end{equation}
+    w.r.t. $\mathbf{c}$ subject to the normalization sum rule $\sum_{J=1}^J c_j = 1$. The minimization result at the $I$-th iteration is stored as a vector
+    $\mathbf{c}^{(I)}$.
+
+    \item Compute and store the relative $L_1$-distance between
+    $\mathbf{c}^{(I)}$ and $\mathbf{c}^{(I-1)}$,
+    \begin{equation}
+        d(I, I-1) = \frac{\sum_{j=1}^J |c^{(I)}_j - c^{(I-1)}_j|}
+                         {\sum_{j=1}^J |c^{(I)}_j|}.
+    \end{equation}
+    The initial vector $\mathbf{c}^{(0)}$ is taken to have all components equal to $1/J$.
+
+    \item If $\sum_{j=1}^J |c^{(I)}_j| >$ \verb|max_sum_abs_c| (contribution of the negative coefficients is too big), then terminate iterations.
+
+    \item If $d(I, I-1) < \min_n |\delta_n/g_n|$, then convergence is reached and iterations are terminated. $g_n$ is the discretized right-hand side of the analytic continuation problem, and $\delta_n$ are respective estimated error bars on the input data.
+
+    \item Form a new final solution from coefficients $\mathbf{c}^{(I)}$,
+    \begin{equation}
+        A(\epsilon_k) = \sum_{j=1}^J c^{(I)}_j A_j(\epsilon_k),\quad
+        A'(\epsilon_k) = \sum_{j=1}^J c^{(I)}_j A'_j(\epsilon_k),\quad
+        A''(\epsilon_k) = \sum_{j=1}^J c^{(I)}_j A''_j(\epsilon_k).
+    \end{equation}
+
+    \item Increase regularization parameters $\mathcal{D}$, $D_k$ and $B_k$ by
+    the factor \verb|der_penalty_coeff|.
+
+    \item Update the amplitude regularization parameters $Q_k$: If $A(\epsilon_k) < 0$, then set $Q_k =$ \verb|amp_penalty_max|. Otherwise divide $Q_k$ by \verb|amp_penalty_divisor|.
+
+    \item Update the 1st derivative regularization parameters $D_k$:
+    If $D_k |A'(\epsilon_k)| > \mathcal{D}$, then set $D_k = \mathcal{D} / |A'(\epsilon_k)|$.
+
+    \item Update the 2nd derivative regularization parameters $B_k$:
+    If $B_k |A''(\epsilon_k)| > \mathcal{D}$, then set $B_k = \mathcal{D} / |A''(\epsilon_k)|$.
+
+    \item If the maximal allowed number of iterations (\verb|max_iter|) is reached, terminate. Otherwise repeat from step 4.
+\end{enumerate}
+
+Once the iterations have been terminated, one inspects an accumulated list of pairs $(\mathbf{c}^{(1)}, d(1,0)), (\mathbf{c}^{(2)}, d(2,1)), \ldots$. Elements of the list are sorted in the ascending order according to $d(I,I-1)$, i.e. $\mathbf{c}^{(I)}$ from the iteration closest to the convergence comes first in the sorted list. The first vector of coefficients from the sorted list that obeys
+\begin{equation}
+    \chi^2\left[\sum_{j=1}^J c^{(I)}_j A_j\right] \leq \chi^2_c
+\end{equation}
+represents the sought final solution.
+
 \section{Equality-constrained quadratic programming}
 \label{ecqp}
 
