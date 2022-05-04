@@ -584,22 +584,196 @@ When binning is used to perform projection of an observable onto a real frequenc
 \end{multline}
 where $\epsilon_\pm = c \pm w/2$ are edges of the rectangle.
 
+\section{Consistent-constraints updates}
+\label{cc_update}
+
+Consistent-constraints (CC) updates introduced in SOM 2.0 are a new type of updates in the Markov chain used to accumulate particular solutions (Section II.A of \cite{socc_paper}). Unlike elementary updates, they radically change an MC configuration to help reveal local minima of the objective function more quickly.
+
+The CC updates are proposed during stage A of a global update at regular intervals. Two consecutive CC updates are separated by \verb|cc_update_cycle_length| elementary updates. A CC update is skipped if it could potentially result in a configuration with too many rectangles, $2K_0+1>$ \verb|max_rects|, where $K_0$ is the number of rectangles in the current configuration.
+CC updates are accepted and rejected based on the same Metropolis criterion as the elementary updates.
+A proposed CC update proceeds as follows.
+\begin{enumerate}
+    \item Construct a non-overlapping configuration $\{(c_k, w_k, h_k)\}$ out of the current  configuration (Eqs. (16)-(17) of \cite{socc_paper}) and discard rectangles with width below \verb|min_rect_width|. If size $K$ of the resulting non-overlapping configuration is less than 3, reject the update.
+
+    \item Collect heights $h_k$ of rectangles in the non-overlapping configuration in a $K$-dimensional vector $\mathbf{h}$.
+
+    \item Starting from the collected heights, use the CC protocol (see below) to compute the optimal heights $\mathbf{h}^\mathrm{(opt)}$.
+
+    \item If any of $h^\mathrm{(opt)}_k$ is significantly negative, i.e. $w_k h^\mathrm{(opt)}_k < -\verb|min_rect_weight|$, reject the update.
+
+    \item Replace heights $h_k$ in the non-overlapping configuration with the optimal heights $h^\mathrm{(opt)}_k$.
+
+    \item Remove small rectangles ($w_k h^\mathrm{(opt)}_k < \verb|min_rect_weight|$) from the configuration and redistribute their weight by changing heights of their neighboring rectangles. This step is repeated until all rectangles satisfy ($w_k h_k \geq \verb|min_rect_weight|$).
+
+    \item Compute the $\chi^2$-functional (Eq.~(10) of \cite{socc_paper}) of the new optimized configuration, and use $Z(\chi^2 /\chi^2_\mathrm{(opt)})$ as the Metropolis ratio.
+\end{enumerate}
+
+The CC protocol consists in iterative minimization of a quadratic function of $h_k$ with self-consistent determination of regularization parameters $Q^{(0)}_k, Q^{(1)}_k, Q^{(2)}_k$ this function depends on. The function in question is a sum of the $\chi^2$-functional and a few regularization terms,
+\begin{equation}
+    O[\mathbf{h}; Q^{(0)},Q^{(1)},Q^{(2)}] = \chi^2[\mathbf{h}]
+     + O_0[\mathbf{h};Q^{(0)}]
+     + O_1[\mathbf{h};Q^{(1)}]
+     + O_2[\mathbf{h};Q^{(2)}].
+\end{equation}
+The $\chi^2$-functional reads
+\begin{equation}\label{cc_update:chi2}
+    \chi^2[\mathbf{h}] = \frac{1}{N} \sum_{n=1}^{N}
+        \frac{|\hat K A[\mathbf{h}] - g_n|^2}{\delta^2_n},
+\end{equation}
+where $g_n$ is the discretized right-hand side of the analytic continuation problem, and $\delta_n$ are respective estimated error bars on the input data. Action of the integral kernel $\hat K$ on a configuration $A[\mathbf{h}]$ is expressed in terms of the integrated kernel $\Lambda$,
+\begin{equation}
+    \hat K A[\mathbf{h}] = \sum_{k=1}^K h_k \Lambda_n(c_k, w_k), \quad
+    \Lambda_n(c_k, w_k) \equiv
+    \int\limits_{c_k-w_k/2}^{c_k+w_k/2} K(n,\epsilon) d\epsilon.
+\end{equation}
+Substituting this expression into the definition (\ref{cc_update:chi2}) and applying simple algebraic transformations, we get a quadratic function of $h_k$,
+\begin{equation}
+    \chi^2[\mathbf{h}] =
+    \frac{1}{N} \sum_{n=1}^N \frac{1}{\delta_n^2}
+    \left(\sum_{k=1}^K h_k \Lambda_n^*(c_k, w_k) - g^*_n\right)
+    \left(\sum_{k'=1}^K h_{k'} \Lambda_n(c_{k'}, w_{k'}) - g_n\right) =
+    \mathbf{h}^T \hat O_{\chi^2} \mathbf{h}
+    -2\mathbf{f}^T_{\chi^2} \mathbf{h} + \mathrm{const}.
+\end{equation}
+with
+\begin{align}
+    (\hat O_{\chi^2})_{kk'} &= \frac{1}{N} \sum_{n=1}^N \frac{1}{\delta_n^2}
+        \mathrm{Re}\left[
+        \Lambda^*_n(c_k, w_k) \Lambda_n(c_{k'}, w_{k'})
+        \right],\\
+    (\mathbf{f}_{\chi^2})_k &= \frac{1}{N} \sum_{n=1}^N \frac{1}{\delta_n^2}
+        \mathrm{Re}\left[\Lambda^*_n(c_k, w_k) g_n\right].
+\end{align}
+
+The regularization term $O_0$ penalizes large amplitudes of a solution,
+\begin{equation}
+    O_0[\mathbf{h};Q^{(0)}] = \sum_{k=1}^K (Q^{(0)}_k)^2 h_k^2 =
+        \mathbf{h}^T \hat O_{(0)} \mathbf{h}, \quad
+        \hat O_{(0)} = \mathrm{diag}((Q^{(0)}_k)^2).
+\end{equation}
+
+$O_1$ and $O_2$ penalize large values of the 1st and the 2nd derivative of a solution respectively,
+\begin{align}
+    O_1[\mathbf{h};Q^{(1)}] &= \sum_{k=1}^{K-1}
+        (Q^{(1)}_k)^2 |A'(\epsilon_k)|^2 =
+        \mathbf{h}^T \hat O_{(1)} \mathbf{h},\\
+    O_2[\mathbf{h};Q^{(2)}] &= \sum_{k=2}^{K-1}
+        (Q^{(2)}_{k-1})^2 |A''(\epsilon_k)|^2 =
+        \mathbf{h}^T \hat O_{(2)} \mathbf{h}.
+\end{align}
+Matrices $\hat O_{(1)}$ and $\hat O_{(2)}$ are derived from finite-difference approximations of $A'$ and $A''$ at points $\epsilon_k = c_k$. A forward-difference approximation
+\begin{equation}\label{cc_update:finite_diff_forward}
+    O_1[\mathbf{h};Q^{(1)}] \approx \sum_{k=1}^{K-1} (Q^{(1)}_k)^2
+        \left(\frac{h_{k+1} - h_k}{c_{k+1} - c_k}\right)^2
+\end{equation}
+gives rise to matrix elements
+\begin{align}
+    (\hat O_{(1)})_{k,k} &=
+    \left(\frac{Q^{(1)}_{k-1}}{c_k - c_{k-1}}\right)^2 \theta(k>1) +
+    \left(\frac{Q^{(1)}_k}{c_{k+1} - c_{k}}\right)^2\theta(k<K),
+    \quad k=\overline{1,K},\\
+    (\hat O_{(1)})_{k,k+1} &= (\hat O_{(1)})_{k+1,k} =
+    -\left(\frac{Q^{(1)}_k}{c_{k+1} - c_k}\right)^2, \quad k=\overline{1,K-1}.
+\end{align}
+Similarly, a second order symmetric difference approximation
+\begin{equation}\label{cc_update:finite_diff_2_symm}
+    O_2[\mathbf{h};Q^{(2)}] \approx \sum_{k=2}^{K-1} (Q^{(2)}_{k-1})^2
+    \left(\frac
+    {h_{k+1}(c_k - c_{k - 1}) + h_{k-1} (c_{k+1} - c_k) - h_k(c_{k+1} - c_{k-1})}
+    {1/2(c_{k+1} - c_{k-1})(c_{k+1} - c_{k})(c_{k} - c_{k-1})}
+    \right)^2
+\end{equation}
+results in matrix elements
+\begin{align}
+    (\hat O_{(2)})_{k,k} &=
+    \frac{4 (Q^{(2)}_{k-2})^2}{((c_k - c_{k-2})(c_k - c_{k-1}))^2}\theta(k>2) +
+    \frac{4 (Q^{(2)}_{k-1})^2}{((c_k - c_{k-1})(c_{k+1} - c_{k}))^2}\theta(k>1 \cap k<K) \nonumber +\\&+
+    \frac{4 (Q^{(2)}_k)^2}{((c_{k+2} - c_k)(c_{k+1} - c_k))^2}\theta(k<K-1),
+    \quad k=\overline{1,K},\\
+    (\hat O_{(2)})_{k,k+1} &= (\hat O_{(2)})_{k+1,k} =
+    \frac{-4(Q^{(2)}_{k-1})^2}{(c_{k+1} - c_{k-1})(c_k - c_{k-1})(c_{k+1} - c_k)^2}\theta(k>1) \nonumber +\\&+
+    \frac{-4(Q^{(2)}_k)^2}{(c_{k+2} - c_k)(c_{k+1} - c_k)^2(c_{k+2} - c_{k+1})^2}\theta(k<K-1),
+    \quad k=\overline{1,K-1},\\
+    (\hat O_{(2)})_{k,k+2} &= (\hat O_{(2)})_{k+2,k} =
+    \frac{4(Q^{(2)}_{k})^2}{(c_{k+2} - c_{k})^2(c_{k+1} - c_k)(c_{k+2} - c_{k+1})}, \quad k=\overline{1,K-2}.
+\end{align}
+
+CC protocol iterations are organized as follows.
+\begin{enumerate}
+    \item Precompute integrated kernel $\Lambda$, matrix $\hat O_{\chi^2}$ and vector $\mathbf{f}_{\chi^2}$.
+
+    \item Initialize regularization parameters according to
+    \begin{align*}
+        Q^{(0)}_k &= 0, \quad k=\overline{1,K},\\
+        Q^{(1)}_k &= (\mathtt{cc\_update\_der\_penalty\_init})W^2 / \mathcal{N}, \quad k = \overline{1,K-1},\\
+        Q^{(2)}_k &= (\mathtt{cc\_update\_der\_penalty\_init})W^3 / \mathcal{N}, \quad k = \overline{1,K-2},
+    \end{align*}
+    where $W$ is the energy window width and $\mathcal{N}$ is the requested solution norm.
+
+    \item The regularization parameters are used to compute matrix $\hat O = 
+    \hat O_{\chi^2} + \hat O_{(0)} + \hat O_{(1)} + \hat O_{(2)}$.
+
+    \item Minimize a quadratic function
+    \begin{equation}
+        \mathbf{h}^T \hat O \mathbf{h} -2\mathbf{f}^T_{\chi^2} \mathbf{h}
+    \end{equation}
+    w.r.t. $\mathbf{h}$ subject to the normalization sum rule $\sum_{k=1}^K w_k h_k = \mathcal{N}$. The minimization result is a new  vector $\mathbf{h}^\mathrm{new}$.
+
+    \item Discrepancy of weights of rectangles with heights $\mathbf{h}$ and $\mathbf{h}^\mathrm{new}$ is computed as
+    \begin{equation}
+        \frac{1}{\mathcal{N}}\sum_{k=1}^K |w_k (h_k - h^\mathrm{new}_k)|.
+    \end{equation}
+    If it lies within a fixed tolerance level (\verb|cc_update_rect_norm_variation_tol|),
+    then convergence is reached and iterations are terminated.
+
+    \item Update amplitude regularization parameters $Q^{(0)}_k$: If $h^\mathrm{new}_k$ is negative, set\\
+    $Q^{(0)}_k = (\mathtt{cc\_update\_height\_penalty\_max})W / \mathcal{N}$.
+    Otherwise divide $Q^{(0)}_k$ by \verb|cc_update_height_penalty_divisor|.
+
+    \item Use the same finite difference approximation as in Eq. (\ref{cc_update:finite_diff_forward}) to compute the 1st derivatives $d^{(1)}_k, k = \overline{1,K-1}$.
+
+    \item Compute a limiter for $Q^{(1)}_k$,
+    $Q^{(1)}_\mathrm{lim} = (\mathtt{cc\_update\_der\_penalty\_limiter}) \min_k Q^{(1)}_k$.
+
+    \item Update 1st derivative regularization parameters $Q^{(1)}_k$:\\
+    If $|d^{(1)}_k| > (\mathtt{cc\_update\_der\_penalty\_threshold} / \sqrt{K-1}) / Q^{(1)}_k$, then set\\
+    $Q^{(1)}_k = (\mathtt{cc\_update\_der\_penalty\_threshold} / \sqrt{K-1}) / |d^{(1)}_k|$.\\
+    Otherwise multiply $Q^{(1)}_k$ by \verb|cc_update_der_penalty_increase_coeff|.
+
+    \item Reduce excessively large $Q^{(1)}_k$: If $Q^{(1)}_k > Q^{(1)}_\mathrm{lim}$, then set $Q^{(1)}_k = Q^{(1)}_\mathrm{lim}$.
+
+    \item Use the same finite difference approximation as in Eq. (\ref{cc_update:finite_diff_2_symm}) to compute the 2nd derivatives $d^{(2)}_k, k = \overline{1,K-2}$.
+
+    \item Compute a limiter for $Q^{(2)}_k$,
+    $Q^{(2)}_\mathrm{lim} = (\mathtt{cc\_update\_der\_penalty\_limiter}) \min_k Q^{(2)}_k$.
+
+    \item Update 2nd derivative regularization parameters $Q^{(2)}_k$:\\
+    If $|d^{(2)}_k| > (\mathtt{cc\_update\_der\_penalty\_threshold} / \sqrt{K-1}) / Q^{(2)}_k$, then set\\
+    $Q^{(2)}_k = (\mathtt{cc\_update\_der\_penalty\_threshold} / \sqrt{K-1}) / |d^{(2)}_k|$.\\
+    Otherwise multiply $Q^{(2)}_k$ by \verb|cc_update_der_penalty_increase_coeff|.
+
+    \item Reduce excessively large $Q^{(2)}_k$: If $Q^{(2)}_k > Q^{(2)}_\mathrm{lim}$, then set $Q^{(2)}_k = Q^{(2)}_\mathrm{lim}$.
+
+    \item If the maximal allowed number of iterations (\verb|cc_update_max_iter|) is reached, terminate. Otherwise set $\mathbf{h} = \mathbf{h}^\mathrm{new}$ and repeat from step 3.
+\end{enumerate}
+The last vector $\mathbf{h}^\mathrm{new}$ obtained during iterations is taken to be the optimization result $\mathbf{h}^\mathrm{(opt)}$.
+
 \section{Equality-constrained quadratic programming}
 \label{ecqp}
 
-Both consistent-constraints updates (Section II.A of \cite{socc_paper}) and  construction of the final solution using the consistent-constraints protocol (Section II.B of \cite{socc_paper}) involve solving equality constrained quadratic programs. By definition, an equality-constrained quadratic programming is the process of minimizing a multivariate quadratic function
+Both consistent-constraints updates (Section \ref{cc_update}) and  construction of the final solution using the consistent-constraints protocol (Section II.B of \cite{socc_paper}) involve solving equality constrained quadratic programs. By definition, an equality-constrained quadratic programming is the process of minimizing a multivariate quadratic function
 \begin{eqnarray}\label{ecqp:objective_function}
-    \mathbf{x}^T \hat Q \mathbf{x} - 2\mathbf{f}^T\mathbf{x}
+    \mathbf{x}^T \hat O \mathbf{x} - 2\mathbf{f}^T\mathbf{x}
 \end{eqnarray}
 w.r.t. a real vector $\mathbf{x}\in\mathbb{R}^N$ subject to a system of $P$ equality constraints
 \begin{equation}\label{ecqp:constraints}
     \hat L \mathbf{x} = \mathbf{d}.
 \end{equation}
-Here, $\hat Q$ is a real symmetric positive-definite $N\times N$ matrix, $\mathbf{f}\in\mathbb{R}^N$, $\hat L$ is a real $P \times N$ matrix, and $d \in \mathbb{R}^N$.
+Here, $\hat O$ is a real symmetric positive-definite $N\times N$ matrix, $\mathbf{f}\in\mathbb{R}^N$, $\hat L$ is a real $P \times N$ matrix, and $d \in \mathbb{R}^N$.
 
-Such programs can always be reduced to equality-constrained least squares problems via the Cholesky decomposition of $\hat Q$,
+Such programs can always be reduced to equality-constrained least squares problems via the Cholesky decomposition of $\hat O$,
 \begin{equation}
-    \hat Q = \hat A^T \hat A
+    \hat O = \hat A^T \hat A
 \end{equation}
 with an upper triangular $N\times N$ matrix $\hat A$, whose diagonal entries are positive. Let us consider an objective function of a general least-squares problem with the matrix $\hat A$ and a right-hand-side $\mathbf{b}\in \mathbb{R}^N$,
 \begin{equation}
@@ -612,14 +786,14 @@ with an upper triangular $N\times N$ matrix $\hat A$, whose diagonal entries are
 By comparing this expression with (\ref{ecqp:objective_function}), we easily establish equivalence of the two objective functions,
 \begin{equation}
     ||\hat A\mathbf{x} - \mathbf{b}||_2 =
-    \mathbf{x}^T \hat Q \mathbf{x} - 2\mathbf{f}^T\mathbf{x} + |\mathbf{b}|^2,
+    \mathbf{x}^T \hat O \mathbf{x} - 2\mathbf{f}^T\mathbf{x} + |\mathbf{b}|^2,
     \textrm{ where } \mathbf{f} = \hat A^T\mathbf{b}.
 \end{equation}
 
 A special class called \verb|ecqp_worker| solves the quadratic program
 (\ref{ecqp:objective_function}--\ref{ecqp:constraints}) by calling a few LAPACK routines:
 \begin{enumerate}
-    \item Cholesky decomposition of matrix $\hat Q$: LAPACK routine \verb|dpotrf|;
+    \item Cholesky decomposition of matrix $\hat O$: LAPACK routine \verb|dpotrf|;
 
     \item Solution of the linear system $\hat A^T\mathbf{b} = \mathbf{f}$ to get the RHS $\mathbf{b}$: LAPACK routine \verb|dtrsm|.
 
