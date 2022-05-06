@@ -18,12 +18,14 @@
  * SOM. If not, see <http://www.gnu.org/licenses/>.
  *
  ******************************************************************************/
+#include <cmath>
 #include <vector>
 
 #include <nda/gtest_tools.hpp>
 
 #include <triqs/mesh.hpp>
 
+#include <som/kernels/fermiongf_imfreq.hpp>
 #include <som/kernels/fermiongf_imtime.hpp>
 #include <som/solution_functionals/objective_function.hpp>
 
@@ -32,7 +34,25 @@ using namespace som;
 
 class objective_function_test : public ::testing::Test {
 
+protected:
   const double beta = 2;
+
+  cache_index ci;
+  std::vector<rectangle> rects = {{-2, 2.6, 0.3, ci},
+                                  {1.3, 2.6, 0.6, ci},
+                                  {-0.5, 2.6, 0.5, ci},
+                                  {2, 2.6, 0.7, ci}};
+
+public:
+  objective_function_test() = default;
+};
+
+//
+// Real RHS
+//
+
+class objective_function_imtime_test : public objective_function_test {
+
   triqs::mesh::imtime mesh;
   kernel<FermionGf, triqs::mesh::imtime> kern;
 
@@ -61,16 +81,10 @@ class objective_function_test : public ::testing::Test {
   array<double, 1> s;
 
 protected:
-  cache_index ci;
-  std::vector<rectangle> rects = {{-2, 2.6, 0.3, ci},
-                                  {1.3, 2.6, 0.6, ci},
-                                  {-0.5, 2.6, 0.5, ci},
-                                  {2, 2.6, 0.7, ci}};
-
   objective_function<kernel<FermionGf, triqs::mesh::imtime>> of;
 
 public:
-  objective_function_test()
+  objective_function_imtime_test()
      : mesh(beta, triqs::mesh::Fermion, 11)
      , kern(mesh)
      , g(GF())
@@ -78,7 +92,7 @@ public:
      , of(kern, g, s) {}
 };
 
-TEST_F(objective_function_test, Change) {
+TEST_F(objective_function_imtime_test, Change) {
   configuration conf({rects[0], rects[2]}, ci);
 
   EXPECT_NEAR(586.079, of(conf), 1e-3);
@@ -97,7 +111,7 @@ TEST_F(objective_function_test, Change) {
   EXPECT_NEAR(991.805, of(conf), 1e-3);
 }
 
-TEST_F(objective_function_test, Add) {
+TEST_F(objective_function_imtime_test, Add) {
   configuration conf({rects[0], rects[1]}, ci);
 
   EXPECT_NEAR(393.205, of(conf), 1e-3);
@@ -116,7 +130,7 @@ TEST_F(objective_function_test, Add) {
   EXPECT_NEAR(2797.053, of(conf), 1e-3);
 }
 
-TEST_F(objective_function_test, Remove) {
+TEST_F(objective_function_imtime_test, Remove) {
   configuration conf({rects[0], rects[1], rects[2]}, ci);
 
   EXPECT_NEAR(1715.986, of(conf), 1e-3);
@@ -135,7 +149,7 @@ TEST_F(objective_function_test, Remove) {
   EXPECT_NEAR(393.205, of(conf), 1e-3);
 }
 
-TEST_F(objective_function_test, Multiple) {
+TEST_F(objective_function_imtime_test, Multiple) {
   configuration conf({rects[0], rects[1]}, ci);
 
   EXPECT_NEAR(393.205, of(conf), 1e-3);
@@ -159,4 +173,134 @@ TEST_F(objective_function_test, Multiple) {
   EXPECT_NEAR(577.133, of(cu), 1e-3);
   cu.apply();
   EXPECT_NEAR(577.133, of(conf), 1e-3);
+}
+
+//
+// Complex RHS
+//
+
+class objective_function_imfreq_test : public objective_function_test {
+
+  triqs::mesh::imfreq mesh;
+  kernel<FermionGf, triqs::mesh::imfreq> kern;
+
+  array<dcomplex, 1> GF() {
+    array<dcomplex, 1> res(mesh.size());
+    for(auto pt : mesh) {
+      size_t i = pt.linear_index();
+      auto w = dcomplex(pt);
+      res(i) = 0.5 * (1.0 / (w - 1.3) + 1.0 / (w + 0.7));
+    }
+    return res;
+  }
+
+  array<dcomplex, 1> S() {
+    array<dcomplex, 1> res(mesh.size());
+    for(auto pt : mesh) {
+      size_t i = pt.linear_index();
+      auto w = dcomplex(pt);
+      res(i) = 0.05 / std::abs(w);
+    }
+    return res;
+  }
+
+  array<dcomplex, 1> g;
+  array<dcomplex, 1> s;
+
+protected:
+  objective_function<kernel<FermionGf, triqs::mesh::imfreq>> of;
+
+public:
+  objective_function_imfreq_test()
+     : mesh(beta,
+            triqs::mesh::Fermion,
+            11,
+            triqs::mesh::imfreq::option::positive_frequencies_only)
+     , kern(mesh)
+     , g(GF())
+     , s(S())
+     , of(kern, g, s) {}
+};
+
+TEST_F(objective_function_imfreq_test, Change) {
+  configuration conf({rects[0], rects[2]}, ci);
+
+  EXPECT_NEAR(451.907, of(conf), 1e-3);
+
+  config_update cu(conf, ci);
+  cu.change_rectangle(1, rects[3]);
+  EXPECT_NEAR(865.954, of(cu), 1e-3);
+
+  cu.reset();
+  EXPECT_NEAR(451.907, of(cu), 1e-3);
+  cu.change_rectangle(0, rects[1]);
+  EXPECT_NEAR(1290.226, of(cu), 1e-3);
+
+  cu.apply();
+  of.get_kernel().cache_copy(cu, conf);
+  EXPECT_NEAR(1290.226, of(conf), 1e-3);
+}
+
+TEST_F(objective_function_imfreq_test, Add) {
+  configuration conf({rects[0], rects[1]}, ci);
+
+  EXPECT_NEAR(626.146, of(conf), 1e-3);
+
+  config_update cu(conf, ci);
+  cu.add_rectangle(rects[2]);
+  EXPECT_NEAR(2532.736, of(cu), 1e-3);
+
+  cu.reset();
+  EXPECT_NEAR(626.146, of(cu), 1e-3);
+  cu.add_rectangle(rects[3]);
+  EXPECT_NEAR(3544.259, of(cu), 1e-3);
+
+  cu.apply();
+  of.get_kernel().cache_copy(cu, conf);
+  EXPECT_NEAR(3544.259, of(conf), 1e-3);
+}
+
+TEST_F(objective_function_imfreq_test, Remove) {
+  configuration conf({rects[0], rects[1], rects[2]}, ci);
+
+  EXPECT_NEAR(2532.736, of(conf), 1e-3);
+
+  config_update cu(conf, ci);
+  cu.remove_rectangle(1);
+  EXPECT_NEAR(451.907, of(cu), 1e-3);
+
+  cu.reset();
+  EXPECT_NEAR(2532.736, of(cu), 1e-3);
+  cu.remove_rectangle(2);
+  EXPECT_NEAR(626.146, of(cu), 1e-3);
+
+  cu.apply();
+  of.get_kernel().cache_copy(cu, conf);
+  EXPECT_NEAR(626.146, of(conf), 1e-3);
+}
+
+TEST_F(objective_function_imfreq_test, Multiple) {
+  configuration conf({rects[0], rects[1]}, ci);
+
+  EXPECT_NEAR(626.146, of(conf), 1e-3);
+
+  config_update cu(conf, ci);
+  cu.add_rectangle(rects[3]);
+  cu.change_rectangle(1, rects[2]);
+  EXPECT_NEAR(2962.416, of(cu), 1e-3);
+
+  cu.reset();
+  EXPECT_NEAR(626.146, of(cu), 1e-3);
+  cu.change_rectangle(1, rects[2]);
+  cu.remove_rectangle(0);
+  EXPECT_NEAR(42.398, of(cu), 1e-3);
+
+  cu.apply();
+  of.get_kernel().cache_copy(cu, conf);
+  EXPECT_NEAR(42.398, of(conf), 1e-3);
+  cu.add_rectangle(rects[3]);
+  cu.change_rectangle(0, rects[0]);
+  EXPECT_NEAR(865.954, of(cu), 1e-3);
+  cu.apply();
+  EXPECT_NEAR(865.954, of(conf), 1e-3);
 }
