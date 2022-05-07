@@ -20,6 +20,10 @@
  ******************************************************************************/
 #pragma once
 
+#include <optional>
+
+#include <nda/nda.hpp>
+
 #include <som/config_update.hpp>
 #include <som/configuration.hpp>
 #include <som/kernels/all.hpp>
@@ -32,24 +36,46 @@ template <typename KernelType> class objective_function {
   using rhs_type = typename KernelType::result_type;
   using mesh_type = typename KernelType::mesh_type;
 
+  using rhs_scalar_type = typename rhs_type::value_type;
+
   // Integral kernel
   KernelType const& kern;
   // The right-hand side of the Fredholm integral equation
   rhs_type const& rhs;
-  // Error bars of the RHS
-  rhs_type const& error_bars;
+  // Shifted positive eigenvalues of the covariance matrix,
+  // \sigma_n^2 + (filtration_level)^2.
+  nda::array<double, 1> sigma2;
+
+  // Matrix U^\dagger from the eigendecomposition of the covariance matrix,
+  // cov = U diag(\sigma_n^2) U^\dagger.
+  // The number of rows of U^\dagger equals the number of retained eigenvalues
+  // (size of sigma2).
+  std::optional<nda::matrix<rhs_scalar_type>> U_dagger;
+
+  // Stores (rhs - kern(c)) and U^\dagger*(rhs - kern(c))
+  mutable rhs_type tmp;
+
+  // Common part of both operator() overloads.
+  double call_impl() const;
 
 public:
   objective_function(KernelType const& kern,
                      rhs_type const& rhs,
                      rhs_type const& error_bars);
 
+  objective_function(KernelType const& kern,
+                     rhs_type const& rhs,
+                     nda::matrix<rhs_scalar_type> const& cov_matrix,
+                     double filtration_level = 0);
+
   double operator()(configuration const& c) const;
   double operator()(config_update const& cu) const;
 
   [[nodiscard]] KernelType const& get_kernel() const { return kern; }
   [[nodiscard]] rhs_type const& get_rhs() const { return rhs; }
-  [[nodiscard]] rhs_type const& get_error_bars() const { return error_bars; }
+  [[nodiscard]] nda::array<double, 1> const& get_sigma2() const {
+    return sigma2;
+  }
 };
 
 EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL(objective_function)

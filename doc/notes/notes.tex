@@ -618,9 +618,9 @@ The CC protocol consists in iterative minimization of a quadratic function of $h
 The $\chi^2$-functional reads
 \begin{equation}\label{cc_update:chi2}
     \chi^2[\mathbf{h}] = \frac{1}{N} \sum_{n=1}^{N}
-        \frac{|\hat K A[\mathbf{h}] - g_n|^2}{\delta^2_n},
+        \frac{|\hat K A[\mathbf{h}] - g_n|^2}{\sigma^2_n},
 \end{equation}
-where $g_n$ is the discretized right-hand side of the analytic continuation problem, and $\delta_n$ are respective estimated error bars on the input data. Action of the integral kernel $\hat K$ on a configuration $A[\mathbf{h}]$ is expressed in terms of the integrated kernel $\Lambda$,
+where $g_n$ is the discretized right-hand side of the analytic continuation problem, and $\sigma_n$ are respective estimated error bars on the input data. Action of the integral kernel $\hat K$ on a configuration $A[\mathbf{h}]$ is expressed in terms of the integrated kernel $\Lambda$,
 \begin{equation}
     \hat K A[\mathbf{h}] = \sum_{k=1}^K h_k \Lambda_n(c_k, w_k), \quad
     \Lambda_n(c_k, w_k) \equiv
@@ -629,7 +629,7 @@ where $g_n$ is the discretized right-hand side of the analytic continuation prob
 Substituting this expression into the definition (\ref{cc_update:chi2}) and applying simple algebraic transformations, we get a quadratic function of $h_k$,
 \begin{equation}
     \chi^2[\mathbf{h}] =
-    \frac{1}{N} \sum_{n=1}^N \frac{1}{\delta_n^2}
+    \frac{1}{N} \sum_{n=1}^N \frac{1}{\sigma_n^2}
     \left(\sum_{k=1}^K h_k \Lambda_n^*(c_k, w_k) - g^*_n\right)
     \left(\sum_{k'=1}^K h_{k'} \Lambda_n(c_{k'}, w_{k'}) - g_n\right) =
     \mathbf{h}^T \hat O_{\chi^2} \mathbf{h}
@@ -637,11 +637,11 @@ Substituting this expression into the definition (\ref{cc_update:chi2}) and appl
 \end{equation}
 with
 \begin{align}
-    (\hat O_{\chi^2})_{kk'} &= \frac{1}{N} \sum_{n=1}^N \frac{1}{\delta_n^2}
+    (\hat O_{\chi^2})_{kk'} &= \frac{1}{N} \sum_{n=1}^N \frac{1}{\sigma_n^2}
         \mathrm{Re}\left[
         \Lambda^*_n(c_k, w_k) \Lambda_n(c_{k'}, w_{k'})
         \right],\\
-    (\mathbf{f}_{\chi^2})_k &= \frac{1}{N} \sum_{n=1}^N \frac{1}{\delta_n^2}
+    (\mathbf{f}_{\chi^2})_k &= \frac{1}{N} \sum_{n=1}^N \frac{1}{\sigma_n^2}
         \mathrm{Re}\left[\Lambda^*_n(c_k, w_k) g_n\right].
 \end{align}
 
@@ -865,7 +865,7 @@ The iterative optimization procedure proceeds as follows.
 
     \item If $\sum_{j=1}^J |c^{(I)}_j| >$ \verb|max_sum_abs_c| (contribution of the negative coefficients is too big), then terminate iterations.
 
-    \item If $d(I, I-1) < \min_n |\delta_n/g_n|$, then convergence is reached and iterations are terminated. $g_n$ is the discretized right-hand side of the analytic continuation problem, and $\delta_n$ are respective estimated error bars on the input data.
+    \item If $d(I, I-1) < \min_n |\sigma_n/g_n|$, then convergence is reached and iterations are terminated. $g_n$ is the discretized right-hand side of the analytic continuation problem, and $\sigma_n$ are respective estimated error bars on the input data.
 
     \item Form a new final solution from coefficients $\mathbf{c}^{(I)}$,
     \begin{equation}

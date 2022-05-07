@@ -83,7 +83,7 @@ update_consistent_constraints<KernelType>::update_consistent_constraints(
    , Q12_threshold(der_penalty_threshold)
    , Q12_increase_coeff(der_penalty_increase_coeff)
    , Q12_limiter(der_penalty_limiter)
-   , chi2_mat_prefactors(1.0 / (N * abs2(data.objf.get_error_bars())))
+   , chi2_mat_prefactors(1.0 / (N * data.objf.get_sigma2()))
    , chi2_rhs_prefactors(chi2_mat_prefactors * conj(data.objf.get_rhs()))
 #ifdef EXT_DEBUG
    , chi2_const(std::real(sum(chi2_rhs_prefactors * data.objf.get_rhs())))
