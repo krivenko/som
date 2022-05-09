@@ -636,14 +636,44 @@ Substituting this expression into the definition (\ref{cc_update:chi2}) and appl
     -2\mathbf{f}^T_{\chi^2} \mathbf{h} + \mathrm{const}.
 \end{equation}
 with
-\begin{align}
+\begin{align}\label{cc_update:chi2_mat_and_f}
     (\hat O_{\chi^2})_{kk'} &= \frac{1}{N} \sum_{n=1}^N \frac{1}{\sigma_n^2}
         \mathrm{Re}\left[
         \Lambda^*_n(c_k, w_k) \Lambda_n(c_{k'}, w_{k'})
-        \right],\\
+        \right],\nonumber\\
     (\mathbf{f}_{\chi^2})_k &= \frac{1}{N} \sum_{n=1}^N \frac{1}{\sigma_n^2}
-        \mathrm{Re}\left[\Lambda^*_n(c_k, w_k) g_n\right].
+        \mathrm{Re}\left[\Lambda_n(c_k, w_k) g_n^*\right].
 \end{align}
+
+When a full covariance matrix $\hat{\Sigma}$ is used instead of the estimated error bars $\sigma_n$, the definition (\ref{cc_update:chi2}) is modified as
+\begin{equation}\label{cc_update:chi2_cov_matrix}
+    \chi^2[\mathbf{h}] = \frac{1}{\tilde N}
+    (\hat K A[\mathbf{h}] - \vec g)^\dagger
+    \hat\Sigma^{-1}
+    (\hat K A[\mathbf{h}] - \vec g).
+\end{equation}
+In practice, $\hat{\Sigma}$ is known with finite precision and some of its eigenvalues may turn to be non-positive. Such eigenvalues must be discarded. The number of retained eigenvalues is denoted by $\tilde N$ here. Some of the retained positive eigenvalues $\sigma_n^2$ can still be problematic due to their small magnitude. This problem is solved by optionally shifting $\sigma_n^2$ by a positive constant $l^2$ (so called filtering level). With these modifications applied, $\hat\Sigma^{-1}$ allows a decomposition
+\begin{equation}
+    \hat\Sigma^{-1} = \hat U \mathrm{diag}
+                      \left(\frac{1}{\sigma_n^2 + l^2}\right)
+                      \hat U^\dagger
+\end{equation}
+with an $N\times \tilde N$ matrix $\hat U$. With a bit of straightforward algebra one gets a modified version of Eqs. (\ref{cc_update:chi2_mat_and_f}),
+\begin{align}
+    (\hat O_{\chi^2})_{kk'} &= \frac{1}{\tilde N} \sum_{n=1}^{\tilde N} \frac{1}{\sigma_n^2 + l^2}
+    \mathrm{Re}\left[
+    \tilde\Lambda^*_n(c_k, w_k) \tilde\Lambda_n(c_{k'}, w_{k'})
+    \right],\\
+    (\mathbf{f}_{\chi^2})_k &= \frac{1}{\tilde N} \sum_{n=1}^{\tilde N} \frac{1}{\sigma_n^2 + l^2}
+    \mathrm{Re}\left[\tilde\Lambda_n(c_k, w_k) \tilde g_n^*\right],
+\end{align}
+with transformed $\Lambda_n$ and $g_n$,
+\begin{equation}
+    \tilde\Lambda_n(c_k, w_k) \equiv
+    \sum_{n'=1}^N (\hat U^\dagger)_{nn'} \Lambda_{n'}(c_k, w_k),\quad
+    \tilde g_n \equiv
+    \sum_{n'=1}^N (\hat U^\dagger)_{nn'} g_{n'}.
+\end{equation}
 
 The regularization term $O_0$ penalizes large amplitudes of a solution,
 \begin{equation}

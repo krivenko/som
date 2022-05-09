@@ -65,7 +65,7 @@ update_consistent_constraints<KernelType>::update_consistent_constraints(
    : data(data)
    , kern(data.objf.get_kernel())
    , rng(rng)
-   , N(data.objf.get_rhs().size())
+   , N_sigma2(data.objf.get_sigma2().size())
    , norm(norm)
    , norm_vector_view({1}, &(this->norm))
    , energy_window(std::move(energy_window))
@@ -83,13 +83,15 @@ update_consistent_constraints<KernelType>::update_consistent_constraints(
    , Q12_threshold(der_penalty_threshold)
    , Q12_increase_coeff(der_penalty_increase_coeff)
    , Q12_limiter(der_penalty_limiter)
-   , chi2_mat_prefactors(1.0 / (N * data.objf.get_sigma2()))
-   , chi2_rhs_prefactors(chi2_mat_prefactors * conj(data.objf.get_rhs()))
+   , chi2_eigenvalue_prefactors(1.0 / (N_sigma2 * data.objf.get_sigma2()))
+   , chi2_conj_rhs(init_chi2_conj_rhs(data.objf))
 #ifdef EXT_DEBUG
-   , chi2_const(std::real(sum(chi2_rhs_prefactors * data.objf.get_rhs())))
+   , chi2_const(
+         std::real(sum(chi2_eigenvalue_prefactors * abs2(chi2_conj_rhs))))
 #endif
    , proposed_conf(data.temp_conf.cache_ptr.get_ci())
-   , int_kernel(max_rects, N)
+   , int_kernel_one_rect(data.objf.get_rhs().size())
+   , int_kernel(max_rects, N_sigma2)
    , chi2_mat(max_rects, max_rects)
    , chi2_rhs(max_rects)
    , widths(max_rects)
@@ -103,6 +105,18 @@ update_consistent_constraints<KernelType>::update_consistent_constraints(
    , QF_mat_data(max_rects * max_rects)
    , conf_1st_der(max_rects - 1)
    , conf_2nd_der(max_rects - 2) {
+}
+
+template <typename KernelType>
+auto update_consistent_constraints<KernelType>::init_chi2_conj_rhs(
+    objective_function<KernelType> const& objf)
+    -> nda::array<rhs_scalar_type, 1> {
+  auto const& U_dagger = objf.get_U_dagger();
+  if(U_dagger)
+    return conj((*U_dagger) *
+                vector_const_view<rhs_scalar_type>(objf.get_rhs()));
+  else
+    return conj(objf.get_rhs());
 }
 
 template <typename KernelType>
@@ -271,19 +285,29 @@ void update_consistent_constraints<KernelType>::reject() {
 template <typename KernelType>
 void update_consistent_constraints<KernelType>::prepare_chi2_data() {
   // Compute integrated kernels
-  for(auto k : r_K) kern.apply(proposed_conf[k], int_kernel(k, range()));
+  auto const& U_dagger = data.objf.get_U_dagger();
+  if(U_dagger) { // Covariance matrix
+    for(auto k : r_K) {
+      kern.apply(proposed_conf[k], int_kernel_one_rect());
+      int_kernel(k, range()) =
+          (*U_dagger) * vector_const_view<rhs_scalar_type>(int_kernel_one_rect);
+    }
+  } else { // Estimated error bars
+    for(auto k : r_K) kern.apply(proposed_conf[k], int_kernel(k, range()));
+  }
 
   // Fill chi2_rhs
   for(auto k : r_K) {
-    chi2_rhs(k) = std::real(sum(chi2_rhs_prefactors * int_kernel(k, range())));
+    chi2_rhs(k) = std::real(sum(chi2_eigenvalue_prefactors *
+                                int_kernel(k, range()) * chi2_conj_rhs));
   }
 
   // Fill chi2_mat
   for(auto k1 : r_K) {
     for(auto k2 : r_K) {
-      chi2_mat(k1, k2) =
-          std::real(sum(chi2_mat_prefactors * conj(int_kernel(k1, range())) *
-                        int_kernel(k2, range())));
+      chi2_mat(k1, k2) = std::real(
+          sum(chi2_eigenvalue_prefactors * conj(int_kernel(k1, range())) *
+              int_kernel(k2, range())));
     }
   }
 

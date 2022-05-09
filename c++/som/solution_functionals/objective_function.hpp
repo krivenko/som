@@ -76,6 +76,10 @@ public:
   [[nodiscard]] nda::array<double, 1> const& get_sigma2() const {
     return sigma2;
   }
+  [[nodiscard]] std::optional<nda::matrix<rhs_scalar_type>>
+  get_U_dagger() const {
+    return U_dagger;
+  }
 };
 
 EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL(objective_function)

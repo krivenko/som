@@ -26,6 +26,8 @@
 
 #include <triqs/mc_tools/random_generator.hpp>
 
+#include "solution_functionals/objective_function.hpp"
+
 namespace som {
 
 template <typename> struct mc_data;
@@ -35,11 +37,13 @@ template <typename KernelType> class update_consistent_constraints {
 
   using rhs_type = typename KernelType::result_type;
 
+  using rhs_scalar_type = typename rhs_type::value_type;
+
   mc_data<KernelType>& data;
   KernelType const& kern;
   triqs::mc_tools::random_generator& rng;
 
-  int const N;
+  int const N_sigma2;
   double const norm;
   nda::vector_const_view<double> const norm_vector_view;
 
@@ -64,12 +68,12 @@ template <typename KernelType> class update_consistent_constraints {
   double const Q12_increase_coeff;
   double const Q12_limiter;
 
-  // Coefficients (N (error_bars[n])^2)^{-1}
-  nda::array<double, 1> const chi2_mat_prefactors;
-  // Coefficients rhs[n]^* (N (error_bars[n])^2)^{-1}
-  nda::array<typename rhs_type::value_type, 1> const chi2_rhs_prefactors;
+  // Coefficients (1 / \tilde N) (\sigma_n^2 + l^2)^{-1}
+  nda::array<double, 1> const chi2_eigenvalue_prefactors;
+  // conj(\hat U^\dagger g_n)
+  nda::array<rhs_scalar_type, 1> const chi2_conj_rhs;
 #ifdef EXT_DEBUG
-  // Constant (1/N) \sum_n (|rhs[n]|^2 / (error_bars[n])^2)
+  // Constant (1/\tilde N) \sum_n |\hat U^\dagger g_n|^2 / (\sigma_n^2 + l^2)
   double const chi2_const;
 #endif
 
@@ -82,8 +86,12 @@ template <typename KernelType> class update_consistent_constraints {
   // Objective function value for the proposed configuration.
   double new_objf_value = NAN;
 
-  // Kernel, integrated over all unity-rectangles in the proposed configuration.
-  nda::array<typename rhs_type::value_type, 2> int_kernel;
+  // Kernel, integrated over one unity-rectangle.
+  nda::array<rhs_scalar_type, 1> int_kernel_one_rect;
+
+  // U^\dagger-transformed kernel, integrated over all unity-rectangles in
+  // the proposed configuration.#include <iomanip> //FIXME
+  nda::array<rhs_scalar_type, 2> int_kernel;
 
   // Matrix of quadratic form \chi^2.
   nda::matrix<double, nda::F_layout> chi2_mat;
@@ -119,6 +127,10 @@ template <typename KernelType> class update_consistent_constraints {
   nda::array<double, 1> conf_1st_der;
   // Second derivative of the proposed configuration.
   nda::array<double, 1> conf_2nd_der;
+
+  // Initialize chi2_conj_rhs
+  static nda::array<rhs_scalar_type, 1>
+  init_chi2_conj_rhs(objective_function<KernelType> const& objf);
 
   // Prepare matrix of quadratic form \chi^2 and coefficients of
   // linear shifts in \chi^2.
@@ -158,5 +170,7 @@ public:
   std::uint64_t get_n_proposed() const { return n_proposed; }
   double get_acceptance_rate() const;
 };
+
+EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL(update_consistent_constraints);
 
 } // namespace som
