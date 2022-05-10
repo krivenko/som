@@ -34,7 +34,10 @@ protected:
 
   double beta = {};
   triqs::mesh::imtime mesh;
-  array<double, 1> g_tau, s_tau;
+  array<double, 1> g_tau;
+  array<double, 1> error_bars_tau;
+  matrix<double> cov_matrix_tau;
+  double filtration_level = 0;
 
   using obj_function =
       objective_function<kernel<FermionGf, triqs::mesh::imtime>>;
@@ -44,7 +47,9 @@ public:
 
     h5_read(arch, "beta", beta);
     h5_read(arch, "g_tau", g_tau);
-    h5_read(arch, "s_tau", s_tau);
+    h5_read(arch, "error_bars_tau", error_bars_tau);
+    h5_read(arch, "cov_matrix_tau", cov_matrix_tau);
+    h5_read(arch, "filtration_level", filtration_level);
 
     mesh = {beta, triqs::mesh::Fermion, first_dim(g_tau)};
   }
@@ -53,7 +58,7 @@ public:
 TEST_F(solution_worker_test, RandomConfig) {
   cache_index ci;
   kernel<FermionGf, triqs::mesh::imtime> kern(mesh);
-  obj_function of(kern, g_tau, s_tau);
+  obj_function of(kern, g_tau, error_bars_tau);
 
   auto params = worker_parameters_t({-3.0, 3.0});
   params.random_seed = 963162;
@@ -75,7 +80,7 @@ TEST_F(solution_worker_test, RandomConfig) {
 TEST_F(solution_worker_test, StartConfig) {
   cache_index ci;
   kernel<FermionGf, triqs::mesh::imtime> kern(mesh);
-  obj_function of(kern, g_tau, s_tau);
+  obj_function of(kern, g_tau, error_bars_tau);
 
   auto params = worker_parameters_t({-3.0, 3.0});
   params.random_seed = 963162;
@@ -100,7 +105,7 @@ TEST_F(solution_worker_test, StartConfig) {
 TEST_F(solution_worker_test, RandomConfig_CC) {
   cache_index ci;
   kernel<FermionGf, triqs::mesh::imtime> kern(mesh);
-  obj_function of(kern, g_tau, s_tau);
+  obj_function of(kern, g_tau, error_bars_tau);
 
   auto params = worker_parameters_t({-3.0, 3.0});
   params.random_seed = 963162;
@@ -124,7 +129,7 @@ TEST_F(solution_worker_test, RandomConfig_CC) {
 TEST_F(solution_worker_test, StartConfig_CC) {
   cache_index ci;
   kernel<FermionGf, triqs::mesh::imtime> kern(mesh);
-  obj_function of(kern, g_tau, s_tau);
+  obj_function of(kern, g_tau, error_bars_tau);
 
   auto params = worker_parameters_t({-3.0, 3.0});
   params.random_seed = 963162;
@@ -144,6 +149,65 @@ TEST_F(solution_worker_test, StartConfig_CC) {
 
   configuration solution_ref(ci);
   h5_read(arch, "StartConfig_output_CC", solution_ref);
+
+  EXPECT_EQ(solution_ref, solution);
+}
+
+TEST_F(solution_worker_test, RandomConfig_CC_cov_matrix) {
+  cache_index ci;
+  kernel<FermionGf, triqs::mesh::imtime> kern(mesh);
+  obj_function of(kern, g_tau, cov_matrix_tau, filtration_level);
+
+  nda::array<double, 1> sigma2_ref;
+  h5_read(arch, "cov_matrix_tau_sigma2", sigma2_ref);
+  EXPECT_ARRAY_NEAR(sigma2_ref, of.get_sigma2());
+
+  auto params = worker_parameters_t({-3.0, 3.0});
+  params.random_seed = 963162;
+  params.t = 1000;
+  params.t1 = 800;
+  params.min_rect_width = 0.001;
+  params.min_rect_weight = 0.001;
+  params.cc_update = true;
+
+  solution_worker<kernel<FermionGf, triqs::mesh::imtime>> worker(
+      of, 1.0, ci, params, clock_callback(-1), 10);
+
+  auto solution = worker(10);
+
+  configuration solution_ref(ci);
+  h5_read(arch, "RandomConfig_output_CC_cov_matrix", solution_ref);
+
+  EXPECT_EQ(solution_ref, solution);
+}
+
+TEST_F(solution_worker_test, StartConfig_CC_cov_matrix) {
+  cache_index ci;
+  kernel<FermionGf, triqs::mesh::imtime> kern(mesh);
+  obj_function of(kern, g_tau, cov_matrix_tau, filtration_level);
+
+  nda::array<double, 1> sigma2_ref;
+  h5_read(arch, "cov_matrix_tau_sigma2", sigma2_ref);
+  EXPECT_ARRAY_NEAR(sigma2_ref, of.get_sigma2());
+
+  auto params = worker_parameters_t({-3.0, 3.0});
+  params.random_seed = 963162;
+  params.t = 1000;
+  params.t1 = 800;
+  params.min_rect_width = 0.001;
+  params.min_rect_weight = 0.001;
+  params.cc_update = true;
+
+  solution_worker<kernel<FermionGf, triqs::mesh::imtime>> worker(
+      of, 1.0, ci, params, clock_callback(-1), 10);
+
+  configuration init_config(ci);
+  h5_read(arch, "StartConfig_input", init_config);
+
+  auto solution = worker(init_config);
+
+  configuration solution_ref(ci);
+  h5_read(arch, "StartConfig_output_CC_cov_matrix", solution_ref);
 
   EXPECT_EQ(solution_ref, solution);
 }
