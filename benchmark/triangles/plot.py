@@ -4,7 +4,7 @@
 from h5 import HDFArchive
 from triqs.gf import *
 from triqs.gf.descriptors import *
-from triqs.statistics.histograms import Histogram
+from triqs.stat.histograms import Histogram
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 import numpy as np

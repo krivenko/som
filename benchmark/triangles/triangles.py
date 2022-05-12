@@ -30,7 +30,7 @@ run_params['make_histograms'] = True
 
 g_tau = GfImTime(beta = beta, n_points = n_tau, indices = indices)
 g_w = GfReFreq(window = run_params['energy_window'], n_points = n_w, indices = indices)
-S_tau = g_tau.copy()
+error_bars_tau = g_tau.copy()
 g_tau_rec = g_tau.copy()
 
 if mpi.is_master_node():
@@ -43,17 +43,17 @@ for s in abs_error:
         g_tau.data[:] += s * 2*(np.random.rand(*g_tau.data.shape) - 0.5)
 
     g_tau = mpi.bcast(g_tau)
-    S_tau.data[:] = 1.0
+    error_bars_tau.data[:] = 1.0
 
     if mpi.is_master_node():
         gr_name = 'abs_error_%.4f' % s
         arch.create_group(gr_name)
         abs_err_gr = arch[gr_name]
 
-    for name, g, S, g_rec in (('g_tau',g_tau,S_tau,g_tau_rec),):
+    for name, g, error_bars, g_rec in (('g_tau',g_tau,error_bars_tau,g_tau_rec),):
 
         start = time.perf_counter()
-        cont = Som(g, S)
+        cont = Som(g, error_bars)
         f = cont.adjust_f(**adjust_f_params)
         cont.run(**run_params, f = f)
         exec_time = time.perf_counter() - start

@@ -50,10 +50,7 @@ protected:
                                                    {3.0, 5.0}};
 
   spectral_stats_test() {
-    cont.data.resize(
-        2,
-        som_core::data_t(triqs::mesh::imfreq{1.0, triqs::mesh::Fermion, 2},
-                         cont.ci));
+    cont.data.resize(2, som_core::data_t{});
 
     cont.data[0].particular_solutions = {
         {configuration{{0, 1, 2}, {1, 4, 1}, {3, 2, 3}}, 0},

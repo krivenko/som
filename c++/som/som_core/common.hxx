@@ -37,7 +37,7 @@ using std::to_string;
 using namespace triqs::mesh;
 using namespace triqs::gfs;
 
-[[noreturn]] inline void fatal_error(std::string const& message) {
+[[noreturn]] inline static void fatal_error(std::string const& message) {
   TRIQS_RUNTIME_ERROR << "som_core: " << message;
 }
 

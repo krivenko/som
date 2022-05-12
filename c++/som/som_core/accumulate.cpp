@@ -35,7 +35,6 @@
 #include <triqs/utility/signal_handler.hpp>
 
 #include <som/kernels/all.hpp>
-#include <som/solution_functionals/objective_function.hpp>
 #include <som/solution_worker.hpp>
 
 #include "common.hxx"
@@ -97,8 +96,7 @@ template <typename KernelType> void som_core::accumulate_impl() {
 
   auto stop_callback = triqs::utility::clock_callback(params.max_time);
 
-  using mesh_t = typename KernelType::mesh_type;
-  mesh_t const& m = std::get<mesh_t>(mesh);
+  auto const& m = std::get<typename KernelType::mesh_type>(mesh);
 
   if(params.verbosity > 0) {
     mpi_cout(comm) << "Constructing integral kernel... " << std::endl;
@@ -117,10 +115,13 @@ template <typename KernelType> void som_core::accumulate_impl() {
           << "Accumulating particular solutions for observable component [" << n
           << "," << n << "]" << std::endl;
 
-    auto const& rhs = d.get_rhs<mesh_t>();
-    auto const& error_bars = d.get_error_bars<mesh_t>();
+    auto of = d.make_objf(kernel);
+    if(params.verbosity >= 2 && of.get_U_dagger()) {
+      mpi_cout(comm) << "Supplied covariance matrix has " +
+                            std::to_string(of.get_sigma2().size())
+                     << " positive eigenvalues" << std::endl;
+    }
 
-    objective_function<KernelType> of(kernel, rhs, error_bars);
     solution_worker<KernelType> worker(
         of, d.norm, ci, params, stop_callback, params.f);
     auto& rng = worker.get_rng();
@@ -128,8 +129,8 @@ template <typename KernelType> void som_core::accumulate_impl() {
     // Reset final solution as it is no more valid
     d.final_solution.clear();
 
-    int n_sol_max = 0; // Number of solutions to be accumulated
-    int n_sol = 0, i = 0;  // Global and rank-local indices of solution
+    int n_sol_max = 0;    // Number of solutions to be accumulated
+    int n_sol = 0, i = 0; // Global and rank-local indices of solution
     int n_good_solutions = 0,
         n_verygood_solutions = 0; // Number of good and very good solutions
     do {

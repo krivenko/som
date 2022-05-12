@@ -35,6 +35,7 @@ import numpy as np
 
 def print_master(msg):
     if mpi.rank == 0: print(msg)
+    mpi.barrier()
 
 def quad_complex(f, a, b, **kwargs):
     return quad(lambda x: f(x).real, a, b, **kwargs)[0] + \
@@ -66,8 +67,8 @@ if mpi.is_master_node():
     arch["som_git_hash"] = som_hash
     arch["run_params"] = run_params
 
-def run_som_and_save(kind, g, S, norms, energy_window):
-    cont = Som(g, S, kind = kind, norms = norms)
+def run_som_and_save(kind, g, error_bars, norms, energy_window):
+    cont = Som(g, error_bars, kind = kind, norms = norms)
     cont.accumulate(energy_window = energy_window, **run_params)
     cont.compute_final_solution()
 
@@ -108,9 +109,10 @@ def g_iw_model(iw):
 
 g_iw = GfImFreq(beta = beta, n_points = n_iw, indices = [0])
 g_iw << Function(g_iw_model)
-S_iw = g_iw.copy()
+error_bars_iw = g_iw.copy()
+error_bars_iw.data[:] = np.abs(error_bars_iw.data[:])
 
-run_som_and_save("FermionGf", g_iw, S_iw, [1.0], (-5, 5))
+run_som_and_save("FermionGf", g_iw, error_bars_iw, [1.0], (-5, 5))
 
 print_master("================")
 print_master("BosonCorr kernel")
@@ -131,9 +133,10 @@ chi_iw = GfImFreq(beta = beta,
                   n_points = n_iw,
                   indices = [0])
 chi_iw << Function(chi_iw_model)
-S_iw = chi_iw.copy()
+error_bars_iw = chi_iw.copy()
+error_bars_iw.data[:] = np.abs(error_bars_iw.data[:])
 
-run_som_and_save("BosonCorr", chi_iw, S_iw, chi_norms, (-5, 5))
+run_som_and_save("BosonCorr", chi_iw, error_bars_iw, chi_norms, (-5, 5))
 
 print_master("====================")
 print_master("BosonAutoCorr kernel")
@@ -152,9 +155,10 @@ chi_iw = GfImFreq(beta = beta,
                   n_points = n_iw,
                   indices = [0])
 chi_iw << Function(chi_iw_model)
-S_iw = chi_iw.copy()
+error_bars_iw = chi_iw.copy()
+error_bars_iw.data[:] = np.abs(error_bars_iw.data[:])
 
-run_som_and_save("BosonAutoCorr", chi_iw, S_iw, chi_norms, (0, 5))
+run_som_and_save("BosonAutoCorr", chi_iw, error_bars_iw, chi_norms, (0, 5))
 
 print_master("===============")
 print_master("ZeroTemp kernel")
@@ -167,6 +171,7 @@ def g_zt_iw_model(iw):
 
 g_zt_iw = GfImFreq(beta = beta, n_points = n_iw, indices = [0])
 g_zt_iw << Function(g_zt_iw_model)
-S_zt_iw = g_zt_iw.copy()
+error_bars_zt_iw = g_zt_iw.copy()
+error_bars_zt_iw.data[:] = np.abs(error_bars_zt_iw.data[:])
 
-run_som_and_save("ZeroTemp", g_zt_iw, S_zt_iw, g_zt_norms, (0, 5))
+run_som_and_save("ZeroTemp", g_zt_iw, error_bars_zt_iw, g_zt_norms, (0, 5))

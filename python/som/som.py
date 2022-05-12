@@ -22,24 +22,62 @@
 Main module of SOM
 """
 
-from .som_core import SomCore, fill_refreq, compute_tail, reconstruct
+from .som_core import SomCore
+from triqs.gf import Gf
 import numpy as np
+
 
 class Som(SomCore):
     """Stochastic Optimization Method"""
 
-    def __init__(self, g, s = None, kind = "FermionGf", norms = np.array([])):
-        if s is None:
-            s = g.copy()
-            s.data[:,Ellipsis] = np.eye(s.target_shape[0])
-        if isinstance(norms,float) or isinstance(norms,int):
-            norms = norms * np.ones((g.target_shape[0],))
-        SomCore.__init__(self, g, s, kind, norms)
+    def __init__(self,
+                 g,
+                 errors,
+                 kind="FermionGf",
+                 norms=np.array([]),
+                 *,
+                 filtration_levels=None
+                 ):
 
-def count_good_solutions(hist, upper_lim = 1):
+        if isinstance(norms, float) or isinstance(norms, int):
+            norms_ = norms * np.ones((g.target_shape[0],))
+        else:
+            norms_ = np.array(norms)
+
+        # First, try to construct with the covariance matrices
+        if isinstance(errors, Gf) \
+            and errors.rank == 2 and errors.target_rank == 1:
+
+            if filtration_levels is None:
+                fl = np.array([])
+            elif isinstance(filtration_levels, float) or \
+               isinstance(filtration_levels, int):
+                fl = filtration_levels * np.ones((g.target_shape[0],))
+            else:
+                fl = np.array(filtration_levels)
+
+            SomCore.__init__(self, g, errors, kind, norms_, fl)
+
+        # Then try the error bars
+        elif isinstance(errors, Gf) \
+            and errors.rank == 1 and errors.target_rank == 2:
+
+            if filtration_levels is not None:
+                raise RuntimeError(
+                    "Argument 'filtration_levels' is accepted only when full "
+                    "covariance matrices are provided")
+
+            SomCore.__init__(self, g, errors, kind, norms_)
+
+        # Give up
+        else:
+            raise RuntimeError("Argument 'errors' has unsupported format")
+
+def count_good_solutions(hist, upper_lim=1):
     r"""
     Given a histogram of \chi-values,
     count the number of solutions with \chi/\chi_{min} <= 1 + upper_lim
     """
     d_max = hist.limits[0] * (1 + upper_lim)
-    return int(sum(c for n, c in enumerate(hist.data) if hist.mesh_point(n) <= d_max))
+    return int(sum(c for n, c in enumerate(hist.data)
+                   if hist.mesh_point(n) <= d_max))

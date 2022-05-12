@@ -90,7 +90,7 @@ template <typename KernelType> class update_consistent_constraints {
   nda::array<rhs_scalar_type, 1> int_kernel_one_rect;
 
   // U^\dagger-transformed kernel, integrated over all unity-rectangles in
-  // the proposed configuration.#include <iomanip> //FIXME
+  // the proposed configuration.
   nda::array<rhs_scalar_type, 2> int_kernel;
 
   // Matrix of quadratic form \chi^2.

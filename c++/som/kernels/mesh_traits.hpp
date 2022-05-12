@@ -36,14 +36,17 @@ template <typename MeshType> struct mesh_traits;
 template <> struct mesh_traits<triqs::mesh::imtime> {
   static constexpr std::size_t index = 0;
   inline static std::string name() { return "imaginary time"; }
+  static constexpr bool is_complex_input_data = false;
 };
 template <> struct mesh_traits<triqs::mesh::imfreq> {
   static constexpr std::size_t index = 1;
   inline static std::string name() { return "imaginary frequency"; }
+  static constexpr bool is_complex_input_data = true;
 };
 template <> struct mesh_traits<triqs::mesh::legendre> {
   static constexpr std::size_t index = 2;
   inline static std::string name() { return "Legendre"; }
+  static constexpr bool is_complex_input_data = false;
 };
 template <> struct mesh_traits<triqs::mesh::refreq> {
   static constexpr std::size_t index = -1;

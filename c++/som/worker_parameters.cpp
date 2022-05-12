@@ -30,7 +30,7 @@
 
 namespace som {
 
-[[noreturn]] void fatal_error(std::string const& message) {
+[[noreturn]] inline static void fatal_error(std::string const& message) {
   TRIQS_RUNTIME_ERROR << "solution_worker: " << message;
 }
 

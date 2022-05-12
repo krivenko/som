@@ -95,8 +95,8 @@ prng = np.random.RandomState(123456789)
 g_iw.data[:] += abs_error * 2*(prng.rand(*g_iw.data.shape) - 0.5)
 g_iw.data[:] = 0.5*(g_iw.data[:,:,:] + np.conj(g_iw.data[::-1,:,:]))
 
-S_iw = g_iw.copy()
-S_iw.data[:] = abs_error
+error_bars_iw = g_iw.copy()
+error_bars_iw.data[:] = abs_error
 
 print_master("--- Save input data ---")
 if mpi.is_master_node():
@@ -106,7 +106,7 @@ if mpi.is_master_node():
         gr['abs_error'] = abs_error
         gr['D'] = D
         gr['g_iw'] = g_iw
-        gr['S_iw'] = S_iw
+        gr['error_bars_iw'] = error_bars_iw
 
 #
 # CC updates disabled
@@ -114,7 +114,7 @@ if mpi.is_master_node():
 
 print_master("--- Accumulate particular solutions ---")
 accumulate_time = time.perf_counter()
-cont = Som(g_iw, S_iw)
+cont = Som(g_iw, error_bars_iw)
 cont.accumulate(**accumulate_params)
 accumulate_time = time.perf_counter() - accumulate_time
 
@@ -174,7 +174,7 @@ cfs_cc_iterations.clear()
 
 print_master("--- Accumulate particular solutions with CC updates ---")
 accumulate_time = time.perf_counter()
-cont = Som(g_iw, S_iw)
+cont = Som(g_iw, error_bars_iw)
 cont.accumulate(**accumulate_cc_params)
 accumulate_time = time.perf_counter() - accumulate_time
 

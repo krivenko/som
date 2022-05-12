@@ -32,9 +32,9 @@ g_l   = GfLegendre(beta = beta, n_points = n_l, indices = indices)
 
 g_w = GfReFreq(window = run_params['energy_window'], n_points = n_w, indices = indices)
 
-S_iw = g_iw.copy()
-S_tau = g_tau.copy()
-S_l = g_l.copy()
+error_bars_iw = g_iw.copy()
+error_bars_tau = g_tau.copy()
+error_bars_l = g_l.copy()
 
 g_iw_rec = g_iw.copy()
 g_tau_rec = g_tau.copy()
@@ -64,21 +64,21 @@ for s in abs_error:
     g_tau = mpi.bcast(g_tau)
     g_l = mpi.bcast(g_l)
 
-    S_iw.data[:] = 1.0
-    S_tau.data[:] = 1.0
-    S_l.data[:] = 1.0
+    error_bars_iw.data[:] = 1.0
+    error_bars_tau.data[:] = 1.0
+    error_bars_l.data[:] = 1.0
 
     if mpi.is_master_node():
         gr_name = 'abs_error_%.4f' % s
         arch.create_group(gr_name)
         abs_err_gr = arch[gr_name]
 
-    for name, g, S, g_rec in (('g_iw', g_iw, S_iw, g_iw_rec),
-                              ('g_tau',g_tau,S_tau,g_tau_rec),
-                              ('g_l',  g_l,  S_l,  g_l_rec)):
+    for name, g, error_bars, g_rec in (('g_iw', g_iw, error_bars_iw, g_iw_rec),
+                                       ('g_tau',g_tau,error_bars_tau,g_tau_rec),
+                                       ('g_l',  g_l,  error_bars_l,  g_l_rec)):
 
         start = time.perf_counter()
-        cont = Som(g, S)
+        cont = Som(g, error_bars)
         cont.run(**run_params)
         exec_time = time.perf_counter() - start
 

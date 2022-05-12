@@ -73,6 +73,7 @@ if mpi.is_master_node():
 
 def print_master(msg):
     if mpi.rank == 0: print(msg)
+    mpi.barrier()
 
 def quad_complex(f, a, b, **kwargs):
     return quad(lambda x: f(x).real, a, b, **kwargs)[0] + 1j*quad(lambda x: f(x).imag, a, b, **kwargs)[0]
@@ -80,9 +81,9 @@ def quad_complex(f, a, b, **kwargs):
 def dos(e, e0):
     return np.sqrt(4 - (e - e0)**2) / (2 * np.pi)
 
-def run_som_and_save(kind, mesh, g, S, norms, energy_window):
+def run_som_and_save(kind, mesh, g, error_bars, norms, energy_window):
     start_time = time.perf_counter()
-    cont = Som(g, S, kind = kind, norms = norms)
+    cont = Som(g, error_bars, kind = kind, norms = norms)
     cont.accumulate(energy_window = energy_window, **som_params)
     cont.accumulate(energy_window = energy_window, **som_params)
     cont.compute_final_solution()
@@ -139,12 +140,13 @@ for mesh, g in (("imfreq", g_iw),
     print_master("-"*len(mesh))
     print_master(mesh)
     print_master("-"*len(mesh))
-    S = g.copy()
+    error_bars = g.copy()
     if mesh == "legendre":
-        S.data[:] = 1.0
+        error_bars.data[:] = 1.0
     else:
-        S.data[:] = np.abs(S.data[:])
-    run_som_and_save("FermionGf", mesh, g, S, g_norms, (-5,5))
+        error_bars.data[:] = np.abs(error_bars.data[:])
+
+    run_som_and_save("FermionGf", mesh, g, error_bars, g_norms, (-5,5))
 
 print_master("=================")
 print_master("BosonCorr kernels")
@@ -182,12 +184,12 @@ for mesh, chi in (("imfreq", chi_iw),
     print_master("-"*len(mesh))
     print_master(mesh)
     print_master("-"*len(mesh))
-    S = chi.copy()
+    error_bars = chi.copy()
     if mesh == "legendre":
-        S.data[:] = 1.0
+        error_bars.data[:] = 1.0
     else:
-        S.data[:] = np.abs(S.data[:])
-    run_som_and_save("BosonCorr", mesh, chi, S, chi_norms, (-5,5))
+        error_bars.data[:] = np.abs(error_bars.data[:])
+    run_som_and_save("BosonCorr", mesh, chi, error_bars, chi_norms, (-5,5))
 
 print_master("=====================")
 print_master("BosonAutoCorr kernels")
@@ -224,15 +226,15 @@ for mesh, chi_auto in (("imfreq", chi_auto_iw),
     print_master("-"*len(mesh))
     print_master(mesh)
     print_master("-"*len(mesh))
-    S = chi_auto.copy()
+    error_bars = chi_auto.copy()
     if mesh == "legendre":
-        S.data[:] = 1.0
+        error_bars.data[:] = 1.0
     else:
-        S.data[:] = np.abs(S.data[:])
+        error_bars.data[:] = np.abs(error_bars.data[:])
     run_som_and_save("BosonAutoCorr",
                      mesh,
                      chi_auto,
-                     S,
+                     error_bars,
                      chi_auto_norms,
                      (0,5))
 
@@ -268,9 +270,9 @@ for mesh, g_zt in (("imfreq", g_zt_iw),
     print_master("-"*len(mesh))
     print_master(mesh)
     print_master("-"*len(mesh))
-    S = g_zt.copy()
+    error_bars = g_zt.copy()
     if mesh == "legendre":
-        S.data[:] = 1.0
+        error_bars.data[:] = 1.0
     else:
-        S.data[:] = np.abs(S.data[:])
-    run_som_and_save("ZeroTemp", mesh, g_zt, S, g_zt_norms, (0,5))
+        error_bars.data[:] = np.abs(error_bars.data[:])
+    run_som_and_save("ZeroTemp", mesh, g_zt, error_bars, g_zt_norms, (0,5))

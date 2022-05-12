@@ -38,6 +38,7 @@
 #include <som/configuration.hpp>
 #include <som/kernels/mesh_traits.hpp>
 #include <som/kernels/observables.hpp>
+#include <som/solution_functionals/objective_function.hpp>
 
 namespace testing {
 class spectral_stats_test;
@@ -56,7 +57,7 @@ class som_core {
   cache_index ci;
 
   // Kind of the observable, GF/Susceptibility/Conductivity
-  observable_kind kind = {};
+  observable_kind const kind = {};
 
   // Mesh of the input functions
   mesh_variant_t mesh;
@@ -71,14 +72,30 @@ class som_core {
 
     template <typename Mesh>
     using input_data_t =
-        std::conditional_t<std::is_same<Mesh, triqs::mesh::imfreq>::value,
+        std::conditional_t<mesh_traits<Mesh>::is_complex_input_data,
                            input_data_c_t,
                            input_data_r_t>;
 
+    using cov_matrix_r_t = nda::array<double, 2>;
+    using cov_matrix_c_t = nda::array<std::complex<double>, 2>;
+
+    template <typename Mesh>
+    using cov_matrix_t =
+        std::conditional_t<mesh_traits<Mesh>::is_complex_input_data,
+                           cov_matrix_c_t,
+                           cov_matrix_r_t>;
+
+    using rhs_t = std::variant<input_data_r_t, input_data_c_t>;
+
     // The right-hand side of the Fredholm integral equation
-    std::variant<input_data_r_t, input_data_c_t> rhs;
-    // Error bars of the RHS
-    std::variant<input_data_r_t, input_data_c_t> error_bars;
+    rhs_t rhs;
+    // Error bars or covariance matrix
+    using errors_t = std::
+        variant<input_data_r_t, input_data_c_t, cov_matrix_r_t, cov_matrix_c_t>;
+    errors_t errors;
+
+    // Filtration level for covariance matrix
+    double filtration_level = 0;
 
     // Norm of the solutions to be found
     double norm = 1.0;
@@ -99,27 +116,33 @@ class som_core {
     // Objective function histogram
     std::optional<histogram_t> histogram;
 
-    // Constructor
-    template <typename Mesh> data_t(Mesh const& mesh, cache_index& ci);
+    // Constructors
+    template <typename Mesh, typename TargetOpt>
+    data_t(Mesh const& mesh,
+           cache_index& ci,
+           triqs::gfs::gf_const_view<Mesh, TargetOpt> g,
+           triqs::gfs::gf_const_view<Mesh, TargetOpt> error_bars,
+           double norm);
 
-    // Initialize 'rhs', 'error_bars' and 'norm'
-    template <typename... GfOpts>
-    void init_input(long i,
-                    triqs::gfs::gf_const_view<GfOpts...> g,
-                    triqs::gfs::gf_const_view<GfOpts...> S,
-                    double norm_);
+    template <typename Mesh, typename TargetOpt, typename CovMatrixTargetOpt>
+    data_t(Mesh const& mesh,
+           cache_index& ci,
+           triqs::gfs::gf_const_view<Mesh, TargetOpt> g,
+           triqs::gfs::gf_const_view<triqs::mesh::prod<Mesh, Mesh>,
+                                     CovMatrixTargetOpt> cov_matrix,
+           double norm,
+           double filtration_level);
 
-    // Typed access to 'rhs'
-    template <typename Mesh> input_data_t<Mesh> const& get_rhs() const {
-      return std::get<input_data_t<Mesh>>(rhs);
-    }
-    // Typed access to 'error_bars'
-    template <typename Mesh> input_data_t<Mesh> const& get_error_bars() const {
-      return std::get<input_data_t<Mesh>>(error_bars);
-    }
+    template <typename KernelType>
+    objective_function<KernelType> make_objf(KernelType const& kernel) const;
 
     template <typename KernelType>
     void compute_objf_final(KernelType const& kernel);
+
+  private:
+    // For unit testing
+    friend class ::testing::spectral_stats_test;
+    data_t() = default;
   };
   std::vector<data_t> data;
 
@@ -149,21 +172,47 @@ class som_core {
   compute_final_solution_cc_impl(final_solution_cc_parameters_t const& params);
 
 public:
-  /// Construct on imaginary-time quantities
+  template <typename Mesh>
+  using cov_matrices_gf_view_type =
+      triqs::gfs::gf_const_view<triqs::mesh::prod<Mesh, Mesh>,
+                                triqs::gfs::tensor_valued<1>>;
+
+  /// Construct on imaginary-time quantities using error bars.
   som_core(triqs::gfs::gf_const_view<triqs::mesh::imtime> g_tau,
-           triqs::gfs::gf_const_view<triqs::mesh::imtime> S_tau,
+           triqs::gfs::gf_const_view<triqs::mesh::imtime> error_bars_tau,
            observable_kind kind = FermionGf,
            nda::vector<double> const& norms = {});
-  /// Construct on imaginary-frequency quantities
+  /// Construct on imaginary-time quantities using covariance matrices.
+  som_core(triqs::gfs::gf_const_view<triqs::mesh::imtime> g_tau,
+           cov_matrices_gf_view_type<triqs::mesh::imtime> cov_matrices_tau,
+           observable_kind kind = FermionGf,
+           nda::vector<double> const& norms = {},
+           nda::vector<double> const& filtration_levels = {});
+
+  /// Construct on imaginary-frequency quantities using error bars.
   som_core(triqs::gfs::gf_const_view<triqs::mesh::imfreq> g_iw,
-           triqs::gfs::gf_const_view<triqs::mesh::imfreq> S_iw,
+           triqs::gfs::gf_const_view<triqs::mesh::imfreq> error_bars_iw,
            observable_kind kind = FermionGf,
            nda::vector<double> const& norms = {});
-  /// Construct on quantities in Legendre polynomial basis
+  /// Construct on imaginary-frequency quantities using covariance matrices.
+  som_core(triqs::gfs::gf_const_view<triqs::mesh::imfreq> g_iw,
+           cov_matrices_gf_view_type<triqs::mesh::imfreq> cov_matrices_iw,
+           observable_kind kind = FermionGf,
+           nda::vector<double> const& norms = {},
+           nda::vector<double> const& filtration_levels = {});
+
+  /// Construct on quantities in Legendre polynomial basis using error bars.
   som_core(triqs::gfs::gf_const_view<triqs::mesh::legendre> g_l,
-           triqs::gfs::gf_const_view<triqs::mesh::legendre> S_l,
+           triqs::gfs::gf_const_view<triqs::mesh::legendre> error_bars_l,
            observable_kind kind = FermionGf,
            nda::vector<double> const& norms = {});
+  /// Construct on quantities in Legendre polynomial basis using covariance
+  /// matrices.
+  som_core(triqs::gfs::gf_const_view<triqs::mesh::legendre> g_l,
+           cov_matrices_gf_view_type<triqs::mesh::legendre> cov_matrices_l,
+           observable_kind kind = FermionGf,
+           nda::vector<double> const& norms = {},
+           nda::vector<double> const& filtration_levels = {});
 
   // Automatically adjust the number of global updates (F)
   TRIQS_WRAP_ARG_AS_DICT int adjust_f(adjust_f_parameters_t const& p);

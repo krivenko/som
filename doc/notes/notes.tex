@@ -17,7 +17,7 @@
 \maketitle
 
 This document is a diverse collection of notes, explaining various details of the present SOM implementation.
-It is supposed to serve as an addition to the lecture \cite{som_lecture}.
+It is supposed to serve as an addition to the lecture \cite{som_lecture} and paper \cite{socc_paper}.
 
 \section{Supported integral kernels}
 \label{kernels}
@@ -495,21 +495,47 @@ F^>(z)|_{z>x_0} = F^<(x_0) + \left.\left\{
 \right\}\right|_{x_0}^z.
 \end{equation}
 
+\section{Objective function $\chi^2$}
+\label{objective_function}
+
+SOM 2.0 supports two different forms of the objective functional $\chi^2$. When only the estimated error bars $\sigma_n > 0$ of the right-hand side are known,
+$\chi^2$ reads
+\begin{equation}\label{objective_function:chi2}
+    \chi^2 = \frac{1}{N} \sum_{n=1}^{N}
+    \frac{|\hat K A(\epsilon) - g_n|^2}{\sigma^2_n}.
+\end{equation}
+Here, $g_n$ is the discretized RHS of the analytic continuation problem, and $\sigma_n$ are respective estimated error bars on the input data.
+
+The other form is used when a full covariance matrix $\hat{\Sigma}$ is provided instead of the error bars $\sigma_n$,
+\begin{equation}\label{objective_function:chi2_cov_matrix}
+    \chi^2 = \frac{1}{\tilde N}
+    (\hat K A(\epsilon) - \vec g)^\dagger
+    \hat\Sigma^{-1}
+    (\hat K A(\epsilon) - \vec g), \quad \vec g = \{g_n\}.
+\end{equation}
+In practice, $\hat{\Sigma}$ is known with finite precision and some of its eigenvalues may turn to be negative or zero. Such unphysical eigenvalues must be discarded. The number of retained eigenvalues is denoted by $\tilde N$ here. Some of the retained positive eigenvalues $\sigma_n^2$ can still be problematic due to their small magnitude. This problem is solved by optionally shifting $\sigma_n^2$ by a positive constant $l^2$ (so called filtering level). With these modifications applied, $\hat\Sigma^{-1}$ allows a decomposition
+\begin{equation}
+    \hat\Sigma^{-1} = \hat U \mathrm{diag}
+    \left(\frac{1}{\sigma_n^2 + l^2}\right)
+    \hat U^\dagger
+\end{equation}
+with an $N\times \tilde N$ matrix $\hat U$, whose columns are eigenvectors of $\hat{\Sigma}$ corresponding to the retained eigenvalues.
+
 \section{Fit quality criterion for complex functions}
 \label{fit_quality}
 
-In section 4.1 Mishchenko introduces a special quantity $\kappa$, which characterizes the fit quality of a given particular solution
+In section 4.1 of \cite{som_lecture} Mishchenko introduces a special quantity $\kappa$, which characterizes the fit quality of a given particular solution
 $A(\omega)$ (eq. 55).
 \begin{equation}
-	\kappa = \frac{1}{M-1}\sum_{m=2}^M\theta(-\Delta(m)\Delta(m-1)),
+	\kappa = \frac{1}{N-1}\sum_{n=2}^N\theta(-\Delta(n)\Delta(n-1)),
 \end{equation}
-where $\Delta(m) = (\tilde G(m) - G(m))/\mathcal{S}(m)$ is the deviation function. The proposed expression for $\kappa$ makes  apparently no sense for complex $G(m)$ and $\Delta(m)$, e.g. when $G$ is given as a function of Matsubara frequencies.
+where $\Delta(n) = (\hat K A|_n - g_n)/\sigma_n$ is the deviation. The proposed expression for $\kappa$ makes  apparently no sense for complex $g_n$ and $\Delta(n)$, e.g. when $g$ is given as a function of Matsubara frequencies.
 
 Our generalization consists in a replacement
 \begin{multline}
-	\theta(-\Delta(m)\Delta(m-1)) \mapsto
-	\frac{1}{2}\left[1 - \frac{\Re[\Delta(m)\Delta^*(m-1)]}{|\Delta(m)\Delta^*(m-1)|} \right]=\\=
-	\frac{1}{2}\left[ 1 - \cos[\arg(\Delta(m)) - \arg(\Delta(m-1))] \right].
+	\theta(-\Delta(n)\Delta(n-1)) \mapsto
+	\frac{1}{2}\left[1 - \frac{\Re[\Delta(n)\Delta^*(n-1)]}{|\Delta(n)\Delta^*(n-1)|} \right]=\\=
+	\frac{1}{2}\left[ 1 - \cos[\arg(\Delta(n)) - \arg(\Delta(n-1))] \right].
 \end{multline}
 According to the modified definition, two adjacent values of $\Delta$ are considered anti-correlated, if the complex phase shift between them exceeds $\pm\pi/2$. In the case of real-valued quantities the phase shift is always either 0, or $\pi$.
 
@@ -615,18 +641,13 @@ The CC protocol consists in iterative minimization of a quadratic function of $h
      + O_1[\mathbf{h};Q^{(1)}]
      + O_2[\mathbf{h};Q^{(2)}].
 \end{equation}
-The $\chi^2$-functional reads
-\begin{equation}\label{cc_update:chi2}
-    \chi^2[\mathbf{h}] = \frac{1}{N} \sum_{n=1}^{N}
-        \frac{|\hat K A[\mathbf{h}] - g_n|^2}{\sigma^2_n},
-\end{equation}
-where $g_n$ is the discretized right-hand side of the analytic continuation problem, and $\sigma_n$ are respective estimated error bars on the input data. Action of the integral kernel $\hat K$ on a configuration $A[\mathbf{h}]$ is expressed in terms of the integrated kernel $\Lambda$,
+ Action of an integral kernel $\hat K$ on a configuration $A[\mathbf{h}]$ is expressed in terms of the integrated kernel $\Lambda$,
 \begin{equation}
     \hat K A[\mathbf{h}] = \sum_{k=1}^K h_k \Lambda_n(c_k, w_k), \quad
     \Lambda_n(c_k, w_k) \equiv
     \int\limits_{c_k-w_k/2}^{c_k+w_k/2} K(n,\epsilon) d\epsilon.
 \end{equation}
-Substituting this expression into the definition (\ref{cc_update:chi2}) and applying simple algebraic transformations, we get a quadratic function of $h_k$,
+Substituting this expression into the definition (\ref{objective_function:chi2}) and applying simple algebraic transformations, we get a quadratic function of $h_k$,
 \begin{equation}
     \chi^2[\mathbf{h}] =
     \frac{1}{N} \sum_{n=1}^N \frac{1}{\sigma_n^2}
@@ -645,25 +666,12 @@ with
         \mathrm{Re}\left[\Lambda_n(c_k, w_k) g_n^*\right].
 \end{align}
 
-When a full covariance matrix $\hat{\Sigma}$ is used instead of the estimated error bars $\sigma_n$, the definition (\ref{cc_update:chi2}) is modified as
-\begin{equation}\label{cc_update:chi2_cov_matrix}
-    \chi^2[\mathbf{h}] = \frac{1}{\tilde N}
-    (\hat K A[\mathbf{h}] - \vec g)^\dagger
-    \hat\Sigma^{-1}
-    (\hat K A[\mathbf{h}] - \vec g).
-\end{equation}
-In practice, $\hat{\Sigma}$ is known with finite precision and some of its eigenvalues may turn to be non-positive. Such eigenvalues must be discarded. The number of retained eigenvalues is denoted by $\tilde N$ here. Some of the retained positive eigenvalues $\sigma_n^2$ can still be problematic due to their small magnitude. This problem is solved by optionally shifting $\sigma_n^2$ by a positive constant $l^2$ (so called filtering level). With these modifications applied, $\hat\Sigma^{-1}$ allows a decomposition
-\begin{equation}
-    \hat\Sigma^{-1} = \hat U \mathrm{diag}
-                      \left(\frac{1}{\sigma_n^2 + l^2}\right)
-                      \hat U^\dagger
-\end{equation}
-with an $N\times \tilde N$ matrix $\hat U$. With a bit of straightforward algebra one gets a modified version of Eqs. (\ref{cc_update:chi2_mat_and_f}),
+When a full covariance matrix $\hat{\Sigma}$ is used instead of the estimated error bars $\sigma_n$, the generalized form (\ref{objective_function:chi2_cov_matrix}) gives a modified version of Eqs. (\ref{cc_update:chi2_mat_and_f}),
 \begin{align}
     (\hat O_{\chi^2})_{kk'} &= \frac{1}{\tilde N} \sum_{n=1}^{\tilde N} \frac{1}{\sigma_n^2 + l^2}
     \mathrm{Re}\left[
     \tilde\Lambda^*_n(c_k, w_k) \tilde\Lambda_n(c_{k'}, w_{k'})
-    \right],\\
+    \right],\nonumber\\
     (\mathbf{f}_{\chi^2})_k &= \frac{1}{\tilde N} \sum_{n=1}^{\tilde N} \frac{1}{\sigma_n^2 + l^2}
     \mathrm{Re}\left[\tilde\Lambda_n(c_k, w_k) \tilde g_n^*\right],
 \end{align}

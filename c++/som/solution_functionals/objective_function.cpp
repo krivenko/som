@@ -32,28 +32,17 @@ namespace som {
 template <typename KernelType>
 objective_function<KernelType>::objective_function(KernelType const& kern,
                                                    rhs_type const& rhs,
-                                                   rhs_type const& error_bars)
+                                                   error_bars_type const& error_bars)
    : kern(kern), rhs(rhs), sigma2(abs2(error_bars)), tmp(rhs.size()) {
-  for(auto sigma : error_bars) {
-    if(std::imag(sigma) != 0)
-      TRIQS_RUNTIME_ERROR << "objective_function: All error bars must be real";
-    if(std::real(sigma) <= 0)
-      TRIQS_RUNTIME_ERROR
-          << "objective_function: All error bars must be positive";
-  }
 }
 
 template <typename KernelType>
 objective_function<KernelType>::objective_function(
     KernelType const& kern,
     rhs_type const& rhs,
-    nda::matrix<rhs_scalar_type> const& cov_matrix,
+    cov_matrix_type const& cov_matrix,
     double filtration_level)
    : kern(kern), rhs(rhs), tmp(rhs.size()) {
-  if(dagger(cov_matrix) != cov_matrix)
-    TRIQS_RUNTIME_ERROR
-        << "objective_function: Covariance matrix is not Hermitian";
-
   auto [ev, vecs] = nda::linalg::eigenelements(cov_matrix);
 
   auto first_positive_sigma2 = std::distance(

@@ -29,10 +29,11 @@ namespace som {
 
 // Fit quality function (kappa)
 template <typename KernelType> class fit_quality {
-
+public:
   using rhs_type = typename KernelType::result_type;
   using mesh_type = typename KernelType::mesh_type;
 
+private:
   // Integral kernel
   KernelType const& kern;
   // The right-hand side of the Fredholm integral equation
@@ -46,7 +47,8 @@ template <typename KernelType> class fit_quality {
   static double corr(std::complex<double> z1, std::complex<double> z2);
 
 public:
-  fit_quality(KernelType const& kern, rhs_type const& rhs,
+  fit_quality(KernelType const& kern,
+              rhs_type const& rhs,
               rhs_type const& error_bars);
 
   double operator()(configuration const& c) const;

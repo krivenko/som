@@ -66,8 +66,7 @@ int som_core::adjust_f_impl(adjust_f_parameters_t const& p) {
 
   int F_max = p.f_range.first;
 
-  using mesh_t = typename KernelType::mesh_type;
-  mesh_t const& m = std::get<mesh_t>(mesh);
+  auto const& m = std::get<typename KernelType::mesh_type>(mesh);
 
   triqs::signal_handler::start();
   try {
@@ -89,11 +88,16 @@ int som_core::adjust_f_impl(adjust_f_parameters_t const& p) {
         mpi_cout(comm) << "Running algorithm for observable component [" << n
                        << "," << n << "]" << std::endl;
 
-      auto const& rhs = d.get_rhs<mesh_t>();
-      auto const& error_bars = d.get_error_bars<mesh_t>();
+      auto of = d.make_objf<KernelType>(kernel);
+      if(of.get_U_dagger())
+        fatal_error(
+            "Automatic adjustment procedure for the number of global updates "
+            "(F) is not available when a full covariance matrix of the RHS is "
+            "used");
 
-      objective_function<KernelType> of(kernel, rhs, error_bars);
-      fit_quality<KernelType> fq(kernel, rhs, error_bars);
+      typename fit_quality<KernelType>::rhs_type error_bars =
+          sqrt(of.get_sigma2());
+      fit_quality<KernelType> fq(kernel, of.get_rhs(), error_bars);
 
       int F = F_max;
 

@@ -50,9 +50,7 @@ using namespace itertools;
 
 template <typename KernelType>
 void som_core::data_t::compute_objf_final(KernelType const& kernel) {
-  using mesh_t = typename KernelType::mesh_type;
-  objective_function<KernelType> of(
-      kernel, get_rhs<mesh_t>(), get_error_bars<mesh_t>());
+  auto of = make_objf<KernelType>(kernel);
   objf_final = of(final_solution);
 }
 
@@ -586,10 +584,21 @@ std::vector<double> som_core::compute_final_solution_cc_impl(
                        << std::endl;
     }
 
-    // Convergence tolerance for CC iterations
     using mesh_t = typename KernelType::mesh_type;
-    double convergence_tol =
-        min_element(abs(d.get_error_bars<mesh_t>() / d.get_rhs<mesh_t>()));
+    auto const& m = std::get<mesh_t>(mesh);
+    KernelType kernel(m);
+    auto of = d.make_objf<KernelType>(kernel);
+
+    // Convergence tolerance for CC iterations
+    auto const& U_dagger = of.get_U_dagger();
+    auto rhs =
+        U_dagger
+            ? (*U_dagger) *
+                  vector_const_view<typename decltype(of)::rhs_scalar_type>(
+                      of.get_rhs())
+            : of.get_rhs();
+    double convergence_tol = min_element(sqrt(of.get_sigma2()) / abs(rhs));
+
     if(p.verbosity > 1)
       mpi_cout(comm) << "Convergence tolerance is " << convergence_tol
                      << std::endl;
@@ -602,11 +611,6 @@ std::vector<double> som_core::compute_final_solution_cc_impl(
                                p,
                                index_map,
                                comm);
-
-    mesh_t const& m = std::get<mesh_t>(mesh);
-    KernelType kernel(m);
-    objective_function<KernelType> of(
-        kernel, d.get_rhs<mesh_t>(), d.get_error_bars<mesh_t>());
 
     configuration sol(ci);
     auto const j_range_start = index_map.range_start(comm.rank());

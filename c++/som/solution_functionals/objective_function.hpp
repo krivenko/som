@@ -33,11 +33,16 @@ namespace som {
 // Objective function \chi^2
 template <typename KernelType> class objective_function {
 
+public:
   using rhs_type = typename KernelType::result_type;
   using mesh_type = typename KernelType::mesh_type;
 
   using rhs_scalar_type = typename rhs_type::value_type;
 
+  using error_bars_type = rhs_type;
+  using cov_matrix_type = nda::matrix<rhs_scalar_type>;
+
+private:
   // Integral kernel
   KernelType const& kern;
   // The right-hand side of the Fredholm integral equation
@@ -50,7 +55,7 @@ template <typename KernelType> class objective_function {
   // cov = U diag(\sigma_n^2) U^\dagger.
   // The number of rows of U^\dagger equals the number of retained eigenvalues
   // (size of sigma2).
-  std::optional<nda::matrix<rhs_scalar_type>> U_dagger;
+  std::optional<cov_matrix_type> U_dagger;
 
   // Stores (rhs - kern(c)) and U^\dagger*(rhs - kern(c))
   mutable rhs_type tmp;
@@ -61,11 +66,11 @@ template <typename KernelType> class objective_function {
 public:
   objective_function(KernelType const& kern,
                      rhs_type const& rhs,
-                     rhs_type const& error_bars);
+                     error_bars_type const& error_bars);
 
   objective_function(KernelType const& kern,
                      rhs_type const& rhs,
-                     nda::matrix<rhs_scalar_type> const& cov_matrix,
+                     cov_matrix_type const& cov_matrix,
                      double filtration_level = 0);
 
   double operator()(configuration const& c) const;
@@ -76,8 +81,7 @@ public:
   [[nodiscard]] nda::array<double, 1> const& get_sigma2() const {
     return sigma2;
   }
-  [[nodiscard]] std::optional<nda::matrix<rhs_scalar_type>>
-  get_U_dagger() const {
+  [[nodiscard]] std::optional<cov_matrix_type> get_U_dagger() const {
     return U_dagger;
   }
 };

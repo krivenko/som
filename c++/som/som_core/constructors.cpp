@@ -19,6 +19,7 @@
  *
  ******************************************************************************/
 
+#include <cmath>
 #include <iostream>
 #include <string>
 
@@ -30,115 +31,324 @@
 namespace som {
 
 using std::to_string;
-using namespace triqs::gfs;
+using namespace triqs::mesh;
 
-template <typename... GfOpts>
-void check_input_gf(gf_const_view<GfOpts...> g, gf_const_view<GfOpts...> S) {
-  if(g.mesh() != S.mesh() || g.target_shape() != S.target_shape())
+template <typename Mesh, typename... GfOpts>
+void check_input_gf_and_error_bars(gf_const_view<Mesh, GfOpts...> g,
+                                   gf_const_view<Mesh, GfOpts...> error_bars) {
+  if(g.mesh() != error_bars.mesh() ||
+     g.target_shape() != error_bars.target_shape())
     fatal_error(
-        "input quantity and the error-bar function S must have equivalent "
-        "structure");
+        "input quantity and the error bars function must have equivalent "
+        "structures");
 
   auto shape = g.target_shape();
   if(shape[0] != shape[1])
     fatal_error("matrix-valued input quantities must be square");
 }
 
+template <typename Mesh, typename... GfOpts>
+void check_input_gf_and_cov_matrices(
+    gf_const_view<Mesh, GfOpts...> g,
+    som_core::cov_matrices_gf_view_type<Mesh> cov_matrices) {
+  auto shape = g.target_shape();
+  if(shape[0] != shape[1])
+    fatal_error("matrix-valued input quantities must be square");
+
+  if(cov_matrices.target_shape()[0] != shape[0])
+    fatal_error("Exactly " + std::to_string(shape[0]) +
+                " covariance matrices must be provided");
+
+  if(std::get<0>(cov_matrices.mesh()) != g.mesh() ||
+     std::get<1>(cov_matrices.mesh()) != g.mesh())
+    fatal_error(
+        "Covariance matrices are defined on a mesh different from that of the "
+        "RHS");
+}
+
+void check_norms(nda::vector<double> const& norms, long gf_dim) {
+  if(norms.size() > 0 && norms.size() != gf_dim)
+    fatal_error("The 'norms' list must either be empty or have exactly " +
+                std::to_string(gf_dim) + " elements (got " +
+                std::to_string(norms.size()) + " elements)");
+}
+
+void check_filtration_levels(nda::vector<double> const& filtration_levels,
+                             long gf_dim) {
+  if(filtration_levels.size() > 0 && filtration_levels.size() != gf_dim)
+    fatal_error(
+        "The 'filtration_levels' list must either be empty or have exactly " +
+        std::to_string(gf_dim) + " elements (got " +
+        std::to_string(filtration_levels.size()) + " elements)");
+}
+
 //////////////////////
 // som_core::data_t //
 //////////////////////
 
-template <typename Mesh>
-som_core::data_t::data_t(Mesh const& mesh, cache_index& ci)
+template <typename Mesh, typename TargetOpt>
+som_core::data_t::data_t(Mesh const& mesh,
+                         cache_index& ci,
+                         triqs::gfs::gf_const_view<Mesh, TargetOpt> g,
+                         triqs::gfs::gf_const_view<Mesh, TargetOpt> error_bars,
+                         double norm)
    : rhs(input_data_t<Mesh>(mesh.size()))
-   , error_bars(input_data_t<Mesh>(mesh.size()))
-   , final_solution(ci) {}
+   , errors(input_data_t<Mesh>(mesh.size()))
+   , norm(norm)
+   , final_solution(ci) {
 
-template som_core::data_t::data_t(triqs::mesh::imtime const&, cache_index&);
-template som_core::data_t::data_t(triqs::mesh::imfreq const&, cache_index&);
-template som_core::data_t::data_t(triqs::mesh::legendre const&, cache_index&);
+  for(auto sigma : error_bars.data()) {
+    if(std::real(sigma) <= 0) fatal_error("All error bars must be positive");
+  }
 
-template <typename... GfOpts>
-void som_core::data_t::init_input(long i, gf_const_view<GfOpts...> g,
-                                  gf_const_view<GfOpts...> S, double norm_) {
-  using mesh_t = typename gf_const_view<GfOpts...>::mesh_t;
-  std::get<input_data_t<mesh_t>>(rhs)() = g.data()(range(), i, i);
-  std::get<input_data_t<mesh_t>>(error_bars)() = S.data()(range(), i, i);
-  if(norm_ <= 0)
+  std::get<input_data_t<Mesh>>(rhs)() = g.data();
+  std::get<input_data_t<Mesh>>(errors)() = error_bars.data();
+  if(norm <= 0)
     fatal_error("solution norm must be positive (got norm = " +
-                std::to_string(norm_) + ")");
-  norm = norm_;
+                std::to_string(norm) + ")");
+}
+
+template <typename Mesh, typename TargetOpt, typename CovMatrixTargetOpt>
+som_core::data_t::data_t(
+    Mesh const& mesh,
+    cache_index& ci,
+    triqs::gfs::gf_const_view<Mesh, TargetOpt> g,
+    triqs::gfs::gf_const_view<prod<Mesh, Mesh>, CovMatrixTargetOpt> cov_matrix,
+    double norm,
+    double filtration_level)
+   : rhs(input_data_t<Mesh>(mesh.size()))
+   , errors(cov_matrix_t<Mesh>({(long)mesh.size(), (long)mesh.size()}))
+   , filtration_level(filtration_level)
+   , norm(norm)
+   , final_solution(ci) {
+
+  if(dagger(cov_matrix.data()) != cov_matrix.data())
+    fatal_error("Covariance matrix is not Hermitian");
+
+  std::get<input_data_t<Mesh>>(rhs)() = g.data();
+  std::get<cov_matrix_t<Mesh>>(errors)() = cov_matrix.data();
+  if(norm <= 0)
+    fatal_error("solution norm must be positive (got norm = " +
+                std::to_string(norm) + ")");
 }
 
 ////////////////////////////
 // som_core: Constructors //
 ////////////////////////////
 
+//
 // Imaginary time
-som_core::som_core(gf_const_view<imtime> g_tau, gf_const_view<imtime> S_tau,
-                   observable_kind kind, vector<double> const& norms)
-   : kind(kind)
-   , mesh(g_tau.mesh())
-   , data(g_tau.target_shape()[0], data_t(g_tau.mesh(), ci)) {
+//
+
+som_core::som_core(triqs::gfs::gf_const_view<imtime> g_tau,
+                   triqs::gfs::gf_const_view<imtime> error_bars_tau,
+                   observable_kind kind,
+                   nda::vector<double> const& norms)
+   : kind(kind), mesh(g_tau.mesh()) {
 
   if(is_stat_relevant(kind)) check_gf_stat(g_tau, observable_statistics(kind));
 
-  check_input_gf(g_tau, S_tau);
-  if(!is_gf_real(g_tau) || !is_gf_real(S_tau))
+  check_input_gf_and_error_bars(g_tau, error_bars_tau);
+  if(!is_gf_real(g_tau))
     fatal_error("imaginary time " + observable_name(kind) + " must be real");
-  gf<imtime, matrix_real_valued> g_tau_real = real(g_tau),
-                                 S_tau_real = real(S_tau);
+  if(!is_gf_real(error_bars_tau)) fatal_error("error bars must be real");
+  auto const g_tau_real = real(g_tau);
+  auto const error_bars_tau_real = real(error_bars_tau);
 
   auto gf_dim = g_tau.target_shape()[0];
-  for(auto i : range(gf_dim)) {
-    data[i].init_input(i, make_const_view(g_tau_real),
-                       make_const_view(S_tau_real),
-                       norms.size() > 0 ? norms[i] : 1.0);
+
+  check_norms(norms, gf_dim);
+
+  data.reserve(gf_dim);
+  for(auto n : range(gf_dim)) {
+    // cppcheck-suppress useStlAlgorithm
+    data.emplace_back(g_tau.mesh(),
+                      ci,
+                      slice_target_to_scalar(g_tau_real, n, n),
+                      slice_target_to_scalar(error_bars_tau_real, n, n),
+                      norms.size() > 0 ? norms[n] : 1.0);
   }
 }
 
+som_core::som_core(triqs::gfs::gf_const_view<imtime> g_tau,
+                   cov_matrices_gf_view_type<imtime> cov_matrices_tau,
+                   observable_kind kind,
+                   nda::vector<double> const& norms,
+                   nda::vector<double> const& filtration_levels)
+   : kind(kind), mesh(g_tau.mesh()) {
+
+  if(is_stat_relevant(kind)) check_gf_stat(g_tau, observable_statistics(kind));
+
+  check_input_gf_and_cov_matrices(g_tau, cov_matrices_tau);
+  if(!is_gf_real(g_tau))
+    fatal_error("imaginary time " + observable_name(kind) + " must be real");
+  auto const g_tau_real = real(g_tau);
+
+  auto gf_dim = g_tau.target_shape()[0];
+
+  check_norms(norms, gf_dim);
+  check_filtration_levels(filtration_levels, gf_dim);
+
+  data.reserve(gf_dim);
+  for(auto n : range(gf_dim)) {
+    auto const cov_matrix_real =
+        real(slice_target_to_scalar(cov_matrices_tau, n));
+    // cppcheck-suppress useStlAlgorithm
+    data.emplace_back(g_tau.mesh(),
+                      ci,
+                      slice_target_to_scalar(g_tau_real, n, n),
+                      cov_matrix_real(),
+                      norms.size() > 0 ? norms[n] : 1.0,
+                      filtration_levels.size() > 0 ? filtration_levels[n]
+                                                   : 0.0);
+  }
+}
+
+//
 // Imaginary frequency
-som_core::som_core(gf_const_view<imfreq> g_iw, gf_const_view<imfreq> S_iw,
-                   observable_kind kind, vector<double> const& norms)
-   : kind(kind)
-   , mesh(g_iw.mesh())
-   , data(g_iw.target_shape()[0], data_t(positive_freq_view(g_iw).mesh(), ci)) {
+//
+
+som_core::som_core(gf_const_view<imfreq> g_iw,
+                   gf_const_view<imfreq> error_bars_iw,
+                   observable_kind kind,
+                   vector<double> const& norms)
+   : kind(kind), mesh(g_iw.mesh()) {
 
   if(is_stat_relevant(kind)) check_gf_stat(g_iw, observable_statistics(kind));
 
-  check_input_gf(g_iw, S_iw);
-  if(!is_gf_real_in_tau(g_iw) || !is_gf_real_in_tau(S_iw))
+  check_input_gf_and_error_bars(g_iw, error_bars_iw);
+  if(!is_gf_real_in_tau(g_iw))
     fatal_error("imaginary frequency " + observable_name(kind) +
-                R"( must be real in \tau-domain)");
-  auto g_iw_pos = positive_freq_view(g_iw);
-  auto S_iw_pos = positive_freq_view(S_iw);
-  check_input_gf(g_iw_pos, S_iw_pos);
+                " must be real in τ-domain");
+  if(!is_gf_real(error_bars_iw)) fatal_error("error bars must be real");
+  auto const g_iw_pos = positive_freq_view(g_iw);
+  auto const error_bars_iw_pos = positive_freq_view(error_bars_iw);
 
   auto gf_dim = g_iw_pos.target_shape()[0];
-  for(auto i : range(gf_dim)) {
-    data[i].init_input(i, g_iw_pos, S_iw_pos,
-                       norms.size() > 0 ? norms[i] : 1.0);
+
+  check_norms(norms, gf_dim);
+
+  data.reserve(gf_dim);
+  for(auto n : range(gf_dim)) {
+    // cppcheck-suppress useStlAlgorithm
+    data.emplace_back(g_iw_pos.mesh(),
+                      ci,
+                      slice_target_to_scalar(g_iw_pos, n, n),
+                      slice_target_to_scalar(error_bars_iw_pos, n, n),
+                      norms.size() > 0 ? norms[n] : 1.0);
   }
 }
 
+som_core::som_core(triqs::gfs::gf_const_view<imfreq> g_iw,
+                   cov_matrices_gf_view_type<imfreq> cov_matrices_iw,
+                   observable_kind kind,
+                   nda::vector<double> const& norms,
+                   nda::vector<double> const& filtration_levels)
+   : kind(kind), mesh(g_iw.mesh()) {
+
+  if(is_stat_relevant(kind)) check_gf_stat(g_iw, observable_statistics(kind));
+
+  check_input_gf_and_cov_matrices(g_iw, cov_matrices_iw);
+  if(!is_gf_real_in_tau(g_iw))
+    fatal_error("imaginary frequency " + observable_name(kind) +
+                " must be real in τ-domain");
+  auto const g_iw_pos = positive_freq_view(g_iw);
+
+  auto gf_dim = g_iw.target_shape()[0];
+
+  check_norms(norms, gf_dim);
+  check_filtration_levels(filtration_levels, gf_dim);
+
+  auto make_cov_matrix_pos = [&](auto const& cov_matrix_iw) {
+    using namespace triqs::gfs;
+    auto cov_matrix_pos = gf<prod<imfreq, imfreq>, scalar_valued>{
+        {g_iw_pos.mesh(), g_iw_pos.mesh()}};
+    triqs::clef::placeholder<0> iw1;
+    triqs::clef::placeholder<1> iw2;
+    cov_matrix_pos(iw1, iw2) << cov_matrix_iw(iw1, iw2);
+    return cov_matrix_pos;
+  };
+
+  data.reserve(gf_dim);
+  for(auto n : range(gf_dim)) {
+    auto const cov_matrix_pos =
+        make_cov_matrix_pos(slice_target_to_scalar(cov_matrices_iw, n));
+    // cppcheck-suppress useStlAlgorithm
+    data.emplace_back(g_iw_pos.mesh(),
+                      ci,
+                      slice_target_to_scalar(g_iw_pos, n, n),
+                      cov_matrix_pos(),
+                      norms.size() > 0 ? norms[n] : 1.0,
+                      filtration_levels.size() > 0 ? filtration_levels[n]
+                                                   : 0.0);
+  }
+}
+
+//
 // Legendre coefficients
-som_core::som_core(gf_const_view<legendre> g_l, gf_const_view<legendre> S_l,
-                   observable_kind kind, vector<double> const& norms)
-   : kind(kind)
-   , mesh(g_l.mesh())
-   , data(g_l.target_shape()[0], data_t(g_l.mesh(), ci)) {
+//
+
+som_core::som_core(triqs::gfs::gf_const_view<legendre> g_l,
+                   triqs::gfs::gf_const_view<legendre> error_bars_l,
+                   observable_kind kind,
+                   nda::vector<double> const& norms)
+   : kind(kind), mesh(g_l.mesh()) {
 
   if(is_stat_relevant(kind)) check_gf_stat(g_l, observable_statistics(kind));
 
-  check_input_gf(g_l, S_l);
-  if(!is_gf_real(g_l) || !is_gf_real(S_l))
+  check_input_gf_and_error_bars(g_l, error_bars_l);
+  if(!is_gf_real(g_l))
     fatal_error("Legendre " + observable_name(kind) + " must be real");
-  gf<legendre, matrix_real_valued> g_l_real = real(g_l), S_l_real = real(S_l);
+  if(!is_gf_real(error_bars_l)) fatal_error("error bars must be real");
+  auto const g_l_real = real(g_l);
+  auto const error_bars_l_real = real(error_bars_l);
 
-  auto gf_dim = g_l_real.target_shape()[0];
-  for(auto i : range(gf_dim)) {
-    data[i].init_input(i, make_const_view(g_l_real), make_const_view(S_l_real),
-                       norms.size() > 0 ? norms[i] : 1.0);
+  auto gf_dim = g_l.target_shape()[0];
+
+  check_norms(norms, gf_dim);
+
+  data.reserve(gf_dim);
+  for(auto n : range(gf_dim)) {
+    // cppcheck-suppress useStlAlgorithm
+    data.emplace_back(g_l.mesh(),
+                      ci,
+                      slice_target_to_scalar(g_l_real, n, n),
+                      slice_target_to_scalar(error_bars_l_real, n, n),
+                      norms.size() > 0 ? norms[n] : 1.0);
+  }
+}
+
+som_core::som_core(triqs::gfs::gf_const_view<legendre> g_l,
+                   cov_matrices_gf_view_type<legendre> cov_matrices_l,
+                   observable_kind kind,
+                   nda::vector<double> const& norms,
+                   nda::vector<double> const& filtration_levels)
+   : kind(kind), mesh(g_l.mesh()) {
+
+  if(is_stat_relevant(kind)) check_gf_stat(g_l, observable_statistics(kind));
+
+  check_input_gf_and_cov_matrices(g_l, cov_matrices_l);
+  if(!is_gf_real(g_l))
+    fatal_error("Legendre " + observable_name(kind) + " must be real");
+  auto const g_l_real = real(g_l);
+
+  auto gf_dim = g_l.target_shape()[0];
+
+  check_norms(norms, gf_dim);
+  check_filtration_levels(filtration_levels, gf_dim);
+
+  data.reserve(gf_dim);
+  for(auto n : range(gf_dim)) {
+    auto const cov_matrix_real =
+        real(slice_target_to_scalar(cov_matrices_l, n));
+    // cppcheck-suppress useStlAlgorithm
+    data.emplace_back(g_l.mesh(),
+                      ci,
+                      slice_target_to_scalar(g_l_real, n, n),
+                      cov_matrix_real(),
+                      norms.size() > 0 ? norms[n] : 1.0,
+                      filtration_levels.size() > 0 ? filtration_levels[n]
+                                                   : 0.0);
   }
 }
 
