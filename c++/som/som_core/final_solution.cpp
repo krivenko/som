@@ -154,7 +154,7 @@ void final_solution_cc_parameters_t::validate() const {
 
   struct {
     std::size_t mesh_size = {};
-    void operator()(triqs::gfs::refreq const& m) {
+    void operator()(triqs::mesh::refreq const& m) {
       mesh_size = m.size();
       if(mesh_size < 3)
         fatal_error("There must be at least 3 energy points in refreq_mesh");

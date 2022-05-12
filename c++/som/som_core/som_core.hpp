@@ -150,18 +150,18 @@ class som_core {
 
 public:
   /// Construct on imaginary-time quantities
-  som_core(triqs::gfs::gf_const_view<triqs::gfs::imtime> g_tau,
-           triqs::gfs::gf_const_view<triqs::gfs::imtime> S_tau,
+  som_core(triqs::gfs::gf_const_view<triqs::mesh::imtime> g_tau,
+           triqs::gfs::gf_const_view<triqs::mesh::imtime> S_tau,
            observable_kind kind = FermionGf,
            nda::vector<double> const& norms = {});
   /// Construct on imaginary-frequency quantities
-  som_core(triqs::gfs::gf_const_view<triqs::gfs::imfreq> g_iw,
-           triqs::gfs::gf_const_view<triqs::gfs::imfreq> S_iw,
+  som_core(triqs::gfs::gf_const_view<triqs::mesh::imfreq> g_iw,
+           triqs::gfs::gf_const_view<triqs::mesh::imfreq> S_iw,
            observable_kind kind = FermionGf,
            nda::vector<double> const& norms = {});
   /// Construct on quantities in Legendre polynomial basis
-  som_core(triqs::gfs::gf_const_view<triqs::gfs::legendre> g_l,
-           triqs::gfs::gf_const_view<triqs::gfs::legendre> S_l,
+  som_core(triqs::gfs::gf_const_view<triqs::mesh::legendre> g_l,
+           triqs::gfs::gf_const_view<triqs::mesh::legendre> S_l,
            observable_kind kind = FermionGf,
            nda::vector<double> const& norms = {});
 
@@ -242,12 +242,12 @@ public:
 };
 
 /// Fill a real-frequency observable from a computed SOM solution
-void fill_refreq(triqs::gfs::gf_view<triqs::gfs::refreq> g_w,
+void fill_refreq(triqs::gfs::gf_view<triqs::mesh::refreq> g_w,
                  som_core const& cont,
                  bool with_binning = false);
 /// Fill a real-frequency observable from a list of solutions
 /// (one solution per a diagonal matrix element of the observable)
-void fill_refreq(triqs::gfs::gf_view<triqs::gfs::refreq> g_w,
+void fill_refreq(triqs::gfs::gf_view<triqs::mesh::refreq> g_w,
                  observable_kind kind,
                  std::vector<configuration> const& solutions,
                  bool with_binning = false);
@@ -264,31 +264,31 @@ compute_tail(int max_order,
 
 /// Reconstruct an observable in the imaginary-time representation
 /// from a computed SOM solution
-void reconstruct(triqs::gfs::gf_view<triqs::gfs::imtime> g,
+void reconstruct(triqs::gfs::gf_view<triqs::mesh::imtime> g,
                  som_core const& cont);
 /// Reconstruct an observable in the imaginary-frequency representation
 /// from a computed SOM solution
-void reconstruct(triqs::gfs::gf_view<triqs::gfs::imfreq> g,
+void reconstruct(triqs::gfs::gf_view<triqs::mesh::imfreq> g,
                  som_core const& cont);
 /// Reconstruct an observable in the Legendre polynomial basis
 /// from a computed SOM solution
-void reconstruct(triqs::gfs::gf_view<triqs::gfs::legendre> g,
+void reconstruct(triqs::gfs::gf_view<triqs::mesh::legendre> g,
                  som_core const& cont);
 
 /// Reconstruct an observable in the imaginary-time representation from a list
 /// of solutions (one solution per a diagonal matrix element of the observable)
-void reconstruct(triqs::gfs::gf_view<triqs::gfs::imtime> g,
+void reconstruct(triqs::gfs::gf_view<triqs::mesh::imtime> g,
                  observable_kind kind,
                  std::vector<configuration> const& solutions);
 /// Reconstruct an observable in the imaginary-frequency representation from
 /// a list of solutions (one solution per a diagonal matrix element of the
 /// observable)
-void reconstruct(triqs::gfs::gf_view<triqs::gfs::imfreq> g,
+void reconstruct(triqs::gfs::gf_view<triqs::mesh::imfreq> g,
                  observable_kind kind,
                  std::vector<configuration> const& solutions);
 /// Reconstruct an observable in the Legendre polynomial basis from a list of
 /// solutions (one solution per a diagonal matrix element of the observable)
-void reconstruct(triqs::gfs::gf_view<triqs::gfs::legendre> g,
+void reconstruct(triqs::gfs::gf_view<triqs::mesh::legendre> g,
                  observable_kind kind,
                  std::vector<configuration> const& solutions);
 

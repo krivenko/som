@@ -41,7 +41,8 @@ module.add_preamble("""
 #include <cpp2py/converters/function.hpp>
 #include <nda_py/cpp2py_converters.hpp>
 #include <triqs/cpp2py_converters/gf.hpp>
-using namespace triqs::gfs;
+using namespace nda;
+using namespace triqs::mesh;
 using namespace triqs::stat;
 using namespace som;
 """)
@@ -116,13 +117,13 @@ c = class_(
     doc = r"Main class of SOM"  # doc of the C++ class
 )
 
-c.add_constructor("""(gf_view<imtime> g_tau, gf_view<imtime> S_tau, som::observable_kind kind = FermionGf, vector<double> norms = {})""",
+c.add_constructor("""(triqs::gfs::gf_view<imtime> g_tau, triqs::gfs::gf_view<imtime> S_tau, som::observable_kind kind = FermionGf, vector<double> norms = {})""",
                   doc = """Construct on imaginary-time quantities """)
 
-c.add_constructor("""(gf_view<imfreq> g_iw, gf_view<imfreq> S_iw, som::observable_kind kind = FermionGf, vector<double> norms = {})""",
+c.add_constructor("""(triqs::gfs::gf_view<imfreq> g_iw, triqs::gfs::gf_view<imfreq> S_iw, som::observable_kind kind = FermionGf, vector<double> norms = {})""",
                   doc = """Construct on imaginary-frequency quantities """)
 
-c.add_constructor("""(gf_view<legendre> g_l, gf_view<legendre> S_l, som::observable_kind kind = FermionGf, vector<double> norms = {})""",
+c.add_constructor("""(triqs::gfs::gf_view<legendre> g_l, triqs::gfs::gf_view<legendre> S_l, som::observable_kind kind = FermionGf, vector<double> norms = {})""",
                   doc = """Construct on quantities in Legendre polynomial basis """)
 
 #
@@ -763,10 +764,10 @@ module.add_class(c)
 # fill_refreq()
 #
 
-module.add_function("void fill_refreq(gf_view<refreq> g_w, som_core cont, bool with_binning = false)",
+module.add_function("void fill_refreq(triqs::gfs::gf_view<refreq> g_w, som_core cont, bool with_binning = false)",
                     doc = """Fill a real-frequency observable from a computed SOM solution""")
 
-module.add_function("void fill_refreq(gf_view<refreq> g_w, observable_kind kind, std::vector<configuration> solutions, bool with_binning = false)",
+module.add_function("void fill_refreq(triqs::gfs::gf_view<refreq> g_w, observable_kind kind, std::vector<configuration> solutions, bool with_binning = false)",
                     doc = """Fill a real-frequency observable from a list of solutions (one solution per diagonal matrix element of the observable)""")
 
 #
@@ -783,18 +784,18 @@ module.add_function("nda::array<dcomplex, 3> compute_tail(int max_order, observa
 # reconstruct()
 #
 
-module.add_function("void reconstruct(gf_view<imtime> g, som_core cont)",
+module.add_function("void reconstruct(triqs::gfs::gf_view<imtime> g, som_core cont)",
                     doc = """Reconstruct an observable in the imaginary-time representation from a computed SOM solution""")
-module.add_function("void reconstruct(gf_view<imfreq> g, som_core cont)",
+module.add_function("void reconstruct(triqs::gfs::gf_view<imfreq> g, som_core cont)",
                     doc = """Reconstruct an observable in the imaginary-frequency representation from a computed SOM solution""")
-module.add_function("void reconstruct(gf_view<legendre> g, som_core cont)",
+module.add_function("void reconstruct(triqs::gfs::gf_view<legendre> g, som_core cont)",
                     doc = """Reconstruct an observable in the Legendre polynomial basis from a computed SOM solution""")
 
-module.add_function("void reconstruct(gf_view<imtime> g, observable_kind kind, std::vector<configuration> solutions)",
+module.add_function("void reconstruct(triqs::gfs::gf_view<imtime> g, observable_kind kind, std::vector<configuration> solutions)",
                     doc = """Reconstruct an observable in the imaginary-time representation from a list of solutions (one solution per diagonal matrix element of the observable)""")
-module.add_function("void reconstruct(gf_view<imfreq> g, observable_kind kind, std::vector<configuration> solutions)",
+module.add_function("void reconstruct(triqs::gfs::gf_view<imfreq> g, observable_kind kind, std::vector<configuration> solutions)",
                     doc = """Reconstruct an observable in the imaginary-frequency representation from a list of solutions (one solution per diagonal matrix element of the observable)""")
-module.add_function("void reconstruct(gf_view<legendre> g, observable_kind kind, std::vector<configuration> solutions)",
+module.add_function("void reconstruct(triqs::gfs::gf_view<legendre> g, observable_kind kind, std::vector<configuration> solutions)",
                     doc = """Reconstruct an observable in the Legendre polynomial basis from a list of solutions (one solution per diagonal matrix element of the observable)""")
 
 module.generate_code()

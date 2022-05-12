@@ -88,7 +88,7 @@ spectral_avg(som_core const& cont,
 // Regular real frequency mesh
 nda::vector<double> spectral_disp(som_core const& cont,
                                   long i,
-                                  triqs::gfs::refreq const& mesh,
+                                  triqs::mesh::refreq const& mesh,
                                   nda::vector<double> const& avg,
                                   resolution_function r_func);
 
