@@ -379,14 +379,25 @@ void update_consistent_constraints<KernelType>::optimize_heights() {
     // Update the heights
     compute_O_mat();
     QF_mat_view() = chi2_mat(r_K, r_K) + O_mat(r_K, r_K);
+
 #ifdef EXT_DEBUG
-    double QF =
+    double QF = NAN;
 #endif
-        worker(QF_mat_view,
-               chi2_rhs(r_K),
-               widths_matrix_view,
-               norm_vector_view,
-               heights(r_K));
+    try {
+#ifdef EXT_DEBUG
+      QF =
+#endif
+          worker(QF_mat_view,
+                 chi2_rhs(r_K),
+                 widths_matrix_view,
+                 norm_vector_view,
+                 heights(r_K));
+    } catch(triqs::runtime_error&) {
+#ifdef EXT_DEBUG
+      std::cerr << "Cholesky factorization has failed" << std::endl;
+#endif
+      break;
+    }
 
     double norm_diff_max = sum(abs((make_array_view(heights(r_K)) -
                                     make_array_view(heights_prev(r_K))) *
