@@ -58,6 +58,8 @@ som_params['adjust_l'] = False
 som_params['t'] = 100
 som_params['f'] = 100
 som_params['l'] = 25
+som_params['cc_update'] = True
+som_params['cc_update_cycle_length'] = 10
 som_params['make_histograms'] = True
 
 if mpi.is_master_node():
@@ -138,7 +140,10 @@ for mesh, g in (("imfreq", g_iw),
     print_master(mesh)
     print_master("-"*len(mesh))
     S = g.copy()
-    if mesh == "legendre": S.data[:] = 1.0
+    if mesh == "legendre":
+        S.data[:] = 1.0
+    else:
+        S.data[:] = np.abs(S.data[:])
     run_som_and_save("FermionGf", mesh, g, S, g_norms, (-5,5))
 
 print_master("=================")
@@ -178,7 +183,10 @@ for mesh, chi in (("imfreq", chi_iw),
     print_master(mesh)
     print_master("-"*len(mesh))
     S = chi.copy()
-    if mesh == "legendre": S.data[:] = 1.0
+    if mesh == "legendre":
+        S.data[:] = 1.0
+    else:
+        S.data[:] = np.abs(S.data[:])
     run_som_and_save("BosonCorr", mesh, chi, S, chi_norms, (-5,5))
 
 print_master("=====================")
@@ -217,7 +225,10 @@ for mesh, chi_auto in (("imfreq", chi_auto_iw),
     print_master(mesh)
     print_master("-"*len(mesh))
     S = chi_auto.copy()
-    if mesh == "legendre": S.data[:] = 1.0
+    if mesh == "legendre":
+        S.data[:] = 1.0
+    else:
+        S.data[:] = np.abs(S.data[:])
     run_som_and_save("BosonAutoCorr",
                      mesh,
                      chi_auto,
@@ -258,5 +269,8 @@ for mesh, g_zt in (("imfreq", g_zt_iw),
     print_master(mesh)
     print_master("-"*len(mesh))
     S = g_zt.copy()
-    if mesh == "legendre": S.data[:] = 1.0
+    if mesh == "legendre":
+        S.data[:] = 1.0
+    else:
+        S.data[:] = np.abs(S.data[:])
     run_som_and_save("ZeroTemp", mesh, g_zt, S, g_zt_norms, (0,5))
