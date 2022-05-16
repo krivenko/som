@@ -82,58 +82,74 @@ for kind in ("FermionGf", "BosonCorr", "BosonAutoCorr", "ZeroTemp"):
             print("Input max deviation: %f" %
                 np.max(np.abs(inp.data - inp_old.data)))
 
-        # Solutions
-        sols, sols_old = gr["solutions"], gr_old["solutions"]
-        for n, (s, s_old) in enumerate(zip(sols, sols_old)):
-            if len(s) != len(s_old):
-                print("Solution %d: mismatching number of rectangles (%d vs %d)" %
-                      (n, len(s), len(s_old)))
-            else:
-                s_old = [(r.center, r.width, r.height) for r in s_old]
-                s = [(r.center, r.width, r.height) for r in s]
-                if np.allclose(s, s_old, atol=atol, rtol=0):
-                    print("Solution %d matches" % n)
+        for errors in ("error_bars", "cov_matrix"):
+            print("*"*len(errors))
+            print(errors)
+            print("*"*len(errors))
+
+            if not errors in arch[kind][mesh]:
+                print("WARNING: /%s/%s/%s group is not in %s, skipping..." %
+                      (kind, mesh, errors, arch_name))
+                continue
+            if not errors in arch_old[kind][mesh]:
+                print("WARNING: /%s/%s/%s group is not in %s, skipping..." %
+                      (kind, mesh, errors, arch_old_name))
+                continue
+
+            gr, gr_old = arch[kind][mesh][errors], arch_old[kind][mesh][errors]
+
+            # Solutions
+            sols, sols_old = gr["solutions"], gr_old["solutions"]
+            for n, (s, s_old) in enumerate(zip(sols, sols_old)):
+                if len(s) != len(s_old):
+                    print("Solution %d: mismatching number of rectangles (%d vs %d)" %
+                        (n, len(s), len(s_old)))
                 else:
-                    for nr, (r, r_old) in enumerate(zip(s, s_old)):
-                        if np.allclose(r, r_old, atol=atol, rtol=0):
-                            continue
-                        else:
-                            print("Solution %d, rectangle %d (deviation): %s" %
-                                  (n, nr, np.asarray(r) - np.asarray(r_old)))
+                    s_old = [(r.center, r.width, r.height) for r in s_old]
+                    s = [(r.center, r.width, r.height) for r in s]
+                    if np.allclose(s, s_old, atol=atol, rtol=0):
+                        print("Solution %d matches" % n)
+                    else:
+                        for nr, (r, r_old) in enumerate(zip(s, s_old)):
+                            if np.allclose(r, r_old, atol=atol, rtol=0):
+                                continue
+                            else:
+                                print("Solution %d, rectangle %d (deviation): %s" %
+                                    (n, nr, np.asarray(r) - np.asarray(r_old)))
 
-        # Output
-        out, out_old = gr["output"], gr_old["output"]
-        assert out.mesh == out_old.mesh
-        if np.allclose(out.data, out_old.data, atol=atol, rtol=0):
-            print("Output matches")
-        else:
-            print("Output max deviation: %f" %
-                np.max(np.abs(out.data - out_old.data)))
-
-        # Reconstructed
-        rec, rec_old = gr["rec"], gr_old["rec"]
-        assert rec.mesh == rec_old.mesh
-        if np.allclose(rec.data, rec_old.data, atol=atol, rtol=0):
-            print("Reconstruction matches")
-        else:
-            print("Reconstruction max deviation: %f" %
-                np.max(np.abs(rec.data - rec_old.data)))
-
-        # Tail
-        tail, tail_old = gr["output_tail"], gr_old["output_tail"]
-        for i, j in product(range(tail.shape[1]), range(tail.shape[2])):
-          if np.allclose(tail[:, i, j], tail_old[:, i, j], atol=atol, rtol=0):
-              print("Tail element (%d,%d) matches" % (i,j))
-          else:
-              print("Tail element (%d,%d) max deviation: %f" %
-                    (i,j,np.max(np.abs(tail[:, i, j] - tail_old[:, i, j]))))
-
-        # Histograms
-        hists, hists_old = gr["histograms"], gr_old["histograms"]
-        for n, (h, h_old) in enumerate(zip(hists, hists_old)):
-            if np.allclose(h.data, h_old.data, atol=atol, rtol=0):
-                print("Histogram %d matches" % n)
+            # Output
+            out, out_old = gr["output"], gr_old["output"]
+            assert out.mesh == out_old.mesh
+            if np.allclose(out.data, out_old.data, atol=atol, rtol=0):
+                print("Output matches")
             else:
-                print("Histogram %d max deviation: %f" % \
-                      (n, np.max(np.abs(h.data - h_old.data))))
+                print("Output max deviation: %f" %
+                    np.max(np.abs(out.data - out_old.data)))
+
+            # Reconstructed
+            rec, rec_old = gr["rec"], gr_old["rec"]
+            assert rec.mesh == rec_old.mesh
+            if np.allclose(rec.data, rec_old.data, atol=atol, rtol=0):
+                print("Reconstruction matches")
+            else:
+                print("Reconstruction max deviation: %f" %
+                    np.max(np.abs(rec.data - rec_old.data)))
+
+            # Tail
+            tail, tail_old = gr["output_tail"], gr_old["output_tail"]
+            for i, j in product(range(tail.shape[1]), range(tail.shape[2])):
+                if np.allclose(tail[:, i, j], tail_old[:, i, j], atol=atol, rtol=0):
+                    print("Tail element (%d,%d) matches" % (i,j))
+                else:
+                    print("Tail element (%d,%d) max deviation: %f" %
+                            (i,j,np.max(np.abs(tail[:, i, j] - tail_old[:, i, j]))))
+
+            # Histograms
+            hists, hists_old = gr["histograms"], gr_old["histograms"]
+            for n, (h, h_old) in enumerate(zip(hists, hists_old)):
+                if np.allclose(h.data, h_old.data, atol=atol, rtol=0):
+                    print("Histogram %d matches" % n)
+                else:
+                    print("Histogram %d max deviation: %f" % \
+                        (n, np.max(np.abs(h.data - h_old.data))))
 
