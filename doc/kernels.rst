@@ -62,7 +62,7 @@ Enabled when `Som()` object is constucted with `kind = "BosonCorr"`.
 case, namely :math:`A(\epsilon) = \Im\chi(\epsilon)/\epsilon`, where
 
     .. math::
-        \chi(\epsilon) = \int\limits_{-\infty}^\infty dt\ e^{i\epsilon t}\chi_(t),\quad
+        \chi(\epsilon) = \int\limits_{-\infty}^\infty dt\ e^{i\epsilon t}\chi(t),\quad
         \chi(t) = i\theta(t)\langle[\hat O(t),\hat O^\dagger(0)]\rangle.
 
 - In imaginary time, :math:`\chi(\tau)`
@@ -154,7 +154,7 @@ The correlator of a real frequency is reconstructed according to
 
     .. math::
         \chi(\epsilon) =
-        -\frac{1}{\pi}\int\limits_{-\infty}^0
+        \frac{1}{\pi}\int\limits_{-\infty}^0
         d\epsilon' \frac{\epsilon' A(-\epsilon')}{\epsilon' - \epsilon - i0} +
         \frac{1}{\pi}\int\limits_0^\infty
         d\epsilon' \frac{\epsilon' A(\epsilon')}{\epsilon' - \epsilon - i0}.
