@@ -67,10 +67,10 @@ void check_input_gf_and_cov_matrices(
 }
 
 void check_norms(nda::vector<double> const& norms, long gf_dim) {
-  if(norms.size() > 0 && norms.size() != gf_dim)
-    fatal_error("The 'norms' list must either be empty or have exactly " +
-                std::to_string(gf_dim) + " elements (got " +
-                std::to_string(norms.size()) + " elements)");
+  if(norms.size() != gf_dim)
+    fatal_error("The 'norms' list must have exactly " + std::to_string(gf_dim) +
+                " elements (got " + std::to_string(norms.size()) +
+                " elements)");
 }
 
 void check_filtration_levels(nda::vector<double> const& filtration_levels,
@@ -166,7 +166,7 @@ som_core::som_core(triqs::gfs::gf_const_view<imtime> g_tau,
                       ci,
                       slice_target_to_scalar(g_tau_real, n, n),
                       slice_target_to_scalar(error_bars_tau_real, n, n),
-                      norms.size() > 0 ? norms[n] : 1.0);
+                      norms[n]);
   }
 }
 
@@ -198,7 +198,7 @@ som_core::som_core(triqs::gfs::gf_const_view<imtime> g_tau,
                       ci,
                       slice_target_to_scalar(g_tau_real, n, n),
                       cov_matrix_real(),
-                      norms.size() > 0 ? norms[n] : 1.0,
+                      norms[n],
                       filtration_levels.size() > 0 ? filtration_levels[n]
                                                    : 0.0);
   }
@@ -235,7 +235,7 @@ som_core::som_core(gf_const_view<imfreq> g_iw,
                       ci,
                       slice_target_to_scalar(g_iw_pos, n, n),
                       slice_target_to_scalar(error_bars_iw_pos, n, n),
-                      norms.size() > 0 ? norms[n] : 1.0);
+                      norms[n]);
   }
 }
 
@@ -278,7 +278,7 @@ som_core::som_core(triqs::gfs::gf_const_view<imfreq> g_iw,
                       ci,
                       slice_target_to_scalar(g_iw_pos, n, n),
                       cov_matrix_pos(),
-                      norms.size() > 0 ? norms[n] : 1.0,
+                      norms[n],
                       filtration_levels.size() > 0 ? filtration_levels[n]
                                                    : 0.0);
   }
@@ -314,7 +314,7 @@ som_core::som_core(triqs::gfs::gf_const_view<legendre> g_l,
                       ci,
                       slice_target_to_scalar(g_l_real, n, n),
                       slice_target_to_scalar(error_bars_l_real, n, n),
-                      norms.size() > 0 ? norms[n] : 1.0);
+                      norms[n]);
   }
 }
 
@@ -346,7 +346,7 @@ som_core::som_core(triqs::gfs::gf_const_view<legendre> g_l,
                       ci,
                       slice_target_to_scalar(g_l_real, n, n),
                       cov_matrix_real(),
-                      norms.size() > 0 ? norms[n] : 1.0,
+                      norms[n],
                       filtration_levels.size() > 0 ? filtration_levels[n]
                                                    : 0.0);
   }

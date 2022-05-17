@@ -180,38 +180,38 @@ public:
   /// Construct on imaginary-time quantities using error bars.
   som_core(triqs::gfs::gf_const_view<triqs::mesh::imtime> g_tau,
            triqs::gfs::gf_const_view<triqs::mesh::imtime> error_bars_tau,
-           observable_kind kind = FermionGf,
-           nda::vector<double> const& norms = {});
+           observable_kind kind,
+           nda::vector<double> const& norms);
   /// Construct on imaginary-time quantities using covariance matrices.
   som_core(triqs::gfs::gf_const_view<triqs::mesh::imtime> g_tau,
            cov_matrices_gf_view_type<triqs::mesh::imtime> cov_matrices_tau,
-           observable_kind kind = FermionGf,
-           nda::vector<double> const& norms = {},
+           observable_kind kind,
+           nda::vector<double> const& norms,
            nda::vector<double> const& filtration_levels = {});
 
   /// Construct on imaginary-frequency quantities using error bars.
   som_core(triqs::gfs::gf_const_view<triqs::mesh::imfreq> g_iw,
            triqs::gfs::gf_const_view<triqs::mesh::imfreq> error_bars_iw,
-           observable_kind kind = FermionGf,
-           nda::vector<double> const& norms = {});
+           observable_kind kind,
+           nda::vector<double> const& norms);
   /// Construct on imaginary-frequency quantities using covariance matrices.
   som_core(triqs::gfs::gf_const_view<triqs::mesh::imfreq> g_iw,
            cov_matrices_gf_view_type<triqs::mesh::imfreq> cov_matrices_iw,
-           observable_kind kind = FermionGf,
-           nda::vector<double> const& norms = {},
+           observable_kind kind,
+           nda::vector<double> const& norms,
            nda::vector<double> const& filtration_levels = {});
 
   /// Construct on quantities in Legendre polynomial basis using error bars.
   som_core(triqs::gfs::gf_const_view<triqs::mesh::legendre> g_l,
            triqs::gfs::gf_const_view<triqs::mesh::legendre> error_bars_l,
-           observable_kind kind = FermionGf,
-           nda::vector<double> const& norms = {});
+           observable_kind kind,
+           nda::vector<double> const& norms);
   /// Construct on quantities in Legendre polynomial basis using covariance
   /// matrices.
   som_core(triqs::gfs::gf_const_view<triqs::mesh::legendre> g_l,
            cov_matrices_gf_view_type<triqs::mesh::legendre> cov_matrices_l,
-           observable_kind kind = FermionGf,
-           nda::vector<double> const& norms = {},
+           observable_kind kind,
+           nda::vector<double> const& norms,
            nda::vector<double> const& filtration_levels = {});
 
   // Automatically adjust the number of global updates (F)

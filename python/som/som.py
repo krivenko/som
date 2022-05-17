@@ -34,13 +34,20 @@ class Som(SomCore):
                  g,
                  errors,
                  kind="FermionGf",
-                 norms=np.array([]),
+                 norms=None,
                  *,
                  filtration_levels=None
                  ):
 
-        if isinstance(norms, float) or isinstance(norms, int):
-            norms_ = norms * np.ones((g.target_shape[0],))
+        if norms is None:
+            try:
+                norms_ = {"FermionGf": 1.0,
+                          "ZeroTemp":  1.0}[kind] * np.ones(g.target_shape[0])
+            except KeyError:
+                raise RuntimeError("A list of solution norms must be provided "
+                                   "for observable kind " + kind)
+        elif isinstance(norms, float) or isinstance(norms, int):
+            norms_ = norms * np.ones(g.target_shape[0])
         else:
             norms_ = np.array(norms)
 
@@ -52,7 +59,7 @@ class Som(SomCore):
                 fl = np.array([])
             elif isinstance(filtration_levels, float) or \
                isinstance(filtration_levels, int):
-                fl = filtration_levels * np.ones((g.target_shape[0],))
+                fl = filtration_levels * np.ones(g.target_shape[0])
             else:
                 fl = np.array(filtration_levels)
 
