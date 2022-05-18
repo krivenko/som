@@ -6,6 +6,7 @@
 \usepackage[a4paper, total={7in, 8in}]{geometry}
 
 \newcommand{\intt}{\ensuremath{\int\limits_0^\beta}\ d\tau}
+\newcommand{\dilog}{\ensuremath{\mathrm{Li}_2}}
 \DeclareMathOperator{\atan}{atan}
 \DeclareMathOperator{\sign}{sign}
 
@@ -31,7 +32,7 @@ It is supposed to serve as an addition to the lecture \cite{som_lecture} and pap
 
 Integral kernel applied to a rectangle,
 \begin{equation}
-	\hat K(\tau;\omega)*R(c,w,h) =
+	\hat K(\tau;\epsilon)*R(c,w,h) =
 	h(\Lambda(\tau;c+w/2) - \Lambda(\tau;c-w/2)),
 \end{equation}
 \begin{equation}
@@ -114,7 +115,7 @@ All series found in the table are rapidly convergent, $\Psi(z) = \frac{1}{2}[\ps
 
 Integral kernel applied to a rectangle,
 \begin{equation}
-	\hat K(i\omega_n;\omega)*R(c,w,h) =
+	\hat K(i\omega_n;\epsilon)*R(c,w,h) =
 	h \log\left(\frac{i\omega_n - c + w/2}{i\omega_n - c - w/2}\right).
 \end{equation}
 
@@ -129,7 +130,7 @@ $i_\ell(x)$ is the modified spherical Bessel function of the first kind.
 
 Integral kernel applied to a rectangle,
 \begin{equation}
-	\hat K(\ell;\omega)*R(c,w,h) = h (\Lambda(\ell;c+w/2) - \Lambda(\ell;c-w/2))
+	\hat K(\ell;\epsilon)*R(c,w,h) = h (\Lambda(\ell;c+w/2) - \Lambda(\ell;c-w/2))
 \end{equation}
 \begin{equation}
 	\Lambda(\ell;\Omega) = (-\mathrm{sgn}(\Omega))^{\ell+1}\sqrt{2\ell+1}
@@ -175,6 +176,113 @@ In the high-energy region we use the asymptotic form (\ref{il_cosh_series_high})
 	\right\}\right|_{x_0}^z.
 \end{equation}
 
+\subsection{Symmetric fermionic thermal Green's function in imaginary time}
+\label{fermiongfsymm_imtime}
+
+\begin{equation}
+    G(\tau) = -\int\limits_{-\infty}^\infty
+    \frac{d\epsilon}{2} \frac{e^{-\tau\epsilon} + e^{-(\beta-\tau)\epsilon}}
+        {1+e^{-\beta\epsilon}} A(\epsilon).
+\end{equation}
+
+Integral kernel applied to a rectangle,
+\begin{equation}
+    \hat K(\tau;\epsilon)*R(c,w,h) =
+    h(\Lambda(\tau;c+w/2) - \Lambda(\tau;c-w/2)),
+\end{equation}
+\begin{equation}
+    \Lambda(\tau;\Omega) = -\frac{1}{2\beta}
+    \int\limits_0^{\beta\Omega}
+    \frac{e^{-(\tau/\beta)x} + e^{-(1-\tau/\beta)x}}
+    {1+e^{-x}}
+    dx.
+\end{equation}
+
+This integral is obtained from the one of paragraph \ref{fermiongf_imtime}
+as a result of $\tau$-symmetrization (sum of $\Lambda$ for $\alpha$ and $1-\alpha$).
+Thanks to this fact, it is enough to consider only 3 $\alpha$-cases,
+\begin{itemize}
+    \item $\alpha=0,1$;
+    \item $\alpha=1/2$;
+    \item $\alpha\in(0;1/2)\cup(1/2;1)$.
+\end{itemize}
+Furthermore, since $\Lambda(\tau;-\Omega) = -\Lambda(\tau;\Omega)$, it is enough to consider only positive values of the upper integration limit, which eliminates the need for two cubic splines.
+
+\begin{equation}
+    \Lambda(\tau;\Omega) = -\frac{1}{2\beta} \left[
+    S_\alpha(\beta\Omega) + T_\alpha(\beta\Omega) \right],
+\end{equation}
+\begin{equation}
+    S_\alpha(z) = \int\limits_0^z
+    \left[\frac{e^{-\alpha x}+e^{-(1-\alpha)x}}{1+e^{-x}} - t_\alpha(x)
+    \right] dx, \quad
+    T_\alpha(z) = \int\limits_0^z t_\alpha(x) dx.
+\end{equation}
+
+\begin{center}
+    \footnotesize
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        $\alpha$ & $t_\alpha(x)$ & $T_\alpha(z)$ & $S_\alpha(z)$ \\
+        \hline
+        $0,1$ & $1$ & $z$ & $0$ \\
+        \hline
+        $(0;1/2)\cup(1/2;1)$ & $e^{-\alpha x}+e^{-(1-\alpha)x}$ &
+        $\frac{1-e^{-\alpha z}}{\alpha}+\frac{1-e^{-(1-\alpha) z}}{1-\alpha}$ &$\begin{aligned}-\auxsum{-(n+1+\alpha)}-\Psi(1+\alpha)-\\
+        -\auxsum{-(n+2-\alpha)}-\Psi(2-\alpha)\end{aligned}$ \\
+        \hline
+        $1/2$ & $0$ & $0$ & $4\atan(\tanh(z/4))$ \\
+        \hline
+    \end{tabular}
+\end{center}
+All series found in the table are rapidly convergent, $\Psi(z) = \frac{1}{2}[\psi(\frac{1+z}{2}) - \psi(\frac{z}{2})]$, $\psi(z)$ is the digamma function.
+
+\subsection{Symmetric fermionic thermal Green's function at imaginary frequencies}
+\label{fermiongfsymm_imfreq}
+\begin{equation}
+    G(i\omega_n) = -i\omega_n\int\limits_{-\infty}^\infty
+    d\epsilon \frac{1}{\omega_n^2+\epsilon^2} A(\epsilon).
+\end{equation}
+
+Integral kernel applied to a rectangle,
+\begin{equation}
+    \hat K(i\omega_n;\epsilon)*R(c,w,h) =
+    ih \left[
+        \atan\left(\frac{c - w/2}{\omega_n}\right) -
+        \atan\left(\frac{c + w/2}{\omega_n}\right)
+    \right].
+\end{equation}
+
+\subsection{Symmetric fermionic thermal Green's function in Legendre polynomial basis}
+\label{fermiongfsymm_legendre}
+
+\begin{equation}
+    G(\ell) = \left\{
+    \begin{array}{ll}
+        -\int\limits_{-\infty}^\infty
+        d\epsilon
+        \frac{\beta\sqrt{2\ell+1} i_{\ell}(\beta|\epsilon|/2)}
+        {2\cosh(\beta\epsilon/2)} A(\epsilon), &\ell\ \mathrm{ even},\\
+        0, &\ell\ \mathrm{odd}.
+    \end{array}\right.
+\end{equation}
+
+Integral kernel applied to a rectangle,
+\begin{equation}
+    \hat K(\ell;\epsilon)*R(c,w,h) = \left\{
+    \begin{array}{ll}
+        h(\Lambda(\ell;c+w/2)-\Lambda(\ell;c-w/2)), &\ell\ \mathrm{ even},\\
+        0, &\ell\ \mathrm{odd}.
+    \end{array}\right.
+\end{equation}
+\begin{equation}
+	\Lambda(\ell;\Omega) = -\sqrt{2\ell+1}
+    \int_0^{\Omega\beta/2} \frac{i_\ell(x)}{\cosh(x)} dx.
+\end{equation}
+
+See paragraph \ref{fermiongf_legendre} for a description of how the integral on
+the right hand side is evaluated for $\Omega\geq0$. For $\Omega<0$, one should use the symmetry property $\Lambda(\ell;-\Omega) = -\Lambda(\ell;\Omega)$.
+
 \subsection{Correlator of boson-like operators in imaginary time}
 \label{bosoncorr_imtime}
 \begin{equation}
@@ -184,7 +292,7 @@ In the high-energy region we use the asymptotic form (\ref{il_cosh_series_high})
 
 Integral kernel applied to a rectangle,
 \begin{equation}
-\hat K(\tau;\omega)*R(c,w,h) =
+\hat K(\tau;\epsilon)*R(c,w,h) =
 h(\Lambda(\tau;c+w/2) - \Lambda(\tau;c-w/2)),
 \end{equation}
 \begin{equation}
@@ -214,7 +322,6 @@ Here we employ a tail subtraction technique analogous to that of paragraph
 	T_\alpha(z) = \int\limits_0^z t_\alpha(x) dx.
 \end{equation}
 
-\newcommand{\dilog}{\ensuremath{\mathrm{Li}_2}}
 \begin{center}
 	\footnotesize
 	\begin{tabular}{|c|c|c|c|c|}
@@ -261,7 +368,7 @@ d\epsilon \frac{1}{\pi}\frac{-\epsilon}{i\Omega_n-\epsilon} A(\epsilon).
 
 Integral kernel applied to a rectangle,
 \begin{equation}
-\hat K(i\Omega_n;\omega)*R(c,w,h) =
+\hat K(i\Omega_n;\epsilon)*R(c,w,h) =
 \frac{hw}{\pi} + \frac{hi\Omega_n}{\pi}\log\left(\frac{i\Omega_n - c - w/2}{i\Omega_n - c + w/2}\right).
 \end{equation}
 
@@ -276,7 +383,7 @@ Integral kernel applied to a rectangle,
 
 Integral kernel applied to a rectangle,
 \begin{equation}
-	\hat K(\ell;\omega)*R(c,w,h) = h (\Lambda(\ell;c+w/2) - \Lambda(\ell;c-w/2))
+	\hat K(\ell;\epsilon)*R(c,w,h) = h (\Lambda(\ell;c+w/2) - \Lambda(\ell;c-w/2))
 \end{equation}
 \begin{equation}
 	\Lambda(\ell;\Omega) = -(-\mathrm{sgn}(\Omega))^{\ell+1}
@@ -319,7 +426,7 @@ x - \frac{\ell(\ell+1)}{2}\log(x) +
 
 Integral kernel applied to a rectangle,
 \begin{equation}
-\hat K(\tau;\omega)*R(c,w,h) =
+\hat K(\tau;\epsilon)*R(c,w,h) =
 h(\Lambda(\tau;c+w/2) - \Lambda(\tau;c-w/2)),
 \end{equation}
 \begin{equation}
@@ -404,7 +511,7 @@ Integral kernel applied to a rectangle,
 
 Integral kernel applied to a rectangle,
 \begin{equation}
-	\hat K(\ell;\omega)*R(c,w,h) = \left\{
+	\hat K(\ell;\epsilon)*R(c,w,h) = \left\{
 	\begin{array}{ll}
 	h(\Lambda(\ell;c+w/2)-\Lambda(\ell;c-w/2)), &\ell\ \mathrm{ even},\\
 	0, &\ell\ \mathrm{odd}.
@@ -429,7 +536,7 @@ the right hand side is evaluated for $\Omega\geq0$. For $\Omega<0$, one should u
 
 Integral kernel applied to a rectangle,
 \begin{equation}
-	\hat K(\tau;\omega)*R(c,w,h) =  \left\{
+	\hat K(\tau;\epsilon)*R(c,w,h) =  \left\{
 	\begin{array}{ll}
 		-hw, &\tau=0,\\
 		\frac{h}{\tau}(e^{-\tau(c+w/2)}-e^{-\tau(c-w/2)}) ,&\mathrm{otherwise}.
@@ -448,7 +555,7 @@ $\omega_0 = 0$ is not included in the case of fermionic correlators.
 
 Integral kernel applied to a rectangle,
 \begin{equation}
-\hat K(i\omega_n;\omega)*R(c,w,h) =
+\hat K(i\omega_n;\epsilon)*R(c,w,h) =
 h \log\left(\frac{i\omega_n - c + w/2}{i\omega_n - c - w/2}\right).
 \end{equation}
 
@@ -464,7 +571,7 @@ h \log\left(\frac{i\omega_n - c + w/2}{i\omega_n - c - w/2}\right).
 
 Integral kernel applied to a rectangle,
 \begin{equation}
-	\hat K(\ell;\omega)*R(c,w,h) = h (\Lambda(\ell;c+w/2) - \Lambda(\ell;c-w/2)),
+	\hat K(\ell;\epsilon)*R(c,w,h) = h (\Lambda(\ell;c+w/2) - \Lambda(\ell;c-w/2)),
 \end{equation}
 \begin{equation}
 	\Lambda(\ell;\Omega) = (-1)^{\ell+1}\sqrt{2\ell+1}

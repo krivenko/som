@@ -42,6 +42,7 @@ class Som(SomCore):
         if norms is None:
             try:
                 norms_ = {"FermionGf": 1.0,
+                          "FermionGfSymm": 1.0,
                           "ZeroTemp":  1.0}[kind] * np.ones(g.target_shape[0])
             except KeyError:
                 raise RuntimeError("A list of solution norms must be provided "

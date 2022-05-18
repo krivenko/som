@@ -109,7 +109,7 @@ module.add_class(c)
 # Class SomCore
 #
 
-module.add_enum("observable_kind", ["FermionGf","BosonCorr","BosonAutoCorr","ZeroTemp"], "som", "Kinds of observables")
+module.add_enum("observable_kind", ["FermionGf","FermionGfSymm","BosonCorr","BosonAutoCorr","ZeroTemp"], "som", "Kinds of observables")
 
 c = class_(
     py_type = "SomCore",        # name of the python class

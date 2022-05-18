@@ -77,6 +77,7 @@ endmacro()
 set(simple_tests configuration.cpp
                  objective_function.cpp
                  kernels_fermiongf.cpp
+                 kernels_fermiongfsymm.cpp
                  kernels_bosoncorr.cpp
                  kernels_bosonautocorr.cpp
                  kernels_zerotemp.cpp

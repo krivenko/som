@@ -37,7 +37,8 @@
 namespace som {
 
 // All supported kinds of observables
-#define ALL_OBSERVABLES (FermionGf)(BosonCorr)(BosonAutoCorr)(ZeroTemp)
+#define ALL_OBSERVABLES                                                        \
+    (FermionGf)(FermionGfSymm)(BosonCorr)(BosonAutoCorr)(ZeroTemp)
 
 enum observable_kind : unsigned int { BOOST_PP_SEQ_ENUM(ALL_OBSERVABLES) };
 constexpr const unsigned int n_observable_kinds =

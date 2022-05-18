@@ -44,7 +44,11 @@ arch_old_name = sys.argv[2]
 arch = HDFArchive(arch_name, 'r')
 arch_old = HDFArchive(arch_old_name, 'r')
 
-for kind in ("FermionGf", "BosonCorr", "BosonAutoCorr", "ZeroTemp"):
+for kind in ("FermionGf",
+             "FermionGfSymm",
+             "BosonCorr",
+             "BosonAutoCorr",
+             "ZeroTemp"):
     kind_msg = kind + " kernels"
     print("=" * len(kind_msg))
     print(kind_msg)

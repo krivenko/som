@@ -30,6 +30,11 @@
 #include <som/kernels/fermiongf_imtime.hpp>
 #include <som/kernels/fermiongf_legendre.hpp>
 
+// FermionGfSymm kernels
+#include <som/kernels/fermiongfsymm_imfreq.hpp>
+#include <som/kernels/fermiongfsymm_imtime.hpp>
+#include <som/kernels/fermiongfsymm_legendre.hpp>
+
 // BosonCorr kernels
 #include <som/kernels/bosoncorr_imfreq.hpp>
 #include <som/kernels/bosoncorr_imtime.hpp>

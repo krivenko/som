@@ -114,6 +114,21 @@ error_bars_iw.data[:] = np.abs(error_bars_iw.data[:])
 
 run_som_and_save("FermionGf", g_iw, error_bars_iw, [1.0], (-5, 5))
 
+print_master("====================")
+print_master("FermionGfSymm kernel")
+print_master("====================")
+
+def g_iw_model(iw):
+    kern = lambda e: 1 / (iw - e)
+    return quad_complex(lambda e: dos(e, 0) * kern(e), -2, 2, points = [0])
+
+g_iw = GfImFreq(beta = beta, n_points = n_iw, indices = [0])
+g_iw << Function(g_iw_model)
+error_bars_iw = g_iw.copy()
+error_bars_iw.data[:] = np.abs(error_bars_iw.data[:])
+
+run_som_and_save("FermionGfSymm", g_iw, error_bars_iw, [1.0], (-5, 5))
+
 print_master("================")
 print_master("BosonCorr kernel")
 print_master("================")

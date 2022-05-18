@@ -37,6 +37,7 @@ bool is_stat_relevant(observable_kind kind) { return kind != ZeroTemp; }
 statistic_enum observable_statistics(observable_kind kind) {
   switch(kind) {
     case FermionGf: return Fermion;
+    case FermionGfSymm: return Fermion;
     case BosonCorr: return Boson;
     case BosonAutoCorr: return Boson;
     default:
@@ -47,7 +48,8 @@ statistic_enum observable_statistics(observable_kind kind) {
 
 std::string observable_name(observable_kind kind) {
   switch(kind) {
-    case FermionGf: return "Green's functions";
+    case FermionGf: return "Green's function";
+    case FermionGfSymm: return "symmetric Green's function";
     case BosonCorr: return "bosonic correlator";
     case BosonAutoCorr: return "bosonic autocorrelator";
     case ZeroTemp: return "correlator at zero temperature";
@@ -58,6 +60,7 @@ std::string observable_name(observable_kind kind) {
 std::pair<double, double> max_energy_window(observable_kind kind) {
   switch(kind) {
     case FermionGf: return std::make_pair(-HUGE_VAL, HUGE_VAL);
+    case FermionGfSymm: return std::make_pair(-HUGE_VAL, HUGE_VAL);
     case BosonCorr: return std::make_pair(-HUGE_VAL, HUGE_VAL);
     case BosonAutoCorr: return std::make_pair(-HUGE_VAL, HUGE_VAL);
     case ZeroTemp: return std::make_pair(0, HUGE_VAL);
@@ -67,7 +70,7 @@ std::pair<double, double> max_energy_window(observable_kind kind) {
 }
 
 bool use_symmetrized_spectrum(observable_kind kind) {
-  return kind == BosonAutoCorr;
+  return kind == FermionGfSymm || kind == BosonAutoCorr;
 }
 
 // Construct a real-frequency GF from a configuration
@@ -151,8 +154,8 @@ compute_tail(observable_kind kind,
     tail += rect.tail_coefficients(0, max_order, bosoncorr);
 
     if(symmetrize) {
-      rectangle reflected_rect(-rect.center, rect.width, rect.height);
-      tail += reflected_rect.tail_coefficients(0, max_order, bosoncorr);
+      tail += rectangle(-rect.center, rect.width, rect.height)
+                  .tail_coefficients(0, max_order, bosoncorr);
     }
 
     ++rect_index;

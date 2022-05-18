@@ -51,6 +51,7 @@ def plot_binning_nobinning(kind, ylabel):
     pp.savefig(plt.gcf())
 
 plot_binning_nobinning("FermionGf", "$G(\\omega)$")
+plot_binning_nobinning("FermionGfSymm", "$G(\\omega)$")
 plot_binning_nobinning("BosonCorr", "$\\chi(\\omega)$")
 plot_binning_nobinning("BosonAutoCorr", "$\\chi(\\omega)$")
 plot_binning_nobinning("ZeroTemp", "$G(\\omega)$")

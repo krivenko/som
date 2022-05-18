@@ -247,6 +247,54 @@ for mesh, g, error_bars, cov_matrix in (
     run_som_and_save_error_bars("FermionGf", mesh, g, error_bars, g_norms, (-5, 5))
     run_som_and_save_cov_matrix("FermionGf", mesh, g, cov_matrix, g_norms, (-5, 5))
 
+print_master("=====================")
+print_master("FermionGfSymm kernels")
+print_master("=====================")
+
+def g_iw_model(iw):
+    kern = lambda e: 1 / (iw - e)
+    return np.diag(g_norms) * quad_complex(lambda e: dos(e, 0) * kern(e), -2, 2, points = [0])
+g_iw = GfImFreq(beta = beta, statistic = "Fermion", n_points = n_iw, indices = indices)
+g_iw << Function(g_iw_model)
+
+error_bars_iw = make_error_bars_iw(g_iw)
+cov_matrix_iw = make_cov_matrix_iw(g_iw)
+
+def g_tau_model(tau):
+    kern = lambda e: -np.exp(-tau * e) / (1 + np.exp(-beta*e))
+    return np.diag(g_norms) * quad(lambda e: dos(e, 0) * kern(e), -2, 2, points = [0])[0].real
+g_tau = GfImTime(beta = beta, statistic = "Fermion", n_points = n_tau, indices = indices)
+g_tau << Function(g_tau_model)
+
+error_bars_tau = make_error_bars_tau(g_tau)
+cov_matrix_tau = make_cov_matrix_tau(g_tau)
+
+def g_l_model(l):
+    kern = lambda e: -beta * sqrt(2*l+1) *((-np.sign(e)) ** l) * \
+                     spherical_in(l, np.abs(e)*beta/2) / (2 * np.cosh(e*beta/2))
+    return np.diag(g_norms) * quad(lambda e: dos(e, 0) * kern(e), -2, 2, points = [0])[0].real
+g_l = GfLegendre(beta = beta, statistic = "Fermion", n_points = n_l, indices = indices)
+g_l << Function(g_l_model)
+
+error_bars_l = make_error_bars_l(g_l)
+cov_matrix_l = make_cov_matrix_l(g_l)
+
+if mpi.is_master_node():
+    arch.create_group("FermionGfSymm")
+    arch["FermionGfSymm"]["norms"] = g_norms
+
+for mesh, g, error_bars, cov_matrix in (
+    ("imfreq", g_iw, error_bars_iw, cov_matrix_iw),
+    ("imtime", g_tau, error_bars_tau, cov_matrix_tau),
+    ("legendre", g_l, error_bars_l, cov_matrix_l)):
+
+    print_master("-"*len(mesh))
+    print_master(mesh)
+    print_master("-"*len(mesh))
+
+    run_som_and_save_error_bars("FermionGfSymm", mesh, g, error_bars, g_norms, (-5, 5))
+    run_som_and_save_cov_matrix("FermionGfSymm", mesh, g, cov_matrix, g_norms, (-5, 5))
+
 print_master("=================")
 print_master("BosonCorr kernels")
 print_master("=================")
