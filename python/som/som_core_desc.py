@@ -773,10 +773,10 @@ module.add_class(c)
 # fill_refreq()
 #
 
-module.add_function("void fill_refreq(triqs::gfs::gf_view<refreq> g_w, som_core cont, bool with_binning = false)",
+module.add_function("void fill_refreq(triqs::gfs::gf_view<refreq> g_w, som_core cont, bool with_binning = true)",
                     doc = """Fill a real-frequency observable from a computed SOM solution""")
 
-module.add_function("void fill_refreq(triqs::gfs::gf_view<refreq> g_w, observable_kind kind, std::vector<configuration> solutions, bool with_binning = false)",
+module.add_function("void fill_refreq(triqs::gfs::gf_view<refreq> g_w, observable_kind kind, std::vector<configuration> solutions, bool with_binning = true)",
                     doc = """Fill a real-frequency observable from a list of solutions (one solution per diagonal matrix element of the observable)""")
 
 #

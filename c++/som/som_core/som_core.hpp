@@ -293,13 +293,13 @@ public:
 /// Fill a real-frequency observable from a computed SOM solution
 void fill_refreq(triqs::gfs::gf_view<triqs::mesh::refreq> g_w,
                  som_core const& cont,
-                 bool with_binning = false);
+                 bool with_binning = true);
 /// Fill a real-frequency observable from a list of solutions
 /// (one solution per a diagonal matrix element of the observable)
 void fill_refreq(triqs::gfs::gf_view<triqs::mesh::refreq> g_w,
                  observable_kind kind,
                  std::vector<configuration> const& solutions,
-                 bool with_binning = false);
+                 bool with_binning = true);
 
 /// Compute tail coefficients from a computed SOM solution
 [[nodiscard]] nda::array<std::complex<double>, 3>
