@@ -89,7 +89,7 @@ protected:
   // Generate change of a parameter :math:`\delta\xi` (see Sec. 3.4)
   [[nodiscard]] inline double generate_parameter_change(double x_min,
                                                         double x_max) const {
-    return dist(x_min, x_max);
+    return (x_min == x_max) ? x_min : dist(x_min, x_max);
   }
 
   // Returns (true,:math:`\delta\xi_{opt}`) (see eq. (41)), if
