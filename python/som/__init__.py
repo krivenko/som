@@ -22,7 +22,12 @@
 SOM: Stochastic Optimization Method for Analytic Continuation
 """
 
-from .som_core import (SomCore, fill_refreq, compute_tail, reconstruct)
+from .som_core import (SomCore,
+                       Rectangle,
+                       Configuration,
+                       fill_refreq,
+                       compute_tail,
+                       reconstruct)
 from .som import (Som, count_good_solutions)
 from .spectral_stats import (spectral_integral,
                              spectral_avg,
@@ -31,6 +36,8 @@ from .spectral_stats import (spectral_integral,
 
 __all__ = ['SomCore',
            'Som',
+           'Rectangle',
+           'Configuration',
            'fill_refreq',
            'compute_tail',
            'reconstruct',
