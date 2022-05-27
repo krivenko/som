@@ -345,8 +345,8 @@ for mesh, chi_auto, error_bars, cov_matrix in (
     print_master(mesh)
     print_master("-"*len(mesh))
 
-    run_som_and_save_error_bars("BosonAutoCorr", mesh, chi_auto, error_bars, chi_auto_norms, (0, 5))
-    run_som_and_save_cov_matrix("BosonAutoCorr", mesh, chi_auto, cov_matrix, chi_auto_norms, (0, 5))
+    run_som_and_save_error_bars("BosonAutoCorr", mesh, chi_auto, error_bars, chi_auto_norms, (-5, 5))
+    run_som_and_save_cov_matrix("BosonAutoCorr", mesh, chi_auto, cov_matrix, chi_auto_norms, (-5, 5))
 
 print_master("================")
 print_master("ZeroTemp kernels")

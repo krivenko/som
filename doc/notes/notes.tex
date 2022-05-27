@@ -312,7 +312,7 @@ x - \frac{\ell(\ell+1)}{2}\log(x) +
 \subsection{Autocorrelator of a boson-like operator in imaginary time}
 \label{bosonautocorr_imtime}
 \begin{equation}
-\chi(\tau) = \int\limits_{-\infty}^\infty \frac{d\epsilon}{\pi}
+\chi(\tau) = \int\limits_{-\infty}^\infty \frac{d\epsilon}{2\pi}
 \frac{\epsilon (e^{-\tau\epsilon}+e^{-(\beta-\tau)\epsilon})}
 {1-e^{-\beta\epsilon}} A(\epsilon).
 \end{equation}
@@ -323,7 +323,7 @@ Integral kernel applied to a rectangle,
 h(\Lambda(\tau;c+w/2) - \Lambda(\tau;c-w/2)),
 \end{equation}
 \begin{equation}
-\Lambda(\tau;\Omega) = \frac{1}{\pi\beta^2}
+\Lambda(\tau;\Omega) = \frac{1}{2\pi\beta^2}
 \int\limits_0^{\beta\Omega}\frac{x(e^{-(\tau/\beta)x}+e^{-(1-\tau/\beta)x})}
 {1-e^{-x}}dx.
 \end{equation}
@@ -335,11 +335,10 @@ Thanks to this fact, it is enough to consider only 3 $\alpha$-cases,
 	\item $\alpha=1/2$;
 	\item $\alpha\in(0;1/2)\cup(1/2;1)$.
 \end{itemize}
-Furthermore, the upper integration limit can now be only positive, which
-eliminates the need in two cubic splines.
+Furthermore, since $\Lambda(\tau;-\Omega) = -\Lambda(\tau;\Omega)$, it is enough to consider only positive  values of the upper integration limit, which eliminates the need for two cubic splines.
 
 \begin{equation}
-\Lambda(\tau;\Omega) = \frac{1}{\pi\beta^2} \left[
+\Lambda(\tau;\Omega) = \frac{1}{2\pi\beta^2} \left[
 S_\alpha(\beta\Omega) + T_\alpha(\beta\Omega) \right],
 \end{equation}
 \begin{equation}
@@ -378,14 +377,14 @@ $\psi^{(1)}(z) = \frac{d^2}{dz^2}\log\Gamma(z)$ is the trigamma function.
 \subsection{Autocorrelator of a boson-like operator at imaginary frequencies}
 \label{bosonautocorr_imfreq}
 \begin{equation}
-\chi(i\Omega_n) = \int\limits_0^\infty
-d\epsilon \frac{1}{\pi}\frac{2\epsilon^2}{\Omega_n^2+\epsilon^2} A(\epsilon).
+\chi(i\Omega_n) = \int\limits_{-\infty}^\infty
+\frac{d\epsilon}{\pi}\frac{\epsilon^2}{\Omega_n^2+\epsilon^2} A(\epsilon).
 \end{equation}
 
 Integral kernel applied to a rectangle,
 \begin{equation}
 \hat K(i\Omega_n;\omega)*R(c,w,h) =
-\frac{2hw}{\pi} + \frac{2h\Omega_n}{\pi}\left(
+\frac{hw}{\pi} + \frac{h\Omega_n}{\pi}\left(
 \atan\left(\frac{c-w/2}{\Omega_n}\right) - \atan\left(\frac{c+w/2}{\Omega_n}\right)
 \right).
 \end{equation}
@@ -395,10 +394,10 @@ Integral kernel applied to a rectangle,
 \begin{equation}
 	\chi(\ell) = \left\{
 		\begin{array}{ll}
-		\int\limits_0^\infty
+		\int\limits_{-\infty}^\infty
 		\frac{d\epsilon}{\pi}
-		\frac{\beta\epsilon\sqrt{2\ell+1} i_{\ell}(\beta\epsilon/2)}
-		{\sinh(\beta\epsilon/2)} A(\epsilon), &\ell\ \mathrm{ even},\\
+		\frac{\beta\epsilon\sqrt{2\ell+1} i_{\ell}(\beta|\epsilon|/2)}
+		{2\sinh(\beta\epsilon/2)} A(\epsilon), &\ell\ \mathrm{ even},\\
 		0, &\ell\ \mathrm{odd}.
 	\end{array}\right.
 \end{equation}
@@ -413,12 +412,12 @@ Integral kernel applied to a rectangle,
 \end{equation}
 \begin{equation}
 	\Lambda(\ell;\Omega) =
-	\frac{4\sqrt{2\ell+1}}{\pi\beta}
+	\frac{2\sqrt{2\ell+1}}{\pi\beta}
 	\int_0^{\Omega\beta/2} \frac{i_\ell(x) x}{\sinh(x)} dx.
 \end{equation}
 
 See paragraph \ref{bosoncorr_legendre} for a description of how the integral on
-the right hand side is evaluated.
+the right hand side is evaluated for $\Omega\geq0$. For $\Omega<0$, one should use the symmetry property $\Lambda(\ell;-\Omega) = -\Lambda(\ell;\Omega)$.
 
 \subsection{Zero temperature correlator in imaginary time}
 \label{zerotemp_imtime}

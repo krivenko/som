@@ -53,6 +53,12 @@ void worker_parameters_t::validate(observable_kind kind) const {
                 " is invalid for this observable");
   }
 
+  if(use_symmetrized_spectrum(kind) &&
+     (energy_window.first != -energy_window.second))
+    fatal_error(
+        "The energy window must be symmetric w.r.t. zero "
+        "for this observable");
+
   if(t <= 0)
     fatal_error("Number of elementary updates t must be positive (got t = " +
                 to_string(t) + ")");

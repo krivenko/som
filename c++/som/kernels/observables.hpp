@@ -55,6 +55,10 @@ std::string observable_name(observable_kind kind);
 // Widest energy windows for observables
 std::pair<double, double> max_energy_window(observable_kind kind);
 
+// Symmetrize configurations before using them in back_transform() and
+// compute_tail()
+bool use_symmetrized_spectrum(observable_kind kind);
+
 // Construct a real-frequency GF from a configuration
 void back_transform(
     observable_kind kind, configuration const& conf,

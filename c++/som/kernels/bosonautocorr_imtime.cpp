@@ -69,7 +69,7 @@ kernel<BosonAutoCorr, imtime>::evaluator::evaluator(
       spline_knots(xi) = -1 + M_PI * M_PI / 3 + 2 * x * log1p(-expx) -
                          2 * real(dilog(expx)) + expx * (1 + x);
     });
-    tail_coeff1 = 1 / (M_PI * beta_ * beta_);
+    tail_coeff1 = 1 / (2 * M_PI * beta_ * beta_);
   } else if(s % 2 == 1 && i == s / 2) { // \alpha = 1/2
     alpha_case = half;
     nda::for_each(spline_knots.shape(), [&spline_knots, dx](int xi) {
@@ -83,7 +83,7 @@ kernel<BosonAutoCorr, imtime>::evaluator::evaluator(
                          2 * x * log(tanh(x / 4)) - 8 * real(dilog(expx2)) +
                          2 * real(dilog(expx2 * expx2));
     });
-    tail_coeff1 = 4 / (M_PI * beta_ * beta_);
+    tail_coeff1 = 2 / (M_PI * beta_ * beta_);
   } else { // \alpha \in (0;1/2)\cup(1/2;1)
     // S(x) = \sum_{n=0}^{+\infty} \frac{\exp(d(n) x)[1-xd(n)]}{d^2(n)}
     auto aux_sum = [](auto d, double x) -> double {
@@ -106,15 +106,17 @@ kernel<BosonAutoCorr, imtime>::evaluator::evaluator(
           -aux_sum([this](int n) { return -(n + 1 + alpha); }, x) -
           aux_sum([this](int n) { return -(n + 2 - alpha); }, x) + shift;
     }
-    tail_coeff1 = 1 / ((M_PI * beta_ * beta_) * alpha * alpha);
-    tail_coeff2 = 1 / ((M_PI * beta_ * beta_) * (1 - alpha) * (1 - alpha));
+    tail_coeff1 = 1 / ((2 * M_PI * beta_ * beta_) * alpha * alpha);
+    tail_coeff2 = 1 / ((2 * M_PI * beta_ * beta_) * (1 - alpha) * (1 - alpha));
   }
 
-  spline_knots /= (M_PI * beta_ * beta_);
+  spline_knots /= (2 * M_PI * beta_ * beta_);
   spline_ = regular_spline(.0, x0, spline_knots);
 }
 
 double kernel<BosonAutoCorr, imtime>::evaluator::operator()(double x) const {
+  if(x < 0) return -operator()(-x);
+
   using std::exp;
   switch(alpha_case) {
     case edge:

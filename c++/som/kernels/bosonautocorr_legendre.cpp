@@ -50,7 +50,7 @@ kernel<BosonAutoCorr, legendre>::evaluator::evaluator(long l,
                                                       double x0_start,
                                                       double beta)
    : log_coeff(-0.5 * double(l * (l + 1)))
-   , pref((4 / (M_PI * beta)) * std::sqrt(2 * l + 1)) {
+   , pref((2 / (M_PI * beta)) * std::sqrt(2 * l + 1)) {
 
   // Integrand, x i_l(x) / sinh(x)
   auto integrand = [l](double x) {
@@ -95,6 +95,7 @@ kernel<BosonAutoCorr, legendre>::evaluator::evaluator(long l,
 }
 
 double kernel<BosonAutoCorr, legendre>::evaluator::operator()(double x) const {
+  if(x < 0) return -operator()(-x);
   double val = (x <= x0)
                    ? low_energy_spline(x)
                    : (low_energy_x0 - high_energy_x0 +

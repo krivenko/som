@@ -41,11 +41,11 @@ void kernel<BosonAutoCorr, imfreq>::apply(rectangle const& rect,
   double e2 = rect.right();
 
   auto it = std::begin(mesh);
-  res((*it).linear_index()) = 2 * rect.height * rect.width / M_PI; // \Omega = 0
+  res((*it).linear_index()) = rect.height * rect.width / M_PI; // \Omega = 0
   for(++it; it != std::end(mesh); ++it) {
     auto w = dcomplex(*it).imag();
     res((*it).linear_index()) =
-        (2 * rect.height / M_PI) *
+        (rect.height / M_PI) *
         (rect.width + w * (std::atan(e1 / w) - std::atan(e2 / w)));
   }
 }

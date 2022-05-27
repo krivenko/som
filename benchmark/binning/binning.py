@@ -158,7 +158,7 @@ chi_iw << Function(chi_iw_model)
 error_bars_iw = chi_iw.copy()
 error_bars_iw.data[:] = np.abs(error_bars_iw.data[:])
 
-run_som_and_save("BosonAutoCorr", chi_iw, error_bars_iw, chi_norms, (0, 5))
+run_som_and_save("BosonAutoCorr", chi_iw, error_bars_iw, chi_norms, (-5, 5))
 
 print_master("===============")
 print_master("ZeroTemp kernel")
