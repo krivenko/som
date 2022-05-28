@@ -38,8 +38,6 @@ chi_rec_tau_symm = arch["BosonAutoCorr"]["rec"]
 tail = arch["BosonCorr"]["tail"]
 tail_symm = arch["BosonAutoCorr"]["tail"]
 
-sol = arch["BosonAutoCorr"]["solutions"][0]
-
 oplot(chi_w[0, 0], mode = 'R', lw = 0.5, label = "BosonCorr, Re")
 oplot(chi_w[0, 0], mode = 'I', lw = 0.5, label = "BosonCorr, Im")
 oplot(chi_w_symm[0, 0], mode = 'R', lw = 0.5, label = "BosonAutoCorr, Re")
