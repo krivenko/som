@@ -24,6 +24,8 @@
 #include <som/kernels/fermiongf_imtime.hpp>
 #include <som/solution_worker.hpp>
 
+//#define REPACKAGE_ARCHIVE
+
 using namespace nda;
 using namespace som;
 using triqs::utility::clock_callback;
@@ -42,8 +44,15 @@ protected:
   using obj_function =
       objective_function<kernel<FermionGf, triqs::mesh::imtime>>;
 
+  constexpr static char arch_open_mode =
+#ifdef REPACKAGE_ARCHIVE
+      'a';
+#else
+      'r';
+#endif
+
 public:
-  solution_worker_test() : arch("solution_worker.ref.h5", 'r') {
+  solution_worker_test() : arch("solution_worker.ref.h5", arch_open_mode) {
 
     h5_read(arch, "beta", beta);
     h5_read(arch, "g_tau", g_tau);
@@ -71,10 +80,14 @@ TEST_F(solution_worker_test, RandomConfig) {
 
   auto solution = worker(10);
 
+#ifdef REPACKAGE_ARCHIVE
+  h5_write(arch, "RandomConfig_output", solution);
+#else
   configuration solution_ref(ci);
   h5_read(arch, "RandomConfig_output", solution_ref);
 
   EXPECT_EQ(solution_ref, solution);
+#endif
 }
 
 TEST_F(solution_worker_test, StartConfig) {
@@ -96,10 +109,14 @@ TEST_F(solution_worker_test, StartConfig) {
 
   auto solution = worker(init_config);
 
+#ifdef REPACKAGE_ARCHIVE
+  h5_write(arch, "StartConfig_output", solution);
+#else
   configuration solution_ref(ci);
   h5_read(arch, "StartConfig_output", solution_ref);
 
   EXPECT_EQ(solution_ref, solution);
+#endif
 }
 
 TEST_F(solution_worker_test, RandomConfig_CC) {
@@ -120,10 +137,14 @@ TEST_F(solution_worker_test, RandomConfig_CC) {
 
   auto solution = worker(10);
 
+#ifdef REPACKAGE_ARCHIVE
+  h5_write(arch, "RandomConfig_output_CC", solution);
+#else
   configuration solution_ref(ci);
   h5_read(arch, "RandomConfig_output_CC", solution_ref);
 
   EXPECT_EQ(solution_ref, solution);
+#endif
 }
 
 TEST_F(solution_worker_test, StartConfig_CC) {
@@ -147,10 +168,14 @@ TEST_F(solution_worker_test, StartConfig_CC) {
 
   auto solution = worker(init_config);
 
+#ifdef REPACKAGE_ARCHIVE
+  h5_write(arch, "StartConfig_output_CC", solution);
+#else
   configuration solution_ref(ci);
   h5_read(arch, "StartConfig_output_CC", solution_ref);
 
   EXPECT_EQ(solution_ref, solution);
+#endif
 }
 
 TEST_F(solution_worker_test, RandomConfig_CC_cov_matrix) {
@@ -175,10 +200,14 @@ TEST_F(solution_worker_test, RandomConfig_CC_cov_matrix) {
 
   auto solution = worker(10);
 
+#ifdef REPACKAGE_ARCHIVE
+  h5_write(arch, "RandomConfig_output_CC_cov_matrix", solution);
+#else
   configuration solution_ref(ci);
   h5_read(arch, "RandomConfig_output_CC_cov_matrix", solution_ref);
 
   EXPECT_EQ(solution_ref, solution);
+#endif
 }
 
 TEST_F(solution_worker_test, StartConfig_CC_cov_matrix) {
@@ -206,8 +235,12 @@ TEST_F(solution_worker_test, StartConfig_CC_cov_matrix) {
 
   auto solution = worker(init_config);
 
+#ifdef REPACKAGE_ARCHIVE
+  h5_write(arch, "StartConfig_output_CC_cov_matrix", solution);
+#else
   configuration solution_ref(ci);
   h5_read(arch, "StartConfig_output_CC_cov_matrix", solution_ref);
 
   EXPECT_EQ(solution_ref, solution);
+#endif
 }
