@@ -105,7 +105,6 @@ som_params['adjust_l'] = False
 som_params['t'] = 100
 som_params['f'] = 100
 som_params['l'] = 25
-som_params['max_rects'] = 60
 som_params['cc_update'] = True
 som_params['cc_update_cycle_length'] = 10
 som_params['make_histograms'] = True

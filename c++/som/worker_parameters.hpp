@@ -69,8 +69,9 @@ struct worker_parameters_t {
   /// type: str
   std::string random_name = "";
 
-  /// Maximum number of rectangles to represent spectra (:math:`K_{max}`).
-  int max_rects = 200;
+  /// Maximum number of rectangles to represent spectra (:math:`K_{max}`),
+  /// should be below 70.
+  int max_rects = 60;
 
   /// Minimal width of a rectangle, in units of the energy window width.
   double min_rect_width = 1e-3;
