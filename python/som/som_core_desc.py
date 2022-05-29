@@ -177,8 +177,8 @@ def add_worker_parameters(conv):
 
     conv.add_member(c_name = "max_rects",
                     c_type = "int",
-                    initializer = """60""",
-                    doc = """Maximum number of rectangles to represent spectra (:math:`K_{max}`), should be below 70.""")
+                    initializer = """200""",
+                    doc = """Maximum number of rectangles to represent spectra (:math:`K_{max}`).""")
 
     conv.add_member(c_name = "min_rect_width",
                     c_type = "double",
@@ -308,7 +308,7 @@ docstring_worker_params_fine = """
 +--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
 | random_name                          | str           | ""                | Name of random number generator (MT19937 by default).                                              |
 +--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
-| max_rects                            | int           | 60                | Maximum number of rectangles in a particular solution (:math:`K_{max}`), should be below 70.       |
+| max_rects                            | int           | 200               | Maximum number of rectangles in a particular solution (:math:`K_{max}`).                           |
 +--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
 | min_rect_width                       | float         | 1e-3              | Minimal width of a rectangle, in units of the energy window width.                                 |
 +--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+

@@ -42,7 +42,7 @@ struct configuration {
   // Rectangles in this configuration
   std::vector<rectangle> rects;
 
-  static const int default_max_rects = 70;
+  static const int default_max_rects = 200;
 
   // Pointer to the associated cache entry (can be null)
   //
