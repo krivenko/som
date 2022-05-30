@@ -7,7 +7,7 @@ http://krivenko.github.io/som/
 
 [CPC paper](https://doi.org/10.1016/j.cpc.2019.01.021) [[arXiv:1808.00603](https://arxiv.org/abs/1808.00603)]
 
-Copyright (C) 2016-2020 Igor Krivenko <igor.s.krivenko @ gmail.com>
+Copyright (C) 2016-2022 Igor Krivenko <igor.s.krivenko @ gmail.com>
 
 This program is an optimized implementation of an analytic continuation
 method proposed by Andrey S. Mishchenko. A detailed description of
