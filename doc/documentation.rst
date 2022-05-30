@@ -17,8 +17,9 @@ Documentation
 
 Running SOM to analytically continue input data requires writing a simple Python script.
 Details of the script will vary depending on the physical quantity to be continued, and
-its representation (function of imaginary time, Matsubara frequencies, or a list of
-the Legendre basis coefficients). Nonetheless, a typical script will the following basic parts.
+on its representation (function of imaginary time, Matsubara frequencies, or a list of
+the Legendre basis coefficients). Nonetheless, a typical script will have the following
+basic parts.
 
 * Import TRIQS and SOM Python modules.
 
@@ -51,7 +52,7 @@ the Legendre basis coefficients). Nonetheless, a typical script will the followi
   For instance, it could be loaded from text files or generated in the very
   same script by a quantum Monte-Carlo impurity solver.
 
-* Construct `Som` object. Here you must specify the kind of the physical
+* Construct a `Som` object. Here you must specify the kind of the physical
   observable in question, or equivalently, the integral kernel in the analytical
   continuation equation.
 
@@ -71,16 +72,16 @@ the Legendre basis coefficients). Nonetheless, a typical script will the followi
   Matsubara formalism but at zero temperature).
   Refer to ':ref:`kernels`' for a detailed description of the implemented observable kinds.
 
-  If target shape of `inp` is bigger than 1x1, SOM will only construct analytical
-  continuation of the diagonal matrix elements.
+  If target shape of `inp` is bigger than 1x1, SOM will construct analytical
+  continuation only of the diagonal matrix elements.
 
   `norms` is an optional one-dimensional NumPy array containing expected norms of the
   spectral functions to be found, one positive real number per one diagonal element of `inp`.
   Instead of setting all elements of `norms` to the same constant `x`, one may simply
   pass `norms = x`.
-  By default all norms are set to 1, which is correct for the Green's functions of
-  the fermions. However, adjustments would normally be needed for self-energies and
-  bosonic correlators/autocorelators.
+  By default all norms are set to 1, which is correct for the fermionic Green's functions.
+  However, adjustments are normally needed for self-energies and
+  bosonic correlators/autocorrelators.
 
 * Set simulation parameters.
 
@@ -120,7 +121,7 @@ the Legendre basis coefficients). Nonetheless, a typical script will the followi
         run_params['f'] = 200
 
         # Number of local updates per global update
-        # Has a similar effect on the algorithm as 'f', and scales linearly too.
+        # Has a similar effect on the algorithm as 'f' and scales linearly too.
         run_params['t'] = 500
 
         # Accumulate histogram of the objective function values,

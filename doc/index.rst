@@ -6,7 +6,7 @@ Stochastic Optimization Method for Analytic Continuation
 The :ref:`TRIQS-based <triqslibs:welcome>` Stochastic Optimization Method for Analytic Continuation allows to solve
 a family of Fredholm integral equations of the first kind. Numerical solution of such equations is
 required to reconstruct the spectral representation of physical observables (Green's functions,
-dynamical susceptibilities) from the noisy results of Quantum Monte Carlo simulations.
+dynamical susceptibilities) from noisy results of Quantum Monte Carlo simulations.
 
 The integral equations have the following general form,
 
@@ -20,8 +20,9 @@ limits of the integral, and the form of the kernel :math:`K(m,\epsilon)` depend 
 :math:`A(\epsilon)` is assumed to be non-negative and normalized to a known constant.
 A full list of supported observables with respective integral kernels is given :ref:`here <kernels>`.
 
-The whole family of equations shares a common property of being *ill-posed problems*;
-tiny variations of the right hand part may result in huge changes of the solution at high energies.
+The family of Fredholm integral equations of the first kind shares a common property of being
+*ill-posed problems*; tiny variations of the right hand part :math:`S(m)` may result in huge
+changes of the solution.
 
 The Stochastic Optimization Method uses Markov chain sampling to minimize an objective function
 
@@ -34,7 +35,7 @@ The Stochastic Optimization Method uses Markov chain sampling to minimize an obj
 One can use a weight factor :math:`S(m)` to stress importance of some data points :math:`G(m)`.
 
 An important feature of the algorithm is a "continuous-energy" representation of the solutions.
-Function :math:`A(\epsilon)` is parametrized as a sum of rectangles with certain positions, widths and
+Function :math:`A(\epsilon)` is parameterized as a sum of rectangles with certain positions, widths and
 heights.
 
 *Despite a number of optimizations, this code is considerably more CPU-intensive than algorithms based

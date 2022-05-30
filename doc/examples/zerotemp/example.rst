@@ -7,7 +7,7 @@ Observable kind: :ref:`ZeroTemp <zerotemp>`.
 
 Formally speaking, the imaginary time segment :math:`\tau\in[0;\beta)`
 turns into an infinite interval as :math:`\beta\to\infty`. Similarly,
-spacing between Matsubara frequencies goes to 0 in that limit, and
+spacing between Matsubara frequencies goes to 0 in this limit, and
 the difference between fermionic and bosonic Matsubaras disappears.
 
 One can still define a correlation function on a finite time mesh

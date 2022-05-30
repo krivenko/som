@@ -9,8 +9,13 @@ to solve the issue please follow these guidelines:
 
 #. In all cases specify which version of the application you are using. You can
    find the version number in the file ``CMakeLists.txt`` at the root of the
-   application sources. It is also reported by CMake early in the configuartion
-   process.
+   application sources. It is also reported by CMake early in the configuration
+   process. If the application is already installed, you can learn its version
+   number by running
+
+   ::
+
+      $ pytriqs -c "from pytriqs.applications.analytical_continuation.som import version; version.show_version()"
 
 #. If you have a problem during the installation, give me information about
    your operating system and the compiler you are using. Include the outputs of

@@ -7,6 +7,9 @@ Supported integral kernels
 
     :math:`\beta` denotes the inverse temperature in all equations below.
 
+.. _modified spherical Bessel function of the first kind:
+    https://mathworld.wolfram.com/ModifiedSphericalBesselFunctionoftheFirstKind.html
+
 .. _fermiongf:
 
 Fermionic thermal Green's function
@@ -14,7 +17,7 @@ Fermionic thermal Green's function
 
 :math:`A(\epsilon) = -(1/\pi)\Im G^\mathrm{ret}(\epsilon)` is the spectral function to be found.
 
-Enabled when `Som()` object is constucted with `kind = "FermionGf"`.
+Enabled when `Som()` object is constructed with `kind = "FermionGf"`.
 
 - In imaginary time, :math:`G(\tau)`
 
@@ -35,7 +38,7 @@ Enabled when `Som()` object is constucted with `kind = "FermionGf"`.
         d\epsilon \frac{\beta\sqrt{2\ell+1}(-\mathrm{sgn}(\epsilon))^\ell i_{\ell}(\beta|\epsilon|/2)}
         {2\cosh(\beta\epsilon/2)} A(\epsilon),
 
-  where :math:`i_\ell(x)` is the modified spherical Bessel function of the first kind.
+  where :math:`i_\ell(x)` is the `modified spherical Bessel function of the first kind`_.
 
 Norm of a solution :math:`A(\epsilon)` is defined as
 
@@ -45,7 +48,7 @@ Norm of a solution :math:`A(\epsilon)` is defined as
 The default value :math:`N=1` can be overridden to perform analytical continuation of related fermionic
 quantities, such as self-energy.
 
-The retared Green's function of a real frequency is reconstructed according to
+The retarded Green's function of a real frequency is reconstructed according to
 
     .. math::
         G^\mathrm{ret}(\epsilon) = -\int\limits_{-\infty}^\infty
@@ -56,7 +59,7 @@ The retared Green's function of a real frequency is reconstructed according to
 Correlator of boson-like operators
 ----------------------------------
 
-Enabled when `Som()` object is constucted with `kind = "BosonCorr"`.
+Enabled when `Som()` object is constructed with `kind = "BosonCorr"`.
 
 :math:`A(\epsilon)` is the spectral function to be found. It is defined differently from the fermionic
 case, namely :math:`A(\epsilon) = \Im\chi(\epsilon)/\epsilon`, where
@@ -85,7 +88,7 @@ case, namely :math:`A(\epsilon) = \Im\chi(\epsilon)/\epsilon`, where
         \frac{\beta\epsilon\sqrt{2\ell+1}(-\mathrm{sgn}(\epsilon))^\ell i_{\ell}(\beta|\epsilon|/2)}
         {2\sinh(\beta\epsilon/2)} A(\epsilon),
 
-    where :math:`i_\ell(x)` is the modified spherical Bessel function of the first kind.
+    where :math:`i_\ell(x)` is the `modified spherical Bessel function of the first kind`_.
 
 Norm of a solution :math:`A(\epsilon)` is defined as
 
@@ -103,7 +106,7 @@ The correlator of a real frequency is reconstructed according to
 Autocorrelator of a boson-like operator
 ---------------------------------------
 
-Enabled when `Som()` object is constucted with `kind = "BosonAutoCorr"`.
+Enabled when `Som()` object is constructed with `kind = "BosonAutoCorr"`.
 
 :math:`A(\epsilon)` is the spectral function to be found. It is defined differently from the fermionic
 case, namely :math:`A(\epsilon) = \Im\chi(\epsilon)/\epsilon`, where
@@ -121,7 +124,7 @@ a Hermitian operator.
 - In imaginary time, :math:`\chi(\tau)`
 
     .. math::
-        \chi(\tau) = \int\limits_{-\infty}^\infty \frac{d\epsilon}{\pi}
+        \chi(\tau) = \int\limits_0^\infty \frac{d\epsilon}{\pi}
         \frac{\epsilon (e^{-\tau\epsilon}+e^{-(\beta-\tau)\epsilon})}
         {1-e^{-\beta\epsilon}} A(\epsilon).
 
@@ -143,7 +146,7 @@ a Hermitian operator.
             0, &\ell\ \mathrm{odd}.
         \end{array}\right.,
 
-    where :math:`i_\ell(x)` is the modified spherical Bessel function of the first kind.
+    where :math:`i_\ell(x)` is the `modified spherical Bessel function of the first kind`_.
 
 Norm of a solution :math:`A(\epsilon)` is defined as
 
@@ -166,7 +169,7 @@ Correlation function at zero temperature
 
 :math:`A(\epsilon) = -(1/\pi)\Im G(\epsilon)` is the spectral function to be found.
 
-Enabled when `Som()` object is constucted with `kind = "ZeroTemp"`.
+Enabled when `Som()` object is constructed with `kind = "ZeroTemp"`.
 
 - In imaginary time, :math:`G(\tau)`, :math:`\tau\in[0;\tau_{max}]`
 

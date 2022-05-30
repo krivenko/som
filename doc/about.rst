@@ -43,7 +43,7 @@ TRIQS
 It is highly recommended to get familiar with basic usage of the TRIQS library,
 before starting to work with this program.
 
-https://triqs.github.io/
+https://triqs.github.io/triqs/1.4/
 
 Here is a simple tutorial showing how to manipulate Green's Function objects of TRIQS
 in Python scripts,
