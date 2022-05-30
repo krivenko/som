@@ -3,13 +3,11 @@ name: CI
 on:
   push:
     branches:
-      - master
+      - 1.x
       - ci
   pull_request:
     branches:
-      - master
-  schedule:
-    - cron:  '0 0 * * 6'
+      - 1.x
 
 jobs:
   build:
@@ -114,9 +112,10 @@ jobs:
         popd
 
     - name: Deploy documentation
-      if: github.ref == 'refs/heads/master' && startsWith(matrix.cxx, 'clang')
+      if: github.ref == 'refs/heads/1.x' && startsWith(matrix.cxx, 'clang')
       uses: JamesIves/github-pages-deploy-action@4.1.0
       with:
-        branch: gh-pages
-        token: ${{ secrets.GITHUB_TOKEN }}
+        repository-name: krivenko/som1
+        branch: main
+        token: ${{ secrets.SOM1_DOCS_DEPLOYMENT_PAT }}
         folder: build/doc/html
