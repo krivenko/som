@@ -19,14 +19,15 @@
 #
 ##############################################################################
 
-from h5 import *
-from triqs.gf import *
+from h5 import HDFArchive
+from triqs.gf import Gf                                             # noqa: F401
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 from triqs.plot.mpl_interface import oplot
 
 arch = HDFArchive('binning.h5', 'r')
 pp = PdfPages('binning.pdf')
+
 
 def plot_binning_nobinning(kind, ylabel):
     g_w = arch[kind]["output"]
@@ -37,8 +38,8 @@ def plot_binning_nobinning(kind, ylabel):
 
     plt.clf()
     oplot(g_w_nobinning[0, 0],
-          name = "without binning, $N_{\\omega} = %d$" % n_w_nobinning)
-    oplot(g_w[0, 0], name = "with binning, $N_{\\omega} = %d$" % n_w)
+          name="without binning, $N_{\\omega} = %d$" % n_w_nobinning)
+    oplot(g_w[0, 0], name="with binning, $N_{\\omega} = %d$" % n_w)
 
     w_mesh = list(map(float, g_w.mesh))
 
@@ -49,6 +50,7 @@ def plot_binning_nobinning(kind, ylabel):
     plt.legend()
 
     pp.savefig(plt.gcf())
+
 
 plot_binning_nobinning("FermionGf", "$G(\\omega)$")
 plot_binning_nobinning("FermionGfSymm", "$G(\\omega)$")

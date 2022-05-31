@@ -24,19 +24,21 @@
 # FermionGf and FermionGfSymm kernels.
 #
 
-import time
 from h5 import HDFArchive
-from triqs.gf import *
-from triqs.gf.descriptors import *
+from triqs.gf import GfImTime, GfReFreq
+from triqs.gf.descriptors import Function
 import triqs.utility.mpi as mpi
 from som import Som, fill_refreq, reconstruct, compute_tail
 from som.version import som_hash
 from scipy.integrate import quad
 import numpy as np
 
+
 def print_master(msg):
-    if mpi.rank == 0: print(msg)
+    if mpi.rank == 0:
+        print(msg)
     mpi.barrier()
+
 
 #
 # Parameters
@@ -50,10 +52,12 @@ n_w = 1001
 tail_max_order = 10
 energy_window = (-5, 5)
 
+
 def g_tau_model_symm(tau):
-    dos = lambda e: np.sqrt(4 - e**2) / (2 * np.pi)
-    kern = lambda e: -np.exp(-tau * e) / (1 + np.exp(-beta*e))
-    return quad(lambda e: dos(e) * kern(e), -2, 2, points = [0])[0]
+    def dos(e): return np.sqrt(4 - e**2) / (2 * np.pi)
+    def kern(e): return -np.exp(-tau * e) / (1 + np.exp(-beta*e))
+    return quad(lambda e: dos(e) * kern(e), -2, 2, points=[0])[0]
+
 
 norms = [1.0]
 
@@ -73,12 +77,13 @@ if mpi.is_master_node():
     arch["som_git_hash"] = som_hash
     arch["run_params"] = run_params
 
+
 def run_som_and_save(kind, g, error_bars, norms, energy_window):
-    cont = Som(g, error_bars, kind = kind, norms = norms)
-    cont.accumulate(energy_window = energy_window, **run_params)
+    cont = Som(g, error_bars, kind=kind, norms=norms)
+    cont.accumulate(energy_window=energy_window, **run_params)
     cont.compute_final_solution()
 
-    g_w = GfReFreq(window = energy_window, n_points = n_w, indices = [0])
+    g_w = GfReFreq(window=energy_window, n_points=n_w, indices=[0])
     fill_refreq(g_w, cont)
 
     g_rec = g.copy()
@@ -95,7 +100,8 @@ def run_som_and_save(kind, g, error_bars, norms, energy_window):
         gr["tail"] = tail
         gr["solutions"] = cont.solutions
 
-g_symm_tau = GfImTime(beta = beta, n_points = n_tau, indices = [0])
+
+g_symm_tau = GfImTime(beta=beta, n_points=n_tau, indices=[0])
 
 g_symm_tau << Function(g_tau_model_symm)
 g_symm_tau.data[:] += abs_error * 2 * (np.random.rand(n_tau, 1, 1) - 0.5)

@@ -19,12 +19,11 @@
 #
 ##############################################################################
 
-from h5 import *
-from triqs.gf import *
+from h5 import HDFArchive
+from triqs.gf import Gf                                             # noqa: F401
 from matplotlib import pyplot as plt
 from triqs.plot.mpl_interface import oplot
 from matplotlib.backends.backend_pdf import PdfPages
-from som import Configuration
 
 arch = HDFArchive('fermiongfsymm.h5', 'r')
 pp = PdfPages('fermiongfsymm.pdf')
@@ -38,10 +37,10 @@ g_rec_tau_symm = arch["FermionGfSymm"]["rec"]
 tail = arch["FermionGf"]["tail"]
 tail_symm = arch["FermionGfSymm"]["tail"]
 
-oplot(g_w[0, 0], mode = 'R', lw = 0.5, label = "FermionGf, Re")
-oplot(g_w[0, 0], mode = 'I', lw = 0.5, label = "FermionGf, Im")
-oplot(g_w_symm[0, 0], mode = 'R', lw = 0.5, label = "FermionGfSymm, Re")
-oplot(g_w_symm[0, 0], mode = 'I', lw = 0.5, label = "FermionGfSymm, Im")
+oplot(g_w[0, 0], mode='R', lw=0.5, label="FermionGf, Re")
+oplot(g_w[0, 0], mode='I', lw=0.5, label="FermionGf, Im")
+oplot(g_w_symm[0, 0], mode='R', lw=0.5, label="FermionGfSymm, Re")
+oplot(g_w_symm[0, 0], mode='I', lw=0.5, label="FermionGfSymm, Im")
 
 w_mesh = list(map(float, g_w.mesh))
 plt.xlim((w_mesh[0], w_mesh[-1]))
@@ -51,18 +50,18 @@ plt.legend()
 pp.savefig(plt.gcf())
 plt.clf()
 
-plt.plot(tail.flatten().real, lw = 0.5, label = "tail coefficients, FermionGf")
-plt.plot(tail_symm.flatten().real, lw = 0.5,
-         label = "tail coefficients, FermionGfSymm")
+plt.plot(tail.flatten().real, lw=0.5, label="tail coefficients, FermionGf")
+plt.plot(tail_symm.flatten().real, lw=0.5,
+         label="tail coefficients, FermionGfSymm")
 plt.xlim((0, len(tail) - 1))
 plt.xlabel("order")
 plt.legend()
 pp.savefig(plt.gcf())
 plt.clf()
 
-oplot(g_tau[0, 0], mode = 'R', lw = 0.5, label = "input")
-oplot(g_rec_tau[0, 0], mode = 'R', lw = 0.5, label = "rec, FermionGf")
-oplot(g_rec_tau_symm[0, 0], mode = 'R', lw = 0.5, label = "rec, FermionGfSymm")
+oplot(g_tau[0, 0], mode='R', lw=0.5, label="input")
+oplot(g_rec_tau[0, 0], mode='R', lw=0.5, label="rec, FermionGf")
+oplot(g_rec_tau_symm[0, 0], mode='R', lw=0.5, label="rec, FermionGfSymm")
 
 tau_mesh = list(map(float, g_tau.mesh))
 plt.xlim((tau_mesh[0], tau_mesh[-1]))

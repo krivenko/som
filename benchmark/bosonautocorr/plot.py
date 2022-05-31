@@ -19,12 +19,11 @@
 #
 ##############################################################################
 
-from h5 import *
-from triqs.gf import *
+from h5 import HDFArchive
+from triqs.gf import Gf                                             # noqa: F401
 from matplotlib import pyplot as plt
 from triqs.plot.mpl_interface import oplot
 from matplotlib.backends.backend_pdf import PdfPages
-from som import Configuration
 
 arch = HDFArchive('bosonautocorr.h5', 'r')
 pp = PdfPages('bosonautocorr.pdf')
@@ -38,10 +37,10 @@ chi_rec_tau_symm = arch["BosonAutoCorr"]["rec"]
 tail = arch["BosonCorr"]["tail"]
 tail_symm = arch["BosonAutoCorr"]["tail"]
 
-oplot(chi_w[0, 0], mode = 'R', lw = 0.5, label = "BosonCorr, Re")
-oplot(chi_w[0, 0], mode = 'I', lw = 0.5, label = "BosonCorr, Im")
-oplot(chi_w_symm[0, 0], mode = 'R', lw = 0.5, label = "BosonAutoCorr, Re")
-oplot(chi_w_symm[0, 0], mode = 'I', lw = 0.5, label = "BosonAutoCorr, Im")
+oplot(chi_w[0, 0], mode='R', lw=0.5, label="BosonCorr, Re")
+oplot(chi_w[0, 0], mode='I', lw=0.5, label="BosonCorr, Im")
+oplot(chi_w_symm[0, 0], mode='R', lw=0.5, label="BosonAutoCorr, Re")
+oplot(chi_w_symm[0, 0], mode='I', lw=0.5, label="BosonAutoCorr, Im")
 
 w_mesh = list(map(float, chi_w.mesh))
 plt.xlim((w_mesh[0], w_mesh[-1]))
@@ -51,18 +50,19 @@ plt.legend()
 pp.savefig(plt.gcf())
 plt.clf()
 
-plt.plot(tail.flatten().real, lw = 0.5, label = "tail coefficients, BosonCorr")
-plt.plot(tail_symm.flatten().real, lw = 0.5,
-         label = "tail coefficients, BosonAutoCorr")
+plt.plot(tail.flatten().real, lw=0.5, label="tail coefficients, BosonCorr")
+plt.plot(tail_symm.flatten().real,
+         lw=0.5,
+         label="tail coefficients, BosonAutoCorr")
 plt.xlim((0, len(tail) - 1))
 plt.xlabel("order")
 plt.legend()
 pp.savefig(plt.gcf())
 plt.clf()
 
-oplot(chi_tau[0, 0], mode = 'R', lw = 0.5, label = "input")
-oplot(chi_rec_tau[0, 0], mode = 'R', lw = 0.5, label = "rec, BosonCorr")
-oplot(chi_rec_tau_symm[0, 0], mode = 'R', lw = 0.5, label = "rec, BosonAutoCorr")
+oplot(chi_tau[0, 0], mode='R', lw=0.5, label="input")
+oplot(chi_rec_tau[0, 0], mode='R', lw=0.5, label="rec, BosonCorr")
+oplot(chi_rec_tau_symm[0, 0], mode='R', lw=0.5, label="rec, BosonAutoCorr")
 
 tau_mesh = list(map(float, chi_tau.mesh))
 plt.xlim((tau_mesh[0], tau_mesh[-1]))

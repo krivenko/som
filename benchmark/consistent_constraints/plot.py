@@ -1,6 +1,27 @@
+##############################################################################
+#
+# SOM: Stochastic Optimization Method for Analytic Continuation
+#
+# Copyright (C) 2016-2022 Igor Krivenko <igor.s.krivenko@gmail.com>
+#
+# SOM is free software: you can redistribute it and/or modify it under the
+# terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# SOM is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# SOM. If not, see <http://www.gnu.org/licenses/>.
+#
+##############################################################################
+
 from h5 import HDFArchive
-from triqs.gf import *
-from triqs.gf.descriptors import *
+from triqs.gf import Gf                                             # noqa: F401
+from triqs.gf.descriptors import SemiCircular
 from triqs.plot.mpl_interface import oplot
 from matplotlib import pyplot as plt
 from matplotlib.colors import LogNorm
@@ -23,12 +44,12 @@ fig.suptitle("Spectral functions")
 # Plot referenced spectral function
 g_w_ref = arch['cc_update_off']['som_output']['g_w'].copy()
 g_w_ref << SemiCircular(D)
-oplot(g_w_ref, mode = 'S', lw = 1.0, label = "Reference")
+oplot(g_w_ref, mode='S', lw=1.0, label="Reference")
 
 # Plot default model
 w = np.array([float(w) for w in g_w_ref.mesh])
 default_model = arch['cc_update_off']['socc_output']['params']['default_model']
-plt.plot(w, default_model, lw = 0.5, ls = "--", label = "SOCC default model")
+plt.plot(w, default_model, lw=0.5, ls="--", label="SOCC default model")
 
 for cc_update_gr_name in ('cc_update_off', 'cc_update_on'):
     gr = arch[cc_update_gr_name]
@@ -42,12 +63,16 @@ for cc_update_gr_name in ('cc_update_off', 'cc_update_on'):
     cc_label = "CC+" if cc_update_gr_name == 'cc_update_on' else ''
 
     # Plot SOM spectral function
-    oplot(g_w_som, mode = 'S', lw = 0.5,
-          label = f"%sSOM, $\\chi^2=%f$" % (cc_label, chi_som))
+    oplot(g_w_som,
+          mode='S',
+          lw=0.5,
+          label="%sSOM, $\\chi^2=%f$" % (cc_label, chi_som))
 
     # Plot SOCC spectral function
-    oplot(g_w_socc, mode = 'S', lw = 0.5,
-          label = f"%sSOCC, $\\chi^2=%f$" % (cc_label, chi_socc))
+    oplot(g_w_socc,
+          mode='S',
+          lw=0.5,
+          label="%sSOCC, $\\chi^2=%f$" % (cc_label, chi_socc))
 
 plt.xlim(energy_window)
 plt.xlabel(r"$\omega$")
@@ -82,67 +107,71 @@ for cc_update_gr_name in ('cc_update_off', 'cc_update_on'):
         B_k[:, i] = it['B_k']
 
     # Amplitude regularization parameters
-    fig, axes = plt.subplots(1, 2, sharey = 'row')
+    fig, axes = plt.subplots(1, 2, sharey='row')
     fig.suptitle("Convergence of SOCC amplitude regularization parameters,\n%s"
                  % cc_update_tile)
 
-    A_k_image = axes[0].imshow(A_k, extent = (0, N_iter, w[-1], w[0]))
+    A_k_image = axes[0].imshow(A_k, extent=(0, N_iter, w[-1], w[0]))
     axes[0].set_title("$A_k$")
     axes[0].set_xlabel("# iteration")
     axes[0].set_ylabel(r"$\omega_k$")
     plt.colorbar(A_k_image, ax=axes[0], orientation='horizontal')
 
-    Q_k_image = axes[1].imshow(Q_k, extent = (0, N_iter, w[-1], w[0]))
+    Q_k_image = axes[1].imshow(Q_k, extent=(0, N_iter, w[-1], w[0]))
     axes[1].set_title("$Q_k$")
     axes[1].set_xlabel("# iteration")
     axes[1].set_ylabel(r"$\omega_k$")
-    plt.colorbar(Q_k_image, ax=axes[1],
-                orientation='horizontal',
-                norm=LogNorm(vmin=Q_k.min(), vmax=Q_k.max()))
+    plt.colorbar(Q_k_image,
+                 ax=axes[1],
+                 orientation='horizontal',
+                 norm=LogNorm(vmin=Q_k.min(), vmax=Q_k.max()))
 
     pp.savefig(fig)
 
     # Derivative regularization parameters
 
-    fig, axes = plt.subplots(1, 2, sharey = 'row')
+    fig, axes = plt.subplots(1, 2, sharey='row')
     fig.suptitle("Convergence of SOCC derivative regularization parameters,\n%s"
                  % cc_update_tile)
 
-    Ap_k_image = axes[0].imshow(Ap_k, extent = (0, N_iter, w[-1], w[1]))
+    Ap_k_image = axes[0].imshow(Ap_k, extent=(0, N_iter, w[-1], w[1]))
     axes[0].set_title("$A'_k$")
     axes[0].set_xlabel("# iteration")
     axes[0].set_ylabel(r"$\omega_k$")
     plt.colorbar(Ap_k_image, ax=axes[0], orientation='horizontal')
 
-    D_k_image = axes[1].imshow(D_k, extent = (0, N_iter, w[-1], w[1]))
+    D_k_image = axes[1].imshow(D_k, extent=(0, N_iter, w[-1], w[1]))
     axes[1].set_title("$D_k$")
     axes[1].set_xlabel("# iteration")
     axes[1].set_ylabel(r"$\omega_k$")
-    plt.colorbar(D_k_image, ax=axes[1],
-                orientation='horizontal',
-                norm=LogNorm(vmin=D_k.min(), vmax=D_k.max()))
+    plt.colorbar(D_k_image,
+                 ax=axes[1],
+                 orientation='horizontal',
+                 norm=LogNorm(vmin=D_k.min(), vmax=D_k.max()))
 
     pp.savefig(fig)
 
     # Second derivative regularization parameters
 
-    fig, axes = plt.subplots(1, 2, sharey = 'row')
-    fig.suptitle("Convergence of SOCC second derivative regularization parameters,\n%s"
-                 % cc_update_tile)
+    fig, axes = plt.subplots(1, 2, sharey='row')
+    fig.suptitle(
+        "Convergence of SOCC second derivative regularization parameters,\n%s"
+        % cc_update_tile)
 
-    App_k_image = axes[0].imshow(App_k, extent = (0, N_iter, w[-2], w[1]))
+    App_k_image = axes[0].imshow(App_k, extent=(0, N_iter, w[-2], w[1]))
     axes[0].set_title("$A''_k$")
     axes[0].set_xlabel("# iteration")
     axes[0].set_ylabel(r"$\omega_k$")
     plt.colorbar(App_k_image, ax=axes[0], orientation='horizontal')
 
-    B_k_image = axes[1].imshow(B_k, extent = (0, N_iter, w[-2], w[1]))
+    B_k_image = axes[1].imshow(B_k, extent=(0, N_iter, w[-2], w[1]))
     axes[1].set_title("$D_k$")
     axes[1].set_xlabel("# iteration")
     axes[1].set_ylabel(r"$\omega_k$")
-    plt.colorbar(B_k_image, ax=axes[1],
-                orientation='horizontal',
-                norm=LogNorm(vmin=B_k.min(), vmax=B_k.max()))
+    plt.colorbar(B_k_image,
+                 ax=axes[1],
+                 orientation='horizontal',
+                 norm=LogNorm(vmin=B_k.min(), vmax=B_k.max()))
 
     pp.savefig(fig)
 

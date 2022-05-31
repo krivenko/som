@@ -1,7 +1,28 @@
+##############################################################################
+#
+# SOM: Stochastic Optimization Method for Analytic Continuation
+#
+# Copyright (C) 2016-2022 Igor Krivenko <igor.s.krivenko@gmail.com>
+#
+# SOM is free software: you can redistribute it and/or modify it under the
+# terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# SOM is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# SOM. If not, see <http://www.gnu.org/licenses/>.
+#
+##############################################################################
+
 import numpy as np
 from h5 import HDFArchive
-from triqs.gf import *
-from triqs.gf.descriptors import *
+from triqs.gf import GfImFreq, MeshReFreq, GfReFreq
+from triqs.gf.descriptors import SemiCircular
 import triqs.utility.mpi as mpi
 from som import Som, fill_refreq, compute_tail, reconstruct
 import time
@@ -21,7 +42,7 @@ abs_error = 0.001
 energy_window = (-5, 5)
 refreq_mesh = MeshReFreq(*energy_window, n_w)
 
-accumulate_params = {'energy_window' : energy_window}
+accumulate_params = {'energy_window': energy_window}
 accumulate_params['verbosity'] = 2
 accumulate_params['adjust_l'] = False
 accumulate_params['t'] = 200
@@ -38,6 +59,7 @@ good_chi_abs = np.inf
 
 cfs_cc_iterations = []
 
+
 # Monitoring function for compute_final_solution_cc()
 def monitor_f(c, AQ, ApD, AppB):
     if mpi.rank == 0:
@@ -53,9 +75,10 @@ def monitor_f(c, AQ, ApD, AppB):
                                   'B_k': B_k})
     return False
 
-cfs_cc_params = {'refreq_mesh' : refreq_mesh,
-                 'good_chi_rel' : good_chi_rel,
-                 'good_chi_abs' : good_chi_abs}
+
+cfs_cc_params = {'refreq_mesh': refreq_mesh,
+                 'good_chi_rel': good_chi_rel,
+                 'good_chi_abs': good_chi_abs}
 cfs_cc_params['verbosity'] = 2
 cfs_cc_params['max_iter'] = 100
 cfs_cc_params['ew_penalty_coeff'] = 1
@@ -72,28 +95,32 @@ default_model = np.exp(-(w ** 2) / (2 * (D/2)**2)) / np.sqrt(2*np.pi*(D/2)**2)
 cfs_cc_params['default_model'] = default_model
 cfs_cc_params['default_model_weights'] = 1e-4 * np.ones(n_w)
 
+
 def print_master(msg):
-    if mpi.rank == 0: print(msg)
+    if mpi.rank == 0:
+        print(msg)
     mpi.barrier()
+
 
 def make_output(cont):
     g_iw_rec = g_iw.copy()
     reconstruct(g_iw_rec, cont)
 
-    g_w = GfReFreq(window = energy_window, n_points = n_w, indices = indices)
+    g_w = GfReFreq(window=energy_window, n_points=n_w, indices=indices)
     fill_refreq(g_w, cont)
 
     g_tail = compute_tail(tail_max_order, cont)
 
-    return {'g_iw_rec' : g_iw_rec, 'g_w' : g_w, 'g_tail' : g_tail}
+    return {'g_iw_rec': g_iw_rec, 'g_w': g_w, 'g_tail': g_tail}
+
 
 print_master("--- Prepare input ---")
-g_iw  = GfImFreq(beta = beta, n_points = n_iw, indices = indices)
+g_iw = GfImFreq(beta=beta, n_points=n_iw, indices=indices)
 g_iw << SemiCircular(D)
 
 prng = np.random.RandomState(123456789)
 g_iw.data[:] += abs_error * 2*(prng.rand(*g_iw.data.shape) - 0.5)
-g_iw.data[:] = 0.5*(g_iw.data[:,:,:] + np.conj(g_iw.data[::-1,:,:]))
+g_iw.data[:] = 0.5*(g_iw.data[:, :, :] + np.conj(g_iw.data[::-1, :, :]))
 
 error_bars_iw = g_iw.copy()
 error_bars_iw.data[:] = abs_error
@@ -147,8 +174,8 @@ if mpi.is_master_node():
         # SOM output
         gr.create_group('som_output')
         som_output_gr = gr['som_output']
-        som_output_gr['params'] = {'good_chi_rel' : good_chi_rel,
-                                   'good_chi_abs' : good_chi_abs}
+        som_output_gr['params'] = {'good_chi_rel': good_chi_rel,
+                                   'good_chi_abs': good_chi_abs}
         som_output_gr['chi2'] = chi2
         som_output_gr['elapsed_time'] = cfs_time
         som_output_gr['g_iw_rec'] = som_output['g_iw_rec']
@@ -207,8 +234,8 @@ if mpi.is_master_node():
         # SOM output
         gr.create_group('som_output')
         som_output_gr = gr['som_output']
-        som_output_gr['params'] = {'good_chi_rel' : good_chi_rel,
-                                   'good_chi_abs' : good_chi_abs}
+        som_output_gr['params'] = {'good_chi_rel': good_chi_rel,
+                                   'good_chi_abs': good_chi_abs}
         som_output_gr['chi2'] = chi2
         som_output_gr['elapsed_time'] = cfs_time
         som_output_gr['g_iw_rec'] = som_output['g_iw_rec']
