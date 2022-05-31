@@ -19,12 +19,12 @@
 #
 ##############################################################################
 
-from cpp2py.wrap_generator import *
+from cpp2py.wrap_generator import module_
 
 # The module
-module = module_(full_name = "spectral_stats",
-                 doc = r"Statistical analysis of noisy spectral functions",
-                 app_name = "som")
+module = module_(full_name="spectral_stats",
+                 doc=r"Statistical analysis of noisy spectral functions",
+                 app_name="som")
 
 # Imports
 module.add_imports('som')
@@ -51,14 +51,14 @@ module.add_enum("resolution_function",
 #
 
 module.add_function("double spectral_integral(double z_m, double delta_m, configuration c, resolution_function r_func)",
-                    doc = r"""Spectral integral :math:`i_m^{(j)} = \int_{-\infty}^\infty dz \bar K(m, z) A^{(j)}(z)`.""")
+                    doc=r"""Spectral integral :math:`i_m^{(j)} = \int_{-\infty}^\infty dz \bar K(m, z) A^{(j)}(z)`.""")
 
 module.add_function("vector<double> spectral_integral(triqs::mesh::refreq mesh, configuration c, resolution_function r_func)",
-                    doc = r"""Spectral integrals :math:`i_m^{(j)} = \int_{-\infty}^\infty dz \bar K(m, z) A^{(j)}(z)`\
+                    doc=r"""Spectral integrals :math:`i_m^{(j)} = \int_{-\infty}^\infty dz \bar K(m, z) A^{(j)}(z)`\
 parametrized by real energy points from a regular mesh.""")
 
 module.add_function("vector<double> spectral_integral(std::vector<std::pair<double, double>> intervals, configuration c, resolution_function r_func)",
-                    doc = r"""Spectral integrals :math:`i_m^{(j)} = \int_{-\infty}^\infty dz \bar K(m, z) A^{(j)}(z)`
+                    doc=r"""Spectral integrals :math:`i_m^{(j)} = \int_{-\infty}^\infty dz \bar K(m, z) A^{(j)}(z)`
 parametrized by a list of real energy intervals.""")
 
 #
@@ -66,11 +66,11 @@ parametrized by a list of real energy intervals.""")
 #
 
 module.add_function("vector<double> spectral_avg(som_core cont, long i, triqs::mesh::refreq mesh, resolution_function r_func)",
-                    doc = r"""Compute spectral averages :math:`i_m = J^{-1} \sum_{j=1}^J i_m^{(j)}`
+                    doc=r"""Compute spectral averages :math:`i_m = J^{-1} \sum_{j=1}^J i_m^{(j)}`
 parametrized by real energy points from a regular mesh.""")
 
 module.add_function("vector<double> spectral_avg(som_core cont, long i, std::vector<std::pair<double, double>> intervals, resolution_function r_func)",
-                    doc = r"""Compute spectral averages :math:`i_m = J^{-1} \sum_{j=1}^J i_m^{(j)}`
+                    doc=r"""Compute spectral averages :math:`i_m = J^{-1} \sum_{j=1}^J i_m^{(j)}`
 parametrized by a list of real energy intervals.""")
 
 #
@@ -78,11 +78,11 @@ parametrized by a list of real energy intervals.""")
 #
 
 module.add_function("vector<double> spectral_disp(som_core cont, long i, triqs::mesh::refreq mesh, vector<double> avg, resolution_function r_func)",
-                    doc = r"""Compute spectral dispersions :math:`\sigma^2_m = J^{-1} \sum_{j=1}^J (i_m^{(j)} - i_m)^2`
+                    doc=r"""Compute spectral dispersions :math:`\sigma^2_m = J^{-1} \sum_{j=1}^J (i_m^{(j)} - i_m)^2`
 parametrized by real energy points from a regular mesh.""")
 
 module.add_function("vector<double> spectral_disp(som_core cont, long i, std::vector<std::pair<double, double>> intervals, vector<double> avg, resolution_function r_func)",
-                    doc = r"""Compute spectral dispersions :math:`\sigma^2_m = J^{-1} \sum_{j=1}^J (i_m^{(j)} - i_m)^2`
+                    doc=r"""Compute spectral dispersions :math:`\sigma^2_m = J^{-1} \sum_{j=1}^J (i_m^{(j)} - i_m)^2`
 parametrized by a list of real energy intervals.""")
 
 #
@@ -90,11 +90,11 @@ parametrized by a list of real energy intervals.""")
 #
 
 module.add_function("matrix<double> spectral_corr(som_core cont, long i, triqs::mesh::refreq mesh, vector<double> avg, resolution_function r_func)",
-                    doc = r"""Compute spectral correlators :math:`\sigma_{mm'} = J^{-1} \sum_{j=1}^J (i_m^{(j)} - i_m) (i_{m'}^{(j)} - i_{m'})`
+                    doc=r"""Compute spectral correlators :math:`\sigma_{mm'} = J^{-1} \sum_{j=1}^J (i_m^{(j)} - i_m) (i_{m'}^{(j)} - i_{m'})`
 parametrized by real energy points from a regular mesh.""")
 
 module.add_function("matrix<double> spectral_corr(som_core cont, long i, std::vector<std::pair<double, double>> intervals, vector<double> avg, resolution_function r_func)",
-                    doc = r"""Compute spectral correlators :math:`\sigma_{mm'} = J^{-1} \sum_{j=1}^J (i_m^{(j)} - i_m) (i_{m'}^{(j)} - i_{m'})`
+                    doc=r"""Compute spectral correlators :math:`\sigma_{mm'} = J^{-1} \sum_{j=1}^J (i_m^{(j)} - i_m) (i_{m'}^{(j)} - i_{m'})`
 parametrized by a list of real energy intervals.""")
 
 module.generate_code()

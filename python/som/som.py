@@ -54,12 +54,12 @@ class Som(SomCore):
 
         # First, try to construct with the covariance matrices
         if isinstance(errors, Gf) \
-            and errors.rank == 2 and errors.target_rank == 1:
+                and errors.rank == 2 and errors.target_rank == 1:
 
             if filtration_levels is None:
                 fl = np.array([])
             elif isinstance(filtration_levels, float) or \
-               isinstance(filtration_levels, int):
+                    isinstance(filtration_levels, int):
                 fl = filtration_levels * np.ones(g.target_shape[0])
             else:
                 fl = np.array(filtration_levels)
@@ -68,7 +68,7 @@ class Som(SomCore):
 
         # Then try the error bars
         elif isinstance(errors, Gf) \
-            and errors.rank == 1 and errors.target_rank == 2:
+                and errors.rank == 1 and errors.target_rank == 2:
 
             if filtration_levels is not None:
                 raise RuntimeError(
@@ -80,6 +80,7 @@ class Som(SomCore):
         # Give up
         else:
             raise RuntimeError("Argument 'errors' has unsupported format")
+
 
 def count_good_solutions(hist, upper_lim=1):
     r"""
