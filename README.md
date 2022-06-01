@@ -1,59 +1,56 @@
-SOM: Stochastic Optimization Method for Analytic Continuation
-=============================================================
+TRIQS/SOM: Stochastic Optimization Method for Analytic Continuation
+===================================================================
 
-[![CI](https://github.com/krivenko/som/actions/workflows/CI.yml/badge.svg)](https://github.com/krivenko/som/actions/workflows/CI.yml)
-
-http://krivenko.github.io/som/
-
-[CPC paper](https://doi.org/10.1016/j.cpc.2019.01.021) [[arXiv:1808.00603](https://arxiv.org/abs/1808.00603)]
+[![CI](https://github.com/krivenko/som/actions/workflows/CI.yml/badge.svg)](
+https://github.com/krivenko/som/actions/workflows/CI.yml)
+[![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-red)](
+https://krivenko.github.io/som)
 
 Copyright (C) 2016-2022 Igor Krivenko <igor.s.krivenko @ gmail.com>
 
 This program is an optimized implementation of an analytic continuation
 method proposed by Andrey S. Mishchenko. A detailed description of
-the method can be found under
-http://www.cond-mat.de/events/correl12/manuscripts/mishchenko.pdf
+the method can be found in
+<http://www.cond-mat.de/events/correl12/manuscripts/mishchenko.pdf>.
 
-This project uses the TRIQS library version 2.2.x (SOM versions prior to 2.0 were based on TRIQS 1.4.2).
-The TRIQS website is under https://triqs.github.io/triqs/.
+SOM 2.x offers new features, including the more advanced SOCC ([stochastic
+optimization with consistent constraints](
+https://doi.org/10.1103/PhysRevB.95.014102)) analytic continuation protocol.
+
+SOM uses the TRIQS library version 3.1.x (SOM versions 1.x were based on
+TRIQS 1.4.2). The TRIQS website is under <https://triqs.github.io/triqs/>.
 Start there to learn about TRIQS.
+
+A legacy documentation web-site for SOM 1.x is still available at
+<https://krivenko.github.io/som1>.
 
 Installation
 ------------
 
-Please, refer to http://krivenko.github.io/som/install.html or `doc/install.rst`
-in the source code tree for installation instructions.
+Please, refer to <http://krivenko.github.io/som/install.html> or
+`doc/install.rst` in the source code tree for installation instructions.
 
-Source directory structure
---------------------------
+Citing
+------
 
- * `benchmark` - sets of Python scripts used to benchmark SOM's performance
-   * `all_kernels` - analytic continuation problems with all implemented integral kernels
-   * `microgap` - analytic continuation of a model spectrum with a very narrow gap
-   * `semicircle` - analytic continuation of a semi-elliptic spectral function
-   * `triangles` - analytic continuation of a spectrum made of two triangles
- * `c++` - main directory with C++ source files
-   * `kernels` - C++ header files implementing individual integral kernels
-   * `numerics` - C++ classes/routines for numerical algorithms (splines, Simpson's rule, dilogarithm function, etc)
- * `CHANGELOG.md` -  a brief list of changes between released versions
- * `cmake` - auxiliary files used by CMake to build application
- * `CMakeLists.txt` - main CMake configuration script
- * `LICENSE.txt` - text of the GNU General Public License
- * `python` - script files used by TRIQS Python wrapping tool to build the Python module of SOM
- * `test` - source code of unit tests executed by `make test`
-   * `c++` - C++ unit tests
-   * `CMakeLists.txt` - CMake configuration file for running unit tests
- * `doc` - documentation
-   * `CMakeLists.txt` - CMake configuration file for building HTML documentation
-   * `examples` - usage examples
-   * `_static` - images used to build the HTML docs
-   * `_templates` - auxiliary files used to build the HTML docs
-   * `conf.py.in` - configuration file for Sphinx documentation generator
-   * `notes` - LaTeX sources of implementation notes and Mathematica notebooks
- * `README.md` - this file
- * `.clang-format` - style file for clang-format utility
- * `.clang-tidy` - configuration file for clang-tidy 'linter' tool
- * `.travis.yml` - configuration file for Travis CI continuous integration service
+[Accompanying Computer Physics Communications paper](
+https://doi.org/10.1016/j.cpc.2019.01.021)
+[[arXiv:1808.00603](https://arxiv.org/abs/1808.00603)]
+
+```BibTeX
+@article{SOM,
+    title = {{TRIQS/SOM: Implementation of the stochastic optimization method
+              for analytic continuation}},
+    author = {Igor Krivenko and Malte Harland},
+    journal = {Computer Physics Communications},
+    volume = {239},
+    pages = {166-183},
+    year = {2019},
+    issn = {0010-4655},
+    doi = {https://doi.org/10.1016/j.cpc.2019.01.021},
+    url = {https://www.sciencedirect.com/science/article/pii/S0010465519300402}
+}
+```
 
 License
 -------
