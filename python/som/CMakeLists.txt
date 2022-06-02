@@ -36,7 +36,8 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/version.py
         DESTINATION ${PYTHON_LIB_DEST})
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         DESTINATION ${TRIQS_PYTHON_LIB_DEST_ROOT}
-        FILES_MATCHING PATTERN "*.py" PATTERN "*_desc.py" EXCLUDE)
+        FILES_MATCHING PATTERN "*.py" PATTERN "*_desc.py" EXCLUDE
+        PATTERN "CMakeFiles" EXCLUDE)
 
 # Build and install any python modules
 foreach(gen ${wrap_generators})
