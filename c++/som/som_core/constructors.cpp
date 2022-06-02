@@ -117,7 +117,7 @@ som_core::data_t::data_t(
     double norm,
     double filtration_level)
    : rhs(input_data_t<Mesh>(mesh.size()))
-   , errors(cov_matrix_t<Mesh>({(long)mesh.size(), (long)mesh.size()}))
+   , errors(cov_matrix_t<Mesh>((long)mesh.size(), (long)mesh.size()))
    , filtration_level(filtration_level)
    , norm(norm)
    , final_solution(ci) {

@@ -490,6 +490,6 @@ double update_consistent_constraints<KernelType>::get_acceptance_rate() const {
   return double(n_accepted) / double(n_proposed);
 }
 
-INSTANTIATE_CLASS_FOR_EACH_KERNEL(update_consistent_constraints);
+INSTANTIATE_CLASS_FOR_EACH_KERNEL(update_consistent_constraints)
 
 } // namespace som

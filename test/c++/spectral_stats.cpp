@@ -41,7 +41,8 @@ int main(int argc, char **argv) {
     return RUN_ALL_TESTS();
 }
 
-class ::testing::spectral_stats_test : public ::testing::Test {
+namespace testing {
+class spectral_stats_test : public ::testing::Test {
 protected:
   som_core cont;
   triqs::mesh::refreq mesh = {-5.0, 5.0, 5};
@@ -63,6 +64,7 @@ protected:
         {configuration{{0.2, 1, 2}, {-0.8, 4, 1}, {-2.8, 2, 3}}, 0}};
   }
 };
+}
 
 using namespace testing;
 

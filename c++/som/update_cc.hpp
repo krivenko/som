@@ -171,6 +171,6 @@ public:
   double get_acceptance_rate() const;
 };
 
-EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL(update_consistent_constraints);
+EXTERN_TEMPLATE_CLASS_FOR_EACH_KERNEL(update_consistent_constraints)
 
 } // namespace som
