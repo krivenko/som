@@ -2,8 +2,8 @@
 
 .. highlight:: bash
 
-Compiling SOM from source
-=========================
+Installation
+============
 
 Prerequisite
 -------------------

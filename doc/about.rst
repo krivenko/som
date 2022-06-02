@@ -1,7 +1,10 @@
 .. _about:
 
+About SOM
+=========
+
 Authors
-=======
+-------
 
 This analytic continuation program is written by Igor Krivenko (`accompanying paper <https://doi.org/10.1016/j.cpc.2019.01.021>`_,
 `arXiv:1808.00603 <https://arxiv.org/abs/1808.00603>`_).
@@ -26,7 +29,7 @@ The Lecture Notes are available free of charge online,
     http://www.cond-mat.de/events/correl12/manuscripts/
 
 Acknowledgements
-================
+----------------
 
 I am very grateful to Malte Harland for extensive and thorough testing of the code
 at late development stages.
@@ -38,7 +41,7 @@ run on the JURECA HPC machine of the Forschungszentrum Jülich
 (project "Continuous Time Quantum Monte Carlo for materials").
 
 TRIQS
-=====
+-----
 
 It is highly recommended to get familiar with basic usage of the TRIQS library,
 before starting to work with this program.
@@ -51,17 +54,17 @@ in Python scripts,
 https://triqs.github.io/triqs/2.2.x/userguide/gfs/gfs_tutorial_python.html
 
 License
-=======
+-------
 
 The SOM program is published under the `GNU General Public License, version 3
 <http://www.gnu.org/licenses/gpl.html>`_.
 
 Note that it *implies* that applications using SOM must also be GPL.
 
-Disclaimer
-==========
+Usage disclaimer
+----------------
 
 The program is provided as is, i.e. WITHOUT ANY WARRANTY of any kind, as
-stated in the license.  In particular, its authors and contributors will take
-no responsability for any possible bugs or any improper use of these programs,
+stated in the license. In particular, its authors and contributors will take
+no responsibility for any possible bugs or any improper use of these programs,
 including those resulting in incorrect scientific publications.
