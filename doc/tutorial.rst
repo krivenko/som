@@ -1,19 +1,17 @@
-.. module:: som
+.. _tutorial:
 
-.. _documentation:
+Tutorial
+========
 
-Documentation
-=============
-
-.. toctree::
-   :maxdepth: 1
-
-   kernels
-   parameters
-   examples/fermiongf/example
-   examples/bosoncorr/example
-   examples/bosonautocorr/example
-   examples/zerotemp/example
+.. .. toctree::
+..    :maxdepth: 1
+..
+..    kernels
+..    parameters
+..    examples/fermiongf/example
+..    examples/bosoncorr/example
+..    examples/bosonautocorr/example
+..    examples/zerotemp/example
 
 Running SOM to analytically continue input data requires writing a simple Python script.
 Details of the script will vary depending on the physical quantity to be continued, and
@@ -183,4 +181,3 @@ Legendre basis coefficients). Nonetheless, a typical script will the following b
                 ar['histograms'] = cont.histograms
 
 There are a few :ref:`examples <documentation>` explaining how to run SOM for specific observable kinds.
-

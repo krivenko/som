@@ -1,0 +1,4 @@
+.. _basic:
+
+Basic notions
+=============

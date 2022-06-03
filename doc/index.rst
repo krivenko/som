@@ -69,9 +69,16 @@ protocol proposed in [GMPPS2017]_.
     :hidden:
 
     install
+    tutorial
+    guide/index
+    examples
+    reference
+    script_porting
     issues
-    ChangeLog.md
     about
+    ChangeLog.md
+    genindex
+    search
 
 .. [MPSS2000]
    | "Diagrammatic quantum Monte Carlo study of the Fröhlich polaron",
