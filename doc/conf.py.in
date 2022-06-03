@@ -87,10 +87,36 @@ python_version = f"{sys.version_info[0]}.{sys.version_info[1]}"
 triqs_version = "@TRIQS_VERSION@".split('.')
 triqs_branch = f"{triqs_version[0]}.{triqs_version[1]}.x"
 
+rst_epilog = f"""
+.. |triqs_branch| replace:: {triqs_branch}
+"""
+
 intersphinx_mapping = {
   'python': (f"https://docs.python.org/{python_version}", None),
   'triqslibs': (f"https://triqs.github.io/triqs/{triqs_branch}", None)
 }
+
+# Substitutions inside code blocks
+# https://github.com/sphinx-doc/sphinx/issues/2793#issuecomment-437969830
+
+from sphinx.directives.code import CodeBlock
+
+class SubstitutionCodeBlock(CodeBlock):  # type: ignore
+    def run(self):
+        app = self.state.document.settings.env.app
+        new_content = []
+        self.content = self.content
+        existing_content = self.content
+        for item in existing_content:
+            for pair in app.config.substitutions:
+                original, replacement = pair
+                item = item.replace(original, replacement)
+            new_content.append(item)
+
+        self.content = new_content
+        return list(CodeBlock.run(self))
+
+substitutions = [('|som_version|', version)]
 
 # Open links in new tab instead of same window
 from sphinx.writers.html import HTMLTranslator
@@ -133,4 +159,7 @@ class PatchedHTMLTranslator(HTMLTranslator):
                              '.'.join(map(str, node['secnumber'])))
 
 def setup(app):
+    app.add_config_value('substitutions', [], 'html')
+    app.add_directive('substitution-code-block', SubstitutionCodeBlock)
+
     app.set_translator('html', PatchedHTMLTranslator)
