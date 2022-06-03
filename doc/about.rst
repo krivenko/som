@@ -3,6 +3,8 @@
 About SOM
 =========
 
+.. highlight:: none
+
 Authors
 -------
 
@@ -14,7 +16,6 @@ It is based on a method devised by Andrey S. Mishchenko and coauthors [#SOM]_.
 You can find a detailed description of the method in Chapter 14 of the Lecture
 Notes from the Autumn School "Correlated Electrons: From Models to Materials".
 
-.. highlight:: none
 ::
 
     Eva Pavarini, Erik Koch, Frithjof Anders, and Mark Jarrell (eds.)
