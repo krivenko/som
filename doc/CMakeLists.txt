@@ -43,6 +43,12 @@ add_custom_command(
           ${CMAKE_CURRENT_SOURCE_DIR} html
 )
 
+# Autodoc usage requires the python modules to be built first
+get_property(CPP2PY_MODULES_LIST GLOBAL PROPERTY CPP2PY_MODULES_LIST)
+if(CPP2PY_MODULES_LIST)
+  add_dependencies(${PROJECT_NAME}_docs_sphinx ${CPP2PY_MODULES_LIST})
+endif()
+
 # ---------------------------------
 # Install
 # ---------------------------------
