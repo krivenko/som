@@ -82,11 +82,14 @@ class Som(SomCore):
             raise RuntimeError("Argument 'errors' has unsupported format")
 
 
-def count_good_solutions(hist, upper_lim=1):
+def count_good_solutions(hist, good_chi_rel=2.0, good_chi_abs=np.inf):
     r"""
-    Given a histogram of \chi-values,
-    count the number of solutions with \chi/\chi_{min} <= 1 + upper_lim
+    Given a histogram of values :math:`\chi` for the objective function
+    :math:`\chi^2`, count the number of solutions such that
+    :math:`\chi \leq \mathtt{good_chi_abs}` and
+    :math:`\chi/\chi_\mathrm{min} \leq \mathtt{good_chi_rel}`.
     """
-    d_max = hist.limits[0] * (1 + upper_lim)
+    chi_min = hist.limits[0]
+    chi_c = min(good_chi_abs, chi_min * good_chi_rel)
     return int(sum(c for n, c in enumerate(hist.data)
-                   if hist.mesh_point(n) <= d_max))
+                   if hist.mesh_point(n) <= chi_c))
