@@ -3,6 +3,16 @@
 Stochastic Optimization Method for Analytic Continuation
 ========================================================
 
+.. sidebar:: SOM |version|
+
+   This is the homepage SOM Version |version|
+   For the changes in |version|, Cf :ref:`changelog page <changelog>`
+
+      .. image:: _static/logo_github.png
+         :width: 75%
+         :align: center
+         :target: https://github.com/krivenko/som
+
 SOM is a :ref:`TRIQS-based <triqslibs:welcome>` implementation of the Stochastic
 Optimization Method for Analytic Continuation [MPSS2000]_, which solves a family
 of Fredholm integral equations of the first kind. Numerical solution of such

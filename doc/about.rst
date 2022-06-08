@@ -60,6 +60,22 @@ https://triqs.github.io/triqs/latest/userguide/gfs/gfs_tutorial_python.html
 Acknowledgements
 ----------------
 
+.. sidebar::
+
+      .. image:: _static/logo_uhh.svg
+         :width: 75%
+         :align: center
+         :target: https://www.uni-hamburg.de/en.html
+         :alt: Universität Hamburg
+
+      |
+
+      .. image:: _static/logo_sfb668.jpg
+         :width: 75%
+         :align: center
+         :target: http://www.sfb668.de/
+         :alt: Sonderforschungsbereich 668
+
 I am very grateful to Malte Harland for extensive and thorough testing of the
 code at late development stages.
 

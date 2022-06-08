@@ -44,7 +44,7 @@ source_suffix = '.rst'
 autosummary_generate = True
 autosummary_imported_members = False
 
-project = '@PROJECT_NAME@'
+project = 'SOM'
 version = '@PROJECT_VERSION@'
 copyright = '2016-2022, Igor Krivenko'
 
@@ -79,7 +79,6 @@ html_show_sphinx = False
 html_context = {'header_title': '@PROJECT_NAME@'}
 
 html_static_path = ['@CMAKE_CURRENT_SOURCE_DIR@/_static']
-html_sidebars = {'index': ['sideb.html', 'searchbox.html']}
 
 htmlhelp_basename = '@PROJECT_NAME@doc'
 
@@ -138,7 +137,8 @@ class PatchedHTMLTranslator(HTMLTranslator):
             # ---------------------------------------------------------
         if 'refuri' in node:
             atts['href'] = node['refuri'] or '#'
-            if self.settings.cloak_email_addresses and atts['href'].startswith('mailto:'):
+            if self.settings.cloak_email_addresses and \
+               atts['href'].startswith('mailto:'):
                 atts['href'] = self.cloak_mailto(atts['href'])
                 self.in_mailto = True
         else:
