@@ -103,6 +103,9 @@ c.add_property(name="norm",
                getter=cfunction("double norm()"),
                doc="Norm of the configuration")
 
+c.add_call(signature="double(double eps)",
+           doc="Substitute energy value 'eps' into the rectangle function.")
+
 module.add_class(c)
 
 #
