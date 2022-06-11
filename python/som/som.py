@@ -23,7 +23,12 @@ Main module of SOM
 """
 
 from .som_core import SomCore
-from triqs.gf import Gf
+from triqs.gf import (Gf,
+                      GfImFreq,
+                      GfImTime,
+                      GfLegendre,
+                      Fourier,
+                      LegendreToMatsubara)
 import numpy as np
 
 
@@ -80,6 +85,38 @@ class Som(SomCore):
         # Give up
         else:
             raise RuntimeError("Argument 'errors' has unsupported format")
+
+
+def extract_boson_corr_spectrum_norms(chi):
+    """
+    Given a correlator of boson-like operators :math:`\chi` defined on any
+    supported mesh, returns a list of spectrum normalization constants
+    :math:`\mathcal{N} = \pi \chi(i\Omega = 0)`.
+    """
+    assert isinstance(chi, Gf), "Expected a Green's function object"
+
+    if chi.mesh.statistic != "Boson":
+        raise ValueError("Wrong mesh statistics for bosonic correlator 'chi'")
+
+    N = chi.target_shape[0]
+
+    if isinstance(chi, GfImFreq):
+        W0 = list(chi.mesh.values()).index(0j)
+        return np.pi * np.array([chi.data[W0, n, n].real for n in range(N)])
+
+    elif isinstance(chi, GfImTime):
+        chi_iw = GfImFreq(beta=chi.mesh.beta,
+                          statistic="Boson",
+                          n_points=1, # We need only the zero frequency
+                          target_shape=chi.target_shape)
+        chi_iw << Fourier(chi)
+        return np.pi * np.array([chi_iw.data[0, n, n].real for n in range(N)])
+
+    elif isinstance(chi, GfLegendre):
+        # \chi(i\Omega = 0) = \chi(l = 0)
+        return np.pi * np.array([chi.data[0, n, n].real for n in range(N)])
+    else:
+        raise TypeError("Unexpected type of 'chi'")
 
 
 def count_good_solutions(hist, good_chi_rel=2.0, good_chi_abs=np.inf):
