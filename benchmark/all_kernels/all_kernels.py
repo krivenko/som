@@ -429,7 +429,7 @@ def chi_l_model(ell):
     def kern(e):
         return beta * np.sqrt(2 * ell + 1) * e * ((-np.sign(e)) ** ell) * \
                       spherical_in(ell, np.abs(e)*beta/2) / \
-                      np.sinh(np.abs(e)*beta/2) / (2*np.pi)
+                      np.sinh(e*beta/2) / (2*np.pi)
     return np.diag(chi_norms) * quad(lambda e: dos(e, 1) * kern(e),
                                      -1, 3,
                                      points=[0])[0].real
