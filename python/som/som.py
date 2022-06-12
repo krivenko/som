@@ -87,11 +87,22 @@ class Som(SomCore):
             raise RuntimeError("Argument 'errors' has unsupported format")
 
 
-def extract_boson_corr_spectrum_norms(chi):
-    """
-    Given a correlator of boson-like operators :math:`\chi` defined on any
-    supported mesh, returns a list of spectrum normalization constants
-    :math:`\mathcal{N} = \pi \chi(i\Omega = 0)`.
+def estimate_boson_corr_spectrum_norms(chi: Gf) -> list[float]:
+    r"""
+    Given a correlator of boson-like operators :math:`\chi`, estimates the
+    corresponding spectrum normalization constants :math:`\mathcal{N}`.
+
+    Depending on the mesh :math:`\chi` is defined on, one of the following
+    expressions is used.
+
+    - Imaginary frequencies: :math:`\mathcal{N} = \pi\chi(i\Omega=0)`.
+    - Imaginary time: :math:`\mathcal{N} = \pi\int_0^\beta d\tau \chi(\tau)`.
+    - Legendre polynomial basis coefficients: :math:`\mathcal{N} =
+      \pi\chi(\ell=0)`.
+
+    :param chi: The correlator of boson-like operators :math:`\chi`.
+    :return: A list of estimated spectrum normalization constants,
+             one constant per diagonal matrix element of :math:`\chi`.
     """
     assert isinstance(chi, Gf), "Expected a Green's function object"
 

@@ -22,9 +22,9 @@
 - For consistency with MaxEnt and other stochastic continuation methods, the
   objective function of the optimization problem has been changed to the
   "goodness of fit" $\chi^2$-functional.
-- Adoption of the $\chi^2$-functional has made it possible to support user-supplied
-  covariance matrices of input data as an alternative to simple estimated error
-  bars (credits to @snirgaz for proposing this feature).
+- Adoption of the $\chi^2$-functional has made it possible to support
+  user-supplied covariance matrices of input data as an alternative to simple
+  estimated error bars (credits to @snirgaz for proposing this feature).
 - A new family of integral kernels for symmetric fermionic Green's functions has
   been introduced. The corresponding observable is called `FermionGfSymm`.
 - The `BosonAutoCorr` kernels have been changed to more closely reproduce
@@ -73,6 +73,10 @@
 - Updated signature of `som.count_good_solutions()` to take both
   `good_chi_abs` and `good_chi_rel` (thresholds on $\chi$ and
   $\chi/\chi_\mathrm{min}$ for a solution to be considered good).
+- A new utility function `som.estimate_boson_corr_spectrum_norms()` has been
+  added. Given a correlator of boson-like operators $\chi$ defined on any
+  supported mesh, it returns a list of spectrum normalization constants
+  $\mathcal{N} = \pi \chi(i\Omega = 0)$.
 
 ### Build system and developer tools
 
@@ -113,5 +117,6 @@
 
 - First official release.
 - Supports 12 integral kernels:
-    * 4 observable kinds (`FermionGf`, `BosonCorr`, `BosonAutoCorr`, and `ZeroTemp`);
+    * 4 observable kinds (`FermionGf`, `BosonCorr`, `BosonAutoCorr`, and
+      `ZeroTemp`);
     * 3 input meshes (`imtime`, `imfreq`, `legendre`).

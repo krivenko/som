@@ -28,7 +28,7 @@ from .som_core import (SomCore,
                        fill_refreq,
                        compute_tail,
                        reconstruct)
-from .som import (Som, count_good_solutions, extract_boson_corr_spectrum_norms)
+from .som import (Som, count_good_solutions, estimate_boson_corr_spectrum_norms)
 from .spectral_stats import (spectral_integral,
                              spectral_avg,
                              spectral_disp,
@@ -42,7 +42,7 @@ __all__ = ['SomCore',
            'compute_tail',
            'reconstruct',
            'count_good_solutions',
-           'extract_boson_corr_spectrum_norms',
+           'estimate_boson_corr_spectrum_norms',
            'spectral_integral',
            'spectral_avg',
            'spectral_disp',
