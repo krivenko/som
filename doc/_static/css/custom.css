@@ -3,3 +3,7 @@
 .wy-nav-content {
     max-width: 70em;
 }
+
+.wy-table-responsive table td {
+    white-space: normal;
+}
