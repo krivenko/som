@@ -39,7 +39,7 @@ protected:
   array<double, 1> g_tau;
   array<double, 1> error_bars_tau;
   matrix<double> cov_matrix_tau;
-  double filtration_level = 0;
+  double filtering_level = 0;
 
   using obj_function =
       objective_function<kernel<FermionGf, triqs::mesh::imtime>>;
@@ -58,7 +58,7 @@ public:
     h5_read(arch, "g_tau", g_tau);
     h5_read(arch, "error_bars_tau", error_bars_tau);
     h5_read(arch, "cov_matrix_tau", cov_matrix_tau);
-    h5_read(arch, "filtration_level", filtration_level);
+    h5_read(arch, "filtering_level", filtering_level);
 
     mesh = {beta, triqs::mesh::Fermion, first_dim(g_tau)};
   }
@@ -181,7 +181,7 @@ TEST_F(solution_worker_test, StartConfig_CC) {
 TEST_F(solution_worker_test, RandomConfig_CC_cov_matrix) {
   cache_index ci;
   kernel<FermionGf, triqs::mesh::imtime> kern(mesh);
-  obj_function of(kern, g_tau, cov_matrix_tau, filtration_level);
+  obj_function of(kern, g_tau, cov_matrix_tau, filtering_level);
 
   nda::array<double, 1> sigma2_ref;
   h5_read(arch, "cov_matrix_tau_sigma2", sigma2_ref);
@@ -213,7 +213,7 @@ TEST_F(solution_worker_test, RandomConfig_CC_cov_matrix) {
 TEST_F(solution_worker_test, StartConfig_CC_cov_matrix) {
   cache_index ci;
   kernel<FermionGf, triqs::mesh::imtime> kern(mesh);
-  obj_function of(kern, g_tau, cov_matrix_tau, filtration_level);
+  obj_function of(kern, g_tau, cov_matrix_tau, filtering_level);
 
   nda::array<double, 1> sigma2_ref;
   h5_read(arch, "cov_matrix_tau_sigma2", sigma2_ref);

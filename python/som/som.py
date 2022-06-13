@@ -41,7 +41,7 @@ class Som(SomCore):
                  kind="FermionGf",
                  norms=None,
                  *,
-                 filtration_levels=None
+                 filtering_levels=None
                  ):
 
         if norms is None:
@@ -61,13 +61,13 @@ class Som(SomCore):
         if isinstance(errors, Gf) \
                 and errors.rank == 2 and errors.target_rank == 1:
 
-            if filtration_levels is None:
+            if filtering_levels is None:
                 fl = np.array([])
-            elif isinstance(filtration_levels, float) or \
-                    isinstance(filtration_levels, int):
-                fl = filtration_levels * np.ones(g.target_shape[0])
+            elif isinstance(filtering_levels, float) or \
+                    isinstance(filtering_levels, int):
+                fl = filtering_levels * np.ones(rhs.target_shape[0])
             else:
-                fl = np.array(filtration_levels)
+                fl = np.array(filtering_levels)
 
             SomCore.__init__(self, g, errors, kind, norms_, fl)
 
@@ -75,9 +75,9 @@ class Som(SomCore):
         elif isinstance(errors, Gf) \
                 and errors.rank == 1 and errors.target_rank == 2:
 
-            if filtration_levels is not None:
+            if filtering_levels is not None:
                 raise RuntimeError(
-                    "Argument 'filtration_levels' is accepted only when full "
+                    "Argument 'filtering_levels' is accepted only when full "
                     "covariance matrices are provided")
 
             SomCore.__init__(self, g, errors, kind, norms_)

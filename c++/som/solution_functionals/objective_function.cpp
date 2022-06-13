@@ -30,18 +30,18 @@
 namespace som {
 
 template <typename KernelType>
-objective_function<KernelType>::objective_function(KernelType const& kern,
-                                                   rhs_type const& rhs,
-                                                   error_bars_type const& error_bars)
-   : kern(kern), rhs(rhs), sigma2(abs2(error_bars)), tmp(rhs.size()) {
-}
+objective_function<KernelType>::objective_function(
+    KernelType const& kern,
+    rhs_type const& rhs,
+    error_bars_type const& error_bars)
+   : kern(kern), rhs(rhs), sigma2(abs2(error_bars)), tmp(rhs.size()) {}
 
 template <typename KernelType>
 objective_function<KernelType>::objective_function(
     KernelType const& kern,
     rhs_type const& rhs,
     cov_matrix_type const& cov_matrix,
-    double filtration_level)
+    double filtering_level)
    : kern(kern), rhs(rhs), tmp(rhs.size()) {
   auto [ev, vecs] = nda::linalg::eigenelements(cov_matrix);
 
@@ -53,7 +53,7 @@ objective_function<KernelType>::objective_function(
 
   auto r = nda::range(first_positive_sigma2, ev.size());
   sigma2 = ev(r);
-  sigma2() += filtration_level * filtration_level;
+  sigma2() += filtering_level * filtering_level;
   U_dagger = dagger(vecs(nda::range(), r));
 }
 

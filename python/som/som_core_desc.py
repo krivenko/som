@@ -123,19 +123,19 @@ c = class_(
 c.add_constructor("""(triqs::gfs::gf_const_view<imtime> g, triqs::gfs::gf_const_view<imtime> error_bars, som::observable_kind kind, vector<double> norms)""",
                   doc="""Construct on imaginary-time quantities using error bars""")
 
-c.add_constructor("""(triqs::gfs::gf_const_view<imtime> g, som_core::cov_matrices_gf_view_type<imtime> cov_matrices, som::observable_kind kind, vector<double> norms, vector<double> filtration_levels = {})""",
+c.add_constructor("""(triqs::gfs::gf_const_view<imtime> g, som_core::cov_matrices_gf_view_type<imtime> cov_matrices, som::observable_kind kind, vector<double> norms, vector<double> filtering_levels = {})""",
                   doc="""Construct on imaginary-time quantities using covariance matrices""")
 
 c.add_constructor("""(triqs::gfs::gf_const_view<imfreq> g, triqs::gfs::gf_const_view<imfreq> error_bars, som::observable_kind kind, vector<double> norms)""",
                   doc="""Construct on imaginary-frequency quantities using error bars""")
 
-c.add_constructor("""(triqs::gfs::gf_const_view<imfreq> g, som_core::cov_matrices_gf_view_type<imfreq> cov_matrices, som::observable_kind kind, vector<double> norms, vector<double> filtration_levels = {})""",
+c.add_constructor("""(triqs::gfs::gf_const_view<imfreq> g, som_core::cov_matrices_gf_view_type<imfreq> cov_matrices, som::observable_kind kind, vector<double> norms, vector<double> filtering_levels = {})""",
                   doc="""Construct on imaginary-frequency quantities using covariance matrices""")
 
 c.add_constructor("""(triqs::gfs::gf_const_view<legendre> g, triqs::gfs::gf_const_view<legendre> error_bars, som::observable_kind kind, vector<double> norms)""",
                   doc="""Construct on quantities in Legendre polynomial basis using error bars""")
 
-c.add_constructor("""(triqs::gfs::gf_const_view<legendre> g, som_core::cov_matrices_gf_view_type<legendre> cov_matrices, som::observable_kind kind, vector<double> norms, vector<double> filtration_levels = {})""",
+c.add_constructor("""(triqs::gfs::gf_const_view<legendre> g, som_core::cov_matrices_gf_view_type<legendre> cov_matrices, som::observable_kind kind, vector<double> norms, vector<double> filtering_levels = {})""",
                   doc="""Construct on quantities in Legendre polynomial basis using covariance matrices""")
 
 

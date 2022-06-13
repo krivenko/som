@@ -57,7 +57,7 @@ som_core::data_t::make_objf(KernelType const& kernel) const {
         else if constexpr(std::is_same_v<rhs_arg_t, input_data_t<mesh_t>> &&
                           std::is_same_v<errors_arg_t, cov_matrix_t<mesh_t>>)
           // Covariance matrix
-          return {kernel, rhs_arg, errors_arg, filtration_level};
+          return {kernel, rhs_arg, errors_arg, filtering_level};
         else
           TRIQS_RUNTIME_ERROR << "Inconsistent types of input data for "
                                  "objective_function construction";

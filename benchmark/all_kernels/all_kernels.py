@@ -107,7 +107,7 @@ def make_cov_matrix_l(g_l):
     return cov_matrix_l
 
 
-filtration_levels = [0.1, 0.1]
+filtering_levels = [0.1, 0.1]
 
 som_params = {}
 som_params['verbosity'] = 2
@@ -195,7 +195,7 @@ def run_som_and_save_cov_matrix(kind,
                cov_matrix,
                kind=kind,
                norms=norms,
-               filtration_levels=filtration_levels)
+               filtering_levels=filtering_levels)
     cont.accumulate(energy_window=energy_window, **som_params)
     cont.accumulate(energy_window=energy_window, **som_params)
     cont.compute_final_solution()

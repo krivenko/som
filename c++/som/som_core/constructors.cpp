@@ -73,13 +73,13 @@ void check_norms(nda::vector<double> const& norms, long gf_dim) {
                 " elements)");
 }
 
-void check_filtration_levels(nda::vector<double> const& filtration_levels,
-                             long gf_dim) {
-  if(filtration_levels.size() > 0 && filtration_levels.size() != gf_dim)
+void check_filtering_levels(nda::vector<double> const& filtering_levels,
+                            long gf_dim) {
+  if(filtering_levels.size() > 0 && filtering_levels.size() != gf_dim)
     fatal_error(
-        "The 'filtration_levels' list must either be empty or have exactly " +
+        "The 'filtering_levels' list must either be empty or have exactly " +
         std::to_string(gf_dim) + " elements (got " +
-        std::to_string(filtration_levels.size()) + " elements)");
+        std::to_string(filtering_levels.size()) + " elements)");
 }
 
 //////////////////////
@@ -115,10 +115,10 @@ som_core::data_t::data_t(
     triqs::gfs::gf_const_view<Mesh, TargetOpt> g,
     triqs::gfs::gf_const_view<prod<Mesh, Mesh>, CovMatrixTargetOpt> cov_matrix,
     double norm,
-    double filtration_level)
+    double filtering_level)
    : rhs(input_data_t<Mesh>(mesh.size()))
    , errors(cov_matrix_t<Mesh>((long)mesh.size(), (long)mesh.size()))
-   , filtration_level(filtration_level)
+   , filtering_level(filtering_level)
    , norm(norm)
    , final_solution(ci) {
 
@@ -174,7 +174,7 @@ som_core::som_core(triqs::gfs::gf_const_view<imtime> g_tau,
                    cov_matrices_gf_view_type<imtime> cov_matrices_tau,
                    observable_kind kind,
                    nda::vector<double> const& norms,
-                   nda::vector<double> const& filtration_levels)
+                   nda::vector<double> const& filtering_levels)
    : kind(kind), mesh(g_tau.mesh()) {
 
   if(is_stat_relevant(kind)) check_gf_stat(g_tau, observable_statistics(kind));
@@ -187,7 +187,7 @@ som_core::som_core(triqs::gfs::gf_const_view<imtime> g_tau,
   auto gf_dim = g_tau.target_shape()[0];
 
   check_norms(norms, gf_dim);
-  check_filtration_levels(filtration_levels, gf_dim);
+  check_filtering_levels(filtering_levels, gf_dim);
 
   data.reserve(gf_dim);
   for(auto n : range(gf_dim)) {
@@ -199,8 +199,7 @@ som_core::som_core(triqs::gfs::gf_const_view<imtime> g_tau,
                       slice_target_to_scalar(g_tau_real, n, n),
                       cov_matrix_real(),
                       norms[n],
-                      filtration_levels.size() > 0 ? filtration_levels[n]
-                                                   : 0.0);
+                      filtering_levels.size() > 0 ? filtering_levels[n] : 0.0);
   }
 }
 
@@ -243,7 +242,7 @@ som_core::som_core(triqs::gfs::gf_const_view<imfreq> g_iw,
                    cov_matrices_gf_view_type<imfreq> cov_matrices_iw,
                    observable_kind kind,
                    nda::vector<double> const& norms,
-                   nda::vector<double> const& filtration_levels)
+                   nda::vector<double> const& filtering_levels)
    : kind(kind), mesh(g_iw.mesh()) {
 
   if(is_stat_relevant(kind)) check_gf_stat(g_iw, observable_statistics(kind));
@@ -257,7 +256,7 @@ som_core::som_core(triqs::gfs::gf_const_view<imfreq> g_iw,
   auto gf_dim = g_iw.target_shape()[0];
 
   check_norms(norms, gf_dim);
-  check_filtration_levels(filtration_levels, gf_dim);
+  check_filtering_levels(filtering_levels, gf_dim);
 
   auto make_cov_matrix_pos = [&](auto const& cov_matrix_iw) {
     using namespace triqs::gfs;
@@ -279,8 +278,7 @@ som_core::som_core(triqs::gfs::gf_const_view<imfreq> g_iw,
                       slice_target_to_scalar(g_iw_pos, n, n),
                       cov_matrix_pos(),
                       norms[n],
-                      filtration_levels.size() > 0 ? filtration_levels[n]
-                                                   : 0.0);
+                      filtering_levels.size() > 0 ? filtering_levels[n] : 0.0);
   }
 }
 
@@ -322,7 +320,7 @@ som_core::som_core(triqs::gfs::gf_const_view<legendre> g_l,
                    cov_matrices_gf_view_type<legendre> cov_matrices_l,
                    observable_kind kind,
                    nda::vector<double> const& norms,
-                   nda::vector<double> const& filtration_levels)
+                   nda::vector<double> const& filtering_levels)
    : kind(kind), mesh(g_l.mesh()) {
 
   if(is_stat_relevant(kind)) check_gf_stat(g_l, observable_statistics(kind));
@@ -335,7 +333,7 @@ som_core::som_core(triqs::gfs::gf_const_view<legendre> g_l,
   auto gf_dim = g_l.target_shape()[0];
 
   check_norms(norms, gf_dim);
-  check_filtration_levels(filtration_levels, gf_dim);
+  check_filtering_levels(filtering_levels, gf_dim);
 
   data.reserve(gf_dim);
   for(auto n : range(gf_dim)) {
@@ -347,8 +345,7 @@ som_core::som_core(triqs::gfs::gf_const_view<legendre> g_l,
                       slice_target_to_scalar(g_l_real, n, n),
                       cov_matrix_real(),
                       norms[n],
-                      filtration_levels.size() > 0 ? filtration_levels[n]
-                                                   : 0.0);
+                      filtering_levels.size() > 0 ? filtering_levels[n] : 0.0);
   }
 }
 

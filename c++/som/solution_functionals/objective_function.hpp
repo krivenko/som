@@ -48,7 +48,7 @@ private:
   // The right-hand side of the Fredholm integral equation
   rhs_type const& rhs;
   // Shifted positive eigenvalues of the covariance matrix,
-  // \sigma_n^2 + (filtration_level)^2.
+  // \sigma_n^2 + (filtering_level)^2.
   nda::array<double, 1> sigma2;
 
   // Matrix U^\dagger from the eigendecomposition of the covariance matrix,
@@ -71,7 +71,7 @@ public:
   objective_function(KernelType const& kern,
                      rhs_type const& rhs,
                      cov_matrix_type const& cov_matrix,
-                     double filtration_level = 0);
+                     double filtering_level = 0);
 
   double operator()(configuration const& c) const;
   double operator()(config_update const& cu) const;

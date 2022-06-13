@@ -95,7 +95,7 @@ class som_core {
     errors_t errors;
 
     // Filtration level for covariance matrix
-    double filtration_level = 0;
+    double filtering_level = 0;
 
     // Norm of the solutions to be found
     double norm = 1.0;
@@ -131,7 +131,7 @@ class som_core {
            triqs::gfs::gf_const_view<triqs::mesh::prod<Mesh, Mesh>,
                                      CovMatrixTargetOpt> cov_matrix,
            double norm,
-           double filtration_level);
+           double filtering_level);
 
     template <typename KernelType>
     objective_function<KernelType> make_objf(KernelType const& kernel) const;
@@ -187,7 +187,7 @@ public:
            cov_matrices_gf_view_type<triqs::mesh::imtime> cov_matrices_tau,
            observable_kind kind,
            nda::vector<double> const& norms,
-           nda::vector<double> const& filtration_levels = {});
+           nda::vector<double> const& filtering_levels = {});
 
   /// Construct on imaginary-frequency quantities using error bars.
   som_core(triqs::gfs::gf_const_view<triqs::mesh::imfreq> g_iw,
@@ -199,7 +199,7 @@ public:
            cov_matrices_gf_view_type<triqs::mesh::imfreq> cov_matrices_iw,
            observable_kind kind,
            nda::vector<double> const& norms,
-           nda::vector<double> const& filtration_levels = {});
+           nda::vector<double> const& filtering_levels = {});
 
   /// Construct on quantities in Legendre polynomial basis using error bars.
   som_core(triqs::gfs::gf_const_view<triqs::mesh::legendre> g_l,
@@ -212,7 +212,7 @@ public:
            cov_matrices_gf_view_type<triqs::mesh::legendre> cov_matrices_l,
            observable_kind kind,
            nda::vector<double> const& norms,
-           nda::vector<double> const& filtration_levels = {});
+           nda::vector<double> const& filtering_levels = {});
 
   // Automatically adjust the number of global updates (F)
   TRIQS_WRAP_ARG_AS_DICT int adjust_f(adjust_f_parameters_t const& p);
