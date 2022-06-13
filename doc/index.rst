@@ -32,7 +32,7 @@ where :math:`G(n)` is an input quantity, known with some uncertainty and
 :math:`K(n, \epsilon)` depend on the problem at hand.
 :math:`A(\epsilon)` is assumed to be non-negative and normalized to a known
 constant :math:`\mathcal{N}`. A full list of supported observables with
-respective integral kernels is given :ref:`here <kernels>`.
+respective integral kernels is given :ref:`here <observables>`.
 All equations of the considered family share a common property of being
 *ill-posed problems*: Their solutions are not unique  and tiny variations of the
 right hand part may result in huge changes of the solution.
@@ -75,7 +75,7 @@ protocol proposed in [GMPPS2017]_.
 
 .. toctree::
     :name: mastertoc
-    :maxdepth: 3
+    :maxdepth: 2
     :hidden:
 
     install
@@ -89,16 +89,3 @@ protocol proposed in [GMPPS2017]_.
     ChangeLog.md
     genindex
     search
-
-.. [MPSS2000]
-   | "Diagrammatic quantum Monte Carlo study of the Fröhlich polaron",
-   | A. S. Mishchenko, N. V. Prokof'ev, A. Sakamoto, and B. V. Svistunov,
-   | Phys. Rev. B **62**, 6317 (2000)
-   | https://doi.org/10.1103/PhysRevB.62.6317
-
-.. [GMPPS2017]
-   | "Numerical analytic continuation: Answers to well-posed questions",
-   | O. Goulko, A. S. Mishchenko, L. Pollet, N. Prokof'ev, and B. Svistunov,
-   | Phys. Rev. B **95**, 014102 (2017)
-   | https://doi.org/10.1103/PhysRevB.95.014102
-

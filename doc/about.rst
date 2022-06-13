@@ -9,12 +9,13 @@ Authors
 -------
 
 This analytic continuation package is written by Igor Krivenko
-(companion paper [#TRIQSSOM]_,
+(companion paper [KH2019]_,
 `arXiv:1808.00603 <https://arxiv.org/abs/1808.00603>`_).
 
-It is based on a method devised by Andrey S. Mishchenko and coauthors [#SOM]_.
-You can find a detailed description of the method in Chapter 14 of the Lecture
-Notes from the Autumn School "Correlated Electrons: From Models to Materials".
+It is based on a method devised by Andrey S. Mishchenko and coauthors
+[MPSS2000]_. You can find a detailed description of the method in Chapter 14 of
+the Lecture Notes from the Autumn School "Correlated Electrons: From Models to
+Materials".
 
 ::
 
@@ -29,18 +30,20 @@ The Lecture Notes are available free of charge online,
     http://www.cond-mat.de/events/correl12/manuscripts/
 
 The Stochastic Optimization with Consistent Constraints extensions are proposed
-by Olga Goulko and coauthors in [#SOCC]_.
+by Olga Goulko and coauthors in [GMPPS2017]_.
 
-.. [#TRIQSSOM] `I. Krivenko, M. Harland,
+.. [KH2019] `I. Krivenko, M. Harland,
    Comput. Phys. Commun. 239, 166-183 (2019)
    <https://doi.org/10.1016/j.cpc.2019.01.021>`_
    (:download:`bibtex file <TRIQSSOM.bib>`)
 
-.. [#SOM] `A. S. Mishchenko, N. V. Prokof'ev, A. Sakamoto and B. V. Svistunov,
+.. [MPSS2000]
+   `A. S. Mishchenko, N. V. Prokof'ev, A. Sakamoto and B. V. Svistunov,
    Phys. Rev. B 62, 6317 (2000) <https://doi.org/10.1103/PhysRevB.62.6317>`_
    (:download:`bibtex file <SOM.bib>`)
 
-.. [#SOCC] `O. Goulko, A. S. Mishchenko, L. Pollet, N. Prokof'ev and B. Svistunov,
+.. [GMPPS2017]
+   `O. Goulko, A. S. Mishchenko, L. Pollet, N. Prokof'ev and B. Svistunov,
    Phys. Rev. B 95, 014102 (2017) <https://doi.org/10.1103/PhysRevB.95.014102>`_
    (:download:`bibtex file <SOCC.bib>`)
 

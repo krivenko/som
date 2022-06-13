@@ -1,7 +1,15 @@
-.. _kernels:
+.. _observables:
 
-Supported integral kernels
-==========================
+Supported observables
+=====================
+
+.. TODO::
+
+    - Thermal Green's function of fermions
+    - Thermal Green's function of bosons, dynamical susceptibilities and
+      conductivity
+    - Dynamical response functions at zero temperature
+
 
 .. note::
 

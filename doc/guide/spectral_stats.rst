@@ -1,4 +1,4 @@
-.. _spctral_stats:
+.. _spectral_stats:
 
 Statistical analysis of noisy spectral functions
 ================================================

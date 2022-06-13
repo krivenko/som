@@ -7,7 +7,7 @@ User guide
     :maxdepth: 1
 
     basic
-    kernels
+    observables
     projection
     spectral_stats
     socc
