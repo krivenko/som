@@ -8,6 +8,6 @@ User guide
 
     basic
     observables
-    projection
+    recovery
     spectral_stats
     socc

@@ -169,13 +169,16 @@ Post-processing of spectral functions
 There are a few operations one can perform with a computed final spectral
 function :math:`A(\epsilon)`.
 
-- :ref:`Recover the real-frequency version <projection>` of the studied
+- :func:`Extract <som.Som.solutions>` and :class:`inspect individual rectangles
+  <som.Configuration>` of the final solutions in their sum-of-rectangles form.
+
+- :ref:`Recover the real-frequency version <recovery>` of the studied
   observable by projecting it onto a :class:`real frequency mesh
   <triqslibs:triqs.gf.meshes.MeshReFreq>`.
   For instance, the retarded Green's function :math:`G^\mathcal{ret}(\epsilon)`
   can be recovered from a fermionic Matsubara Green's function :math:`G(\tau)`.
 
-- Compute the :ref:`high frequency expansion coefficients <triqslibs:gf_tail>`
+- :ref:`Compute the high frequency expansion coefficients <compute_tail>`
   of the real-frequency observable.
 
 - Back-substitute :math:`A(\epsilon)` into the original integral equation and
