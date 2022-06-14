@@ -3,209 +3,324 @@
 Supported observables
 =====================
 
-.. TODO::
+.. highlight:: none
+.. currentmodule:: som
 
-    - Thermal Green's function of fermions
-    - Thermal Green's function of bosons, dynamical susceptibilities and
-      conductivity
-    - Dynamical response functions at zero temperature
+This page lists all kinds of dynamical observables currently supported by SOM
+and explicitly states the integral equation being solved for each of them.
 
-
-.. note::
-
-    :math:`\beta` denotes the inverse temperature in all equations below.
+Thermal Green's function of fermions
+------------------------------------
 
 .. _fermiongf:
 
-Fermionic thermal Green's function
-----------------------------------
+A Green's function of fermions at temperature :math:`T = 1/\beta` is defined
+as
 
-:math:`A(\epsilon) = -(1/\pi)\Im G^\mathrm{ret}(\epsilon)` is the spectral function to be found.
+.. math::
 
-Enabled when `Som()` object is constucted with `kind = "FermionGf"`.
+    G(\tau) = -\langle \mathbf{T}_\tau c(\tau) c^\dagger(0)\rangle.
 
-- In imaginary time, :math:`G(\tau)`
+Its real-frequency counterpart is the retarded Green's function
+:math:`G^\mathrm{ret}(\epsilon)`, which is directly connected to the spectral
+function :math:`A(\epsilon)`,
 
-    .. math::
-        G(\tau) = -\int\limits_{-\infty}^\infty
-        d\epsilon \frac{e^{-\tau\epsilon}}{1+e^{-\beta\epsilon}} A(\epsilon).
+.. math::
 
-- At Matsubara frequencies, :math:`G(i\omega_n)`
+    A(\epsilon) = -\frac{1}{\pi}\Im G^\mathrm{ret}(\epsilon)
 
-    .. math::
-        G(i\omega_n) = \int\limits_{-\infty}^\infty
-        d\epsilon \frac{1}{i\omega_n-\epsilon} A(\epsilon).
+and can be recovered from it using the Hilbert transform,
 
-- In Legendre polynomial basis, :math:`G(\ell)`
+.. math::
 
-    .. math::
-        G(\ell) = -\int\limits_{-\infty}^\infty
-        d\epsilon \frac{\beta\sqrt{2\ell+1}(-\mathrm{sgn}(\epsilon))^\ell i_{\ell}(\beta|\epsilon|/2)}
-        {2\cosh(\beta\epsilon/2)} A(\epsilon),
+    G^\mathrm{ret}(\epsilon) = -\int\limits_{-\infty}^\infty
+    d\epsilon' \frac{A(\epsilon')}{\epsilon' - \epsilon - i0}.
 
-  where :math:`i_\ell(x)` is the modified spherical Bessel function of the first kind.
+The spectral function is normalized according to
 
-Norm of a solution :math:`A(\epsilon)` is defined as
+.. math::
+    \mathcal{N} = \int\limits_{-\infty}^\infty d\epsilon A(\epsilon).
 
-    .. math::
-        N = \int\limits_{-\infty}^\infty d\epsilon A(\epsilon).
+.. note::
 
-The default value :math:`N=1` can be overridden to perform analytical continuation of related fermionic
-quantities, such as self-energy.
+    :math:`\mathcal{N} = 1` for a fermionic Green's function.
 
-The retared Green's function of a real frequency is reconstructed according to
+    Using the same integral equations, one can also continue fermionic
+    self-energies as long as they do not contain a static Hartree-Fock
+    contribution (i.e. they decay to 0 as :math:`\omega\to\infty`).
+    In this case norms must be computed separately by the user as first spectral
+    moments of the self-energy. For derivation of the spectral moments see,
+    for instance,
 
-    .. math::
-        G^\mathrm{ret}(\epsilon) = -\int\limits_{-\infty}^\infty
-        d\epsilon' \frac{A(\epsilon')}{\epsilon' - \epsilon - i0}.
+    `M. Potthoff, T. Wegner, and W. Nolting, Phys. Rev. B 55, 16132 (1997) <https://journals.aps.org/prb/abstract/10.1103/PhysRevB.55.16132>`_.
+
+This observable kind is selected and one of the following integral equations
+is solved when the :class:`Som` object is constructed with ``kind="FermionGf"``.
+
+.. list-table::
+    :header-rows: 1
+    :widths: 25 25 50
+
+    * - Imaginary time
+      - Imaginary frequencies
+      - Legendre orthogonal polynomials
+    * -
+        .. math::
+            G(\tau) = -\int\limits_{-\infty}^\infty d\epsilon
+                \frac{e^{-\tau\epsilon}}{1+e^{-\beta\epsilon}}
+                A(\epsilon).
+      -
+        .. math::
+            G(i\omega_n) = \int\limits_{-\infty}^\infty d\epsilon
+                \frac{1}{i\omega_n-\epsilon}
+                A(\epsilon).
+      -
+        .. math::
+            G(\ell) = -\int\limits_{-\infty}^\infty d\epsilon
+                \frac{\beta\sqrt{2\ell+1} (-\mathrm{sgn}(\epsilon))^\ell
+                    i_{\ell}(\beta|\epsilon|/2)}
+                {2\cosh(\beta\epsilon/2)}
+                A(\epsilon),
+
+        where :math:`i_\ell(x)` is the modified spherical Bessel function of
+        the first kind.
+
+.. _fermiongfsymm:
+
+In many model calculations fermionic Green's functions obey the particle-hole
+symmetry, which manifests itself in the symmetry of the spectral  function,
+:math:`A(-\epsilon) = A(\epsilon)`.
+One can enforce this symmetry by constructing :class:`Som` with
+``kind="FermionGfSymm"``. More precisely, SOM will
+
+- Use symmetrized integral kernels (see below) sensitive only to the symmetric
+  part of :math:`A(\epsilon)`;
+- Symmetrize calculated :ref:`final solution <final_solution>`
+  :math:`A(\epsilon)` before recovering :math:`G^\mathrm{ret}(\epsilon)`.
+
+.. list-table::
+    :header-rows: 1
+    :widths: 25 25 50
+
+    * - Imaginary time
+      - Imaginary frequencies
+      - Legendre orthogonal polynomials
+    * -
+        .. math::
+            G(\tau) = -\int\limits_{-\infty}^\infty \frac{d\epsilon}{2}
+                \frac{e^{-\tau\epsilon} + e^{-(\beta-\tau)\epsilon}}
+                {1+e^{-\beta\epsilon}}
+                A(\epsilon).
+      -
+        .. math::
+            G(i\omega_n) = -\int\limits_{-\infty}^\infty d\epsilon
+                \frac{i\omega_n}{\omega_n^2+\epsilon^2}
+                A(\epsilon).
+      -
+        .. math::
+            G(\ell) = \left\{
+                \begin{array}{ll}
+                -\int\limits_{-\infty}^\infty
+                d\epsilon
+                \frac{\beta\sqrt{2\ell+1} i_{\ell}(\beta|\epsilon|/2)}
+                {2\cosh(\beta\epsilon/2)} A(\epsilon), &\ell\ \mathrm{ even},\\
+                0, &\ell\ \mathrm{odd}.
+                \end{array}\right.,
+
+        where :math:`i_\ell(x)` is the modified spherical Bessel function of
+        the first kind.
+
+Thermal Green's function of bosons, dynamical susceptibilities and conductivity
+-------------------------------------------------------------------------------
 
 .. _bosoncorr:
 
-Correlator of boson-like operators
-----------------------------------
+The following correlators share the same general form
+:math:`\chi_{OO^\dagger}(\tau) =
+\langle \mathbf{T}_\tau \hat O(\tau) \hat O^\dagger(0)\rangle`,
+where :math:`\hat O` is a bosonic or boson-like (fermion-number-conserving)
+operator.
 
-Enabled when `Som()` object is constucted with `kind = "BosonCorr"`.
+- Matsubara Green's function of bosons :math:`G(\tau) =
+  \langle \mathbf{T}_\tau a(\tau) a^\dagger(0)\rangle`;
+- Charge susceptibility :math:`\chi_{NN}(\tau) =
+  \langle \mathbf{T}_\tau \hat N(\tau) \hat N(0)\rangle`;
+- Longitudinal magnetic susceptibility :math:`\chi_{zz}(\tau) =
+  \langle \mathbf{T}_\tau \hat S_z(\tau) \hat S_z(0)\rangle`;
+- Transversal magnetic susceptibility :math:`\chi_{-+}(\tau) =
+  \langle \mathbf{T}_\tau \hat S_-(\tau) \hat S_+(0)\rangle`;
+- Optical conductivity :math:`\sigma(\tau) =
+  \langle \mathbf{T}_\tau \hat j(\tau) \hat j(0)\rangle`.
 
-:math:`A(\epsilon)` is the spectral function to be found. It is defined differently from the fermionic
-case, namely :math:`A(\epsilon) = \Im\chi(\epsilon)/\epsilon`, where
+The real-time and real-frequency counterparts of :math:`\chi_{OO^\dagger}(\tau)`
+are
+
+.. math::
+
+    \chi_{OO^\dagger}(t) =
+        i\theta(t)\langle[\hat O(t),\hat O^\dagger(0)]\rangle,
+
+    \chi_{OO^\dagger}(\epsilon) =
+        \int\limits_{-\infty}^\infty dt\ e^{i\epsilon t}\chi_{OO^\dagger}(t).
+
+The imaginary part of :math:`\chi_{OO^\dagger}(\epsilon)` obeys
+:math:`\mathrm{sgn}(\Im\chi_{OO^\dagger}(\epsilon)) = \mathrm{sgn}(\epsilon)`,
+which allows to introduce a non-negative auxiliary function
+:math:`A(\epsilon) = \Im\chi_{OO^\dagger}(\epsilon) / \epsilon`. It plays the
+role of the spectral function for this class of continuation problem.
+
+Norm of the spectral function is defined as
+
+.. math::
+    \mathcal{N} = \int\limits_{-\infty}^\infty d\epsilon A(\epsilon) =
+        \pi\chi_{OO^\dagger}(i\Omega_n=0).
+
+The correlator of a real frequency is recovered according to
 
     .. math::
-        \chi(\epsilon) = \int\limits_{-\infty}^\infty dt\ e^{i\epsilon t}\chi(t),\quad
-        \chi(t) = i\theta(t)\langle[\hat O(t),\hat O^\dagger(0)]\rangle.
-
-- In imaginary time, :math:`\chi(\tau)`
-
-    .. math::
-        \chi(\tau) = \int\limits_{-\infty}^\infty \frac{d\epsilon}{\pi}
-        \frac{\epsilon e^{-\tau\epsilon}}{1-e^{-\beta\epsilon}} A(\epsilon).
-
-- At Matsubara frequencies, :math:`\chi(i\Omega_n)`
-
-    .. math::
-        \chi(i\Omega_n) = \int\limits_{-\infty}^\infty
-        d\epsilon \frac{1}{\pi}\frac{-\epsilon}{i\Omega_n - \epsilon} A(\epsilon).
-
-- In Legendre polynomial basis, :math:`\chi(\ell)`
-
-    .. math::
-        \chi(\ell) = \int\limits_{-\infty}^\infty
-        \frac{d\epsilon}{\pi}
-        \frac{\beta\epsilon\sqrt{2\ell+1}(-\mathrm{sgn}(\epsilon))^\ell i_{\ell}(\beta|\epsilon|/2)}
-        {2\sinh(\beta\epsilon/2)} A(\epsilon),
-
-    where :math:`i_\ell(x)` is the modified spherical Bessel function of the first kind.
-
-Norm of a solution :math:`A(\epsilon)` is defined as
-
-    .. math::
-        N = \int\limits_{-\infty}^\infty d\epsilon A(\epsilon) = \pi\chi(i\Omega_n=0).
-
-The correlator of a real frequency is reconstructed according to
-
-    .. math::
-        \chi(\epsilon) = \frac{1}{\pi}\int\limits_{-\infty}^\infty
+        \chi_{OO^\dagger}(\epsilon) = \frac{1}{\pi}\int\limits_{-\infty}^\infty
         d\epsilon' \frac{\epsilon' A(\epsilon')}{\epsilon' - \epsilon - i0}.
+
+This observable kind is selected and one of the following integral equations
+is solved when the :class:`Som` object is constructed with ``kind="BosonCorr"``.
+
+.. list-table::
+    :header-rows: 1
+    :widths: 25 25 50
+
+    * - Imaginary time
+      - Imaginary frequencies
+      - Legendre orthogonal polynomials
+    * -
+        .. math::
+            \chi_{OO^\dagger}(\tau) =
+                \int\limits_{-\infty}^\infty \frac{d\epsilon}{\pi}
+                \frac{\epsilon e^{-\tau\epsilon}}{1-e^{-\beta\epsilon}}
+                A(\epsilon).
+      -
+        .. math::
+            \chi_{OO^\dagger}(i\Omega_n) = \int\limits_{-\infty}^\infty
+                \frac{d\epsilon}{\pi}\frac{-\epsilon}{i\Omega_n - \epsilon}
+                A(\epsilon).
+      -
+        .. math::
+            \chi_{OO^\dagger}(\ell) = \int\limits_{-\infty}^\infty
+                \frac{d\epsilon}{\pi}
+                \frac{\beta\epsilon\sqrt{2\ell+1}(-\mathrm{sgn}(\epsilon))^\ell
+                i_{\ell}(\beta|\epsilon|/2)}
+                {2\sinh(\beta\epsilon/2)}
+                A(\epsilon),
+
+        where :math:`i_\ell(x)` is the modified spherical Bessel function of
+        the first kind.
 
 .. _bosonautocorr:
 
-Autocorrelator of a boson-like operator
----------------------------------------
+When :math:`\hat O^\dagger = \hat O`, such as in the case of the charge
+susceptibility, the longitudinal magnetic susceptibility and the optical
+conductivity, it is **recommended** to exploit the additional spectral symmetry
+:math:`A(-\epsilon) = A(\epsilon)`. If :class:`Som` is constructed with
+``kind="BosonAutoCorr"``, it
 
-Enabled when `Som()` object is constucted with `kind = "BosonAutoCorr"`.
+- Uses symmetrized integral kernels (see below) sensitive only to the symmetric
+  part of :math:`A(\epsilon)`;
+- Symmetrizes calculated :ref:`final solution <final_solution>`
+  :math:`A(\epsilon)` before recovering :math:`\chi_{OO^\dagger}(\epsilon)`.
 
-:math:`A(\epsilon)` is the spectral function to be found. It is defined differently from the fermionic
-case, namely :math:`A(\epsilon) = \Im\chi(\epsilon)/\epsilon`, where
+.. list-table::
+    :header-rows: 1
+    :widths: 25 25 50
 
-    .. math::
-        \chi(\epsilon) = \int\limits_{-\infty}^\infty dt\ e^{i\epsilon t}\chi(t),\quad
-        \chi(t) = i\theta(t)\langle[\hat O(t),\hat O(0)]\rangle.
+    * - Imaginary time
+      - Imaginary frequencies
+      - Legendre orthogonal polynomials
+    * -
+        .. math::
+            \chi_{AA}(\tau) = \int\limits_{-\infty}^\infty
+                \frac{d\epsilon}{2\pi}
+                \frac{\epsilon (e^{-\tau\epsilon}+e^{-(\beta-\tau)\epsilon})}
+                {1-e^{-\beta\epsilon}}
+                A(\epsilon).
 
-Expressions in this section imply that :math:`A(-\epsilon) = A(\epsilon)`, and, therefore,
-it is enough to find the spectral function on the positive energy half-axis only.
-This condition is fulfilled by the dynamical susceptibilities of a form
-:math:`\chi(\tau) = \langle\mathcal{T}\hat O(\tau)\hat O(0)\rangle`, where :math:`\hat O` is
-a Hermitian operator.
+      -
+        .. math::
+            \chi_{AA}(i\Omega_n) = \int\limits_{-\infty}^\infty
+                \frac{d\epsilon}{\pi}
+                \frac{\epsilon^2}{\Omega_n^2+\epsilon^2}
+                A(\epsilon).
+      -
+        .. math::
+                \chi_{AA}(\ell) = \left\{
+                    \begin{array}{ll}
+                    \int\limits_{-\infty}^\infty
+                    \frac{d\epsilon}{\pi}
+                    \frac{\beta\epsilon\sqrt{2\ell+1}
+                    i_{\ell}(\beta|\epsilon|/2)}
+                    {2\sinh(\beta\epsilon/2)}
+                        A(\epsilon),&\ell\ \mathrm{ even},\\
+                    0, &\ell\ \mathrm{odd}.
+                    \end{array}\right.,
 
-- In imaginary time, :math:`\chi(\tau)`
+        where :math:`i_\ell(x)` is the modified spherical Bessel function of
+        the first kind.
 
-    .. math::
-        \chi(\tau) = \int\limits_{-\infty}^\infty \frac{d\epsilon}{\pi}
-        \frac{\epsilon (e^{-\tau\epsilon}+e^{-(\beta-\tau)\epsilon})}
-        {1-e^{-\beta\epsilon}} A(\epsilon).
-
-- At Matsubara frequencies, :math:`\chi(i\Omega_n)`
-
-    .. math::
-        \chi(i\Omega_n) = \int\limits_0^\infty
-        d\epsilon \frac{1}{\pi}\frac{2\epsilon^2}{\Omega_n^2+\epsilon^2} A(\epsilon).
-
-- In Legendre polynomial basis, :math:`\chi(\ell)`
-
-    .. math::
-        \chi(\ell) = \left\{
-            \begin{array}{ll}
-            \int\limits_0^\infty
-            \frac{d\epsilon}{\pi}
-            \frac{\beta\epsilon\sqrt{2\ell+1} i_{\ell}(\beta\epsilon/2)}
-            {\sinh(\beta\epsilon/2)} A(\epsilon), &\ell\ \mathrm{ even},\\
-            0, &\ell\ \mathrm{odd}.
-        \end{array}\right.,
-
-    where :math:`i_\ell(x)` is the modified spherical Bessel function of the first kind.
-
-Norm of a solution :math:`A(\epsilon)` is defined as
-
-    .. math::
-        N = \int\limits_0^\infty d\epsilon A(\epsilon) = \frac{\pi}{2}\chi(i\Omega_n=0).
-
-The correlator of a real frequency is reconstructed according to
-
-    .. math::
-        \chi(\epsilon) =
-        \frac{1}{\pi}\int\limits_{-\infty}^0
-        d\epsilon' \frac{\epsilon' A(-\epsilon')}{\epsilon' - \epsilon - i0} +
-        \frac{1}{\pi}\int\limits_0^\infty
-        d\epsilon' \frac{\epsilon' A(\epsilon')}{\epsilon' - \epsilon - i0}.
+Dynamical response functions at zero temperature
+------------------------------------------------
 
 .. _zerotemp:
 
-Correlation function at zero temperature
-----------------------------------------
+In the limit of zero temperature (:math:`\beta=1/T\to\infty`), both Fermi-Dirac
+and Bose-Einstein distributions approach the shape of a step function
+:math:`\theta(\epsilon)`. It is, therefore, sufficient to consider a spectral
+function :math:`A(\epsilon)` defined for :math:`\epsilon\geq 0` regardless of
+operator statistics. Formally, the Matsubara time segment
+:math:`\tau\in[0; \beta]` becomes infinitely long in this limit. Practically,
+however, it is still possible to consider :math:`\tau` varying on a reduced
+segment :math:`[0; \tau_\mathrm{max}]`. It is also possible
+to introduce a countable sequence of fictitious Matsubara frequencies
+:math:`\omega_n = (2n+1)\pi/\tau_\mathrm{max}` or
+:math:`\omega_n = 2n\pi/\tau_\mathrm{max}`.
 
-:math:`A(\epsilon) = -(1/\pi)\Im G(\epsilon)` is the spectral function to be found.
+In the :math:`T=0` case, SOM defines the non-negative spectral function as
+:math:`A(\epsilon) = -(1/\pi)\Im G(\epsilon)` and its norm as
 
-Enabled when `Som()` object is constucted with `kind = "ZeroTemp"`.
+.. math::
+    \mathcal{N} = \int\limits_0^\infty d\epsilon A(\epsilon).
 
-- In imaginary time, :math:`G(\tau)`, :math:`\tau\in[0;\tau_{max}]`
+The original response function of a real frequency is recovered according to
 
-    .. math::
-        G(\tau) = -\int\limits_0^\infty
-        d\epsilon\ e^{-\tau\epsilon} A(\epsilon).
+.. math::
+        G(\epsilon) = -\int\limits_0^\infty
+        d\epsilon' \frac{A(\epsilon')}{\epsilon' - \epsilon - i0}.
 
-- At Matsubara frequencies, :math:`G(i\omega_n)`, where :math:`\omega_n = (2n+1)\pi/\tau_{max}`
-  for fermionic correlation functions and :math:`\omega_n = 2n\pi/\tau_{max}` for bosonic.
+This observable kind is selected and one of the following integral equations
+is solved when the :class:`Som` object is constructed with ``kind="ZeroTemp"``.
 
-    .. math::
-         G(i\omega_n) = \int\limits_0^\infty
-         d\epsilon \frac{1}{i\omega_n-\epsilon} A(\epsilon).
+.. list-table::
+    :header-rows: 1
+    :widths: 25 25 50
 
-- In Legendre polynomial basis, :math:`G(\ell)`
+    * - Imaginary time
+      - Imaginary frequencies
+      - Legendre orthogonal polynomials
+    * -
+        .. math::
+            G(\tau) = -\int\limits_0^\infty d\epsilon
+                e^{-\tau\epsilon}
+                A(\epsilon).
 
-    .. math::
-        G(\ell) = \int\limits_0^\infty
-        d\epsilon \tau_{max}(-1)^{\ell+1}\sqrt{2\ell+1}
-        i_{\ell}\left(\frac{\epsilon\tau_{max}}{2}\right)
-        \exp\left(-\frac{\epsilon\tau_{max}}{2}\right) A(\epsilon),
+      -
+        .. math::
+            G(i\omega_n) = \int\limits_0^\infty d\epsilon
+                \frac{1}{i\omega_n-\epsilon}
+                A(\epsilon).
+      -
+        .. math::
+            G(\ell) = \int\limits_0^\infty d\epsilon
+                \tau_\mathrm{max}(-1)^{\ell+1}\sqrt{2\ell+1}
+                i_{\ell}\left(\frac{\epsilon\tau_\mathrm{max}}{2}\right)
+                \exp\left(-\frac{\epsilon\tau_\mathrm{max}}{2}\right)
+                A(\epsilon),
 
-    where :math:`i_\ell(x)` is the modified spherical Bessel function of the first kind.
-
-Norm of a solution :math:`A(\epsilon)` is defined as
-
-    .. math::
-         N = \int\limits_0^\infty d\epsilon A(\epsilon).
-
-The correlation function of a real frequency is reconstructed according to
-
-    .. math::
-         G(\epsilon) = -\int\limits_0^\infty
-         d\epsilon' \frac{A(\epsilon')}{\epsilon' - \epsilon - i0}.
+        where :math:`i_\ell(x)` is the modified spherical Bessel function of
+        the first kind.
