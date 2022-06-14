@@ -9,8 +9,8 @@ Integral equation of the analytic continuation problem
 ------------------------------------------------------
 
 The analytic continuation problem amounts to solving a Fredholm integral
-equation of the first kind with a right hand side being a stochastic average
-of some vector, :math:`G(n) = \langle \tilde G(n)\rangle`,
+equation of the first kind with an approximately known right hand side
+:math:`G(n)`,
 
 .. math::
 
@@ -42,19 +42,35 @@ The integral equation is solved with respect to a non-negative spectral function
 Goodness of fit functionals
 ---------------------------
 
-SOM requires knowledge of either estimated error bars
-:math:`\sigma(n) = \sqrt{\langle|\tilde G(n)|^2\rangle - |G(n)|^2}` or of a
-full covariance matrix :math:`\hat\Sigma = \langle (\mathbf{\tilde G} -
-\mathbf{G})^\dagger\otimes (\mathbf{\tilde G} - \mathbf{G})\rangle` of the
-random vector :math:`\mathbf{\tilde G} = \{\tilde G(n)\}`.
+The right hand side :math:`G(n)` is typically obtained via statistical
+(Monte Carlo) sampling and averaging of a random quantity,
+
+.. math::
+
+  G(n) = \frac{1}{S}\sum_{s=1}^S G^{(s)}(n).
+
+In addition to this average, SOM requires knowledge of either estimated error
+bars
+
+.. math::
+
+  \sigma(n) = \sqrt{\frac{1}{S(S-1)} \sum_{s=1}^S |G^{(s)}(n) - G(n)|^2}
+
+or of a full covariance matrix
+
+.. math::
+
+  \Sigma_{nn'} = \frac{1}{S(S-1)} \sum_{s=1}^S (G^{(s)}(n) - G(n))^*
+                                               (G^{(s)}(n') - G(n')).
 
 .. _error_bars:
 
-When only the error bars are known, SOM tries to minimize the "goodness of fit" functional
+When only the error bars are known, SOM tries to minimize the "goodness of fit"
+functional
 
 .. math::
-    \chi^2[A(\epsilon)] = \frac{1}{N} \sum_{n=1}^N
-    \left|\frac{\Delta(n)}{\sigma(n)}\right|^2,
+  \chi^2[A(\epsilon)] = \frac{1}{N} \sum_{n=1}^N
+  \left|\frac{\Delta(n)}{\sigma(n)}\right|^2,
 
 where :math:`\Delta(n)` are discrepancies
 
@@ -75,30 +91,31 @@ instead,
 
 .. _cov_matrix_filtered:
 
-As the covariance matrix :math:`\hat\Sigma` is normally measured via stochastic
-sampling, some of its eigenvalues may turn to be negative, which would make
-:math:`\chi^2` lack a global minimum. Furthermore, very small positive
-eigenvalues are still problematic as they can lead to numerical instability of
-the minimization procedure. SOM tackles these problems by discarding all
-negative eigenvalues and shifting the positive ones by a constant
+Due to statistical noise, some of :math:`\hat\Sigma`'s eigenvalues may turn
+to be negative, which would make :math:`\chi^2` lack a global minimum.
+Furthermore, very small positive eigenvalues are still problematic as they can
+lead to numerical instability of the minimization procedure.
+SOM tackles these problems by discarding all negative eigenvalues and shifting
+the positive ones by a constant
 :math:`l^2` (:math:`l` is referred to as "filtering level"). This
-results in a modified goodness of fit functional
+results in a modified :math:`\chi^2`-functional
 
 .. math::
 
     \chi^2[A(\epsilon)] = \frac{1}{\tilde N}
-    \mathbf{\Delta}^\dagger \hat\Sigma^{-1} \mathbf{\Delta},
+    \mathbf{\Delta}^\dagger \hat{\mathfrak{S}}^{-1} \mathbf{\Delta},
 
-where :math:`\tilde N` is the number of the retained eigenvalues
-:math:`\sigma^2(n)` and :math:`\hat\Sigma^{-1}` is decomposed as
+where :math:`\tilde N` is the number of the retained positive eigenvalues
+:math:`\sigma^2(n)` and :math:`\hat{\mathfrak{S}}^{-1}` is a regularized version
+of :math:`\hat\Sigma^{-1}`,
 
 .. math::
 
-    \hat\Sigma^{-1} = \hat U \mathrm{diag}
+    \hat{\mathfrak{S}}^{-1} = \hat U \mathrm{diag}
     \left(\frac{1}{\sigma^2(n) + l^2}\right)
-    \hat U^\dagger
+    \hat U^\dagger.
 
-with an :math:`N\times \tilde N` matrix :math:`\hat U`, whose columns are
+Here, :math:`\hat U` is a :math:`N{\times}\tilde N` matrix, whose columns are
 eigenvectors of :math:`\hat{\Sigma}` corresponding to the retained eigenvalues.
 
 Minimization of the :math:`\chi^2`-functionals
@@ -133,7 +150,7 @@ are classified as good based on their :math:`\chi^2[A_j(\epsilon)]`: A good
 solution must satisfy :math:`\chi[A_j] \leq \chi_c^\mathrm{abs}` and
 :math:`\chi[A_j] \leq \min_j(\chi[A_j]) \chi_c^\mathrm{rel}`.
 
-The good solutions are then combined to form a final solution,
+The good solutions are then combined to form a *final solution*,
 
 .. math::
 
