@@ -79,8 +79,12 @@ Acknowledgements
          :target: http://www.sfb668.de/
          :alt: Sonderforschungsbereich 668
 
-I am very grateful to Malte Harland for extensive and thorough testing of the
-code at late development stages.
+I am very grateful to
+
+- Malte Harland for extensive and thorough testing of the code at late
+  development stages of SOM 1.0;
+- Andrey S. Mishchenko, who stimulated work on SOM 2.0 and shared his knowledge
+  about technical aspects of the method.
 
 I would like to acknowledge support from the University of Hamburg, as well as
 from the Deutsche Forschungsgemeinschaft via the Project SFB-668
@@ -89,7 +93,7 @@ been run on the JURECA HPC machine of the Forschungszentrum Jülich (project
 "Continuous Time Quantum Monte Carlo for materials").
 
 Credits to Snir Gazit, who suggested adding support for full covariance matrices
-in SOM 2.0.0.
+in SOM 2.0.
 
 License
 -------
