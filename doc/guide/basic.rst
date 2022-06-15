@@ -154,7 +154,8 @@ The good solutions are then combined to form a *final solution*,
 
 .. math::
 
-  A(\epsilon) = \sum_{j=1}^{\tilde J} c_j A_j(\epsilon).
+  A(\epsilon) = \sum_{j=1}^{\tilde J} c_j A_j(\epsilon), \quad
+  \sum_{j=1}^{\tilde J} c_j = 1
 
 In the traditional formulation of SOM [MPSS2000]_, the particular solutions are
 summed up with equal weights, :math:`c_j = 1/\tilde J`. It is also possible to
@@ -162,6 +163,11 @@ employ a more sophisticated and customizable :ref:`iterative procedure
 <final_solution_cc>` proposed in [GMPPS2017]_. It yields a set of coefficients
 :math:`c_j` that make for smoother spectra, and can optionally favor solutions
 close to a user-defined default model.
+
+Instead of computing the final solution, one can use the
+:ref:`statistical analysis technique <spectral_stats>` from Sections I-II of
+[GMPPS2017]_ to estimate averages, dispersions and 2-point correlations of
+the particular solution ensemble.
 
 Post-processing of spectral functions
 -------------------------------------
@@ -184,6 +190,3 @@ function :math:`A(\epsilon)`.
 - Back-substitute :math:`A(\epsilon)` into the original integral equation and
   reconstruct the rights hand side (not necessarily on the same :math:`n`-mesh).
   This feature is useful for a quick assessment of quality of the solution.
-
-- Use the :ref:`statistical analysis technique <spectral_stats>` from Sections
-  I-II of [GMPPS2017]_ to estimate uncertainty of the computed spectrum.
