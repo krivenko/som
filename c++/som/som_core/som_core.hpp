@@ -94,7 +94,7 @@ class som_core {
         variant<input_data_r_t, input_data_c_t, cov_matrix_r_t, cov_matrix_c_t>;
     errors_t errors;
 
-    // Filtration level for covariance matrix
+    // Filtering level for covariance matrix
     double filtering_level = 0;
 
     // Norm of the solutions to be found

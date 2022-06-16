@@ -24,7 +24,7 @@ where kernel :math:`\bar K(m, z)` is a "resolution function" localized inside
 
 Function :func:`som.spectral_stats.spectral_integral` evaluates :math:`i_m` for
 a single interval :math:`\Delta_m`, for all intervals induced by a
-:class:`real frequency mesh <triqslibs:triqs.gf.meshes.MeshReFreq>`, or for an
+:class:`real frequency mesh <triqs.gf.meshes.MeshReFreq>`, or for an
 arbitrary set of intervals. It supports a few kernels :math:`\bar K(m, z)`
 switched by the keyword argument ``resolution_function``,
 

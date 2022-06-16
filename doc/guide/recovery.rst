@@ -33,6 +33,7 @@ onto the frequency mesh as
       -\sum_{k=1}^K h_k \int\limits_{c_k-w_k/2}^{c_k+w_k/2}
       \frac{d\epsilon'}{\epsilon' - \epsilon_i - i0}.
 
+.. _binning:
 
 By default, SOM 2.0 uses binning while projecting onto the frequency mesh.
 It splits the energy window

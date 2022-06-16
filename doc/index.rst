@@ -82,7 +82,7 @@ protocol proposed in [GMPPS2017]_.
     tutorial
     guide/index
     examples
-    reference
+    reference/index
     script_porting
     issues
     about

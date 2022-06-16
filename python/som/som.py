@@ -27,33 +27,85 @@ from triqs.gf import (Gf,
                       GfImFreq,
                       GfImTime,
                       GfLegendre,
-                      Fourier,
-                      LegendreToMatsubara)
+                      Fourier)
+from triqs.stat import Histogram
+import cmath
 import numpy as np
 
 
 class Som(SomCore):
-    """Stochastic Optimization Method"""
+    """Implementation of the Stochastic Optimization Method."""
 
     def __init__(self,
-                 g,
-                 errors,
-                 kind="FermionGf",
+                 rhs: Gf,
+                 errors: Gf,
+                 kind: str = "FermionGf",
                  norms=None,
                  *,
-                 filtering_levels=None
+                 filtering_levels=None,
                  ):
+        r"""
+        :param rhs: Right hand side of the :ref:`integral equation
+                  <integral_equation>` to be solved, defined on
+                  :class:`triqs.gf.meshes.MeshImTime`,
+                  :class:`triqs.gf.meshes.MeshImFreq` or
+                  :class:`triqs.gf.meshes.MeshLegendre`.
+                  If target shape of ``rhs`` is :math:`M{\times}M`, only its
+                  diagonal matrix elements will be considered and
+                  used as input data for :math:`M` independent continuation
+                  problems.
+        :type rhs: :class:`triqs.gf.gf.Gf`
+
+        :param errors: Either :ref:`error bars <error_bars>` :math:`\sigma_n`
+                       (GF container of the same type and target shape as
+                       ``rhs``) or a packed list of :ref:`covariance matrices
+                       <cov_matrix>` (``Gf(mesh=MeshProduct(rhs.mesh, rhs.mesh),
+                       target_shape=[M])`` with each target element
+                       corresponding to one covariance matrix).
+
+        :param kind: Selection of the :ref:`observable kind <observables>`
+                     (and its respective integral kernel) to be used. One of
+                     ``FermionGf``, ``FermionGfSymm``, ``BosonCorr``,
+                     ``BosonAutoCorr``, ``ZeroTemp``. Defaults to ``FermionGf``.
+        :type kind: :class:`str`, optional
+
+        :param norms: Requested :ref:`solution norms <solution_norm>` either as
+                      a list of :math:`M` real numbers or as a single real
+                      number for all :math:`M` continuation problems. For
+                      observable kinds ``FermionGf``, ``FermionGfSymm`` and
+                      ``ZeroTemp`` this parameter is optional and defaults to
+                      1.0. For ``BosonCorr`` and ``BosonAutoCorr`` it must be
+                      provided by the user.
+
+                      .. seealso::
+
+                        When unknown a priori in the latter case, the norms can
+                        be approximately estimated from ``rhs`` using
+                        :func:`estimate_boson_corr_spectrum_norms`.
+
+        :type norms: :class:`float` or :class:`list` [:class:`float`]
+
+        :param filtering_levels: :ref:`Filtering levels <cov_matrix_filtered>`
+                                 for covariance matrices either as
+                                 a list of :math:`M` real numbers or as a
+                                 single real number for all :math:`M`
+                                 continuation problems. Can only be specified
+                                 when the covariance matrices are used.
+                                 Defaults to 0.
+        :type filtering_levels: :class:`float` or
+                                :class:`list` [:class:`float`], optional
+        """
 
         if norms is None:
             try:
                 norms_ = {"FermionGf": 1.0,
                           "FermionGfSymm": 1.0,
-                          "ZeroTemp":  1.0}[kind] * np.ones(g.target_shape[0])
+                          "ZeroTemp":  1.0}[kind] * np.ones(rhs.target_shape[0])
             except KeyError:
                 raise RuntimeError("A list of solution norms must be provided "
                                    "for observable kind " + kind)
         elif isinstance(norms, float) or isinstance(norms, int):
-            norms_ = norms * np.ones(g.target_shape[0])
+            norms_ = norms * np.ones(rhs.target_shape[0])
         else:
             norms_ = np.array(norms)
 
@@ -69,7 +121,7 @@ class Som(SomCore):
             else:
                 fl = np.array(filtering_levels)
 
-            SomCore.__init__(self, g, errors, kind, norms_, fl)
+            SomCore.__init__(self, rhs, errors, kind, norms_, fl)
 
         # Then try the error bars
         elif isinstance(errors, Gf) \
@@ -80,7 +132,7 @@ class Som(SomCore):
                     "Argument 'filtering_levels' is accepted only when full "
                     "covariance matrices are provided")
 
-            SomCore.__init__(self, g, errors, kind, norms_)
+            SomCore.__init__(self, rhs, errors, kind, norms_)
 
         # Give up
         else:
@@ -89,8 +141,9 @@ class Som(SomCore):
 
 def estimate_boson_corr_spectrum_norms(chi: Gf) -> list[float]:
     r"""
-    Given a correlator of boson-like operators :math:`\chi`, estimates the
-    corresponding spectrum normalization constants :math:`\mathcal{N}`.
+    Given a correlator :math:`\chi` of bosonic or boson-like
+    (fermion-number-conserving) operators, estimates the corresponding spectrum
+    normalization constants :math:`\mathcal{N}`.
 
     Depending on the mesh :math:`\chi` is defined on, one of the following
     expressions is used.
@@ -100,9 +153,11 @@ def estimate_boson_corr_spectrum_norms(chi: Gf) -> list[float]:
     - Legendre polynomial basis coefficients: :math:`\mathcal{N} =
       \pi\chi(\ell=0)`.
 
-    :param chi: The correlator of boson-like operators :math:`\chi`.
+    :param chi: The correlator :math:`\chi`.
+    :type chi: :class:`triqs.gf.gf.Gf`
     :return: A list of estimated spectrum normalization constants,
              one constant per diagonal matrix element of :math:`\chi`.
+    :rtype: :class:`list` [:class:`float`]
     """
     assert isinstance(chi, Gf), "Expected a Green's function object"
 
@@ -118,7 +173,7 @@ def estimate_boson_corr_spectrum_norms(chi: Gf) -> list[float]:
     elif isinstance(chi, GfImTime):
         chi_iw = GfImFreq(beta=chi.mesh.beta,
                           statistic="Boson",
-                          n_points=1, # We need only the zero frequency
+                          n_points=1,  # We need only the zero frequency
                           target_shape=chi.target_shape)
         chi_iw << Fourier(chi)
         return np.pi * np.array([chi_iw.data[0, n, n].real for n in range(N)])
@@ -130,12 +185,23 @@ def estimate_boson_corr_spectrum_norms(chi: Gf) -> list[float]:
         raise TypeError("Unexpected type of 'chi'")
 
 
-def count_good_solutions(hist, good_chi_rel=2.0, good_chi_abs=np.inf):
+def count_good_solutions(hist: Histogram,
+                         good_chi_rel: float = 2.0,
+                         good_chi_abs: float = cmath.inf):
     r"""
     Given a histogram of values :math:`\chi` for the objective function
-    :math:`\chi^2`, count the number of solutions such that
-    :math:`\chi \leq \mathtt{good_chi_abs}` and
-    :math:`\chi/\chi_\mathrm{min} \leq \mathtt{good_chi_rel}`.
+    :math:`\chi^2`, counts the number of such solutions that
+    :math:`\chi \leq` ``good_chi_abs`` and
+    :math:`\chi/\chi_\mathrm{min} \leq` ``good_chi_rel``.
+
+    :param hist: Histogram to analyze.
+    :type hist: :class:`triqs.stat.histograms.Histogram`
+    :param good_chi_rel: :math:`\chi/\chi_\mathrm{min}` threshold for good
+                         solutions.
+    :type good_chi_rel: :class:`float`, optional
+    :param good_chi_abs: :math:`\chi` threshold for good solutions.
+    :type good_chi_abs: :class:`float`, optional
+    :rtype: :class:`int`
     """
     chi_min = hist.limits[0]
     chi_c = min(good_chi_abs, chi_min * good_chi_rel)

@@ -24,7 +24,7 @@ function, susceptibility, conductivity). The formal discrete index
 :math:`n = \overline{1, N}` may denote one of the following variables,
 
 - Fermionic of bosonic
-  :class:`Matsubara frequencies <triqslibs:triqs.gf.meshes.MeshImFreq>`;
+  :class:`Matsubara frequencies <triqs.gf.meshes.MeshImFreq>`;
 - Points of an :class:`imaginary time grid <triqs.gf.meshes.MeshImTime>`;
 - Indices of
   :class:`Legendre orthogonal polynomials <triqs.gf.meshes.MeshLegendre>`.
@@ -148,7 +148,7 @@ by enabling the large scale :ref:`Consistent Constraints updates <cc_update>`.
 At the second step, :math:`\tilde J` out of the :math:`J` particular solutions
 are classified as good based on their :math:`\chi^2[A_j(\epsilon)]`: A good
 solution must satisfy :math:`\chi[A_j] \leq \chi_c^\mathrm{abs}` and
-:math:`\chi[A_j] \leq \min_j(\chi[A_j]) \chi_c^\mathrm{rel}`.
+:math:`\chi[A_j] \leq \min_{j'}(\chi[A_{j'}]) \chi_c^\mathrm{rel}`.
 
 The good solutions are then combined to form a *final solution*,
 
@@ -175,12 +175,12 @@ Post-processing of spectral functions
 There are a few operations one can perform with a computed final spectral
 function :math:`A(\epsilon)`.
 
-- :func:`Extract <som.Som.solutions>` and :class:`inspect individual rectangles
-  <som.Configuration>` of the final solutions in their sum-of-rectangles form.
+- :func:`Extract <som.Som.solutions>` and inspect individual rectangles of the
+  final solutions in their :class:`sum-of-rectangles form <som.Configuration>`.
 
 - :ref:`Recover the real-frequency version <recovery>` of the studied
   observable by projecting it onto a :class:`real frequency mesh
-  <triqslibs:triqs.gf.meshes.MeshReFreq>`.
+  <triqs.gf.meshes.MeshReFreq>`.
   For instance, the retarded Green's function :math:`G^\mathcal{ret}(\epsilon)`
   can be recovered from a fermionic Matsubara Green's function :math:`G(\tau)`.
 
