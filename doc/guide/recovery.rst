@@ -23,7 +23,7 @@ A final solution produced by SOM has a general sum-of-rectangles form
 
     R_{\{c, w, h\}}(\epsilon) \equiv h \theta(w/2-|\epsilon-c|).
 
-Before SOM 2.0.0, the retarded Green's function would be recovered and projected
+Before SOM 2.0, the retarded Green's function would be recovered and projected
 onto the frequency mesh as
 
 .. math::
@@ -34,7 +34,7 @@ onto the frequency mesh as
       \frac{d\epsilon'}{\epsilon' - \epsilon_i - i0}.
 
 
-By default, SOM 2.0.0 uses binning while projecting onto the frequency mesh.
+By default, SOM 2.0 uses binning while projecting onto the frequency mesh.
 It splits the energy window
 :math:`[\epsilon_\mathrm{min};\epsilon_\mathrm{max}]` into :math:`I` bins,
 

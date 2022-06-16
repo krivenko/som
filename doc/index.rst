@@ -61,7 +61,7 @@ An important feature of the algorithm is its "continuous-energy" representation
 of solutions. Function :math:`A(\epsilon)` is parameterized as a sum of
 rectangles with certain positions, widths and heights.
 
-SOM release 2.0.0 brings a number of new features, most notably a complete
+SOM release 2.0 brings a number of new features, most notably a complete
 implementation of the Stochastic Optimization with Consistent Constraints (SOCC)
 protocol proposed in [GMPPS2017]_.
 
