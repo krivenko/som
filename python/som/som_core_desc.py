@@ -705,6 +705,13 @@ Accumulate particular solutions and compute the final solution using the standar
 """)
 
 #
+# SomCore.clear()
+#
+
+c.add_method("""void clear()""",
+             doc=r"""Discard all accumulated particular solutions, histograms and final solutions.""")
+
+#
 # SomCore.particular_solutions()
 #
 
