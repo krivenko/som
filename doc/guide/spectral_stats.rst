@@ -28,6 +28,8 @@ a single interval :math:`\Delta_m`, for all intervals induced by a
 arbitrary set of intervals. It supports a few kernels :math:`\bar K(m, z)`
 switched by the keyword argument ``resolution_function``,
 
+.. _resolution_functions:
+
 - ``resolution_function=rectangle``:
 
     .. math::
