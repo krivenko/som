@@ -22,16 +22,19 @@
 Main module of SOM
 """
 
-from .som_core import SomCore
+from typing import List
+
+import cmath
+import numpy as np
+
 from triqs.gf import (Gf,
                       GfImFreq,
                       GfImTime,
                       GfLegendre,
                       Fourier)
 from triqs.stat import Histogram
-import cmath
-import numpy as np
 
+from .som_core import SomCore
 
 class Som(SomCore):
     """Implementation of the Stochastic Optimization Method."""
@@ -139,7 +142,7 @@ class Som(SomCore):
             raise RuntimeError("Argument 'errors' has unsupported format")
 
 
-def estimate_boson_corr_spectrum_norms(chi: Gf) -> list[float]:
+def estimate_boson_corr_spectrum_norms(chi: Gf) -> List[float]:
     r"""
     Given a correlator :math:`\chi` of bosonic or boson-like
     (fermion-number-conserving) operators, estimates the corresponding spectrum
@@ -187,7 +190,7 @@ def estimate_boson_corr_spectrum_norms(chi: Gf) -> list[float]:
 
 def count_good_solutions(hist: Histogram,
                          good_chi_rel: float = 2.0,
-                         good_chi_abs: float = cmath.inf):
+                         good_chi_abs: float = cmath.inf) -> int:
     r"""
     Given a histogram of values :math:`\chi` for the objective function
     :math:`\chi^2`, counts the number of such solutions that
