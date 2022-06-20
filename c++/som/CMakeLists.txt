@@ -27,7 +27,7 @@ add_library(${PROJECT_NAME}_c ${sources})
 add_library(${PROJECT_NAME}::${PROJECT_NAME}_c ALIAS ${PROJECT_NAME}_c)
 
 # Link against triqs and enable warnings
-target_link_libraries(${PROJECT_NAME}_c PUBLIC triqs
+target_link_libraries(${PROJECT_NAME}_c PUBLIC triqs nda::blas_lapack
                       PRIVATE $<BUILD_INTERFACE:${PROJECT_NAME}_warnings>)
 
 # Configure target and compilation
