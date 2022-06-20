@@ -135,7 +135,7 @@ double ecqp_worker::operator()(nda::matrix_const_view<double, nda::F_layout> Q,
   assert(f.size() == N);
   assert(first_dim(L) == P);
   assert(second_dim(L) == N);
-  assert(d.size() == N);
+  assert(d.size() == P);
   assert(x.size() == N);
 
   // Perform Cholesky factorization of Q
