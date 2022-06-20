@@ -64,7 +64,7 @@ protected:
         {configuration{{0.2, 1, 2}, {-0.8, 4, 1}, {-2.8, 2, 3}}, 0}};
   }
 };
-}
+} // namespace testing
 
 using namespace testing;
 

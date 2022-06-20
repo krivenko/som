@@ -18,8 +18,10 @@
  * SOM. If not, see <http://www.gnu.org/licenses/>.
  *
  ******************************************************************************/
+// clang-format off
 #include <nda/nda.hpp>
 #include <nda/gtest_tools.hpp>
+// clang-format on
 
 #include <cmath>
 

@@ -29,7 +29,7 @@ class spline {
 
   nda::array<double, 1> x, y; // vectors of knot coordinates
   nda::array<double, 1> a, b; // spline coefficients
-  size_t s = 0;             // size of x and y
+  size_t s = 0;               // size of x and y
 
 public:
   spline() = default;
@@ -42,8 +42,8 @@ public:
 class regular_spline {
 
   double x_min = 0, x_max = 0; // abscissae of the leftmost and rightmost knots
-  nda::array<double, 1> y;       // vector of knot ordinates
-  nda::array<double, 1> a, b;    // spline coefficients
+  nda::array<double, 1> y;     // vector of knot ordinates
+  nda::array<double, 1> a, b;  // spline coefficients
   size_t s = 0;                // size of y
   double dx = 0;               // mesh step
 

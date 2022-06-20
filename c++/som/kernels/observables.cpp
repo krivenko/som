@@ -21,8 +21,10 @@
 
 #include <memory>
 
+// clang-format off
 #include <nda/nda.hpp>
 #include <nda/mpi.hpp>
+// clang-format on
 
 #include <triqs/utility/exceptions.hpp>
 

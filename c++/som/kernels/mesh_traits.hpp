@@ -53,8 +53,7 @@ template <> struct mesh_traits<triqs::mesh::refreq> {
   inline static std::string name() { return "real frequency"; }
 };
 
-using mesh_variant_t = std::variant<triqs::mesh::imtime,
-                                    triqs::mesh::imfreq,
-                                    triqs::mesh::legendre>;
+using mesh_variant_t = std::
+    variant<triqs::mesh::imtime, triqs::mesh::imfreq, triqs::mesh::legendre>;
 
 } // namespace som

@@ -31,7 +31,7 @@ protected:
 
 TEST_F(BosonAutoCorr_test, imtime) {
   test_kernel<kernel<BosonAutoCorr, imtime>>(
-     "bosonautocorr_imtime.h5", ci, 1e-10);
+      "bosonautocorr_imtime.h5", ci, 1e-10);
 }
 TEST_F(BosonAutoCorr_test, imfreq) {
   test_kernel<kernel<BosonAutoCorr, imfreq>>(

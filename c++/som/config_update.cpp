@@ -39,16 +39,14 @@ config_update::config_update(config_update const& cu)
    : conf(cu.conf)
    , changed_indices(cu.changed_indices)
    , new_rects(cu.new_rects)
-   , cache_ptr(cu.cache_ptr ?
-               cache_entry_ptr(cu.cache_ptr.get_ci()) :
-               cache_entry_ptr()) {}
+   , cache_ptr(cu.cache_ptr ? cache_entry_ptr(cu.cache_ptr.get_ci())
+                            : cache_entry_ptr()) {}
 config_update::config_update(config_update&& cu) noexcept
    : conf(cu.conf)
    , changed_indices(cu.changed_indices)
    , new_rects(cu.new_rects)
-   , cache_ptr(cu.cache_ptr ?
-               cache_entry_ptr(cu.cache_ptr.get_ci()) :
-               cache_entry_ptr()) {}
+   , cache_ptr(cu.cache_ptr ? cache_entry_ptr(cu.cache_ptr.get_ci())
+                            : cache_entry_ptr()) {}
 
 void config_update::add_rectangle(rectangle const& r) {
   changed_indices.push_back(INT_MAX);

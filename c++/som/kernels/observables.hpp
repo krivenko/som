@@ -27,8 +27,11 @@
 #include <boost/preprocessor/seq/enum.hpp>
 #include <boost/preprocessor/seq/size.hpp>
 
+// clang-format off
 #include <nda/nda.hpp>
 #include <mpi/mpi.hpp>
+// clang-format on
+
 #include <triqs/gfs.hpp>
 
 #include "../config_update.hpp"
@@ -38,7 +41,7 @@ namespace som {
 
 // All supported kinds of observables
 #define ALL_OBSERVABLES                                                        \
-    (FermionGf)(FermionGfSymm)(BosonCorr)(BosonAutoCorr)(ZeroTemp)
+  (FermionGf)(FermionGfSymm)(BosonCorr)(BosonAutoCorr)(ZeroTemp)
 
 enum observable_kind : unsigned int { BOOST_PP_SEQ_ENUM(ALL_OBSERVABLES) };
 constexpr const unsigned int n_observable_kinds =
@@ -62,14 +65,17 @@ bool use_symmetrized_spectrum(observable_kind kind);
 
 // Construct a real-frequency GF from a configuration
 void back_transform(
-    observable_kind kind, configuration const& conf,
+    observable_kind kind,
+    configuration const& conf,
     triqs::gfs::gf_view<triqs::mesh::refreq, triqs::gfs::scalar_valued> g_w,
     bool with_binning,
     mpi::communicator const& comm = {});
 
 // Compute the GF tail from a configuration
 nda::array<std::complex<double>, 1>
-compute_tail(observable_kind kind, configuration const& conf,
-             int max_order, mpi::communicator const& comm = {});
+compute_tail(observable_kind kind,
+             configuration const& conf,
+             int max_order,
+             mpi::communicator const& comm = {});
 
 } // namespace som

@@ -24,11 +24,11 @@
 #define NDA_ENFORCE_BOUNDCHECK
 #include <som/numerics/spline.hpp>
 
+using nda::vector;
 using std::abs;
 using std::copysign;
 using std::exp;
 using std::sin;
-using nda::vector;
 
 using namespace som;
 

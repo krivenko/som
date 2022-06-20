@@ -27,8 +27,8 @@
 
 #include <som/kernels/all.hpp>
 
-#include "som_core.hpp"
 #include "common.hxx"
+#include "som_core.hpp"
 
 namespace som {
 
@@ -38,9 +38,7 @@ using namespace triqs::gfs;
 // fill_refreq() //
 ///////////////////
 
-void fill_refreq(gf_view<refreq> g_w,
-                 som_core const& cont,
-                 bool with_binning) {
+void fill_refreq(gf_view<refreq> g_w, som_core const& cont, bool with_binning) {
   auto kind = cont.get_observable_kind();
   auto gf_dim = cont.get_dim();
   check_gf_dim(g_w, gf_dim);
@@ -49,8 +47,7 @@ void fill_refreq(gf_view<refreq> g_w,
                    cont.get_solution(i),
                    slice_target_to_scalar(g_w, i, i),
                    with_binning,
-                   cont.get_comm()
-                   );
+                   cont.get_comm());
   }
 }
 
@@ -61,10 +58,8 @@ void fill_refreq(gf_view<refreq> g_w,
   auto gf_dim = long(solutions.size());
   check_gf_dim(g_w, gf_dim);
   for(auto i : range(gf_dim)) {
-    back_transform(kind,
-                   solutions[i],
-                   slice_target_to_scalar(g_w, i, i),
-                   with_binning);
+    back_transform(
+        kind, solutions[i], slice_target_to_scalar(g_w, i, i), with_binning);
   }
 }
 
@@ -77,8 +72,8 @@ array<dcomplex, 3> compute_tail(int max_order, som_core const& cont) {
   auto gf_dim = cont.get_dim();
   array<dcomplex, 3> tail(max_order + 1, gf_dim, gf_dim);
   for(auto i : range(gf_dim)) {
-    tail(range(), i, i) =
-      som::compute_tail(kind, cont.get_solution(i), max_order, cont.get_comm());
+    tail(range(), i, i) = som::compute_tail(
+        kind, cont.get_solution(i), max_order, cont.get_comm());
   }
   return tail;
 }
@@ -118,14 +113,13 @@ void reconstruct_impl(gf_view<MeshType> g,
                       observable_kind kind,
                       Solutions const& sols) {
   check_gf_dim(g, gf_dim);
-  if(is_stat_relevant(kind))
-    check_gf_stat(g, observable_statistics(kind));
+  if(is_stat_relevant(kind)) check_gf_stat(g, observable_statistics(kind));
 
   g() = 0;
 #define FILL_DATA_CASE(r, d, ok)                                               \
   case ok: {                                                                   \
     kernel<ok, MeshType> kern(g.mesh());                                       \
-    for(auto i : range(gf_dim)) {                                               \
+    for(auto i : range(gf_dim)) {                                              \
       if constexpr(std::is_same_v<Solutions, som_core>)                        \
         fill_data(g, i, kern.apply_wo_caching(sols.get_solution(i)));          \
       else                                                                     \
