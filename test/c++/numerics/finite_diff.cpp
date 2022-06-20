@@ -20,8 +20,10 @@
  ******************************************************************************/
 #include <cmath>
 
-#include <nda/gtest_tools.hpp>
+// clang-format off
 #include <nda/nda.hpp>
+#include <nda/gtest_tools.hpp>
+// clang-format on
 
 #define NDA_ENFORCE_BOUNDCHECK
 #include <som/numerics/finite_diff.hpp>

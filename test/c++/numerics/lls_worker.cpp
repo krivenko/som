@@ -22,7 +22,11 @@
 #include <cmath>
 #include <stdexcept>
 
+// clang-format off
+#include <nda/nda.hpp>
 #include <nda/gtest_tools.hpp>
+// clang-format on
+
 #include <triqs/utility/exceptions.hpp>
 
 #include <som/numerics/lls_worker.hpp>

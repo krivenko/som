@@ -21,7 +21,10 @@
 #include <cmath>
 #include <complex>
 
+// clang-format off
+#include <nda/nda.hpp>
 #include <nda/gtest_tools.hpp>
+// clang-format on
 
 #include <som/numerics/dilog.hpp>
 

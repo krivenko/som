@@ -18,8 +18,12 @@
  * SOM. If not, see <http://www.gnu.org/licenses/>.
  *
  ******************************************************************************/
-#include <h5/h5.hpp>
+// clang-format off
+#include <nda/nda.hpp>
 #include <nda/gtest_tools.hpp>
+// clang-format on
+
+#include <h5/h5.hpp>
 
 #include <som/kernels/fermiongf_imtime.hpp>
 #include <som/solution_worker.hpp>

@@ -22,7 +22,10 @@
 #include <sstream>
 #include <type_traits>
 
+// clang-format off
+#include <nda/nda.hpp>
 #include <nda/gtest_tools.hpp>
+// clang-format on
 
 #include <som/numerics/polynomial.hpp>
 

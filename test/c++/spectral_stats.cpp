@@ -24,7 +24,10 @@
 
 #include <triqs/mesh.hpp>
 
+// clang-format off
+#include <nda/nda.hpp>
 #include <nda/gtest_tools.hpp>
+// clang-format on
 
 #include <som/spectral_stats.hpp>
 

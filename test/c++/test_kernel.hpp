@@ -23,9 +23,12 @@
 #include <complex>
 #include <string>
 
-#include <h5/h5.hpp>
-#include <nda/gtest_tools.hpp>
+// clang-format off
 #include <nda/nda.hpp>
+#include <nda/gtest_tools.hpp>
+// clang-format on
+
+#include <h5/h5.hpp>
 
 #include <triqs/utility/is_complex.hpp>
 

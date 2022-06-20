@@ -25,8 +25,10 @@
 #include <numeric>
 #include <set>
 
-#include <nda/h5.hpp>
+// clang-format off
 #include <nda/nda.hpp>
+#include <nda/h5.hpp>
+// clang-format on
 
 #include <triqs/utility/exceptions.hpp>
 
