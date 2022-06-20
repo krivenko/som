@@ -1,173 +1,212 @@
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Installation &#8212; TRIQS Stochastic Optimization Method  documentation</title>
-    <link rel="stylesheet" href="_static/triqs.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="/som/mathjax/MathJax.js?config=default"></script>
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installation &mdash; SOM  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Documentation" href="documentation.html" />
-    <link rel="prev" title="Stochastic Optimization Method for Analytic Continuation" href="index.html" />
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
-    <script src="_static/cufon-yui.js" type="text/javascript"></script>
-    <script src="_static/spaceman.cufonfonts.js" type="text/javascript"></script>
-    <script type="text/javascript">
-      Cufon.replace('.triqs', { fontFamily: 'spaceman', hover: true }); 
-    </script>
- 
-    <style type="text/css">
-      table.right { float: right; margin-left: 20px; }
-      table.right td { border: 1px solid #ccc; }
-      
-    </style>
+    <link rel="next" title="Tutorial" href="tutorial.html" />
+    <link rel="prev" title="Stochastic Optimization Method for Analytic Continuation" href="index.html" /> 
+</head>
 
-  </head>
-  <body>
-<div class="pageheader">
-  <ul>
-    
-    <li><a href="#">Install</a></li>
-    
-    <li><a href="documentation.html">Documentation</a></li>
-    
-    <li><a href="issues.html">Issues</a></li>
-    
-    <li><a href="about.html">About SOM</a></li>
-    
-  </ul>
-  <div>
-    <h1 style="padding:0; margin: 10px 0 0 0;"><a class="triqs" href="index.html">SOM</a></h1>
-    <span style="font-size: 14px; margin: 0px; padding: 0px;">An analytic continuation program based on the <a class="triqs" style="font-size: 12px" href="https://triqs.github.io/">TRIQS</a> library</span>
-  </div>
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #7E588A" >
+            <a href="index.html" class="icon icon-home"> SOM
+          </a>
+              <div class="version">
+                2.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
 </div>
-
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="documentation.html" title="Documentation"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="index.html" title="Stochastic Optimization Method for Analytic Continuation"
-             accesskey="P">previous</a> |</li>
-    <li><a href="index.html">Home</a> &raquo;</li>
- 
-      </ul>
-    </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="contents.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Installation</a><ul>
-<li><a class="reference internal" href="#prerequisite">Prerequisite</a></li>
-<li><a class="reference internal" href="#installation-steps">Installation steps</a></li>
-<li><a class="reference internal" href="#customizing-your-installation-cmake-options">Customizing your installation: CMake options</a></li>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#docker">Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#compiling-som-from-source">Compiling SOM from source</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installation-steps">Installation steps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#custom-cmake-options">Custom CMake options</a></li>
 </ul>
 </li>
 </ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide/index.html">User guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guide/basic.html">Basic description of the method</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guide/basic.html#integral-equation-of-the-analytic-continuation-problem">Integral equation of the analytic continuation problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guide/basic.html#goodness-of-fit-functionals">Goodness of fit functionals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guide/basic.html#minimization-of-the-chi-2-functionals">Minimization of the <span class="math notranslate nohighlight">\(\chi^2\)</span>-functionals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guide/basic.html#post-processing-of-spectral-functions">Post-processing of spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guide/observables.html">Supported observables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guide/observables.html#thermal-green-s-function-of-fermions">Thermal Green’s function of fermions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guide/observables.html#thermal-green-s-function-of-bosons-dynamical-susceptibilities-and-conductivity">Thermal Green’s function of bosons, dynamical susceptibilities and conductivity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guide/observables.html#dynamical-response-functions-at-zero-temperature">Dynamical response functions at zero temperature</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guide/recovery.html">Recovery of observables on a real-frequency mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/spectral_stats.html">Statistical analysis of ensembles of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/socc.html">Stochastic Optimization with Consistent Constraints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guide/socc.html#consistent-constraints-updates">Consistent-constraints updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guide/socc.html#construction-of-final-solution-using-the-consistent-constraints-protocol">Construction of final solution using the consistent-constraints protocol</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Usage examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/index.html">Python API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="reference/som.html"><code class="docutils literal notranslate"><span class="pre">som</span></code>: Main Python module of SOM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reference/som.html#som-som"><code class="docutils literal notranslate"><span class="pre">som.Som</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/som.html#free-functions">Free functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/som.html#auxiliary-types">Auxiliary types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="reference/spectral_stats.html"><code class="docutils literal notranslate"><span class="pre">som.spectral_stats</span></code>: Statistical analysis of noisy spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="script_porting.html">SOM 1.x script porting guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="script_porting.html#python-modules">Python modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="script_porting.html#construction-of-the-som-object">Construction of the <code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code> object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="script_porting.html#deprecation-of-som-run">Deprecation of <code class="xref py py-func docutils literal notranslate"><span class="pre">Som.run()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="script_porting.html#post-processing-of-spectral-functions">Post-processing of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="script_porting.html#direct-access-to-spectral-functions">Direct access to spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="issues.html">Reporting issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About SOM</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="about.html#authors">Authors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#triqs">TRIQS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#acknowledgements">Acknowledgements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#usage-disclaimer">Usage disclaimer</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ChangeLog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#unreleased">2.0.0 (unreleased)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ChangeLog.html#major-changes-and-new-features">Major changes and new features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ChangeLog.html#python-api-changes">Python API changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ChangeLog.html#build-system-and-developer-tools">Build system and developer tools</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id2">1.2 (2020-03-15)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id3">1.1 (2017-04-23)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id4">1.0 (2017-03-19)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="search.html">Search</a></li>
+</ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="index.html"
-                        title="previous chapter">Stochastic Optimization Method for Analytic Continuation</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="documentation.html"
-                        title="next chapter">Documentation</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/install.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
+    </nav>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #7E588A" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SOM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Installation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/install.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <div class="section" id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="prerequisite">
-<h2>Prerequisite<a class="headerlink" href="#prerequisite" title="Permalink to this headline">¶</a></h2>
-<ol class="arabic simple">
-<li>The <a class="reference external" href="https://triqs.github.io/triqs/1.4/index.html#welcome" title="(in TRIQS v1.4)"><span class="xref std std-ref">TRIQS</span></a> toolbox version 1.4.2 (see <a class="reference external" href="https://triqs.github.io/triqs/1.4/install.html#installation" title="(in TRIQS v1.4)"><span class="xref std std-ref">TRIQS installation instruction</span></a>).
-In the following, we will suppose that it is installed in the <code class="docutils literal"><span class="pre">path_to_triqs</span></code> directory.</li>
-</ol>
+<span id="install"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h1>
+<div class="section" id="docker">
+<h2>Docker<a class="headerlink" href="#docker" title="Permalink to this heading"></a></h2>
+<p>A Docker image including the latest version of SOM as well as other TRIQS
+applications is available
+<a class="reference external" href="https://hub.docker.com/repository/docker/ikrivenko/som" rel="noopener noreferrer" target="_blank">here</a>.</p>
+</div>
+<div class="section" id="compiling-som-from-source">
+<h2>Compiling SOM from source<a class="headerlink" href="#compiling-som-from-source" title="Permalink to this heading"></a></h2>
+<div class="section" id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading"></a></h3>
+<p>The <a class="reference external" href="https://triqs.github.io/triqs/3.1.x/index.html#welcome" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><span class="xref std std-ref">TRIQS</span></a> toolbox version 3.1.x
+(see <a class="reference external" href="https://triqs.github.io/triqs/3.1.x/install.html#triqs-install" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><span class="xref std std-ref">TRIQS installation instructions</span></a>).
+In the following, we will assume that it is installed in the directory
+<code class="docutils literal notranslate"><span class="pre">path_to_triqs</span></code>.</p>
 </div>
 <div class="section" id="installation-steps">
-<h2>Installation steps<a class="headerlink" href="#installation-steps" title="Permalink to this headline">¶</a></h2>
+<h3>Installation steps<a class="headerlink" href="#installation-steps" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li>Download the source code of the latest stable version by cloning the
+<code class="docutils literal notranslate"><span class="pre">krivenko/som</span></code> repository from GitHub:</li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git clone -b <span class="m">2</span>.0.0 https://github.com/krivenko/som.git som.src
+</pre></div>
+</div>
 <ol class="arabic">
-<li><p class="first">Download the sources of the solver from github:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$ git clone https://github.com/krivenko/som.git som.src
+<li><p class="first">Create and move to a new directory where you will compile the code:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ mkdir som.build <span class="o">&amp;&amp;</span> <span class="nb">cd</span> som.build
 </pre></div>
 </div>
 </li>
-<li><p class="first">Create an empty build directory where you will compile the code:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$ mkdir som.build <span class="o">&amp;&amp;</span> <span class="nb">cd</span> som.build
+<li><p class="first">Ensure that your shell contains the TRIQS environment variables by sourcing
+the <code class="docutils literal notranslate"><span class="pre">triqsvars.sh</span></code> file from your TRIQS installation:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ <span class="nb">source</span> path_to_triqs/share/triqs/triqsvars.sh
 </pre></div>
 </div>
 </li>
-<li><p class="first">In the build directory call cmake specifying where the TRIQS library is installed:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$ cmake -DTRIQS_PATH<span class="o">=</span>path_to_triqs ../som.src
+<li><p class="first">In the build directory call <code class="docutils literal notranslate"><span class="pre">cmake</span></code>, including any additional custom CMake
+options, see below:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ cmake ../som.src
 </pre></div>
 </div>
 </li>
-<li><p class="first">Compile the code, run the tests and install the application:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$ make
+<li><p class="first">Compile the code, run the unit tests and install the application:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make
 $ make <span class="nb">test</span>
 $ make install
 </pre></div>
 </div>
 </li>
 </ol>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Be careful with the cmake command above: set TRIQS_PATH, not CMAKE_INSTALL_PREFIX (this variable is only for the TRIQS library)!</p>
 </div>
+<div class="section" id="custom-cmake-options">
+<span id="install-options"></span><h3>Custom CMake options<a class="headerlink" href="#custom-cmake-options" title="Permalink to this heading"></a></h3>
+<p>The compilation of SOM can be configured using CMake-options:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake ../som.src -DOPTION1<span class="o">=</span>value1 -DOPTION2<span class="o">=</span>value2 ...
+</pre></div>
 </div>
-<div class="section" id="customizing-your-installation-cmake-options">
-<span id="install-options"></span><h2>Customizing your installation: CMake options<a class="headerlink" href="#customizing-your-installation-cmake-options" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="docutils">
+<table border="1" class="colwidths-given docutils align-default">
 <colgroup>
-<col width="63%" />
-<col width="38%" />
+<col width="70%" />
+<col width="30%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Options</th>
@@ -175,47 +214,76 @@ $ make install
 </tr>
 </thead>
 <tbody valign="top">
+<tr class="row-even"><td>Specify an installation path other than path_to_triqs</td>
+<td><code class="docutils literal notranslate"><span class="pre">-DCMAKE_INSTALL_PREFIX=path_to_som</span></code></td>
+</tr>
+<tr class="row-odd"><td>Build in Debugging Mode</td>
+<td><code class="docutils literal notranslate"><span class="pre">-DCMAKE_BUILD_TYPE=Debug</span></code></td>
+</tr>
+<tr class="row-even"><td>Enable compilation of shared libraries</td>
+<td><code class="docutils literal notranslate"><span class="pre">-DBUILD_SHARED_LIBS=ON</span></code></td>
+</tr>
+<tr class="row-odd"><td>Build a Debian package</td>
+<td><code class="docutils literal notranslate"><span class="pre">-DBUILD_DEBIAN_PACKAGE=ON</span></code></td>
+</tr>
 <tr class="row-even"><td>Disable testing (not recommended)</td>
-<td>-DTests=OFF</td>
+<td><code class="docutils literal notranslate"><span class="pre">-DBuild_Tests=OFF</span></code></td>
 </tr>
 <tr class="row-odd"><td>Build the documentation locally</td>
-<td>-DBuild_Documentation=ON</td>
+<td><code class="docutils literal notranslate"><span class="pre">-DBuild_Documentation=ON</span></code></td>
 </tr>
-<tr class="row-even"><td>Initial size of the cache to store computed LHS</td>
-<td>-DCACHE_SIZE=0x4000</td>
+<tr class="row-even"><td>Build without Python support</td>
+<td><code class="docutils literal notranslate"><span class="pre">-DPythonSupport=OFF</span></code></td>
+</tr>
+<tr class="row-odd"><td>Initial size of the cache to store computed LHS</td>
+<td><code class="docutils literal notranslate"><span class="pre">-DCache_Size=0x4000</span></code></td>
+</tr>
+<tr class="row-even"><td>Enable extended debugging output (<em>developers only</em>)</td>
+<td><code class="docutils literal notranslate"><span class="pre">-DANALYZE_SOURCES=ON</span></code></td>
+</tr>
+<tr class="row-odd"><td>Run static analyzer tools (<code class="docutils literal notranslate"><span class="pre">clang-tidy</span></code> and <code class="docutils literal notranslate"><span class="pre">cppcheck</span></code>) as part of
+compilation process (<em>developers only</em>)</td>
+<td><code class="docutils literal notranslate"><span class="pre">-DANALYZE_SOURCES=ON</span></code></td>
+</tr>
+<tr class="row-even"><td>Compile SOM library with LLVM Address Sanitizer (<em>developers only</em>)</td>
+<td><code class="docutils literal notranslate"><span class="pre">-DASAN=ON</span></code></td>
+</tr>
+<tr class="row-odd"><td>Compile SOM library with LLVM Undefined Behavior Sanitizer
+(<em>developers only</em>)</td>
+<td><code class="docutils literal notranslate"><span class="pre">-DUBSAN=ON</span></code></td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
+</div>
 
 
+           </div>
           </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Stochastic Optimization Method for Analytic Continuation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tutorial.html" class="btn btn-neutral float-right" title="Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2022, Igor Krivenko.</p>
+  </div>
+
+   
+
+</footer>
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="documentation.html" title="Documentation"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="index.html" title="Stochastic Optimization Method for Analytic Continuation"
-             >previous</a> |</li>
-    <li><a href="index.html">Home</a> &raquo;</li>
- 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2016-2020, Igor Krivenko.
-    </div>
-  </body>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
 </html>

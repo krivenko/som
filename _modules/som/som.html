@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>som.som &mdash; SOM  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #7E588A" >
+            <a href="../../index.html" class="icon icon-home"> SOM
+          </a>
+              <div class="version">
+                2.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#docker">Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#compiling-som-from-source">Compiling SOM from source</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../install.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../install.html#installation-steps">Installation steps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../install.html#custom-cmake-options">Custom CMake options</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guide/index.html">User guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/basic.html">Basic description of the method</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/basic.html#integral-equation-of-the-analytic-continuation-problem">Integral equation of the analytic continuation problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/basic.html#goodness-of-fit-functionals">Goodness of fit functionals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/basic.html#minimization-of-the-chi-2-functionals">Minimization of the <span class="math notranslate nohighlight">\(\chi^2\)</span>-functionals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/basic.html#post-processing-of-spectral-functions">Post-processing of spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/observables.html">Supported observables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/observables.html#thermal-green-s-function-of-fermions">Thermal Green’s function of fermions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/observables.html#thermal-green-s-function-of-bosons-dynamical-susceptibilities-and-conductivity">Thermal Green’s function of bosons, dynamical susceptibilities and conductivity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/observables.html#dynamical-response-functions-at-zero-temperature">Dynamical response functions at zero temperature</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/recovery.html">Recovery of observables on a real-frequency mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/spectral_stats.html">Statistical analysis of ensembles of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/socc.html">Stochastic Optimization with Consistent Constraints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/socc.html#consistent-constraints-updates">Consistent-constraints updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/socc.html#construction-of-final-solution-using-the-consistent-constraints-protocol">Construction of final solution using the consistent-constraints protocol</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Usage examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Python API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../reference/som.html"><code class="docutils literal notranslate"><span class="pre">som</span></code>: Main Python module of SOM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/som.html#som-som"><code class="docutils literal notranslate"><span class="pre">som.Som</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/som.html#free-functions">Free functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/som.html#auxiliary-types">Auxiliary types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../reference/spectral_stats.html"><code class="docutils literal notranslate"><span class="pre">som.spectral_stats</span></code>: Statistical analysis of noisy spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../script_porting.html">SOM 1.x script porting guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#python-modules">Python modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#construction-of-the-som-object">Construction of the <code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code> object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#deprecation-of-som-run">Deprecation of <code class="xref py py-func docutils literal notranslate"><span class="pre">Som.run()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#post-processing-of-spectral-functions">Post-processing of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#direct-access-to-spectral-functions">Direct access to spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../issues.html">Reporting issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About SOM</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#authors">Authors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#triqs">TRIQS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#acknowledgements">Acknowledgements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#usage-disclaimer">Usage disclaimer</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../ChangeLog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#unreleased">2.0.0 (unreleased)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../ChangeLog.html#major-changes-and-new-features">Major changes and new features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../ChangeLog.html#python-api-changes">Python API changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../ChangeLog.html#build-system-and-developer-tools">Build system and developer tools</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id2">1.2 (2020-03-15)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id3">1.1 (2017-04-23)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id4">1.0 (2017-03-19)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../search.html">Search</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #7E588A" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">SOM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>som.som</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for som.som</h1><div class="highlight"><pre>
+<span></span><span class="c1">##############################################################################</span>
+<span class="c1">#</span>
+<span class="c1"># SOM: Stochastic Optimization Method for Analytic Continuation</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (C) 2016-2022 Igor Krivenko &lt;igor.s.krivenko@gmail.com&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># SOM is free software: you can redistribute it and/or modify it under the</span>
+<span class="c1"># terms of the GNU General Public License as published by the Free Software</span>
+<span class="c1"># Foundation, either version 3 of the License, or (at your option) any later</span>
+<span class="c1"># version.</span>
+<span class="c1">#</span>
+<span class="c1"># SOM is distributed in the hope that it will be useful, but WITHOUT ANY</span>
+<span class="c1"># WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS</span>
+<span class="c1"># FOR A PARTICULAR PURPOSE. See the GNU General Public License for more</span>
+<span class="c1"># details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License along with</span>
+<span class="c1"># SOM. If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="c1">#</span>
+<span class="c1">##############################################################################</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Main module of SOM</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">cmath</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">triqs.gf</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Gf</span><span class="p">,</span>
+                      <span class="n">GfImFreq</span><span class="p">,</span>
+                      <span class="n">GfImTime</span><span class="p">,</span>
+                      <span class="n">GfLegendre</span><span class="p">,</span>
+                      <span class="n">Fourier</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">triqs.stat</span> <span class="kn">import</span> <span class="n">Histogram</span>
+
+<span class="kn">from</span> <span class="nn">.som_core</span> <span class="kn">import</span> <span class="n">SomCore</span>
+
+<div class="viewcode-block" id="Som"><a class="viewcode-back" href="../../reference/som.html#som.Som">[docs]</a><span class="k">class</span> <span class="nc">Som</span><span class="p">(</span><span class="n">SomCore</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Implementation of the Stochastic Optimization Method.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Som.__init__"><a class="viewcode-back" href="../../reference/som.html#som.Som.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">rhs</span><span class="p">:</span> <span class="n">Gf</span><span class="p">,</span>
+                 <span class="n">errors</span><span class="p">:</span> <span class="n">Gf</span><span class="p">,</span>
+                 <span class="n">kind</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;FermionGf&quot;</span><span class="p">,</span>
+                 <span class="n">norms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="o">*</span><span class="p">,</span>
+                 <span class="n">filtering_levels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param rhs: Right hand side of the :ref:`integral equation</span>
+<span class="sd">                  &lt;integral_equation&gt;` to be solved, defined on</span>
+<span class="sd">                  :class:`triqs.gf.meshes.MeshImTime`,</span>
+<span class="sd">                  :class:`triqs.gf.meshes.MeshImFreq` or</span>
+<span class="sd">                  :class:`triqs.gf.meshes.MeshLegendre`.</span>
+<span class="sd">                  If target shape of ``rhs`` is :math:`M{\times}M`, only its</span>
+<span class="sd">                  diagonal matrix elements will be considered and</span>
+<span class="sd">                  used as input data for :math:`M` independent continuation</span>
+<span class="sd">                  problems.</span>
+<span class="sd">        :type rhs: :class:`triqs.gf.gf.Gf`</span>
+
+<span class="sd">        :param errors: Either :ref:`error bars &lt;error_bars&gt;` :math:`\sigma_n`</span>
+<span class="sd">                       (GF container of the same type and target shape as</span>
+<span class="sd">                       ``rhs``) or a packed list of :ref:`covariance matrices</span>
+<span class="sd">                       &lt;cov_matrix&gt;` (``Gf(mesh=MeshProduct(rhs.mesh, rhs.mesh),</span>
+<span class="sd">                       target_shape=[M])`` with each target element</span>
+<span class="sd">                       corresponding to one covariance matrix).</span>
+
+<span class="sd">        :param kind: Selection of the :ref:`observable kind &lt;observables&gt;`</span>
+<span class="sd">                     (and its respective integral kernel) to be used. One of</span>
+<span class="sd">                     ``FermionGf``, ``FermionGfSymm``, ``BosonCorr``,</span>
+<span class="sd">                     ``BosonAutoCorr``, ``ZeroTemp``. Defaults to ``FermionGf``.</span>
+<span class="sd">        :type kind: :class:`str`, optional</span>
+
+<span class="sd">        :param norms: Requested :ref:`solution norms &lt;solution_norm&gt;` either as</span>
+<span class="sd">                      a list of :math:`M` real numbers or as a single real</span>
+<span class="sd">                      number for all :math:`M` continuation problems. For</span>
+<span class="sd">                      observable kinds ``FermionGf``, ``FermionGfSymm`` and</span>
+<span class="sd">                      ``ZeroTemp`` this parameter is optional and defaults to</span>
+<span class="sd">                      1.0. For ``BosonCorr`` and ``BosonAutoCorr`` it must be</span>
+<span class="sd">                      provided by the user.</span>
+
+<span class="sd">                      .. seealso::</span>
+
+<span class="sd">                        When unknown a priori in the latter case, the norms can</span>
+<span class="sd">                        be approximately estimated from ``rhs`` using</span>
+<span class="sd">                        :func:`estimate_boson_corr_spectrum_norms`.</span>
+
+<span class="sd">        :type norms: :class:`float` or :class:`list` [:class:`float`]</span>
+
+<span class="sd">        :param filtering_levels: :ref:`Filtering levels &lt;cov_matrix_filtered&gt;`</span>
+<span class="sd">                                 for covariance matrices either as</span>
+<span class="sd">                                 a list of :math:`M` real numbers or as a</span>
+<span class="sd">                                 single real number for all :math:`M`</span>
+<span class="sd">                                 continuation problems. Can only be specified</span>
+<span class="sd">                                 when the covariance matrices are used.</span>
+<span class="sd">                                 Defaults to 0.</span>
+<span class="sd">        :type filtering_levels: :class:`float` or</span>
+<span class="sd">                                :class:`list` [:class:`float`], optional</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">norms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">norms_</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;FermionGf&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+                          <span class="s2">&quot;FermionGfSymm&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+                          <span class="s2">&quot;ZeroTemp&quot;</span><span class="p">:</span>  <span class="mf">1.0</span><span class="p">}[</span><span class="n">kind</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">rhs</span><span class="o">.</span><span class="n">target_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;A list of solution norms must be provided &quot;</span>
+                                   <span class="s2">&quot;for observable kind &quot;</span> <span class="o">+</span> <span class="n">kind</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">norms</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">norms</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">norms_</span> <span class="o">=</span> <span class="n">norms</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">rhs</span><span class="o">.</span><span class="n">target_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">norms_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">norms</span><span class="p">)</span>
+
+        <span class="c1"># First, try to construct with the covariance matrices</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">errors</span><span class="p">,</span> <span class="n">Gf</span><span class="p">)</span> \
+                <span class="ow">and</span> <span class="n">errors</span><span class="o">.</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">errors</span><span class="o">.</span><span class="n">target_rank</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">filtering_levels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">fl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filtering_levels</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">or</span> \
+                    <span class="nb">isinstance</span><span class="p">(</span><span class="n">filtering_levels</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="n">fl</span> <span class="o">=</span> <span class="n">filtering_levels</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">rhs</span><span class="o">.</span><span class="n">target_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">filtering_levels</span><span class="p">)</span>
+
+            <span class="n">SomCore</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rhs</span><span class="p">,</span> <span class="n">errors</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">norms_</span><span class="p">,</span> <span class="n">fl</span><span class="p">)</span>
+
+        <span class="c1"># Then try the error bars</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">errors</span><span class="p">,</span> <span class="n">Gf</span><span class="p">)</span> \
+                <span class="ow">and</span> <span class="n">errors</span><span class="o">.</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">errors</span><span class="o">.</span><span class="n">target_rank</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">filtering_levels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s2">&quot;Argument &#39;filtering_levels&#39; is accepted only when full &quot;</span>
+                    <span class="s2">&quot;covariance matrices are provided&quot;</span><span class="p">)</span>
+
+            <span class="n">SomCore</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rhs</span><span class="p">,</span> <span class="n">errors</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">norms_</span><span class="p">)</span>
+
+        <span class="c1"># Give up</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Argument &#39;errors&#39; has unsupported format&quot;</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="estimate_boson_corr_spectrum_norms"><a class="viewcode-back" href="../../reference/som.html#som.estimate_boson_corr_spectrum_norms">[docs]</a><span class="k">def</span> <span class="nf">estimate_boson_corr_spectrum_norms</span><span class="p">(</span><span class="n">chi</span><span class="p">:</span> <span class="n">Gf</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a correlator :math:`\chi` of bosonic or boson-like</span>
+<span class="sd">    (fermion-number-conserving) operators, estimates the corresponding spectrum</span>
+<span class="sd">    normalization constants :math:`\mathcal{N}`.</span>
+
+<span class="sd">    Depending on the mesh :math:`\chi` is defined on, one of the following</span>
+<span class="sd">    expressions is used.</span>
+
+<span class="sd">    - Imaginary frequencies: :math:`\mathcal{N} = \pi\chi(i\Omega=0)`.</span>
+<span class="sd">    - Imaginary time: :math:`\mathcal{N} = \pi\int_0^\beta d\tau \chi(\tau)`.</span>
+<span class="sd">    - Legendre polynomial basis coefficients: :math:`\mathcal{N} =</span>
+<span class="sd">      \pi\chi(\ell=0)`.</span>
+
+<span class="sd">    :param chi: The correlator :math:`\chi`.</span>
+<span class="sd">    :type chi: :class:`triqs.gf.gf.Gf`</span>
+<span class="sd">    :return: A list of estimated spectrum normalization constants,</span>
+<span class="sd">             one constant per diagonal matrix element of :math:`\chi`.</span>
+<span class="sd">    :rtype: :class:`list` [:class:`float`]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">chi</span><span class="p">,</span> <span class="n">Gf</span><span class="p">),</span> <span class="s2">&quot;Expected a Green&#39;s function object&quot;</span>
+
+    <span class="k">if</span> <span class="n">chi</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">statistic</span> <span class="o">!=</span> <span class="s2">&quot;Boson&quot;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Wrong mesh statistics for bosonic correlator &#39;chi&#39;&quot;</span><span class="p">)</span>
+
+    <span class="n">N</span> <span class="o">=</span> <span class="n">chi</span><span class="o">.</span><span class="n">target_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">chi</span><span class="p">,</span> <span class="n">GfImFreq</span><span class="p">):</span>
+        <span class="n">W0</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">chi</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="mi">0</span><span class="n">j</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">chi</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">W0</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">real</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)])</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">chi</span><span class="p">,</span> <span class="n">GfImTime</span><span class="p">):</span>
+        <span class="n">chi_iw</span> <span class="o">=</span> <span class="n">GfImFreq</span><span class="p">(</span><span class="n">beta</span><span class="o">=</span><span class="n">chi</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span>
+                          <span class="n">statistic</span><span class="o">=</span><span class="s2">&quot;Boson&quot;</span><span class="p">,</span>
+                          <span class="n">n_points</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># We need only the zero frequency</span>
+                          <span class="n">target_shape</span><span class="o">=</span><span class="n">chi</span><span class="o">.</span><span class="n">target_shape</span><span class="p">)</span>
+        <span class="n">chi_iw</span> <span class="o">&lt;&lt;</span> <span class="n">Fourier</span><span class="p">(</span><span class="n">chi</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">chi_iw</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">real</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)])</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">chi</span><span class="p">,</span> <span class="n">GfLegendre</span><span class="p">):</span>
+        <span class="c1"># \chi(i\Omega = 0) = \chi(l = 0)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">chi</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">real</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Unexpected type of &#39;chi&#39;&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="count_good_solutions"><a class="viewcode-back" href="../../reference/som.html#som.count_good_solutions">[docs]</a><span class="k">def</span> <span class="nf">count_good_solutions</span><span class="p">(</span><span class="n">hist</span><span class="p">:</span> <span class="n">Histogram</span><span class="p">,</span>
+                         <span class="n">good_chi_rel</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
+                         <span class="n">good_chi_abs</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">cmath</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a histogram of values :math:`\chi` for the objective function</span>
+<span class="sd">    :math:`\chi^2`, counts the number of such solutions that</span>
+<span class="sd">    :math:`\chi \leq` ``good_chi_abs`` and</span>
+<span class="sd">    :math:`\chi/\chi_\mathrm{min} \leq` ``good_chi_rel``.</span>
+
+<span class="sd">    :param hist: Histogram to analyze.</span>
+<span class="sd">    :type hist: :class:`triqs.stat.histograms.Histogram`</span>
+<span class="sd">    :param good_chi_rel: :math:`\chi/\chi_\mathrm{min}` threshold for good</span>
+<span class="sd">                         solutions.</span>
+<span class="sd">    :type good_chi_rel: :class:`float`, optional</span>
+<span class="sd">    :param good_chi_abs: :math:`\chi` threshold for good solutions.</span>
+<span class="sd">    :type good_chi_abs: :class:`float`, optional</span>
+<span class="sd">    :rtype: :class:`int`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">chi_min</span> <span class="o">=</span> <span class="n">hist</span><span class="o">.</span><span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">chi_c</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">good_chi_abs</span><span class="p">,</span> <span class="n">chi_min</span> <span class="o">*</span> <span class="n">good_chi_rel</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">c</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">hist</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+                   <span class="k">if</span> <span class="n">hist</span><span class="o">.</span><span class="n">mesh_point</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">chi_c</span><span class="p">))</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2022, Igor Krivenko.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

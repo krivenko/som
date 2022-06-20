@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Statistical analysis of ensembles of spectral functions &mdash; SOM  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Stochastic Optimization with Consistent Constraints" href="socc.html" />
+    <link rel="prev" title="Recovery of observables on a real-frequency mesh" href="recovery.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #7E588A" >
+            <a href="../index.html" class="icon icon-home"> SOM
+          </a>
+              <div class="version">
+                2.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#docker">Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#compiling-som-from-source">Compiling SOM from source</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../install.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../install.html#installation-steps">Installation steps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../install.html#custom-cmake-options">Custom CMake options</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">User guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="basic.html">Basic description of the method</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="basic.html#integral-equation-of-the-analytic-continuation-problem">Integral equation of the analytic continuation problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic.html#goodness-of-fit-functionals">Goodness of fit functionals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic.html#minimization-of-the-chi-2-functionals">Minimization of the <span class="math notranslate nohighlight">\(\chi^2\)</span>-functionals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic.html#post-processing-of-spectral-functions">Post-processing of spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="observables.html">Supported observables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="observables.html#thermal-green-s-function-of-fermions">Thermal Green’s function of fermions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="observables.html#thermal-green-s-function-of-bosons-dynamical-susceptibilities-and-conductivity">Thermal Green’s function of bosons, dynamical susceptibilities and conductivity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="observables.html#dynamical-response-functions-at-zero-temperature">Dynamical response functions at zero temperature</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="recovery.html">Recovery of observables on a real-frequency mesh</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Statistical analysis of ensembles of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="socc.html">Stochastic Optimization with Consistent Constraints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="socc.html#consistent-constraints-updates">Consistent-constraints updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="socc.html#construction-of-final-solution-using-the-consistent-constraints-protocol">Construction of final solution using the consistent-constraints protocol</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Usage examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Python API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/som.html"><code class="docutils literal notranslate"><span class="pre">som</span></code>: Main Python module of SOM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/som.html#som-som"><code class="docutils literal notranslate"><span class="pre">som.Som</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/som.html#free-functions">Free functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/som.html#auxiliary-types">Auxiliary types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/spectral_stats.html"><code class="docutils literal notranslate"><span class="pre">som.spectral_stats</span></code>: Statistical analysis of noisy spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../script_porting.html">SOM 1.x script porting guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../script_porting.html#python-modules">Python modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../script_porting.html#construction-of-the-som-object">Construction of the <code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code> object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../script_porting.html#deprecation-of-som-run">Deprecation of <code class="xref py py-func docutils literal notranslate"><span class="pre">Som.run()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../script_porting.html#post-processing-of-spectral-functions">Post-processing of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../script_porting.html#direct-access-to-spectral-functions">Direct access to spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../issues.html">Reporting issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About SOM</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../about.html#authors">Authors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about.html#triqs">TRIQS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about.html#acknowledgements">Acknowledgements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about.html#usage-disclaimer">Usage disclaimer</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ChangeLog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../ChangeLog.html#unreleased">2.0.0 (unreleased)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ChangeLog.html#major-changes-and-new-features">Major changes and new features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ChangeLog.html#python-api-changes">Python API changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ChangeLog.html#build-system-and-developer-tools">Build system and developer tools</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../ChangeLog.html#id2">1.2 (2020-03-15)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ChangeLog.html#id3">1.1 (2017-04-23)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ChangeLog.html#id4">1.0 (2017-03-19)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../search.html">Search</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #7E588A" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SOM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">User guide</a> &raquo;</li>
+      <li>Statistical analysis of ensembles of spectral functions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guide/spectral_stats.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="statistical-analysis-of-ensembles-of-spectral-functions">
+<span id="spectral-stats"></span><h1>Statistical analysis of ensembles of spectral functions<a class="headerlink" href="#statistical-analysis-of-ensembles-of-spectral-functions" title="Permalink to this heading"></a></h1>
+<p>A theoretical framework presented in Sections I-II of <a class="reference internal" href="../about.html#gmpps2017" id="id1"><span>[GMPPS2017]</span></a> offers a way
+to estimate statistical properties (averages, dispersions and two-point
+correlations) of ensembles of
+<a class="reference internal" href="basic.html#particular-solutions"><span class="std std-ref">particular solutions</span></a>. It is implemented as a
+handful of functions in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">som.spectral_stats</span></code> module.</p>
+<p>The analysis is built around the notion of spectral integrals. Given a set of
+finite intervals <span class="math notranslate nohighlight">\(\{\Delta_m\}\)</span> centered around points <span class="math notranslate nohighlight">\(z_m\)</span>,
+the spectral integrals are defined as</p>
+<div class="math notranslate nohighlight">
+\[i_m = \int_{-\infty}^\infty dz \bar K(m, z) A(z),\]</div>
+<p>where kernel <span class="math notranslate nohighlight">\(\bar K(m, z)\)</span> is a “resolution function” localized inside
+<span class="math notranslate nohighlight">\(\{\Delta_m\}\)</span>.</p>
+<p>Function <a class="reference internal" href="../reference/spectral_stats.html#som.spectral_stats.spectral_integral" title="som.spectral_stats.spectral_integral"><code class="xref py py-func docutils literal notranslate"><span class="pre">som.spectral_stats.spectral_integral()</span></code></a> evaluates <span class="math notranslate nohighlight">\(i_m\)</span> for
+a single interval <span class="math notranslate nohighlight">\(\Delta_m\)</span>, for all intervals induced by a
+<a class="reference external" href="https://triqs.github.io/triqs/3.1.x/documentation/python_api/triqs.gf.meshes.MeshReFreq.html#triqs.gf.meshes.MeshReFreq" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">real</span> <span class="pre">frequency</span> <span class="pre">mesh</span></code></a>, or for an
+arbitrary set of intervals. It supports a few kernels <span class="math notranslate nohighlight">\(\bar K(m, z)\)</span>
+switched by the keyword argument <code class="docutils literal notranslate"><span class="pre">resolution_function</span></code>,</p>
+<ul id="resolution-functions">
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">resolution_function=rectangle</span></code>:</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[\bar K(m, z) = \frac{1}{|\Delta_m|}
+    \theta\left(\frac{|\Delta_m|}{2} - |z - z_m|\right).\]</div>
+</div></blockquote>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">resolution_function=lorentzian</span></code>:</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[\bar K(m, z) = \frac{1}{\pi}
+    \frac{|\Delta_m|/2}{(z - z_m)^2 + (|\Delta_m|/2)^2}.\]</div>
+</div></blockquote>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">resolution_function=gaussian</span></code>:</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[\bar K(m, z) = \frac{1}{\sqrt{2\pi(|\Delta_m|/2)^2}}
+    \exp\left(-\frac{(z - z_m)^2}{2(|\Delta_m|/2)^2}\right).\]</div>
+</div></blockquote>
+</li>
+</ul>
+<p>Having accumulated a set (ensemble) of <span class="math notranslate nohighlight">\(J\)</span> particular solutions, one can
+study statistical properties of spectral integrals <span class="math notranslate nohighlight">\(i_m^{(j)}\)</span> derived
+from them.</p>
+<p>Function <a class="reference internal" href="../reference/spectral_stats.html#som.spectral_stats.spectral_avg" title="som.spectral_stats.spectral_avg"><code class="xref py py-func docutils literal notranslate"><span class="pre">som.spectral_stats.spectral_avg()</span></code></a> computes averages over the
+ensemble,</p>
+<div class="math notranslate nohighlight">
+\[\bar{i}_m = \frac{1}{J} \sum_{j=1}^J i_m^{(j)}.\]</div>
+<p>These averages can be interpreted as an estimate of the final spectrum.</p>
+<p>While horizontal “error bars” on <span class="math notranslate nohighlight">\(\bar{i}_m\)</span> are simply
+<span class="math notranslate nohighlight">\(|\Delta_m|/2\)</span>, the vertical ones (<span class="math notranslate nohighlight">\(\sigma_m\)</span>) are estimated from
+dispersions</p>
+<div class="math notranslate nohighlight">
+\[\sigma^2_m = \frac{1}{J} \sum_{j=1}^J (i_m^{(j)} - \bar{i}_m)^2.\]</div>
+<p>Spectral dispersions are computed by <a class="reference internal" href="../reference/spectral_stats.html#som.spectral_stats.spectral_disp" title="som.spectral_stats.spectral_disp"><code class="xref py py-func docutils literal notranslate"><span class="pre">som.spectral_stats.spectral_disp()</span></code></a>,
+and <a class="reference internal" href="../reference/spectral_stats.html#som.spectral_stats.spectral_corr" title="som.spectral_stats.spectral_corr"><code class="xref py py-func docutils literal notranslate"><span class="pre">som.spectral_stats.spectral_corr()</span></code></a> returns a full matrix of
+two-points correlators</p>
+<div class="math notranslate nohighlight">
+\[\sigma_{mm'} = \frac{1}{J} \sum_{j=1}^J (i_m^{(j)} - \bar{i}_m)
+                                        (i_{m'}^{(j)} - \bar{i}_{m'}).\]</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="recovery.html" class="btn btn-neutral float-left" title="Recovery of observables on a real-frequency mesh" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="socc.html" class="btn btn-neutral float-right" title="Stochastic Optimization with Consistent Constraints" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2022, Igor Krivenko.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

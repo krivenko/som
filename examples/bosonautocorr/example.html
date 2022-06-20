@@ -1,149 +1,171 @@
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Example: Autocorrelator of a Hermitian operator &#8212; TRIQS Stochastic Optimization Method  documentation</title>
-    <link rel="stylesheet" href="../../_static/triqs.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../',
-        VERSION:     '',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="/som/mathjax/MathJax.js?config=default"></script>
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Example: Autocorrelator of a Hermitian operator &mdash; SOM  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../about.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Example: Matsubara correlator at zero temperature" href="../zerotemp/example.html" />
-    <link rel="prev" title="Example: Correlator of boson-like operators" href="../bosoncorr/example.html" />
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
-    <script src="../../_static/cufon-yui.js" type="text/javascript"></script>
-    <script src="../../_static/spaceman.cufonfonts.js" type="text/javascript"></script>
-    <script type="text/javascript">
-      Cufon.replace('.triqs', { fontFamily: 'spaceman', hover: true }); 
-    </script>
- 
-    <style type="text/css">
-      table.right { float: right; margin-left: 20px; }
-      table.right td { border: 1px solid #ccc; }
-      
-    </style>
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
 
-  </head>
-  <body>
-<div class="pageheader">
-  <ul>
-    
-    <li><a href="../../install.html">Install</a></li>
-    
-    <li><a href="../../documentation.html">Documentation</a></li>
-    
-    <li><a href="../../issues.html">Issues</a></li>
-    
-    <li><a href="../../about.html">About SOM</a></li>
-    
-  </ul>
-  <div>
-    <h1 style="padding:0; margin: 10px 0 0 0;"><a class="triqs" href="../../index.html">SOM</a></h1>
-    <span style="font-size: 14px; margin: 0px; padding: 0px;">An analytic continuation program based on the <a class="triqs" style="font-size: 12px" href="https://triqs.github.io/">TRIQS</a> library</span>
-  </div>
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #7E588A" >
+            <a href="../../index.html" class="icon icon-home"> SOM
+          </a>
+              <div class="version">
+                2.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
 </div>
-
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="../zerotemp/example.html" title="Example: Matsubara correlator at zero temperature"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="../bosoncorr/example.html" title="Example: Correlator of boson-like operators"
-             accesskey="P">previous</a> |</li>
-    <li><a href="../../index.html">Home</a> &raquo;</li>
-
-          <li class="nav-item nav-item-1"><a href="../../documentation.html" accesskey="U">Documentation</a> &#187;</li> 
-      </ul>
-    </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../../contents.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Example: Autocorrelator of a Hermitian operator</a><ul>
-<li><a class="reference internal" href="#run-analytical-continuation">Run analytical continuation</a></li>
-<li><a class="reference internal" href="#plot-input-and-reconstructed-correlators-at-matsubara-frequencies">Plot input and reconstructed correlators at Matsubara frequencies</a></li>
-<li><a class="reference internal" href="#plot-the-correlator-on-the-real-frequency-axis">Plot the correlator on the real frequency axis</a></li>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#docker">Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#compiling-som-from-source">Compiling SOM from source</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../install.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../install.html#installation-steps">Installation steps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../install.html#custom-cmake-options">Custom CMake options</a></li>
 </ul>
 </li>
 </ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guide/index.html">User guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/basic.html">Basic description of the method</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/basic.html#integral-equation-of-the-analytic-continuation-problem">Integral equation of the analytic continuation problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/basic.html#goodness-of-fit-functionals">Goodness of fit functionals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/basic.html#minimization-of-the-chi-2-functionals">Minimization of the <span class="math notranslate nohighlight">\(\chi^2\)</span>-functionals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/basic.html#post-processing-of-spectral-functions">Post-processing of spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/observables.html">Supported observables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/observables.html#thermal-green-s-function-of-fermions">Thermal Green’s function of fermions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/observables.html#thermal-green-s-function-of-bosons-dynamical-susceptibilities-and-conductivity">Thermal Green’s function of bosons, dynamical susceptibilities and conductivity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/observables.html#dynamical-response-functions-at-zero-temperature">Dynamical response functions at zero temperature</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/recovery.html">Recovery of observables on a real-frequency mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/spectral_stats.html">Statistical analysis of ensembles of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/socc.html">Stochastic Optimization with Consistent Constraints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/socc.html#consistent-constraints-updates">Consistent-constraints updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/socc.html#construction-of-final-solution-using-the-consistent-constraints-protocol">Construction of final solution using the consistent-constraints protocol</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Usage examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Python API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../reference/som.html"><code class="docutils literal notranslate"><span class="pre">som</span></code>: Main Python module of SOM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/som.html#som-som"><code class="docutils literal notranslate"><span class="pre">som.Som</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/som.html#free-functions">Free functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/som.html#auxiliary-types">Auxiliary types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../reference/spectral_stats.html"><code class="docutils literal notranslate"><span class="pre">som.spectral_stats</span></code>: Statistical analysis of noisy spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../script_porting.html">SOM 1.x script porting guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#python-modules">Python modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#construction-of-the-som-object">Construction of the <code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code> object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#deprecation-of-som-run">Deprecation of <code class="xref py py-func docutils literal notranslate"><span class="pre">Som.run()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#post-processing-of-spectral-functions">Post-processing of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#direct-access-to-spectral-functions">Direct access to spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../issues.html">Reporting issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About SOM</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#authors">Authors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#triqs">TRIQS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#acknowledgements">Acknowledgements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#usage-disclaimer">Usage disclaimer</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../ChangeLog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#unreleased">2.0.0 (unreleased)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../ChangeLog.html#major-changes-and-new-features">Major changes and new features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../ChangeLog.html#python-api-changes">Python API changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../ChangeLog.html#build-system-and-developer-tools">Build system and developer tools</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id2">1.2 (2020-03-15)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id3">1.1 (2017-04-23)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id4">1.0 (2017-03-19)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../search.html">Search</a></li>
+</ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="../bosoncorr/example.html"
-                        title="previous chapter">Example: Correlator of boson-like operators</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="../zerotemp/example.html"
-                        title="next chapter">Example: Matsubara correlator at zero temperature</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../../_sources/examples/bosonautocorr/example.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <form class="search" action="../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
+    </nav>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #7E588A" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">SOM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Example: Autocorrelator of a Hermitian operator</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/examples/bosonautocorr/example.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <div class="section" id="example-autocorrelator-of-a-hermitian-operator">
-<span id="example-bosonautocorr"></span><h1>Example: Autocorrelator of a Hermitian operator<a class="headerlink" href="#example-autocorrelator-of-a-hermitian-operator" title="Permalink to this headline">¶</a></h1>
-<p>Observable kind: <a class="reference internal" href="../../kernels.html#bosonautocorr"><span class="std std-ref">BosonAutoCorr</span></a>.</p>
+<span id="example-bosonautocorr"></span><h1>Example: Autocorrelator of a Hermitian operator<a class="headerlink" href="#example-autocorrelator-of-a-hermitian-operator" title="Permalink to this heading"></a></h1>
+<p>Observable kind: <a class="reference internal" href="../../guide/observables.html#bosonautocorr"><span class="std std-ref">BosonAutoCorr</span></a>.</p>
 <p>Correlator of a Hermitian operator with itself.</p>
 <p>For the Hermitian operators the auxiliary spectral function
-<span class="math">\(A(\epsilon) = \Im\chi(\epsilon)/\epsilon\)</span> is non-negative and symmetric.</p>
+<span class="math notranslate nohighlight">\(A(\epsilon) = \Im\chi(\epsilon)/\epsilon\)</span> is non-negative and symmetric.</p>
 <p>This mode is faster and more robust than <cite>BosonCorr</cite>.</p>
 <div class="section" id="run-analytical-continuation">
-<h2>Run analytical continuation<a class="headerlink" href="#run-analytical-continuation" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Import some TRIQS modules and NumPy</span>
-<span class="kn">from</span> <span class="nn">pytriqs.gf.local</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">pytriqs.archive</span> <span class="k">import</span> <span class="n">HDFArchive</span>
-<span class="kn">import</span> <span class="nn">pytriqs.utility.mpi</span> <span class="k">as</span> <span class="nn">mpi</span>
+<h2>Run analytical continuation<a class="headerlink" href="#run-analytical-continuation" title="Permalink to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import some TRIQS modules and NumPy</span>
+<span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="kn">from</span> <span class="nn">triqs.gf</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">triqs.utility.mpi</span> <span class="k">as</span> <span class="nn">mpi</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
 
 <span class="c1"># Import main SOM class</span>
-<span class="kn">from</span> <span class="nn">pytriqs.applications.analytical_continuation.som</span> <span class="k">import</span> <span class="n">Som</span>
+<span class="kn">from</span> <span class="nn">som</span> <span class="kn">import</span> <span class="n">Som</span>
 
 <span class="n">n_w</span> <span class="o">=</span> <span class="mi">501</span>               <span class="c1"># Number of energy slices for the solution</span>
 <span class="n">energy_window</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">2.5</span><span class="p">)</span> <span class="c1"># Energy window to search the solution in</span>
                         <span class="c1"># The window must entirely lie on the positive half-axis</span>
+<span class="n">tail_max_order</span> <span class="o">=</span> <span class="mi">5</span>      <span class="c1"># Maximum high energy expansion order to be computed</span>
 
 <span class="c1"># Parameters for Som.run()</span>
 <span class="n">run_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;energy_window&#39;</span> <span class="p">:</span> <span class="n">energy_window</span><span class="p">}</span>
@@ -180,11 +202,14 @@
 <span class="c1"># Evaluate the solution on an energy mesh</span>
 <span class="c1"># NB: we can use *any* energy window at this point, not necessarily that from run_params</span>
 <span class="n">chi_w</span> <span class="o">=</span> <span class="n">GfReFreq</span><span class="p">(</span><span class="n">window</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">2.5</span><span class="p">),</span> <span class="n">n_points</span> <span class="o">=</span> <span class="n">n_w</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">chi_w</span> <span class="o">&lt;&lt;</span> <span class="n">cont</span>
+<span class="n">cont</span><span class="o">.</span><span class="n">fill_observable</span><span class="p">(</span><span class="n">chi_w</span><span class="p">)</span>
 
 <span class="c1"># \chi(i\omega_n) reconstructed from the solution</span>
 <span class="n">chi_rec_iw</span> <span class="o">=</span> <span class="n">chi_iw</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">chi_rec_iw</span> <span class="o">&lt;&lt;</span> <span class="n">cont</span>
+<span class="n">cont</span><span class="o">.</span><span class="n">fill_observable</span><span class="p">(</span><span class="n">chi_rec_iw</span><span class="p">)</span>
+
+<span class="c1"># Compute tail coefficients</span>
+<span class="n">tail</span> <span class="o">=</span> <span class="n">cont</span><span class="o">.</span><span class="n">compute_tail</span><span class="p">(</span><span class="n">tail_max_order</span><span class="p">)</span>
 
 <span class="c1"># On master node, save results to an archive</span>
 <span class="k">if</span> <span class="n">mpi</span><span class="o">.</span><span class="n">is_master_node</span><span class="p">():</span>
@@ -192,17 +217,18 @@
         <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;chi_iw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">chi_iw</span>
         <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;chi_rec_iw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">chi_rec_iw</span>
         <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;chi_w&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">chi_w</span>
+        <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tail</span>
         <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;histograms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cont</span><span class="o">.</span><span class="n">histograms</span>
 </pre></div>
 </div>
-<p>Download input file <a class="reference download internal" href="../../_downloads/example.h5" download=""><code class="xref download docutils literal"><span class="pre">example.h5</span></code></a>.</p>
+<p>Download input file <a class="reference download internal" download="" href="../../_downloads/49326491a719037a592ebc8399b5f358/example.h5"><code class="xref download docutils literal notranslate"><span class="pre">example.h5</span></code></a>.</p>
 </div>
 <div class="section" id="plot-input-and-reconstructed-correlators-at-matsubara-frequencies">
-<h2>Plot input and reconstructed correlators at Matsubara frequencies<a class="headerlink" href="#plot-input-and-reconstructed-correlators-at-matsubara-frequencies" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pytriqs.gf.local</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">pytriqs.archive</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
+<h2>Plot input and reconstructed correlators at Matsubara frequencies<a class="headerlink" href="#plot-input-and-reconstructed-correlators-at-matsubara-frequencies" title="Permalink to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="kn">from</span> <span class="nn">triqs.gf</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-<span class="kn">from</span> <span class="nn">pytriqs.plot.mpl_interface</span> <span class="kn">import</span> <span class="n">oplot</span>
+<span class="kn">from</span> <span class="nn">triqs.plot.mpl_interface</span> <span class="kn">import</span> <span class="n">oplot</span>
 
 <span class="c1"># Read data from archive</span>
 <span class="n">ar</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;results.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
@@ -218,17 +244,17 @@
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper right&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../examples/bosonautocorr/plot_chi_iw.py">Source code</a>, <a class="reference external" href="../../examples/bosonautocorr/plot_chi_iw.png">png</a>, <a class="reference external" href="../../examples/bosonautocorr/plot_chi_iw.hires.png">hires.png</a>, <a class="reference external" href="../../examples/bosonautocorr/plot_chi_iw.pdf">pdf</a>)</p>
-<div class="figure">
+<p>(<a class="reference external" href="../../../build/doc/../../doc/examples/bosonautocorr/plot_chi_iw.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/bosonautocorr/plot_chi_iw.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/bosonautocorr/plot_chi_iw.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/bosonautocorr/plot_chi_iw.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
+<div class="figure align-default">
 <a class="reference internal image-reference" href="../../_images/plot_chi_iw.png"><img alt="../../_images/plot_chi_iw.png" src="../../_images/plot_chi_iw.png" style="width: 512.0px; height: 384.0px;" /></a>
 </div>
 </div>
 <div class="section" id="plot-the-correlator-on-the-real-frequency-axis">
-<h2>Plot the correlator on the real frequency axis<a class="headerlink" href="#plot-the-correlator-on-the-real-frequency-axis" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pytriqs.gf.local</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">pytriqs.archive</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
+<h2>Plot the correlator on the real frequency axis<a class="headerlink" href="#plot-the-correlator-on-the-real-frequency-axis" title="Permalink to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="kn">from</span> <span class="nn">triqs.gf</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-<span class="kn">from</span> <span class="nn">pytriqs.plot.mpl_interface</span> <span class="kn">import</span> <span class="n">oplot</span>
+<span class="kn">from</span> <span class="nn">triqs.plot.mpl_interface</span> <span class="kn">import</span> <span class="n">oplot</span>
 
 <span class="c1"># Read data from archive</span>
 <span class="n">ar</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;results.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
@@ -245,41 +271,36 @@
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span> <span class="o">=</span> <span class="s2">&quot;lower right&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../examples/bosonautocorr/plot_chi_w.py">Source code</a>, <a class="reference external" href="../../examples/bosonautocorr/plot_chi_w.png">png</a>, <a class="reference external" href="../../examples/bosonautocorr/plot_chi_w.hires.png">hires.png</a>, <a class="reference external" href="../../examples/bosonautocorr/plot_chi_w.pdf">pdf</a>)</p>
-<div class="figure">
+<p>(<a class="reference external" href="../../../build/doc/../../doc/examples/bosonautocorr/plot_chi_w.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/bosonautocorr/plot_chi_w.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/bosonautocorr/plot_chi_w.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/bosonautocorr/plot_chi_w.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
+<div class="figure align-default">
 <a class="reference internal image-reference" href="../../_images/plot_chi_w.png"><img alt="../../_images/plot_chi_w.png" src="../../_images/plot_chi_w.png" style="width: 512.0px; height: 384.0px;" /></a>
 </div>
 </div>
 </div>
 
 
+           </div>
           </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2022, Igor Krivenko.</p>
+  </div>
+
+   
+
+</footer>
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="../zerotemp/example.html" title="Example: Matsubara correlator at zero temperature"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="../bosoncorr/example.html" title="Example: Correlator of boson-like operators"
-             >previous</a> |</li>
-    <li><a href="../../index.html">Home</a> &raquo;</li>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
 
-          <li class="nav-item nav-item-1"><a href="../../documentation.html" >Documentation</a> &#187;</li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2016-2020, Igor Krivenko.
-    </div>
-  </body>
+</body>
 </html>

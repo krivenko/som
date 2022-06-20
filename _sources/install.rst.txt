@@ -1,51 +1,98 @@
 .. _install:
 
-.. highlight:: bash
-
 Installation
 ============
 
+.. highlight:: bash
 
-Prerequisite
--------------------
+Docker
+------
 
-#. The :ref:`TRIQS <triqslibs:welcome>` toolbox version 1.4.2 (see :ref:`TRIQS installation instruction <triqslibs:installation>`).
-   In the following, we will suppose that it is installed in the ``path_to_triqs`` directory.
+A Docker image including the latest version of SOM as well as other TRIQS
+applications is available
+`here <https://hub.docker.com/repository/docker/ikrivenko/som>`_.
+
+Compiling SOM from source
+-------------------------
+
+Prerequisites
+*************
+
+The :ref:`TRIQS <triqslibs:welcome>` toolbox version |triqs_branch|
+(see :ref:`TRIQS installation instructions <triqslibs:triqs_install>`).
+In the following, we will assume that it is installed in the directory
+``path_to_triqs``.
 
 Installation steps
-------------------
+******************
 
-#. Download the sources of the solver from github::
+#. Download the source code of the latest stable version by cloning the
+   ``krivenko/som`` repository from GitHub:
 
-     $ git clone https://github.com/krivenko/som.git som.src
+.. substitution-code-block::
 
-#. Create an empty build directory where you will compile the code::
+   $ git clone -b |som_version| https://github.com/krivenko/som.git som.src
 
-     $ mkdir som.build && cd som.build
+#. Create and move to a new directory where you will compile the code::
 
-#. In the build directory call cmake specifying where the TRIQS library is installed::
+   $ mkdir som.build && cd som.build
 
-     $ cmake -DTRIQS_PATH=path_to_triqs ../som.src
+#. Ensure that your shell contains the TRIQS environment variables by sourcing
+   the ``triqsvars.sh`` file from your TRIQS installation::
 
-#. Compile the code, run the tests and install the application::
+   $ source path_to_triqs/share/triqs/triqsvars.sh
 
-     $ make
-     $ make test
-     $ make install
+#. In the build directory call ``cmake``, including any additional custom CMake
+   options, see below::
 
-.. note:: Be careful with the cmake command above: set TRIQS_PATH, not CMAKE_INSTALL_PREFIX (this variable is only for the TRIQS library)!
+   $ cmake ../som.src
+
+#. Compile the code, run the unit tests and install the application::
+
+   $ make
+   $ make test
+   $ make install
 
 .. _install_options:
 
-Customizing your installation: CMake options
---------------------------------------------
+Custom CMake options
+********************
 
-+-------------------------------------------------------+---------------------------------+
-| Options                                               | Syntax                          |
-+=======================================================+=================================+
-| Disable testing (not recommended)                     | -DTests=OFF                     |
-+-------------------------------------------------------+---------------------------------+
-| Build the documentation locally                       | -DBuild_Documentation=ON        |
-+-------------------------------------------------------+---------------------------------+
-| Initial size of the cache to store computed LHS       | -DCACHE_SIZE=0x4000             |
-+-------------------------------------------------------+---------------------------------+
+The compilation of SOM can be configured using CMake-options:
+
+::
+
+   cmake ../som.src -DOPTION1=value1 -DOPTION2=value2 ...
+
+.. list-table::
+    :header-rows: 1
+    :widths: 70 30
+
+    * - Options
+      - Syntax
+    * - Specify an installation path other than path_to_triqs
+      - ``-DCMAKE_INSTALL_PREFIX=path_to_som``
+    * - Build in Debugging Mode
+      - ``-DCMAKE_BUILD_TYPE=Debug``
+    * - Enable compilation of shared libraries
+      - ``-DBUILD_SHARED_LIBS=ON``
+    * - Build a Debian package
+      - ``-DBUILD_DEBIAN_PACKAGE=ON``
+    * - Disable testing (not recommended)
+      - ``-DBuild_Tests=OFF``
+    * - Build the documentation locally
+      - ``-DBuild_Documentation=ON``
+    * - Build without Python support
+      - ``-DPythonSupport=OFF``
+    * - Initial size of the cache to store computed LHS
+      - ``-DCache_Size=0x4000``
+    * - Enable extended debugging output (*developers only*)
+      - ``-DANALYZE_SOURCES=ON``
+    * - Run static analyzer tools (``clang-tidy`` and ``cppcheck``) as part of
+        compilation process (*developers only*)
+      - ``-DANALYZE_SOURCES=ON``
+    * - Compile SOM library with LLVM Address Sanitizer (*developers only*)
+      - ``-DASAN=ON``
+    * - Compile SOM library with LLVM Undefined Behavior Sanitizer
+        (*developers only*)
+      - ``-DUBSAN=ON``

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recovery of observables on a real-frequency mesh &mdash; SOM  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Statistical analysis of ensembles of spectral functions" href="spectral_stats.html" />
+    <link rel="prev" title="Supported observables" href="observables.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #7E588A" >
+            <a href="../index.html" class="icon icon-home"> SOM
+          </a>
+              <div class="version">
+                2.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#docker">Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#compiling-som-from-source">Compiling SOM from source</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../install.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../install.html#installation-steps">Installation steps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../install.html#custom-cmake-options">Custom CMake options</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">User guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="basic.html">Basic description of the method</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="basic.html#integral-equation-of-the-analytic-continuation-problem">Integral equation of the analytic continuation problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic.html#goodness-of-fit-functionals">Goodness of fit functionals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic.html#minimization-of-the-chi-2-functionals">Minimization of the <span class="math notranslate nohighlight">\(\chi^2\)</span>-functionals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic.html#post-processing-of-spectral-functions">Post-processing of spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="observables.html">Supported observables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="observables.html#thermal-green-s-function-of-fermions">Thermal Green’s function of fermions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="observables.html#thermal-green-s-function-of-bosons-dynamical-susceptibilities-and-conductivity">Thermal Green’s function of bosons, dynamical susceptibilities and conductivity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="observables.html#dynamical-response-functions-at-zero-temperature">Dynamical response functions at zero temperature</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Recovery of observables on a real-frequency mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spectral_stats.html">Statistical analysis of ensembles of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="socc.html">Stochastic Optimization with Consistent Constraints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="socc.html#consistent-constraints-updates">Consistent-constraints updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="socc.html#construction-of-final-solution-using-the-consistent-constraints-protocol">Construction of final solution using the consistent-constraints protocol</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Usage examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Python API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/som.html"><code class="docutils literal notranslate"><span class="pre">som</span></code>: Main Python module of SOM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/som.html#som-som"><code class="docutils literal notranslate"><span class="pre">som.Som</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/som.html#free-functions">Free functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/som.html#auxiliary-types">Auxiliary types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/spectral_stats.html"><code class="docutils literal notranslate"><span class="pre">som.spectral_stats</span></code>: Statistical analysis of noisy spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../script_porting.html">SOM 1.x script porting guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../script_porting.html#python-modules">Python modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../script_porting.html#construction-of-the-som-object">Construction of the <code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code> object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../script_porting.html#deprecation-of-som-run">Deprecation of <code class="xref py py-func docutils literal notranslate"><span class="pre">Som.run()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../script_porting.html#post-processing-of-spectral-functions">Post-processing of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../script_porting.html#direct-access-to-spectral-functions">Direct access to spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../issues.html">Reporting issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About SOM</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../about.html#authors">Authors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about.html#triqs">TRIQS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about.html#acknowledgements">Acknowledgements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about.html#usage-disclaimer">Usage disclaimer</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ChangeLog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../ChangeLog.html#unreleased">2.0.0 (unreleased)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ChangeLog.html#major-changes-and-new-features">Major changes and new features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ChangeLog.html#python-api-changes">Python API changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ChangeLog.html#build-system-and-developer-tools">Build system and developer tools</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../ChangeLog.html#id2">1.2 (2020-03-15)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ChangeLog.html#id3">1.1 (2017-04-23)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ChangeLog.html#id4">1.0 (2017-03-19)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../search.html">Search</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #7E588A" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SOM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">User guide</a> &raquo;</li>
+      <li>Recovery of observables on a real-frequency mesh</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guide/recovery.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="recovery-of-observables-on-a-real-frequency-mesh">
+<span id="recovery"></span><h1>Recovery of observables on a real-frequency mesh<a class="headerlink" href="#recovery-of-observables-on-a-real-frequency-mesh" title="Permalink to this heading"></a></h1>
+<p>Recovery of the real-frequency version of a dynamical observable, such as the
+<a class="reference internal" href="observables.html#fermiongf"><span class="std std-ref">retarded Green’s function</span></a> <span class="math notranslate nohighlight">\(G^\mathrm{ret}(\epsilon)\)</span>,
+from a spectral function <span class="math notranslate nohighlight">\(A(\epsilon)\)</span> is performed by function
+<a class="reference internal" href="../reference/som.html#som.fill_refreq" title="som.fill_refreq"><code class="xref py py-func docutils literal notranslate"><span class="pre">som.fill_refreq()</span></code></a>. It applies a variant of the Hilbert transform to the
+spectrum and projects the result onto a regular grid of real energy points</p>
+<div class="math notranslate nohighlight">
+\[\epsilon_i = \epsilon_\mathrm{min} + i\Delta\epsilon,\
+i=\overline{0, I-1},\
+\Delta\epsilon = \frac{\epsilon_\mathrm{max} - \epsilon_\mathrm{min}}{I - 1}.\]</div>
+<p>A final solution produced by SOM has a general sum-of-rectangles form</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}A(\epsilon) = \sum_{k=1}^K R_{\{c_k, w_k, h_k\}}(\epsilon),\\R_{\{c, w, h\}}(\epsilon) \equiv h \theta(w/2-|\epsilon-c|).\end{aligned}\end{align} \]</div>
+<p>Before SOM 2.0, the retarded Green’s function would be recovered and projected
+onto the frequency mesh as</p>
+<div class="math notranslate nohighlight">
+\[G^\mathrm{ret}(\epsilon_i) = -\int\limits_{-\infty}^\infty d\epsilon'
+  \frac{A(\epsilon')}{\epsilon' - \epsilon_i - i0} =
+  -\sum_{k=1}^K h_k \int\limits_{c_k-w_k/2}^{c_k+w_k/2}
+  \frac{d\epsilon'}{\epsilon' - \epsilon_i - i0}.\]</div>
+<p id="binning">By default, SOM 2.0 uses binning while projecting onto the frequency mesh.
+It splits the energy window
+<span class="math notranslate nohighlight">\([\epsilon_\mathrm{min};\epsilon_\mathrm{max}]\)</span> into <span class="math notranslate nohighlight">\(I\)</span> bins,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathfrak{B}_i = \left\{
+\begin{array}{ll}
+    [\epsilon_\mathrm{min}; \epsilon_\mathrm{min}+\Delta\epsilon/2], &amp;i=0,\\
+    [\epsilon_i-\Delta\epsilon/2; \epsilon_i+\Delta\epsilon/2],
+      &amp;i=\overline{1,I-2},\\
+    [\epsilon_\mathrm{max}-\Delta\epsilon/2;
+     \epsilon_\mathrm{max}+\Delta\epsilon/2], &amp;i=I-1.
+\end{array}
+\right.\end{split}\]</div>
+<p>and averages the integration results over the bins,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}G^\mathrm{ret}(\epsilon_i) \approx
+- \frac{1}{|\mathfrak{B}_i|}
+  \int_{\mathfrak{B}_i} d\epsilon
+  \int\limits_{-\infty}^\infty d\epsilon'
+  \frac{A(\epsilon')}{\epsilon' - \epsilon - i0} =\\=
+  -\sum_{k=1}^K h_k
+  \frac{1}{|\mathfrak{B}_i|}
+  \int_{\mathfrak{B}_i} d\epsilon
+  \int\limits_{c_k-w_k/2}^{c_k+w_k/2}
+  \frac{d\epsilon'}{\epsilon' - \epsilon - i0}.\end{split}\]</div>
+<p>Owing to the extra integral, projection with binning makes for smoother
+resulting curves for the same number of energy points <span class="math notranslate nohighlight">\(\epsilon_i\)</span>.
+The old behavior can be enabled by passing <code class="docutils literal notranslate"><span class="pre">with_binning=False</span></code> to
+<a class="reference internal" href="../reference/som.html#som.fill_refreq" title="som.fill_refreq"><code class="xref py py-func docutils literal notranslate"><span class="pre">som.fill_refreq()</span></code></a>.</p>
+<p id="compute-tail"><a class="reference internal" href="../reference/som.html#som.compute_tail" title="som.compute_tail"><code class="xref py py-func docutils literal notranslate"><span class="pre">som.compute_tail()</span></code></a> is another useful function that extracts information
+about the <a class="reference external" href="https://triqs.github.io/triqs/3.1.x/documentation/manual/triqs/gfs/c%2B%2B/tail.html#gf-tail" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><span class="xref std std-ref">high frequency expansion coefficients</span></a>
+of <span class="math notranslate nohighlight">\(G^\mathrm{ret}(\epsilon)\)</span> from <span class="math notranslate nohighlight">\(A(\epsilon)\)</span>.</p>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="observables.html" class="btn btn-neutral float-left" title="Supported observables" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="spectral_stats.html" class="btn btn-neutral float-right" title="Statistical analysis of ensembles of spectral functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2022, Igor Krivenko.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SOM 1.x script porting guide &mdash; SOM  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Reporting issues" href="issues.html" />
+    <link rel="prev" title="som.spectral_stats: Statistical analysis of noisy spectral functions" href="reference/spectral_stats.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #7E588A" >
+            <a href="index.html" class="icon icon-home"> SOM
+          </a>
+              <div class="version">
+                2.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#docker">Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#compiling-som-from-source">Compiling SOM from source</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="install.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="install.html#installation-steps">Installation steps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="install.html#custom-cmake-options">Custom CMake options</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide/index.html">User guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guide/basic.html">Basic description of the method</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guide/basic.html#integral-equation-of-the-analytic-continuation-problem">Integral equation of the analytic continuation problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guide/basic.html#goodness-of-fit-functionals">Goodness of fit functionals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guide/basic.html#minimization-of-the-chi-2-functionals">Minimization of the <span class="math notranslate nohighlight">\(\chi^2\)</span>-functionals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guide/basic.html#post-processing-of-spectral-functions">Post-processing of spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guide/observables.html">Supported observables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guide/observables.html#thermal-green-s-function-of-fermions">Thermal Green’s function of fermions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guide/observables.html#thermal-green-s-function-of-bosons-dynamical-susceptibilities-and-conductivity">Thermal Green’s function of bosons, dynamical susceptibilities and conductivity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guide/observables.html#dynamical-response-functions-at-zero-temperature">Dynamical response functions at zero temperature</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guide/recovery.html">Recovery of observables on a real-frequency mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/spectral_stats.html">Statistical analysis of ensembles of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/socc.html">Stochastic Optimization with Consistent Constraints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guide/socc.html#consistent-constraints-updates">Consistent-constraints updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guide/socc.html#construction-of-final-solution-using-the-consistent-constraints-protocol">Construction of final solution using the consistent-constraints protocol</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Usage examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/index.html">Python API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="reference/som.html"><code class="docutils literal notranslate"><span class="pre">som</span></code>: Main Python module of SOM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reference/som.html#som-som"><code class="docutils literal notranslate"><span class="pre">som.Som</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/som.html#free-functions">Free functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/som.html#auxiliary-types">Auxiliary types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="reference/spectral_stats.html"><code class="docutils literal notranslate"><span class="pre">som.spectral_stats</span></code>: Statistical analysis of noisy spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">SOM 1.x script porting guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#python-modules">Python modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#construction-of-the-som-object">Construction of the <code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code> object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#deprecation-of-som-run">Deprecation of <code class="xref py py-func docutils literal notranslate"><span class="pre">Som.run()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#post-processing-of-spectral-functions">Post-processing of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#direct-access-to-spectral-functions">Direct access to spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="issues.html">Reporting issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About SOM</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="about.html#authors">Authors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#triqs">TRIQS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#acknowledgements">Acknowledgements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#usage-disclaimer">Usage disclaimer</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ChangeLog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#unreleased">2.0.0 (unreleased)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ChangeLog.html#major-changes-and-new-features">Major changes and new features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ChangeLog.html#python-api-changes">Python API changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ChangeLog.html#build-system-and-developer-tools">Build system and developer tools</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id2">1.2 (2020-03-15)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id3">1.1 (2017-04-23)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id4">1.0 (2017-03-19)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="search.html">Search</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #7E588A" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SOM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>SOM 1.x script porting guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/script_porting.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="som-1-x-script-porting-guide">
+<span id="script-porting"></span><h1>SOM 1.x script porting guide<a class="headerlink" href="#som-1-x-script-porting-guide" title="Permalink to this heading"></a></h1>
+<p>Porting computational scripts from SOM 1.x to SOM 2.0 means switching from
+Python 2.7 to Python 3 and from TRIQS 1.4 to TRIQS 3.1. This guide covers
+only the SOM-specific portion of changes that need to be made. Please, refer to
+the official Python
+<a class="reference external" href="https://docs.python.org/3/howto/pyporting.html" rel="noopener noreferrer" target="_blank">porting guide</a> to learn about
+the general language changes introduced in Python 3, such as <code class="docutils literal notranslate"><span class="pre">print()</span></code>
+becoming a function instead of a statement, and the new semantics of the integer
+division. There is also a page about <a class="reference external" href="https://triqs.github.io/triqs/latest/porting_to_triqs3.html" rel="noopener noreferrer" target="_blank">porting applications</a> to TRIQS 3.0
+provided by TRIQS’ developers.</p>
+<div class="section" id="python-modules">
+<h2>Python modules<a class="headerlink" href="#python-modules" title="Permalink to this heading"></a></h2>
+<p>Following a convention change for naming of TRIQS applications, the main Python
+module of SOM has been renamed.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 1.x ###</span>
+<span class="kn">from</span> <span class="nn">pytriqs.applications.analytical_continuation.som</span> <span class="kn">import</span> <span class="n">Som</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 2.0 ###</span>
+<span class="kn">from</span> <span class="nn">som</span> <span class="kn">import</span> <span class="n">Som</span>
+</pre></div>
+</div>
+<p>Functions implementing the <a class="reference internal" href="guide/spectral_stats.html#spectral-stats"><span class="std std-ref">statistical analysis of ensembles of spectral
+functions</span></a> are collected in a new module,</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 2.0 ###</span>
+<span class="kn">from</span> <span class="nn">som.spectral_stats</span> <span class="kn">import</span> <span class="p">(</span><span class="n">spectral_integral</span><span class="p">,</span>
+                                <span class="n">spectral_avg</span><span class="p">,</span>
+                                <span class="n">spectral_disp</span><span class="p">,</span>
+                                <span class="n">spectral_corr</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="construction-of-the-som-object">
+<h2>Construction of the <a class="reference internal" href="reference/som.html#som.Som" title="som.Som"><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code></a> object<a class="headerlink" href="#construction-of-the-som-object" title="Permalink to this heading"></a></h2>
+<ul>
+<li><p class="first">It is now possible to provide full <a class="reference internal" href="guide/basic.html#cov-matrix"><span class="std std-ref">covariance matrices</span></a>
+as an alternative to estimated error bars upon construction of the
+<a class="reference internal" href="reference/som.html#som.Som" title="som.Som"><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code></a> object.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 1.x ###</span>
+<span class="n">cont</span> <span class="o">=</span> <span class="n">Som</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">error_bars</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">,</span> <span class="n">norms</span><span class="o">=</span><span class="n">norms</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 2.0 ###</span>
+<span class="n">cont_eb</span> <span class="o">=</span> <span class="n">Som</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">error_bars</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">,</span> <span class="n">norms</span><span class="o">=</span><span class="n">norms</span><span class="p">)</span>
+<span class="n">cont_cm</span> <span class="o">=</span> <span class="n">Som</span><span class="p">(</span><span class="n">g</span><span class="p">,</span>
+              <span class="n">cov_matrices</span><span class="p">,</span>
+              <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">,</span>
+              <span class="n">norms</span><span class="o">=</span><span class="n">norms</span><span class="p">,</span>
+              <span class="n">filtering_levels</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The optional argument <code class="docutils literal notranslate"><span class="pre">filtering_levels</span></code> <a class="reference internal" href="guide/basic.html#cov-matrix-filtered"><span class="std std-ref">improves stability of the
+algorithm</span></a> when the covariance matrices are used.</p>
+</li>
+<li><p class="first">When continuing fermionic Green’s functions, there is an option to enforce
+the <a class="reference internal" href="guide/observables.html#fermiongfsymm"><span class="std std-ref">particle-hole symmetry of the spectrum</span></a> by passing
+<code class="docutils literal notranslate"><span class="pre">kind=&quot;FermionGfSymm&quot;</span></code> instead of <code class="docutils literal notranslate"><span class="pre">kind=&quot;FermionGf&quot;</span></code>.</p>
+</li>
+<li><p class="first">Definition of the integral kernels for <code class="docutils literal notranslate"><span class="pre">kind=&quot;BosonAutoCorr&quot;</span></code> has been
+changed: The spectral function <span class="math notranslate nohighlight">\(A(\epsilon)\)</span> is now defined on the
+whole energy axis instead of <span class="math notranslate nohighlight">\(\epsilon\in[0;\infty[\)</span>, while the kernels
+gained an extra coefficient <span class="math notranslate nohighlight">\(1/2\)</span>. It has been observed that the new
+definition makes the algorithm better reproduce results of the <code class="docutils literal notranslate"><span class="pre">BosonCorr</span></code>
+kernels for the same input data. This change has an implication on scripting,
+both <code class="docutils literal notranslate"><span class="pre">BosonCorr</span></code> and <code class="docutils literal notranslate"><span class="pre">BosonAutoCorr</span></code> expect the same normalization
+constants in <code class="docutils literal notranslate"><span class="pre">norms</span></code> from now on (with SOM 1.x one had to divide the
+constants by 2 for <code class="docutils literal notranslate"><span class="pre">BosonAutoCorr</span></code>).</p>
+</li>
+<li><p class="first">If normalization constants for the <code class="docutils literal notranslate"><span class="pre">BosonCorr</span></code> or <code class="docutils literal notranslate"><span class="pre">BosonAutoCorr</span></code>
+spectra are not known a priori, they can be estimated from the input data
+by calling a new utility function <a class="reference internal" href="reference/som.html#som.estimate_boson_corr_spectrum_norms" title="som.estimate_boson_corr_spectrum_norms"><code class="xref py py-func docutils literal notranslate"><span class="pre">estimate_boson_corr_spectrum_norms()</span></code></a>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 2.0 ###</span>
+<span class="kn">from</span> <span class="nn">som</span> <span class="kn">import</span> <span class="n">estimate_boson_corr_spectrum_norms</span>
+
+<span class="c1"># Given a correlator of boson-like operators $\chi$ defined on any</span>
+<span class="c1"># supported mesh, return a list of spectrum normalization constants</span>
+<span class="c1"># $\mathcal{N} = \pi \chi(i\Omega = 0)$.</span>
+<span class="n">norms</span> <span class="o">=</span> <span class="n">estimate_boson_corr_spectrum_norms</span><span class="p">(</span><span class="n">chi</span><span class="p">)</span>
+
+<span class="n">cont</span> <span class="o">=</span> <span class="n">Som</span><span class="p">(</span><span class="n">chi</span><span class="p">,</span> <span class="n">error_bars</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;BosonCorr&quot;</span><span class="p">,</span> <span class="n">norms</span><span class="o">=</span><span class="n">norms</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="deprecation-of-som-run">
+<h2>Deprecation of <a class="reference internal" href="reference/som.html#som.Som.run" title="som.Som.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">Som.run()</span></code></a><a class="headerlink" href="#deprecation-of-som-run" title="Permalink to this heading"></a></h2>
+<p>In order to accommodate for new features, method <a class="reference internal" href="reference/som.html#som.Som.run" title="som.Som.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">Som.run()</span></code></a> has been
+declared deprecated, and its functionality has been split between a few new
+methods.</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 1.x ###</span>
+<span class="n">cont</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 2.0 ###</span>
+
+<span class="c1"># Accumulate particular solutions.</span>
+<span class="n">cont</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="o">**</span><span class="n">acc_params</span><span class="p">)</span>
+
+<span class="c1"># Compute the final solution using the procedure from SOM 1.x.</span>
+<span class="n">cont</span><span class="o">.</span><span class="n">compute_final_solution</span><span class="p">(</span><span class="o">**</span><span class="n">fs_params</span><span class="p">)</span>
+
+<span class="c1"># or</span>
+
+<span class="c1"># Compute the final solution using the Consistent Constraints procedure</span>
+<span class="c1"># new to SOM 2.0.</span>
+<span class="n">cont</span><span class="o">.</span><span class="n">compute_final_solution_cc</span><span class="p">(</span><span class="o">**</span><span class="n">fscc_params</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Passing <code class="docutils literal notranslate"><span class="pre">cc_update=True</span></code> to <a class="reference internal" href="reference/som.html#som.Som.accumulate" title="som.Som.accumulate"><code class="xref py py-func docutils literal notranslate"><span class="pre">Som.accumulate()</span></code></a> will enable the
+<a class="reference internal" href="guide/socc.html#cc-update"><span class="std std-ref">Consistent constraints update</span></a> that may speed up search for
+better particular solutions. A bunch of <a class="reference internal" href="reference/som.html#som.Som.accumulate" title="som.Som.accumulate"><code class="xref py py-func docutils literal notranslate"><span class="pre">Som.accumulate()</span></code></a>’s parameters
+named <code class="docutils literal notranslate"><span class="pre">cc_update_*</span></code> give a means to fine-tune behavior of the CC updates.</p>
+<p>Calling <a class="reference internal" href="reference/som.html#som.Som.accumulate" title="som.Som.accumulate"><code class="xref py py-func docutils literal notranslate"><span class="pre">Som.accumulate()</span></code></a> multiple times will incrementally extend the
+pool of accumulated particular solutions. <a class="reference internal" href="reference/som.html#som.Som.clear" title="som.Som.clear"><code class="xref py py-func docutils literal notranslate"><span class="pre">Som.clear()</span></code></a> will remove
+all accumulated solutions.</p>
+<p>In SOM 1.x, <a class="reference internal" href="reference/som.html#som.Som.run" title="som.Som.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">Som.run()</span></code></a> was selecting good particular solutions based on
+a criterion established by parameter <code class="docutils literal notranslate"><span class="pre">adjust_l_good_d</span></code>. With SOM 2.0,
+selection of good particular solutions is performed as part of algorithms
+implemented in <a class="reference internal" href="reference/som.html#som.Som.compute_final_solution" title="som.Som.compute_final_solution"><code class="xref py py-func docutils literal notranslate"><span class="pre">Som.compute_final_solution()</span></code></a> and
+<a class="reference internal" href="reference/som.html#som.Som.compute_final_solution_cc" title="som.Som.compute_final_solution_cc"><code class="xref py py-func docutils literal notranslate"><span class="pre">Som.compute_final_solution_cc()</span></code></a>.
+They both accept arguments <code class="docutils literal notranslate"><span class="pre">good_chi_rel</span></code> and <code class="docutils literal notranslate"><span class="pre">good_chi_abs</span></code>, and
+select good solution based on values of the
+<a class="reference internal" href="guide/basic.html#goodness-of-fit"><span class="std std-ref">“goodness of fit”</span></a> <span class="math notranslate nohighlight">\(\chi^2\)</span>-functional associated
+with those solutions. A good solution <span class="math notranslate nohighlight">\(A_j\)</span> must simultaneously satisfy
+<span class="math notranslate nohighlight">\(\chi[A_j] \leq\)</span> <code class="docutils literal notranslate"><span class="pre">good_chi_abs</span></code> and
+<span class="math notranslate nohighlight">\(\chi[A_j] \leq \min_{j'}(\chi[A_{j'}])\times\)</span> <code class="docutils literal notranslate"><span class="pre">good_chi_rel</span></code>.</p>
+<p><a class="reference internal" href="reference/som.html#som.Som.compute_final_solution_cc" title="som.Som.compute_final_solution_cc"><code class="xref py py-func docutils literal notranslate"><span class="pre">Som.compute_final_solution_cc()</span></code></a> constructs
+the <a class="reference internal" href="guide/basic.html#final-solution"><span class="std std-ref">final solution</span></a> using a sophisticated iterative
+optimization procedure with many adjustable parameters. It can result in a
+smoother spectral function, which can optionally be biased towards a
+user-provided default model.</p>
+<p>Automatic adjustment of the number of global updates per solution (<span class="math notranslate nohighlight">\(F\)</span>),
+which used to be one of <a class="reference internal" href="reference/som.html#som.Som.run" title="som.Som.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">Som.run()</span></code></a>’s features, is now available as method
+<a class="reference internal" href="reference/som.html#som.Som.adjust_f" title="som.Som.adjust_f"><code class="xref py py-func docutils literal notranslate"><span class="pre">Som.adjust_f()</span></code></a>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 2.0 ###</span>
+
+<span class="c1"># Adjust the number of global updates.</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">cont</span><span class="o">.</span><span class="n">adjust_f</span><span class="p">(</span><span class="n">energy_window</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="c1"># Accumulate particular solutions.</span>
+<span class="n">cont</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="n">energy_window</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="o">**</span><span class="n">acc_params</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="post-processing-of-spectral-functions">
+<h2>Post-processing of spectral functions<a class="headerlink" href="#post-processing-of-spectral-functions" title="Permalink to this heading"></a></h2>
+<p>Due to changes in the TRIQS Green’s function library, it is no longer possible
+to use the <code class="docutils literal notranslate"><span class="pre">g</span> <span class="pre">&lt;&lt;</span> <span class="pre">cont</span></code> syntax. Furthermore, information about the high
+frequency expansion (tail) coefficients has been separated from Green’s function
+container objects. The following snippets show the updated syntax for recovering
+the real-frequency versions of observables, reconstructing the imaginary
+time/Matsubara frequency/Legendre coefficient data and computing the tail.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 1.x ###</span>
+
+<span class="c1"># Recover the real-frequency counterpart of &#39;g&#39; and its tail.</span>
+<span class="n">g_w</span> <span class="o">=</span> <span class="n">GfReFreq</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="n">energy_window</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="n">n_w</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+<span class="n">g_w</span> <span class="o">&lt;&lt;</span> <span class="n">cont</span>
+
+<span class="c1"># Reconstruct the input quantity from the computed spectral function.</span>
+<span class="n">g_rec</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">g_rec</span> <span class="o">&lt;&lt;</span> <span class="n">cont</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 2.0 ###</span>
+
+<span class="kn">from</span> <span class="nn">som</span> <span class="kn">import</span> <span class="n">fill_refreq</span><span class="p">,</span> <span class="n">compute_tail</span><span class="p">,</span> <span class="n">reconstruct</span>
+
+<span class="c1"># Recover the real-frequency counterpart of &#39;g&#39;.</span>
+<span class="n">g_w</span> <span class="o">=</span> <span class="n">GfReFreq</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="n">energy_window</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="n">n_w</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+<span class="n">fill_refreq</span><span class="p">(</span><span class="n">g_w</span><span class="p">,</span> <span class="n">cont</span><span class="p">)</span>
+
+<span class="c1"># Compute the tail of &#39;g_w&#39;.</span>
+<span class="n">tail</span> <span class="o">=</span> <span class="n">compute_tail</span><span class="p">(</span><span class="n">tail_max_order</span><span class="p">,</span> <span class="n">cont</span><span class="p">)</span>
+
+<span class="c1"># Reconstruct an observable from the computed spectral function.</span>
+<span class="n">g_rec</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">reconstruct</span><span class="p">(</span><span class="n">g_rec</span><span class="p">,</span> <span class="n">cont</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>By default, <a class="reference internal" href="reference/som.html#som.fill_refreq" title="som.fill_refreq"><code class="xref py py-func docutils literal notranslate"><span class="pre">fill_refreq()</span></code></a> uses <a class="reference internal" href="guide/recovery.html#binning"><span class="std std-ref">binning</span></a>, which can be
+disabled by passing <code class="docutils literal notranslate"><span class="pre">with_binning=False</span></code>.</p>
+</div>
+<div class="section" id="direct-access-to-spectral-functions">
+<h2>Direct access to spectral functions<a class="headerlink" href="#direct-access-to-spectral-functions" title="Permalink to this heading"></a></h2>
+<p>A few new attributes added to <a class="reference internal" href="reference/som.html#som.Som" title="som.Som"><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code></a> give access to the accumulated
+particular solutions, the final solution and their respective values of the
+<span class="math notranslate nohighlight">\(\chi^2\)</span>-functional.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 2.0 ###</span>
+
+<span class="c1"># Extract a list of pairs (accumulated particular solution, its \chi^2) for</span>
+<span class="c1"># the 0-th diagonal component of the observable.</span>
+<span class="c1"># This list is local to the calling MPI rank.</span>
+<span class="n">part_sols_with_chi2</span> <span class="o">=</span> <span class="n">cont</span><span class="o">.</span><span class="n">particular_solutions</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Minimum of \chi^2 over all accumulated particular solutions</span>
+<span class="c1"># on all MPI ranks.</span>
+<span class="n">chi2_min</span> <span class="o">=</span> <span class="n">cont</span><span class="o">.</span><span class="n">objf_min</span>
+
+<span class="c1"># List of final solutions, one element per diagonal component of</span>
+<span class="c1"># the observable.</span>
+<span class="n">final_sols</span> <span class="o">=</span>  <span class="n">cont</span><span class="o">.</span><span class="n">solutions</span>
+
+<span class="c1"># List of \chi^2 values for the final solutions, one element per diagonal</span>
+<span class="c1"># component of the observable.</span>
+<span class="n">chi2_final</span> <span class="o">=</span> <span class="n">cont</span><span class="o">.</span><span class="n">objf_list</span>
+</pre></div>
+</div>
+<p>All solutions extracted this way are instances of a new class
+<a class="reference internal" href="reference/som.html#som.Configuration" title="som.Configuration"><code class="xref py py-class docutils literal notranslate"><span class="pre">Configuration</span></code></a>, which is a collection of <a class="reference internal" href="reference/som.html#som.Rectangle" title="som.Rectangle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rectangle</span></code></a>’s.
+Configurations (spectral functions) can be iterated over, evaluated at a given
+value of energy, stored to/loaded from an
+<a class="reference external" href="https://triqs.github.io/triqs/3.1.x/userguide/hdf5/hdf5_tutorial_python.html#hdf5-tutorial" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><span class="xref std std-ref">HDF5 archive</span></a>.</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="reference/spectral_stats.html" class="btn btn-neutral float-left" title="som.spectral_stats: Statistical analysis of noisy spectral functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="issues.html" class="btn btn-neutral float-right" title="Reporting issues" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2022, Igor Krivenko.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

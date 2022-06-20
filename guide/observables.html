@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Supported observables &mdash; SOM  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Recovery of observables on a real-frequency mesh" href="recovery.html" />
+    <link rel="prev" title="Basic description of the method" href="basic.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #7E588A" >
+            <a href="../index.html" class="icon icon-home"> SOM
+          </a>
+              <div class="version">
+                2.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#docker">Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#compiling-som-from-source">Compiling SOM from source</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../install.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../install.html#installation-steps">Installation steps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../install.html#custom-cmake-options">Custom CMake options</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">User guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="basic.html">Basic description of the method</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="basic.html#integral-equation-of-the-analytic-continuation-problem">Integral equation of the analytic continuation problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic.html#goodness-of-fit-functionals">Goodness of fit functionals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic.html#minimization-of-the-chi-2-functionals">Minimization of the <span class="math notranslate nohighlight">\(\chi^2\)</span>-functionals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic.html#post-processing-of-spectral-functions">Post-processing of spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Supported observables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#thermal-green-s-function-of-fermions">Thermal Green’s function of fermions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#thermal-green-s-function-of-bosons-dynamical-susceptibilities-and-conductivity">Thermal Green’s function of bosons, dynamical susceptibilities and conductivity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dynamical-response-functions-at-zero-temperature">Dynamical response functions at zero temperature</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="recovery.html">Recovery of observables on a real-frequency mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spectral_stats.html">Statistical analysis of ensembles of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="socc.html">Stochastic Optimization with Consistent Constraints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="socc.html#consistent-constraints-updates">Consistent-constraints updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="socc.html#construction-of-final-solution-using-the-consistent-constraints-protocol">Construction of final solution using the consistent-constraints protocol</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Usage examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Python API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/som.html"><code class="docutils literal notranslate"><span class="pre">som</span></code>: Main Python module of SOM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/som.html#som-som"><code class="docutils literal notranslate"><span class="pre">som.Som</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/som.html#free-functions">Free functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/som.html#auxiliary-types">Auxiliary types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/spectral_stats.html"><code class="docutils literal notranslate"><span class="pre">som.spectral_stats</span></code>: Statistical analysis of noisy spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../script_porting.html">SOM 1.x script porting guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../script_porting.html#python-modules">Python modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../script_porting.html#construction-of-the-som-object">Construction of the <code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code> object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../script_porting.html#deprecation-of-som-run">Deprecation of <code class="xref py py-func docutils literal notranslate"><span class="pre">Som.run()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../script_porting.html#post-processing-of-spectral-functions">Post-processing of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../script_porting.html#direct-access-to-spectral-functions">Direct access to spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../issues.html">Reporting issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About SOM</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../about.html#authors">Authors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about.html#triqs">TRIQS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about.html#acknowledgements">Acknowledgements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about.html#usage-disclaimer">Usage disclaimer</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ChangeLog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../ChangeLog.html#unreleased">2.0.0 (unreleased)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ChangeLog.html#major-changes-and-new-features">Major changes and new features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ChangeLog.html#python-api-changes">Python API changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ChangeLog.html#build-system-and-developer-tools">Build system and developer tools</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../ChangeLog.html#id2">1.2 (2020-03-15)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ChangeLog.html#id3">1.1 (2017-04-23)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ChangeLog.html#id4">1.0 (2017-03-19)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../search.html">Search</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #7E588A" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SOM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">User guide</a> &raquo;</li>
+      <li>Supported observables</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guide/observables.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="supported-observables">
+<span id="observables"></span><h1>Supported observables<a class="headerlink" href="#supported-observables" title="Permalink to this heading"></a></h1>
+<p>This page lists all kinds of dynamical observables currently supported by SOM
+and explicitly states the integral equation being solved for each of them.</p>
+<div class="section" id="thermal-green-s-function-of-fermions">
+<h2>Thermal Green’s function of fermions<a class="headerlink" href="#thermal-green-s-function-of-fermions" title="Permalink to this heading"></a></h2>
+<p id="fermiongf">A Green’s function of fermions at temperature <span class="math notranslate nohighlight">\(T = 1/\beta\)</span> is defined
+as</p>
+<div class="math notranslate nohighlight">
+\[G(\tau) = -\langle \mathbf{T}_\tau c(\tau) c^\dagger(0)\rangle.\]</div>
+<p>Its real-frequency counterpart is the retarded Green’s function
+<span class="math notranslate nohighlight">\(G^\mathrm{ret}(\epsilon)\)</span>, which is directly connected to the spectral
+function <span class="math notranslate nohighlight">\(A(\epsilon)\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[A(\epsilon) = -\frac{1}{\pi}\Im G^\mathrm{ret}(\epsilon)\]</div>
+<p>and can be recovered from it using the Hilbert transform,</p>
+<div class="math notranslate nohighlight">
+\[G^\mathrm{ret}(\epsilon) = -\int\limits_{-\infty}^\infty
+d\epsilon' \frac{A(\epsilon')}{\epsilon' - \epsilon - i0}.\]</div>
+<p>The spectral function is normalized according to</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{N} = \int\limits_{-\infty}^\infty d\epsilon A(\epsilon).\]</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p><span class="math notranslate nohighlight">\(\mathcal{N} = 1\)</span> for a fermionic Green’s function.</p>
+<p>Using the same integral equations, one can also continue fermionic
+self-energies as long as they do not contain a static Hartree-Fock
+contribution (i.e. they decay to 0 as <span class="math notranslate nohighlight">\(\omega\to\infty\)</span>).
+In this case norms must be computed separately by the user as first spectral
+moments of the self-energy. For derivation of the spectral moments see,
+for instance,</p>
+<p class="last"><a class="reference external" href="https://journals.aps.org/prb/abstract/10.1103/PhysRevB.55.16132" rel="noopener noreferrer" target="_blank">M. Potthoff, T. Wegner, and W. Nolting, Phys. Rev. B 55, 16132 (1997)</a>.</p>
+</div>
+<p>This observable kind is selected and one of the following integral equations
+is solved when the <a class="reference internal" href="../reference/som.html#som.Som" title="som.Som"><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code></a> object is constructed with <code class="docutils literal notranslate"><span class="pre">kind=&quot;FermionGf&quot;</span></code>.</p>
+<table border="1" class="colwidths-given docutils align-default">
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Imaginary time</th>
+<th class="head">Imaginary frequencies</th>
+<th class="head">Legendre orthogonal polynomials</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><div class="first last math notranslate nohighlight">
+\[G(\tau) = -\int\limits_{-\infty}^\infty d\epsilon
+    \frac{e^{-\tau\epsilon}}{1+e^{-\beta\epsilon}}
+    A(\epsilon).\]</div>
+</td>
+<td><div class="first last math notranslate nohighlight">
+\[G(i\omega_n) = \int\limits_{-\infty}^\infty d\epsilon
+    \frac{1}{i\omega_n-\epsilon}
+    A(\epsilon).\]</div>
+</td>
+<td><div class="first math notranslate nohighlight">
+\[G(\ell) = -\int\limits_{-\infty}^\infty d\epsilon
+    \frac{\beta\sqrt{2\ell+1} (-\mathrm{sgn}(\epsilon))^\ell
+        i_{\ell}(\beta|\epsilon|/2)}
+    {2\cosh(\beta\epsilon/2)}
+    A(\epsilon),\]</div>
+<p class="last">where <span class="math notranslate nohighlight">\(i_\ell(x)\)</span> is the modified spherical Bessel function of
+the first kind.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p id="fermiongfsymm">In many model calculations fermionic Green’s functions obey the particle-hole
+symmetry, which manifests itself in the symmetry of the spectral  function,
+<span class="math notranslate nohighlight">\(A(-\epsilon) = A(\epsilon)\)</span>.
+One can enforce this symmetry by constructing <a class="reference internal" href="../reference/som.html#som.Som" title="som.Som"><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code></a> with
+<code class="docutils literal notranslate"><span class="pre">kind=&quot;FermionGfSymm&quot;</span></code>. More precisely, SOM will</p>
+<ul class="simple">
+<li>Use symmetrized integral kernels (see below) sensitive only to the symmetric
+part of <span class="math notranslate nohighlight">\(A(\epsilon)\)</span>;</li>
+<li>Symmetrize calculated <a class="reference internal" href="basic.html#final-solution"><span class="std std-ref">final solution</span></a>
+<span class="math notranslate nohighlight">\(A(\epsilon)\)</span> before recovering <span class="math notranslate nohighlight">\(G^\mathrm{ret}(\epsilon)\)</span>.</li>
+</ul>
+<table border="1" class="colwidths-given docutils align-default">
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Imaginary time</th>
+<th class="head">Imaginary frequencies</th>
+<th class="head">Legendre orthogonal polynomials</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><div class="first last math notranslate nohighlight">
+\[G(\tau) = -\int\limits_{-\infty}^\infty \frac{d\epsilon}{2}
+    \frac{e^{-\tau\epsilon} + e^{-(\beta-\tau)\epsilon}}
+    {1+e^{-\beta\epsilon}}
+    A(\epsilon).\]</div>
+</td>
+<td><div class="first last math notranslate nohighlight">
+\[G(i\omega_n) = -\int\limits_{-\infty}^\infty d\epsilon
+    \frac{i\omega_n}{\omega_n^2+\epsilon^2}
+    A(\epsilon).\]</div>
+</td>
+<td><div class="first math notranslate nohighlight">
+\[\begin{split}G(\ell) = \left\{
+    \begin{array}{ll}
+    -\int\limits_{-\infty}^\infty
+    d\epsilon
+    \frac{\beta\sqrt{2\ell+1} i_{\ell}(\beta|\epsilon|/2)}
+    {2\cosh(\beta\epsilon/2)} A(\epsilon), &amp;\ell\ \mathrm{ even},\\
+    0, &amp;\ell\ \mathrm{odd}.
+    \end{array}\right.,\end{split}\]</div>
+<p class="last">where <span class="math notranslate nohighlight">\(i_\ell(x)\)</span> is the modified spherical Bessel function of
+the first kind.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="thermal-green-s-function-of-bosons-dynamical-susceptibilities-and-conductivity">
+<h2>Thermal Green’s function of bosons, dynamical susceptibilities and conductivity<a class="headerlink" href="#thermal-green-s-function-of-bosons-dynamical-susceptibilities-and-conductivity" title="Permalink to this heading"></a></h2>
+<p id="bosoncorr">The following correlators share the same general form
+<span class="math notranslate nohighlight">\(\chi_{OO^\dagger}(\tau) =
+\langle \mathbf{T}_\tau \hat O(\tau) \hat O^\dagger(0)\rangle\)</span>,
+where <span class="math notranslate nohighlight">\(\hat O\)</span> is a bosonic or boson-like (fermion-number-conserving)
+operator.</p>
+<ul class="simple">
+<li>Matsubara Green’s function of bosons <span class="math notranslate nohighlight">\(G(\tau) =
+\langle \mathbf{T}_\tau a(\tau) a^\dagger(0)\rangle\)</span>;</li>
+<li>Charge susceptibility <span class="math notranslate nohighlight">\(\chi_{NN}(\tau) =
+\langle \mathbf{T}_\tau \hat N(\tau) \hat N(0)\rangle\)</span>;</li>
+<li>Longitudinal magnetic susceptibility <span class="math notranslate nohighlight">\(\chi_{zz}(\tau) =
+\langle \mathbf{T}_\tau \hat S_z(\tau) \hat S_z(0)\rangle\)</span>;</li>
+<li>Transversal magnetic susceptibility <span class="math notranslate nohighlight">\(\chi_{-+}(\tau) =
+\langle \mathbf{T}_\tau \hat S_-(\tau) \hat S_+(0)\rangle\)</span>;</li>
+<li>Optical conductivity <span class="math notranslate nohighlight">\(\sigma(\tau) =
+\langle \mathbf{T}_\tau \hat j(\tau) \hat j(0)\rangle\)</span>.</li>
+</ul>
+<p>The real-time and real-frequency counterparts of <span class="math notranslate nohighlight">\(\chi_{OO^\dagger}(\tau)\)</span>
+are</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}\chi_{OO^\dagger}(t) =
+    i\theta(t)\langle[\hat O(t),\hat O^\dagger(0)]\rangle,\\\chi_{OO^\dagger}(\epsilon) =
+    \int\limits_{-\infty}^\infty dt\ e^{i\epsilon t}\chi_{OO^\dagger}(t).\end{aligned}\end{align} \]</div>
+<p>The imaginary part of <span class="math notranslate nohighlight">\(\chi_{OO^\dagger}(\epsilon)\)</span> obeys
+<span class="math notranslate nohighlight">\(\mathrm{sgn}(\Im\chi_{OO^\dagger}(\epsilon)) = \mathrm{sgn}(\epsilon)\)</span>,
+which allows to introduce a non-negative auxiliary function
+<span class="math notranslate nohighlight">\(A(\epsilon) = \Im\chi_{OO^\dagger}(\epsilon) / \epsilon\)</span>. It plays the
+role of the spectral function for this class of continuation problem.</p>
+<p>Norm of the spectral function is defined as</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{N} = \int\limits_{-\infty}^\infty d\epsilon A(\epsilon) =
+    \pi\chi_{OO^\dagger}(i\Omega_n=0).\]</div>
+<p>The correlator of a real frequency is recovered according to</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[\chi_{OO^\dagger}(\epsilon) = \frac{1}{\pi}\int\limits_{-\infty}^\infty
+d\epsilon' \frac{\epsilon' A(\epsilon')}{\epsilon' - \epsilon - i0}.\]</div>
+</div></blockquote>
+<p>This observable kind is selected and one of the following integral equations
+is solved when the <a class="reference internal" href="../reference/som.html#som.Som" title="som.Som"><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code></a> object is constructed with <code class="docutils literal notranslate"><span class="pre">kind=&quot;BosonCorr&quot;</span></code>.</p>
+<table border="1" class="colwidths-given docutils align-default">
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Imaginary time</th>
+<th class="head">Imaginary frequencies</th>
+<th class="head">Legendre orthogonal polynomials</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><div class="first last math notranslate nohighlight">
+\[\chi_{OO^\dagger}(\tau) =
+    \int\limits_{-\infty}^\infty \frac{d\epsilon}{\pi}
+    \frac{\epsilon e^{-\tau\epsilon}}{1-e^{-\beta\epsilon}}
+    A(\epsilon).\]</div>
+</td>
+<td><div class="first last math notranslate nohighlight">
+\[\chi_{OO^\dagger}(i\Omega_n) = \int\limits_{-\infty}^\infty
+    \frac{d\epsilon}{\pi}\frac{-\epsilon}{i\Omega_n - \epsilon}
+    A(\epsilon).\]</div>
+</td>
+<td><div class="first math notranslate nohighlight">
+\[\chi_{OO^\dagger}(\ell) = \int\limits_{-\infty}^\infty
+    \frac{d\epsilon}{\pi}
+    \frac{\beta\epsilon\sqrt{2\ell+1}(-\mathrm{sgn}(\epsilon))^\ell
+    i_{\ell}(\beta|\epsilon|/2)}
+    {2\sinh(\beta\epsilon/2)}
+    A(\epsilon),\]</div>
+<p class="last">where <span class="math notranslate nohighlight">\(i_\ell(x)\)</span> is the modified spherical Bessel function of
+the first kind.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p id="bosonautocorr">When <span class="math notranslate nohighlight">\(\hat O^\dagger = \hat O\)</span>, such as in the case of the charge
+susceptibility, the longitudinal magnetic susceptibility and the optical
+conductivity, it is <strong>recommended</strong> to exploit the additional spectral symmetry
+<span class="math notranslate nohighlight">\(A(-\epsilon) = A(\epsilon)\)</span>. If <a class="reference internal" href="../reference/som.html#som.Som" title="som.Som"><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code></a> is constructed with
+<code class="docutils literal notranslate"><span class="pre">kind=&quot;BosonAutoCorr&quot;</span></code>, it</p>
+<ul class="simple">
+<li>Uses symmetrized integral kernels (see below) sensitive only to the symmetric
+part of <span class="math notranslate nohighlight">\(A(\epsilon)\)</span>;</li>
+<li>Symmetrizes calculated <a class="reference internal" href="basic.html#final-solution"><span class="std std-ref">final solution</span></a>
+<span class="math notranslate nohighlight">\(A(\epsilon)\)</span> before recovering <span class="math notranslate nohighlight">\(\chi_{OO^\dagger}(\epsilon)\)</span>.</li>
+</ul>
+<table border="1" class="colwidths-given docutils align-default">
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Imaginary time</th>
+<th class="head">Imaginary frequencies</th>
+<th class="head">Legendre orthogonal polynomials</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><div class="first last math notranslate nohighlight">
+\[\chi_{AA}(\tau) = \int\limits_{-\infty}^\infty
+    \frac{d\epsilon}{2\pi}
+    \frac{\epsilon (e^{-\tau\epsilon}+e^{-(\beta-\tau)\epsilon})}
+    {1-e^{-\beta\epsilon}}
+    A(\epsilon).\]</div>
+</td>
+<td><div class="first last math notranslate nohighlight">
+\[\chi_{AA}(i\Omega_n) = \int\limits_{-\infty}^\infty
+    \frac{d\epsilon}{\pi}
+    \frac{\epsilon^2}{\Omega_n^2+\epsilon^2}
+    A(\epsilon).\]</div>
+</td>
+<td><div class="first math notranslate nohighlight">
+\[\begin{split}\chi_{AA}(\ell) = \left\{
+    \begin{array}{ll}
+    \int\limits_{-\infty}^\infty
+    \frac{d\epsilon}{\pi}
+    \frac{\beta\epsilon\sqrt{2\ell+1}
+    i_{\ell}(\beta|\epsilon|/2)}
+    {2\sinh(\beta\epsilon/2)}
+        A(\epsilon),&amp;\ell\ \mathrm{ even},\\
+    0, &amp;\ell\ \mathrm{odd}.
+    \end{array}\right.,\end{split}\]</div>
+<p class="last">where <span class="math notranslate nohighlight">\(i_\ell(x)\)</span> is the modified spherical Bessel function of
+the first kind.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="dynamical-response-functions-at-zero-temperature">
+<h2>Dynamical response functions at zero temperature<a class="headerlink" href="#dynamical-response-functions-at-zero-temperature" title="Permalink to this heading"></a></h2>
+<p id="zerotemp">In the limit of zero temperature (<span class="math notranslate nohighlight">\(\beta=1/T\to\infty\)</span>), both Fermi-Dirac
+and Bose-Einstein distributions approach the shape of a step function
+<span class="math notranslate nohighlight">\(\theta(\epsilon)\)</span>. It is, therefore, sufficient to consider a spectral
+function <span class="math notranslate nohighlight">\(A(\epsilon)\)</span> defined for <span class="math notranslate nohighlight">\(\epsilon\geq 0\)</span> regardless of
+operator statistics. Formally, the Matsubara time segment
+<span class="math notranslate nohighlight">\(\tau\in[0; \beta]\)</span> becomes infinitely long in this limit. Practically,
+however, it is still possible to consider <span class="math notranslate nohighlight">\(\tau\)</span> varying on a reduced
+segment <span class="math notranslate nohighlight">\([0; \tau_\mathrm{max}]\)</span>. It is also possible
+to introduce a countable sequence of fictitious Matsubara frequencies
+<span class="math notranslate nohighlight">\(\omega_n = (2n+1)\pi/\tau_\mathrm{max}\)</span> or
+<span class="math notranslate nohighlight">\(\omega_n = 2n\pi/\tau_\mathrm{max}\)</span>.</p>
+<p>In the <span class="math notranslate nohighlight">\(T=0\)</span> case, SOM defines the non-negative spectral function as
+<span class="math notranslate nohighlight">\(A(\epsilon) = -(1/\pi)\Im G(\epsilon)\)</span> and its norm as</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{N} = \int\limits_0^\infty d\epsilon A(\epsilon).\]</div>
+<p>The original response function of a real frequency is recovered according to</p>
+<div class="math notranslate nohighlight">
+\[G(\epsilon) = -\int\limits_0^\infty
+d\epsilon' \frac{A(\epsilon')}{\epsilon' - \epsilon - i0}.\]</div>
+<p>This observable kind is selected and one of the following integral equations
+is solved when the <a class="reference internal" href="../reference/som.html#som.Som" title="som.Som"><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code></a> object is constructed with <code class="docutils literal notranslate"><span class="pre">kind=&quot;ZeroTemp&quot;</span></code>.</p>
+<table border="1" class="colwidths-given docutils align-default">
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Imaginary time</th>
+<th class="head">Imaginary frequencies</th>
+<th class="head">Legendre orthogonal polynomials</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><div class="first last math notranslate nohighlight">
+\[G(\tau) = -\int\limits_0^\infty d\epsilon
+    e^{-\tau\epsilon}
+    A(\epsilon).\]</div>
+</td>
+<td><div class="first last math notranslate nohighlight">
+\[G(i\omega_n) = \int\limits_0^\infty d\epsilon
+    \frac{1}{i\omega_n-\epsilon}
+    A(\epsilon).\]</div>
+</td>
+<td><div class="first math notranslate nohighlight">
+\[G(\ell) = \int\limits_0^\infty d\epsilon
+    \tau_\mathrm{max}(-1)^{\ell+1}\sqrt{2\ell+1}
+    i_{\ell}\left(\frac{\epsilon\tau_\mathrm{max}}{2}\right)
+    \exp\left(-\frac{\epsilon\tau_\mathrm{max}}{2}\right)
+    A(\epsilon),\]</div>
+<p class="last">where <span class="math notranslate nohighlight">\(i_\ell(x)\)</span> is the modified spherical Bessel function of
+the first kind.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="basic.html" class="btn btn-neutral float-left" title="Basic description of the method" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="recovery.html" class="btn btn-neutral float-right" title="Recovery of observables on a real-frequency mesh" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2022, Igor Krivenko.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stochastic Optimization with Consistent Constraints &mdash; SOM  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Usage examples" href="../examples.html" />
+    <link rel="prev" title="Statistical analysis of ensembles of spectral functions" href="spectral_stats.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #7E588A" >
+            <a href="../index.html" class="icon icon-home"> SOM
+          </a>
+              <div class="version">
+                2.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#docker">Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#compiling-som-from-source">Compiling SOM from source</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../install.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../install.html#installation-steps">Installation steps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../install.html#custom-cmake-options">Custom CMake options</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">User guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="basic.html">Basic description of the method</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="basic.html#integral-equation-of-the-analytic-continuation-problem">Integral equation of the analytic continuation problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic.html#goodness-of-fit-functionals">Goodness of fit functionals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic.html#minimization-of-the-chi-2-functionals">Minimization of the <span class="math notranslate nohighlight">\(\chi^2\)</span>-functionals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic.html#post-processing-of-spectral-functions">Post-processing of spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="observables.html">Supported observables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="observables.html#thermal-green-s-function-of-fermions">Thermal Green’s function of fermions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="observables.html#thermal-green-s-function-of-bosons-dynamical-susceptibilities-and-conductivity">Thermal Green’s function of bosons, dynamical susceptibilities and conductivity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="observables.html#dynamical-response-functions-at-zero-temperature">Dynamical response functions at zero temperature</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="recovery.html">Recovery of observables on a real-frequency mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spectral_stats.html">Statistical analysis of ensembles of spectral functions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Stochastic Optimization with Consistent Constraints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#consistent-constraints-updates">Consistent-constraints updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#construction-of-final-solution-using-the-consistent-constraints-protocol">Construction of final solution using the consistent-constraints protocol</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Usage examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Python API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/som.html"><code class="docutils literal notranslate"><span class="pre">som</span></code>: Main Python module of SOM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/som.html#som-som"><code class="docutils literal notranslate"><span class="pre">som.Som</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/som.html#free-functions">Free functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/som.html#auxiliary-types">Auxiliary types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/spectral_stats.html"><code class="docutils literal notranslate"><span class="pre">som.spectral_stats</span></code>: Statistical analysis of noisy spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../script_porting.html">SOM 1.x script porting guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../script_porting.html#python-modules">Python modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../script_porting.html#construction-of-the-som-object">Construction of the <code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code> object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../script_porting.html#deprecation-of-som-run">Deprecation of <code class="xref py py-func docutils literal notranslate"><span class="pre">Som.run()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../script_porting.html#post-processing-of-spectral-functions">Post-processing of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../script_porting.html#direct-access-to-spectral-functions">Direct access to spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../issues.html">Reporting issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About SOM</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../about.html#authors">Authors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about.html#triqs">TRIQS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about.html#acknowledgements">Acknowledgements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../about.html#usage-disclaimer">Usage disclaimer</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ChangeLog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../ChangeLog.html#unreleased">2.0.0 (unreleased)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ChangeLog.html#major-changes-and-new-features">Major changes and new features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ChangeLog.html#python-api-changes">Python API changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ChangeLog.html#build-system-and-developer-tools">Build system and developer tools</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../ChangeLog.html#id2">1.2 (2020-03-15)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ChangeLog.html#id3">1.1 (2017-04-23)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ChangeLog.html#id4">1.0 (2017-03-19)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../search.html">Search</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #7E588A" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SOM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">User guide</a> &raquo;</li>
+      <li>Stochastic Optimization with Consistent Constraints</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guide/socc.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="stochastic-optimization-with-consistent-constraints">
+<span id="socc"></span><h1>Stochastic Optimization with Consistent Constraints<a class="headerlink" href="#stochastic-optimization-with-consistent-constraints" title="Permalink to this heading"></a></h1>
+<p>Application of the method of consistent constraints in SOM is twofold:</p>
+<ul class="simple">
+<li>A new Markov chain update that is enabled by calling <a class="reference internal" href="../reference/som.html#som.Som.accumulate" title="som.Som.accumulate"><code class="xref py py-func docutils literal notranslate"><span class="pre">Som.accumulate()</span></code></a>
+with <code class="docutils literal notranslate"><span class="pre">cc_update=True</span></code>.</li>
+<li>A new method <a class="reference internal" href="../reference/som.html#som.Som.compute_final_solution_cc" title="som.Som.compute_final_solution_cc"><code class="xref py py-func docutils literal notranslate"><span class="pre">Som.compute_final_solution_cc()</span></code></a> to build the
+<a class="reference internal" href="basic.html#final-solution"><span class="std std-ref">final solution</span></a> out of accumulated
+<a class="reference internal" href="basic.html#particular-solutions"><span class="std std-ref">particular solutions</span></a>.</li>
+</ul>
+<p>Both applications are rather involved and support many user-adjustable
+parameters. Names of their respective keyword arguments are typeset as
+<code class="docutils literal notranslate"><span class="pre">monospaced</span> <span class="pre">text</span></code> in the following.</p>
+<div class="section" id="consistent-constraints-updates">
+<span id="cc-update"></span><h2>Consistent-constraints updates<a class="headerlink" href="#consistent-constraints-updates" title="Permalink to this heading"></a></h2>
+<p>Consistent-constraints (CC) updates introduced in SOM 2.0 are a new type of
+updates in the Markov chain used to accumulate particular solutions
+(Section II.A of <a class="reference internal" href="../about.html#gmpps2017" id="id1"><span>[GMPPS2017]</span></a>). Unlike elementary updates, they radically change
+an MC configuration and help reveal local minima of the objective function more
+quickly.</p>
+<p>The CC updates are proposed during the first stage of a global update at regular
+intervals. Two consecutive CC updates are separated by
+<code class="docutils literal notranslate"><span class="pre">cc_update_cycle_length</span></code> elementary updates. A CC update is skipped if it
+could potentially result in a configuration with too many rectangles,
+<span class="math notranslate nohighlight">\(2K_0+1&gt;\)</span> <code class="docutils literal notranslate"><span class="pre">max_rects</span></code>, where <span class="math notranslate nohighlight">\(K_0\)</span> is the number of rectangles in
+the current configuration. CC updates are accepted and rejected based on the
+same Metropolis criterion as the elementary updates. A proposed CC update
+proceeds as follows.</p>
+<ol class="arabic simple">
+<li>Take the current configuration, construct a configuration made out of
+non-overlapping rectangles <span class="math notranslate nohighlight">\(\{(c_k, w_k, h_k)\}\)</span> (Eqs. (16)-(17) of
+<a class="reference internal" href="../about.html#gmpps2017" id="id2"><span>[GMPPS2017]</span></a>) and discard rectangles with width below <code class="docutils literal notranslate"><span class="pre">min_rect_width</span></code>.
+If size <span class="math notranslate nohighlight">\(K\)</span> of the resulting non-overlapping configuration is less than
+3 (too small to evaluate the 2nd derivative), reject the update.</li>
+<li>Collect heights <span class="math notranslate nohighlight">\(h_k\)</span> of rectangles in the non-overlapping
+configuration in a <span class="math notranslate nohighlight">\(K\)</span>-dimensional vector <span class="math notranslate nohighlight">\(\mathbf{h}\)</span>.</li>
+<li>Starting from the collected heights, use the CC protocol (see below) to
+compute optimal heights <span class="math notranslate nohighlight">\(\mathbf{h}^\mathrm{(opt)}\)</span>.</li>
+<li>If any of <span class="math notranslate nohighlight">\(h^\mathrm{(opt)}_k\)</span> is significantly negative, i.e.
+<span class="math notranslate nohighlight">\(w_k h^\mathrm{(opt)}_k &lt; -\)</span> <code class="docutils literal notranslate"><span class="pre">min_rect_weight</span></code>, reject the update.</li>
+<li>Replace heights <span class="math notranslate nohighlight">\(h_k\)</span> in the non-overlapping configuration with the
+optimal heights <span class="math notranslate nohighlight">\(h^\mathrm{(opt)}_k\)</span>.</li>
+<li>Remove small rectangles
+(<span class="math notranslate nohighlight">\(w_k h^\mathrm{(opt)}_k &lt;\)</span> <code class="docutils literal notranslate"><span class="pre">min_rect_weight</span></code>) from the configuration
+and redistribute their weight by changing heights of their neighboring
+rectangles. This step is repeated until none of the rectangles has weight
+below <code class="docutils literal notranslate"><span class="pre">min_rect_weight</span></code>.</li>
+<li>Evaluate the <span class="math notranslate nohighlight">\(\chi^2\)</span>-functional for the new optimized configuration
+and use <span class="math notranslate nohighlight">\(\chi^2_\mathrm{(opt)}\)</span> to compute the Metropolis ratio.</li>
+</ol>
+<p>The CC protocol consists in iterative minimization of a quadratic function of
+<span class="math notranslate nohighlight">\(h_k\)</span> with self-consistent determination of regularization parameters
+<span class="math notranslate nohighlight">\(Q^{(0)}_k, Q^{(1)}_k, Q^{(2)}_k\)</span> this function depends on. The function
+in question is a sum of the <span class="math notranslate nohighlight">\(\chi^2\)</span>-functional and a few regularization
+terms,</p>
+<div class="math notranslate nohighlight">
+\[O[\mathbf{h}; Q^{(0)},Q^{(1)},Q^{(2)}] = \chi^2[\mathbf{h}]
+ + O_0[\mathbf{h};Q^{(0)}]
+ + O_1[\mathbf{h};Q^{(1)}]
+ + O_2[\mathbf{h};Q^{(2)}].\]</div>
+<p>The regularization term <span class="math notranslate nohighlight">\(O_0\)</span> penalizes large amplitudes of a solution,</p>
+<div class="math notranslate nohighlight">
+\[O_0[\mathbf{h};Q^{(0)}] = \sum_{k=1}^K (Q^{(0)}_k)^2 h_k^2 =
+    \mathbf{h}^T \hat O_{(0)} \mathbf{h}, \quad
+    \hat O_{(0)} = \mathrm{diag}((Q^{(0)}_k)^2).\]</div>
+<p><span class="math notranslate nohighlight">\(O_1\)</span> and <span class="math notranslate nohighlight">\(O_2\)</span> penalize large values of the 1st and 2nd
+derivatives of a solution respectively,</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}O_1[\mathbf{h};Q^{(1)}] &amp;= \sum_{k=1}^{K-1}
+    (Q^{(1)}_k)^2 |A'(\epsilon_k)|^2 =
+    \mathbf{h}^T \hat O_{(1)} \mathbf{h},\\O_2[\mathbf{h};Q^{(2)}] &amp;= \sum_{k=2}^{K-1}
+    (Q^{(2)}_{k-1})^2 |A''(\epsilon_k)|^2 =
+    \mathbf{h}^T \hat O_{(2)} \mathbf{h}.\end{aligned}\end{align} \]</div>
+<p>Matrices <span class="math notranslate nohighlight">\(\hat O_{(1)}\)</span> and <span class="math notranslate nohighlight">\(\hat O_{(2)}\)</span> are derived from
+finite-difference approximations of <span class="math notranslate nohighlight">\(A'\)</span> and <span class="math notranslate nohighlight">\(A''\)</span> at points
+<span class="math notranslate nohighlight">\(\epsilon_k = c_k\)</span>.</p>
+<p>CC protocol iterations are organized as follows.</p>
+<ol class="arabic">
+<li><p class="first">Initialize regularization parameters according to</p>
+<ul class="simple">
+<li><span class="math notranslate nohighlight">\(Q^{(0)}_k = 0,\ k=\overline{1,K}\)</span>,</li>
+<li><span class="math notranslate nohighlight">\(Q^{(1)}_k = (\)</span> <code class="docutils literal notranslate"><span class="pre">cc_update_der_penalty_init</span></code>
+<span class="math notranslate nohighlight">\()W^2/ \mathcal{N},\ k = \overline{1,K-1}\)</span>,</li>
+<li><span class="math notranslate nohighlight">\(Q^{(2)}_k = (\)</span> <code class="docutils literal notranslate"><span class="pre">cc_update_der_penalty_init</span></code>
+<span class="math notranslate nohighlight">\()W^3/ \mathcal{N},\ k = \overline{1,K-2}\)</span>,</li>
+</ul>
+<p>where <span class="math notranslate nohighlight">\(W\)</span> is the energy window width
+(<code class="docutils literal notranslate"><span class="pre">energy_window[1]</span> <span class="pre">-</span> <span class="pre">energy_window[0]</span></code>) and <span class="math notranslate nohighlight">\(\mathcal{N}\)</span> is the
+requested solution norm.</p>
+</li>
+<li><p class="first">Use a numerical linear algebra algorithm to minimize the quadratic function
+<span class="math notranslate nohighlight">\(O[\mathbf{h}; Q^{(0)},Q^{(1)},Q^{(2)}]\)</span> w.r.t. <span class="math notranslate nohighlight">\(\mathbf{h}\)</span>
+subject to equality constraint <span class="math notranslate nohighlight">\(\sum_{k=1}^K w_k h_k = \mathcal{N}\)</span>.</p>
+</li>
+<li><p class="first">Compute discrepancy of weights of rectangles with heights
+<span class="math notranslate nohighlight">\(\mathbf{h}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{h}^\mathrm{new}\)</span> as
+<span class="math notranslate nohighlight">\(\frac{1}{\mathcal{N}}\sum_{k=1}^K |w_k (h_k - h^\mathrm{new}_k)|\)</span>.
+If it lies within a fixed tolerance level
+<code class="docutils literal notranslate"><span class="pre">cc_update_rect_norm_variation_tol</span></code>, terminate iterations.</p>
+</li>
+<li><p class="first">Update amplitude regularization parameters <span class="math notranslate nohighlight">\(Q^{(0)}_k\)</span>:
+If <span class="math notranslate nohighlight">\(h^\mathrm{new}_k\)</span> is negative, set
+<span class="math notranslate nohighlight">\(Q^{(0)}_k =(\)</span> <code class="docutils literal notranslate"><span class="pre">cc_update_height_penalty_max</span></code>
+<span class="math notranslate nohighlight">\()W / \mathcal{N}\)</span>,
+otherwise divide <span class="math notranslate nohighlight">\(Q^{(0)}_k\)</span> by <code class="docutils literal notranslate"><span class="pre">cc_update_height_penalty_divisor</span></code>.</p>
+</li>
+<li><p class="first">Use finite-difference approximations to compute derivatives of <span class="math notranslate nohighlight">\(A\)</span>
+at <span class="math notranslate nohighlight">\(\epsilon_k = c_k\)</span>:</p>
+<ul class="simple">
+<li>1st derivatives <span class="math notranslate nohighlight">\(d^{(1)}_k, k = \overline{1,K-1}\)</span>.</li>
+<li>2nd derivatives <span class="math notranslate nohighlight">\(d^{(2)}_k, k = \overline{1,K-2}\)</span>.</li>
+</ul>
+</li>
+<li><p class="first">Compute limiting constants for <span class="math notranslate nohighlight">\(Q^{(1)}_k\)</span> and <span class="math notranslate nohighlight">\(Q^{(2)}_k\)</span>:</p>
+<ul class="simple">
+<li><span class="math notranslate nohighlight">\(Q^{(1)}_\mathrm{lim} = (\)</span>
+<code class="docutils literal notranslate"><span class="pre">cc_update_der_penalty_limiter</span></code> <span class="math notranslate nohighlight">\() \min_k Q^{(1)}_k\)</span>.</li>
+<li><span class="math notranslate nohighlight">\(Q^{(2)}_\mathrm{lim} = (\)</span>
+<code class="docutils literal notranslate"><span class="pre">cc_update_der_penalty_limiter</span></code> <span class="math notranslate nohighlight">\() \min_k Q^{(2)}_k\)</span>.</li>
+</ul>
+</li>
+<li><p class="first">Update the derivative regularization parameters based on the magnitudes of
+<span class="math notranslate nohighlight">\(d^{(1)}_k\)</span> and <span class="math notranslate nohighlight">\(d^{(2)}_k\)</span>.</p>
+<ul class="simple">
+<li>If <span class="math notranslate nohighlight">\(|d^{(1)}_k| &gt; (\)</span> <code class="docutils literal notranslate"><span class="pre">cc_update_der_penalty_threshold</span></code>
+<span class="math notranslate nohighlight">\(/ \sqrt{K-1}) / Q^{(1)}_k\)</span>, then set
+<span class="math notranslate nohighlight">\(Q^{(1)}_k = (\)</span> <code class="docutils literal notranslate"><span class="pre">cc_update_der_penalty_threshold</span></code>
+<span class="math notranslate nohighlight">\(/ \sqrt{K-1}) / |d^{(1)}_k|\)</span>.
+Otherwise multiply <span class="math notranslate nohighlight">\(Q^{(1)}_k\)</span> by
+<code class="docutils literal notranslate"><span class="pre">cc_update_der_penalty_increase_coeff</span></code>.</li>
+<li>If <span class="math notranslate nohighlight">\(|d^{(2)}_k| &gt; (\)</span> <code class="docutils literal notranslate"><span class="pre">cc_update_der_penalty_threshold</span></code>
+<span class="math notranslate nohighlight">\(/ \sqrt{K-1}) / Q^{(2)}_k\)</span>, then set
+<span class="math notranslate nohighlight">\(Q^{(2)}_k = (\)</span> <code class="docutils literal notranslate"><span class="pre">cc_update_der_penalty_threshold</span></code>
+<span class="math notranslate nohighlight">\(/ \sqrt{K-1}) / |d^{(2)}_k|\)</span>.
+Otherwise multiply <span class="math notranslate nohighlight">\(Q^{(2)}_k\)</span> by
+<code class="docutils literal notranslate"><span class="pre">cc_update_der_penalty_increase_coeff</span></code>.</li>
+</ul>
+</li>
+<li><p class="first">Reduce excessively large derivative regularization parameters to avoid
+divergent behaviour:</p>
+<ul class="simple">
+<li>If <span class="math notranslate nohighlight">\(Q^{(1)}_k &gt; Q^{(1)}_\mathrm{lim}\)</span>, then set
+<span class="math notranslate nohighlight">\(Q^{(1)}_k = Q^{(1)}_\mathrm{lim}\)</span>.</li>
+<li>If <span class="math notranslate nohighlight">\(Q^{(2)}_k &gt; Q^{(2)}_\mathrm{lim}\)</span>, then set
+<span class="math notranslate nohighlight">\(Q^{(2)}_k = Q^{(2)}_\mathrm{lim}\)</span>.</li>
+</ul>
+</li>
+<li><p class="first">If the maximal allowed number of iterations <code class="docutils literal notranslate"><span class="pre">cc_update_max_iter</span></code> is
+reached, terminate. Otherwise set
+<span class="math notranslate nohighlight">\(\mathbf{h} = \mathbf{h}^\mathrm{new}\)</span> and repeat from step 2.</p>
+</li>
+</ol>
+</div>
+<div class="section" id="construction-of-final-solution-using-the-consistent-constraints-protocol">
+<span id="final-solution-cc"></span><h2>Construction of final solution using the consistent-constraints protocol<a class="headerlink" href="#construction-of-final-solution-using-the-consistent-constraints-protocol" title="Permalink to this heading"></a></h2>
+<p>SOM 2.0 features an optimization procedure that finds a vector of
+<a class="reference internal" href="basic.html#final-solution"><span class="std std-ref">final solution</span></a> coefficients <span class="math notranslate nohighlight">\(\mathbf{c}\)</span>
+resulting in a smoother spectral function. It also allows to bias the final
+solution towards a user-provided default model.</p>
+<p>The optimization procedure minimizes a quadratic function of <span class="math notranslate nohighlight">\(\mathbf{c}\)</span>
+depending on a few sets of regularization parameters,</p>
+<div class="math notranslate nohighlight">
+\[O[\mathbf{c}; Q_k, D_k, B_k, T_k, A_T(\epsilon_k), U] =
+      O_Q[\mathbf{c}; Q_k] +
+      O_D[\mathbf{c}; D_k] +
+      O_B[\mathbf{c}; B_k] +
+      O_T[\mathbf{c}; T_k, A_T(\epsilon)] +
+      O_U[\mathbf{c}; U].\]</div>
+<ul>
+<li><p class="first"><span class="math notranslate nohighlight">\(O_Q[\mathbf{c}; Q_k]\)</span> stabilizes the final solution by penalizing
+large amplitudes,</p>
+<div class="math notranslate nohighlight">
+\[O_Q[\mathbf{c}; Q_k] = \sum_{k=1}^K Q_k^2 A(\epsilon_k)^2 =
+\mathbf{c}^T \hat O_Q \mathbf{c}, \quad
+(\hat O_Q)_{jj'} = \sum_{k=1}^K Q_k^2 A_j(\epsilon_k) A_{j'}(\epsilon_k).\]</div>
+</li>
+<li><p class="first"><span class="math notranslate nohighlight">\(O_D[\mathbf{c}; D_k]\)</span> penalizes large 1st derivatives of the final
+solution,</p>
+<div class="math notranslate nohighlight">
+\[O_D[\mathbf{c}; D_k] = \sum_{k=1}^{K-1} D_k^2 |A'(\epsilon_k)|^2 =
+\mathbf{c}^T \hat O_D \mathbf{c}, \quad
+(\hat O_D)_{jj'} = \sum_{k=1}^{K-1} D_k^2
+A'_j(\epsilon_k) A'_{j'}(\epsilon_k).\]</div>
+</li>
+<li><p class="first"><span class="math notranslate nohighlight">\(O_B[\mathbf{c}; B_k]\)</span> penalizes large 2nd derivatives of the final
+solution,</p>
+<div class="math notranslate nohighlight">
+\[O_B[\mathbf{c}; B_k] = \sum_{k=2}^{K-1} B_{k-1}^2 |A''(\epsilon_k)|^2 =
+\mathbf{c}^T \hat O_B \mathbf{c}, \quad
+(\hat O_B)_{jj'} = \sum_{k=2}^{K-1} B_{k-1}^2
+A''_j(\epsilon_k) A''_{j'}(\epsilon_k).\]</div>
+</li>
+<li><p class="first"><span class="math notranslate nohighlight">\(O_T[\mathbf{c}; T_k, A_T(\epsilon)]\)</span> penalizes deviations from a
+predefined default model (“target”) <span class="math notranslate nohighlight">\(A_T(\epsilon)\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}O_T[\mathbf{c}; T_k, A_T(\epsilon)] &amp;= \sum_{k=1}^K T_k
+[A(\epsilon_k) - A_T(\epsilon_k)]^2 =
+\mathbf{c}^T \hat O_T \mathbf{c} - 2\mathbf{f}_T^T\mathbf{c}+\mathrm{const},\\(\hat O_T)_{jj'} &amp;= \sum_{k=1}^K T_k A_j(\epsilon_k) A_{j'}(\epsilon_k),
+\quad
+(\mathbf{f}_T)_j = \sum_{k=1}^K T_k A_j(\epsilon_k) A_T(\epsilon_k).\end{aligned}\end{align} \]</div>
+</li>
+<li><p class="first"><span class="math notranslate nohighlight">\(O_U[\mathbf{c}; U]\)</span> penalizes deviations from the equal weight
+superposition <span class="math notranslate nohighlight">\(c_j = 1/J\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}O_U[\mathbf{c}; U] &amp;= U \sum_{j=1}^J (c_j - 1/J)^2 =
+\mathbf{c}^T \hat O_U \mathbf{c}-2\mathbf{f}_U^T\mathbf{c}+\mathrm{const},\\(\hat O_U)_{jj'} &amp;= U \delta_{jj'},\quad (\mathbf{f}_U)_j = U / J.\end{aligned}\end{align} \]</div>
+</li>
+</ul>
+<p>Values of particular spectral functions <span class="math notranslate nohighlight">\(A_j(\epsilon)\)</span> and their
+derivatives are approximated on a user-supplied uniform or non-uniform energy
+grid <span class="math notranslate nohighlight">\(\{\epsilon_k\}\)</span> (<code class="docutils literal notranslate"><span class="pre">refreq_mesh</span></code>).</p>
+<p>The iterative optimization procedure proceeds as follows.</p>
+<ol class="arabic">
+<li><p class="first">Precompute approximate values of <span class="math notranslate nohighlight">\(A_j(\epsilon_k)\)</span>,
+<span class="math notranslate nohighlight">\(A'_j(\epsilon_k)\)</span> and <span class="math notranslate nohighlight">\(A''_j(\epsilon_k)\)</span>.</p>
+</li>
+<li><p class="first">Using user-supplied parameters <span class="math notranslate nohighlight">\(A_T(\epsilon_k)=\)</span> <code class="docutils literal notranslate"><span class="pre">default_model</span></code>,
+<span class="math notranslate nohighlight">\(T_k =\)</span> <code class="docutils literal notranslate"><span class="pre">default_model_weights</span></code> and <span class="math notranslate nohighlight">\(U=\)</span> <code class="docutils literal notranslate"><span class="pre">ew_penalty_coeff</span></code>
+precompute <span class="math notranslate nohighlight">\(\mathbf{f} = \mathbf{f}_T + \mathbf{f}_U\)</span>.</p>
+</li>
+<li><p class="first">Initialize regularization parameters according to</p>
+<ul class="simple">
+<li><span class="math notranslate nohighlight">\(\mathcal{D} = (\)</span> <code class="docutils literal notranslate"><span class="pre">der_penalty_init</span></code> <span class="math notranslate nohighlight">\() / J\)</span>,</li>
+<li><span class="math notranslate nohighlight">\(Q_k = 0\)</span>,</li>
+<li><span class="math notranslate nohighlight">\(D_k = \mathcal{D}\)</span>,</li>
+<li><span class="math notranslate nohighlight">\(B_k = \mathcal{D}\)</span>.</li>
+</ul>
+</li>
+<li><p class="first">Use the regularization parameters to compute matrix <span class="math notranslate nohighlight">\(\hat O =
+\hat O_Q + \hat O_D + \hat O_B + \hat O_T + \hat O_U\)</span>.</p>
+</li>
+<li><p class="first">Use a numerical linear algebra algorithm to minimize
+<span class="math notranslate nohighlight">\(\mathbf{c}^T \hat O \mathbf{c} - 2\mathbf{f}^T\mathbf{c}\)</span> w.r.t.
+<span class="math notranslate nohighlight">\(\mathbf{c}\)</span> subject to the normalization sum rule
+<span class="math notranslate nohighlight">\(\sum_{J=1}^J c_j = 1\)</span>. The minimization result at the <span class="math notranslate nohighlight">\(I\)</span>-th
+iteration is stored as a vector <span class="math notranslate nohighlight">\(\mathbf{c}^{(I)}\)</span>.</p>
+</li>
+<li><p class="first">Compute and store relative <span class="math notranslate nohighlight">\(L_1\)</span>-distance between
+<span class="math notranslate nohighlight">\(\mathbf{c}^{(I)}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{c}^{(I-1)}\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[d(I, I-1) = \frac{\sum_{j=1}^J |c^{(I)}_j - c^{(I-1)}_j|}
+                 {\sum_{j=1}^J |c^{(I)}_j|},\]</div>
+<p>where the initial vector <span class="math notranslate nohighlight">\(\mathbf{c}^{(0)}\)</span> is taken to have all
+components equal to <span class="math notranslate nohighlight">\(1/J\)</span>.</p>
+</li>
+<li><p class="first">In case user has provided a monitor function (<code class="docutils literal notranslate"><span class="pre">monitor</span></code>), it is called
+with 4 arguments,</p>
+<ul class="simple">
+<li>a 1D NumPy array <span class="math notranslate nohighlight">\(\mathbf{c}^{(I)}\)</span>,</li>
+<li>a 2-tuple of 1D arrays <span class="math notranslate nohighlight">\((A(\epsilon_k), Q_k)\)</span>,</li>
+<li>a 2-tuple of 1D arrays <span class="math notranslate nohighlight">\((A'(\epsilon_k), D_k)\)</span>,</li>
+<li>a 2-tuple of 1D arrays <span class="math notranslate nohighlight">\((A''(\epsilon_k), B_k)\)</span>.</li>
+</ul>
+<p>Returning <code class="docutils literal notranslate"><span class="pre">True</span></code> from the function terminates iterations.</p>
+</li>
+<li><p class="first">If <span class="math notranslate nohighlight">\(\sum_{j=1}^J |c^{(I)}_j| &gt;\)</span> <code class="docutils literal notranslate"><span class="pre">max_sum_abs_c</span></code> (contribution of the
+negative coefficients is too big), then terminate iterations.</p>
+</li>
+<li><p class="first">If <span class="math notranslate nohighlight">\(d(I, I-1) &lt; \min_n |\sigma_n/G(n)|\)</span>, then convergence is reached
+and iterations are terminated. <span class="math notranslate nohighlight">\(G(n)\)</span> is the right-hand side of the
+analytic continuation problem, and <span class="math notranslate nohighlight">\(\sigma_n\)</span> are respective
+estimated error bars on the input data.</p>
+</li>
+<li><p class="first">Form a new final solution from coefficients <span class="math notranslate nohighlight">\(\mathbf{c}^{(I)}\)</span>,</p>
+</li>
+</ol>
+<div class="math notranslate nohighlight">
+\[A(\epsilon_k) = \sum_{j=1}^J c^{(I)}_j A_j(\epsilon_k),\quad
+A'(\epsilon_k) = \sum_{j=1}^J c^{(I)}_j A'_j(\epsilon_k),\quad
+A''(\epsilon_k) = \sum_{j=1}^J c^{(I)}_j A''_j(\epsilon_k).\]</div>
+<ol class="arabic simple">
+<li>Increase regularization parameters <span class="math notranslate nohighlight">\(\mathcal{D}\)</span>, <span class="math notranslate nohighlight">\(D_k\)</span> and
+<span class="math notranslate nohighlight">\(B_k\)</span> by the factor <code class="docutils literal notranslate"><span class="pre">der_penalty_coeff</span></code>.</li>
+<li>Update the amplitude regularization parameters <span class="math notranslate nohighlight">\(Q_k\)</span>: If
+<span class="math notranslate nohighlight">\(A(\epsilon_k) &lt; 0\)</span>, then set <span class="math notranslate nohighlight">\(Q_k =\)</span> <code class="docutils literal notranslate"><span class="pre">amp_penalty_max</span></code>.
+Otherwise divide <span class="math notranslate nohighlight">\(Q_k\)</span> by <code class="docutils literal notranslate"><span class="pre">amp_penalty_divisor</span></code>.</li>
+<li>Update the derivative regularization parameters:<ul>
+<li>If <span class="math notranslate nohighlight">\(D_k |A'(\epsilon_k)| &gt; \mathcal{D}\)</span>, then set
+<span class="math notranslate nohighlight">\(D_k = \mathcal{D} / |A'(\epsilon_k)|\)</span>;</li>
+<li>If <span class="math notranslate nohighlight">\(B_k |A''(\epsilon_k)| &gt; \mathcal{D}\)</span>, then set
+<span class="math notranslate nohighlight">\(B_k = \mathcal{D} / |A''(\epsilon_k)|\)</span>.</li>
+</ul>
+</li>
+<li>If the maximal allowed number of iterations <code class="docutils literal notranslate"><span class="pre">max_iter</span></code> is reached,
+terminate. Otherwise repeat from step 4.</li>
+</ol>
+<p>Once the iterations have been terminated, one inspects the accumulated list of
+pairs <span class="math notranslate nohighlight">\((\mathbf{c}^{(1)}, d(1,0)), (\mathbf{c}^{(2)}, d(2,1)), \ldots\)</span>.
+Elements of the list are sorted in the ascending order according to
+<span class="math notranslate nohighlight">\(d(I,I-1)\)</span>, i.e. <span class="math notranslate nohighlight">\(\mathbf{c}^{(I)}\)</span> from the iteration closest to
+convergence comes first in the sorted list. The first vector of coefficients
+from the sorted list that obeys</p>
+<ul class="simple">
+<li><span class="math notranslate nohighlight">\(\chi^2\left[\sum_{j=1}^J c^{(I)}_j A_j\right] \leq (\)</span>
+<code class="docutils literal notranslate"><span class="pre">good_chi_abs</span></code> <span class="math notranslate nohighlight">\()^2\)</span> and</li>
+<li><span class="math notranslate nohighlight">\(\chi^2\left[\sum_{j=1}^J c^{(I)}_j A_j\right] \leq \min_j \chi^2[A_j]
+(\)</span> <code class="docutils literal notranslate"><span class="pre">good_chi_rel</span></code> <span class="math notranslate nohighlight">\()^2\)</span></li>
+</ul>
+<p>represents the sought final solution.</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="spectral_stats.html" class="btn btn-neutral float-left" title="Statistical analysis of ensembles of spectral functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../examples.html" class="btn btn-neutral float-right" title="Usage examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2022, Igor Krivenko.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

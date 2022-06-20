@@ -3,41 +3,89 @@
 Stochastic Optimization Method for Analytic Continuation
 ========================================================
 
-The :ref:`TRIQS-based <triqslibs:welcome>` Stochastic Optimization Method for Analytic Continuation allows to solve
-a family of Fredholm integral equations of the first kind. Numerical solution of such equations is
-required to reconstruct the spectral representation of physical observables (Green's functions,
-dynamical susceptibilities) from the noisy results of Quantum Monte Carlo simulations.
+.. sidebar:: SOM |version|
 
-The integral equations have the following general form,
+   This is the homepage SOM Version |version|
+   For the changes in |version|, Cf :ref:`changelog page <changelog>`
+
+      .. image:: _static/logo_github.png
+         :width: 75%
+         :align: center
+         :target: https://github.com/krivenko/som
+
+SOM is a :ref:`TRIQS-based <triqslibs:welcome>` implementation of the Stochastic
+Optimization Method for Analytic Continuation [MPSS2000]_, which solves a family
+of Fredholm integral equations of the first kind. Numerical solution of such
+equations is required to reconstruct a real-frequency spectral representation of
+physical observables (Green's functions, dynamical susceptibilities) from noisy
+results of Quantum Monte Carlo simulations.
+
+Said integral equations have the following general form,
 
 .. math::
     \int_{\epsilon_\mathrm{min}}^{\epsilon_\mathrm{max}}
-    K(m,\epsilon) A(\epsilon) d\epsilon = G(m),
+    K(n, \epsilon) A(\epsilon) d\epsilon = G(n),
 
-where :math:`G(m)` is an input quantity, known with some uncertainty, and
-:math:`A(\epsilon)` is a spectral function to be found. Meaning of the index :math:`m`,
-limits of the integral, and the form of the kernel :math:`K(m,\epsilon)` depend on the problem at hand.
-:math:`A(\epsilon)` is assumed to be non-negative and normalized to a known constant.
-A full list of supported observables with respective integral kernels is given :ref:`here <kernels>`.
+where :math:`G(n)` is an input quantity, known with some uncertainty and
+:math:`A(\epsilon)` is the spectral function to be found. Meaning of the index
+:math:`n`, limits of the integral, and the form of the kernel
+:math:`K(n, \epsilon)` depend on the problem at hand.
+:math:`A(\epsilon)` is assumed to be non-negative and normalized to a known
+constant :math:`\mathcal{N}`. A full list of supported observables with
+respective integral kernels is given :ref:`here <observables>`.
+All equations of the considered family share a common property of being
+*ill-posed problems*: Their solutions are not unique  and tiny variations of the
+right hand part may result in huge changes of the solution.
 
-The whole family of equations shares a common property of being *ill-posed problems*;
-tiny variations of the right hand part may result in huge changes of the solution at high energies.
-
-The Stochastic Optimization Method uses Markov chain sampling to minimize an objective function
+The Stochastic Optimization Method uses Markov chains combined with other
+optimization techniques to minimize one of the following objective functions
+("goodness of fit" functionals),
 
 .. math::
-    \mathcal{D} = \sum_m \frac{1}{S(m)}\left|
-        \int_{\epsilon_\mathrm{min}}^{\epsilon_\mathrm{max}}
-        K(m,\epsilon) A(\epsilon) d\epsilon - G(m)
-    \right|.
+    \chi^2_\sigma[A(\epsilon)] = \frac{1}{N} \sum_{n=1}^N
+    \left|\frac{\Delta(n)}{\sigma(n)}\right|^2, \quad
+    \chi^2_\Sigma[A(\epsilon)] = \frac{1}{N}
+    \mathbf{\Delta}^\dagger \hat\Sigma^{-1} \mathbf{\Delta},
 
-One can use a weight factor :math:`S(m)` to stress importance of some data points :math:`G(m)`.
+where :math:`\mathbf{\Delta} = \{\Delta(n)\}` are discrepancies
 
-An important feature of the algorithm is a "continuous-energy" representation of the solutions.
-Function :math:`A(\epsilon)` is parametrized as a sum of rectangles with certain positions, widths and
-heights.
+.. math::
+    \Delta(n) = \int_{\epsilon_\mathrm{min}}^{\epsilon_\mathrm{max}}
+                K(n, \epsilon) A(\epsilon) d\epsilon - G(n).
 
-*Despite a number of optimizations, this code is considerably more CPU-intensive than algorithms based
-on the Bayesian statistical inference (MaxEnt) or Padé approximants. Its primary design goal is
-the ability to resolve fine spectral features, rather than giving a quick insight into general shape
-of the spectrum.*
+These two :math:`\chi^2`-functionals correspond to the two cases when either the
+estimated error bars :math:`\sigma(n)` or the :math:`N\times N` covariance
+matrix :math:`\hat\Sigma` of the input data :math:`G(n)` are known.
+
+An important feature of the algorithm is its "continuous-energy" representation
+of solutions. Function :math:`A(\epsilon)` is parameterized as a sum of
+rectangles with certain positions, widths and heights.
+
+SOM release 2.0 brings a number of new features, most notably a complete
+implementation of the Stochastic Optimization with Consistent Constraints (SOCC)
+protocol proposed in [GMPPS2017]_.
+
+.. note::
+
+    This code uses MPI parallelism and is considerably more CPU-intensive than
+    algorithms based on the Bayesian statistical inference (MaxEnt) or Padé
+    approximants. Its primary design goal is the ability to resolve fine
+    spectral features, rather than giving a quick insight into general shape of
+    the spectrum.
+
+.. toctree::
+    :name: mastertoc
+    :maxdepth: 2
+    :hidden:
+
+    install
+    tutorial
+    guide/index
+    examples
+    reference/index
+    script_porting
+    issues
+    about
+    ChangeLog.md
+    genindex
+    search
