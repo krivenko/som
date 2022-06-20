@@ -463,7 +463,7 @@ accumulate_params_conv.add_member(c_name="t",
 accumulate_params_conv.add_member(c_name="f",
                                   c_type="int",
                                   initializer="""100""",
-                                  doc="""Number of global updates (:math:`F`); ignored if `adjust_f = True`.\nBigger values make the algorithm more ergodic.""")
+                                  doc="""Number of global updates (:math:`F`).\nBigger values make the algorithm more ergodic.""")
 
 accumulate_params_conv.add_member(c_name="l",
                                   c_type="int",
@@ -521,6 +521,8 @@ docstring_accumulate = r"""
 
 %s
 %s
+| f                                    | int           | 100               | Number of global updates (:math:`F`). Bigger values make the algorithm more ergodic.               |
++--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
 | l                                    | int           | 2000              | Number of particular solutions to accumulate (:math:`L`); ignored if ``adjust_l=True``.            |
 |                                      |               |                   | Bigger values reduce noise in the final solution / make it smoother.                               |
 +--------------------------------------+---------------+-------------------+----------------------------------------------------------------------------------------------------+
@@ -598,7 +600,7 @@ Selected solutions must satisfy :math:`\chi[A_j] \leq \chi_c^\mathrm{abs}` and :
 :param good_chi_abs: Solution selection parameter :math:`\chi_c^\mathrm{abs}`.
 :type good_chi_abs: :class:`float`
 :param verbosity: When positive, print extra information.
-:type verbosity: `class:`int`
+:type verbosity: :class:`int`
 :return: A length-:math:`M` list of values of :math:`\chi^2`, one element per continuation problem.
 :rtype: :class:`list` [:class:`float`]
 """)

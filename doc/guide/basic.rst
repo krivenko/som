@@ -39,6 +39,8 @@ The integral equation is solved with respect to a non-negative spectral function
   \int_{\epsilon_\mathrm{min}}^{\epsilon_\mathrm{max}}
   A(\epsilon) d\epsilon = \mathcal{N}.
 
+.. _goodness_of_fit:
+
 Goodness of fit functionals
 ---------------------------
 

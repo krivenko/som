@@ -176,7 +176,7 @@ script will have the following basic parts.
         cont.accumulate(**acc_params)
 
   Normally, this is the most time consuming step. Calling
-  :class:`Som.accumulate()` multiple times will incrementally extend the pool
+  :func:`Som.accumulate()` multiple times will incrementally extend the pool
   of the accumulated solutions.
 
 * Construct the :ref:`final solution <final_solution>` out of the accumulated
