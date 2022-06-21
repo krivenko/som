@@ -106,7 +106,7 @@ jobs:
       run: |
         pushd build
         find doc/html -name "*.html"                                           \
-        -type f -exec sed -i 's/\/usr\/share\/javascript\/mathjax/\/som\/mathjax/g' {} \;
+        -type f -exec sed -i 's/\/usr\/share\/javascript\/mathjax/\/som1\/mathjax/g' {} \;
         cp -r /usr/share/javascript/mathjax doc/html/mathjax
         touch doc/html/.nojekyll
         popd
