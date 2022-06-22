@@ -2,3 +2,4 @@
 max-line-length = 80
 exclude = doc/sphinxext
 per-file-ignores = python/som/*_desc.py:E501
+                   doc/examples/*/*.py:F401,F403,F405
