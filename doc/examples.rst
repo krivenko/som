@@ -8,4 +8,5 @@ Usage examples
 
     examples/fermiongf/example
     examples/fermiongfsymm/example
+    examples/bosoncorr/example
     examples/zerotemp/example

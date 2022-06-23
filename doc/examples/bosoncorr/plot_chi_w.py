@@ -6,11 +6,20 @@ from triqs.plot.mpl_interface import oplot
 # Read data from archive
 ar = HDFArchive('results.h5', 'r')
 
-# Plot imaginary part of the susceptibility on the real axis
-oplot(ar['chi_w'][0,0], mode='I', linewidth=0.8, label="$\chi''_0(\\omega)$")
-oplot(ar['chi_w'][1,1], mode='I', linewidth=0.8, label="$\chi''_1(\\omega)$")
+chi_w = ar['chi_w']
+chi_w_wob = ar['chi_w_wo_binning']
+tail = ar['tail']
 
-plt.xlim((-5.0,5.0))
-plt.ylim((-1.5,1.5))
-plt.ylabel("$\chi(\\omega)$")
-plt.legend(loc = "lower right")
+# Plot imaginary part of the correlator on the real axis
+# with and without binning
+oplot(chi_w_wob[0, 0],
+      mode='I', lw=0.8, label=r"$\chi''_0(\omega)$, w/o binning")
+oplot(chi_w_wob[1, 1],
+      mode='I', lw=0.8, label=r"$\chi''_1(\omega)$, w/o binning")
+oplot(chi_w[0, 0], mode='I', lw=0.8, label=r"$\chi''_0(\omega)$")
+oplot(chi_w[1, 1], mode='I', lw=0.8, label=r"$\chi''_1(\omega)$")
+
+plt.xlim((-5.0, 5.0))
+plt.ylim((-1.6, 1.6))
+plt.ylabel(r"$\chi''(\omega)$")
+plt.legend(loc="lower right")
