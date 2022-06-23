@@ -19,7 +19,7 @@ as
 
 .. math::
 
-    G(\tau) = -\langle \mathbf{T}_\tau c(\tau) c^\dagger(0)\rangle.
+    G(\tau) = -\langle \mathbb{T}_\tau c(\tau) c^\dagger(0)\rangle.
 
 Its real-frequency counterpart is the retarded Green's function
 :math:`G^\mathrm{ret}(\epsilon)`, which is directly connected to the spectral
@@ -137,20 +137,20 @@ Thermal Green's function of bosons, dynamical susceptibilities and conductivity
 
 The following correlators share the same general form
 :math:`\chi_{OO^\dagger}(\tau) =
-\langle \mathbf{T}_\tau \hat O(\tau) \hat O^\dagger(0)\rangle`,
+\langle \mathbb{T}_\tau \hat O(\tau) \hat O^\dagger(0)\rangle`,
 where :math:`\hat O` is a bosonic or boson-like (fermion-number-conserving)
 operator.
 
 - Matsubara Green's function of bosons :math:`G(\tau) =
-  \langle \mathbf{T}_\tau a(\tau) a^\dagger(0)\rangle`;
+  \langle \mathbb{T}_\tau a(\tau) a^\dagger(0)\rangle`;
 - Charge susceptibility :math:`\chi_{NN}(\tau) =
-  \langle \mathbf{T}_\tau \hat N(\tau) \hat N(0)\rangle`;
+  \langle \mathbb{T}_\tau \hat N(\tau) \hat N(0)\rangle`;
 - Longitudinal magnetic susceptibility :math:`\chi_{zz}(\tau) =
-  \langle \mathbf{T}_\tau \hat S_z(\tau) \hat S_z(0)\rangle`;
+  \langle \mathbb{T}_\tau \hat S_z(\tau) \hat S_z(0)\rangle`;
 - Transverse magnetic susceptibility :math:`\chi_{-+}(\tau) =
-  \langle \mathbf{T}_\tau \hat S_-(\tau) \hat S_+(0)\rangle`;
+  \langle \mathbb{T}_\tau \hat S_-(\tau) \hat S_+(0)\rangle`;
 - Optical conductivity :math:`\sigma(\tau) =
-  \langle \mathbf{T}_\tau \hat j(\tau) \hat j(0)\rangle`.
+  \langle \mathbb{T}_\tau \hat j(\tau) \hat j(0)\rangle`.
 
 The real-time and real-frequency counterparts of :math:`\chi_{OO^\dagger}(\tau)`
 are
@@ -236,7 +236,7 @@ conductivity, it is **recommended** to exploit the additional spectral symmetry
       - Legendre orthogonal polynomials
     * -
         .. math::
-            \chi_{AA}(\tau) = \int\limits_{-\infty}^\infty
+            \chi_{OO}(\tau) = \int\limits_{-\infty}^\infty
                 \frac{d\epsilon}{2\pi}
                 \frac{\epsilon (e^{-\tau\epsilon}+e^{-(\beta-\tau)\epsilon})}
                 {1-e^{-\beta\epsilon}}
@@ -244,13 +244,13 @@ conductivity, it is **recommended** to exploit the additional spectral symmetry
 
       -
         .. math::
-            \chi_{AA}(i\Omega_n) = \int\limits_{-\infty}^\infty
+            \chi_{OO}(i\Omega_n) = \int\limits_{-\infty}^\infty
                 \frac{d\epsilon}{\pi}
                 \frac{\epsilon^2}{\Omega_n^2+\epsilon^2}
                 A(\epsilon).
       -
         .. math::
-                \chi_{AA}(\ell) = \left\{
+                \chi_{OO}(\ell) = \left\{
                     \begin{array}{ll}
                     \int\limits_{-\infty}^\infty
                     \frac{d\epsilon}{\pi}
