@@ -9,4 +9,5 @@ Usage examples
     examples/fermiongf/example
     examples/fermiongfsymm/example
     examples/bosoncorr/example
+    examples/bosonautocorr/example
     examples/zerotemp/example

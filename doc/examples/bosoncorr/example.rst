@@ -1,7 +1,7 @@
 .. _example_bosoncorr:
 
-Green’s function of bosons or transverse magnetic susceptibility
-================================================================
+Green’s function of bosons and transverse magnetic susceptibility
+=================================================================
 
 A general correlation function of boson-like operators :math:`\hat O` and
 :math:`\hat O^\dagger` is defined as
