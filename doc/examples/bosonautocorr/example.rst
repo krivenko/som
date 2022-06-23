@@ -26,7 +26,7 @@ Perform analytic continuation using the :ref:`BosonAutoCorr <bosonautocorr>` ker
 
 .. literalinclude:: example.py
 
-Download input file :download:`example.h5`.
+Download input file :download:`input.h5`.
 
 Plot input and reconstructed correlators at Matsubara frequencies
 -----------------------------------------------------------------

@@ -31,7 +31,7 @@ acc_params['hist_max'] = 4.0
 
 # Read \chi(i\omega_n) from archive.
 # Could be \chi(\tau) or \chi_l as well.
-chi_iw = HDFArchive('example.h5', 'r')['chi_iw']
+chi_iw = HDFArchive('input.h5', 'r')['chi_iw']
 
 # Set the error bars to a constant (all points of chi_iw are equally important)
 error_bars = chi_iw.copy()

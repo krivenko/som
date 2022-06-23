@@ -25,7 +25,7 @@ acc_params['make_histograms'] = True
 
 # Read G(\tau) from archive.
 # Could be G(i\omega_n) or G_l as well.
-g_tau = HDFArchive('example.h5', 'r')['g_tau']
+g_tau = HDFArchive('input.h5', 'r')['g_tau']
 
 # Set the error bars to a constant (all points of g_tau are equally important)
 error_bars = g_tau.copy()

@@ -29,8 +29,8 @@ acc_params['hist_max'] = 1.01
 
 # Read G(\tau) from an archive.
 # Could be G(i\omega_n) or G_l as well.
-g_tau = HDFArchive('example.h5', 'r')['g_tau']
-# g_tau stored in example.h5 has a dense mesh with 10001 slices
+g_tau = HDFArchive('input.h5', 'r')['g_tau']
+# g_tau stored in input.h5 has a dense mesh with 10001 slices
 
 # Prepare input data: Reduce the number of \tau-slices from 10001 to n_tau
 g_input = rebinning_tau(g_tau, n_tau)

@@ -12,7 +12,7 @@ Perform analytic continuation using the :ref:`FermionGfSymm <fermiongfsymm>` ker
 
 .. literalinclude:: example.py
 
-Download input file :download:`example.h5`.
+Download input file :download:`input.h5`.
 
 Plot input and reconstructed imaginary-time GF's
 ------------------------------------------------
