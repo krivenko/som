@@ -197,12 +197,14 @@ template <typename KernelType> void som_core::accumulate_impl() {
 
       if(params.verbosity >= 1) {
         mpi_cout(comm) << "χ_{min} = " << chi_min << std::endl;
-        mpi_cout(comm) << "Number of good solutions (χ / χ_{min} ≤ "
-                       << params.adjust_l_good_chi << ") = " << n_good_solutions
-                       << std::endl;
-        mpi_cout(comm) << "Number of very good solutions (χ / χ_{min} ≤ "
-                       << params.adjust_l_verygood_chi
-                       << ") = " << n_verygood_solutions << std::endl;
+        if(params.adjust_l) {
+          mpi_cout(comm) << "Number of good solutions (χ / χ_{min} ≤ "
+                         << params.adjust_l_good_chi
+                         << ") = " << n_good_solutions << std::endl;
+          mpi_cout(comm) << "Number of very good solutions (χ / χ_{min} ≤ "
+                         << params.adjust_l_verygood_chi
+                         << ") = " << n_verygood_solutions << std::endl;
+        }
       }
 
     } while(params.adjust_l &&
