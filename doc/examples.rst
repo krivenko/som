@@ -8,3 +8,4 @@ Usage examples
 
     examples/fermiongf/example
     examples/fermiongfsymm/example
+    examples/zerotemp/example

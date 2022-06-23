@@ -1,9 +1,7 @@
 .. _example_zerotemp:
 
-Example: Matsubara correlator at zero temperature
-=================================================
-
-Observable kind: :ref:`ZeroTemp <zerotemp>`.
+Dynamical response function at zero temperature
+===============================================
 
 Formally speaking, the imaginary time segment :math:`\tau\in[0;\beta)`
 turns into an infinite interval as :math:`\beta\to\infty`. Similarly,
@@ -19,8 +17,8 @@ The spectral function is defined only on the positive half-axis of energy,
 since :math:`(1\pm e^{-\beta\epsilon})^{-1}` vanishes for negative
 :math:`\epsilon` in the zero temperature limit.
 
-Run analytical continuation
----------------------------
+Perform analytic continuation using the :ref:`ZeroTemp <zerotemp>` kernel
+-------------------------------------------------------------------------
 
 .. literalinclude:: example.py
 
@@ -33,9 +31,16 @@ Plot input and reconstructed imaginary-time correlators
     :include-source:
     :scale: 100
 
-Plot the spectral function
---------------------------
+Plot spectral function and tail coefficients
+--------------------------------------------
 
 .. plot:: examples/zerotemp/plot_g_w.py
+    :include-source:
+    :scale: 100
+
+Plot :math:`\chi`-histogram
+---------------------------
+
+.. plot:: examples/zerotemp/plot_hist.py
     :include-source:
     :scale: 100
