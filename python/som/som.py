@@ -29,12 +29,14 @@ import numpy as np
 
 from triqs.gf import (Gf,
                       GfImFreq,
-                      GfImTime,
-                      GfLegendre,
+                      MeshImFreq,
+                      MeshImTime,
+                      MeshLegendre,
                       Fourier)
 from triqs.stat import Histogram
 
 from .som_core import SomCore
+
 
 class Som(SomCore):
     """Implementation of the Stochastic Optimization Method."""
@@ -169,11 +171,11 @@ def estimate_boson_corr_spectrum_norms(chi: Gf) -> List[float]:
 
     N = chi.target_shape[0]
 
-    if isinstance(chi, GfImFreq):
+    if isinstance(chi.mesh, MeshImFreq):
         W0 = list(chi.mesh.values()).index(0j)
         return np.pi * np.array([chi.data[W0, n, n].real for n in range(N)])
 
-    elif isinstance(chi, GfImTime):
+    elif isinstance(chi.mesh, MeshImTime):
         chi_iw = GfImFreq(beta=chi.mesh.beta,
                           statistic="Boson",
                           n_points=1,  # We need only the zero frequency
@@ -181,7 +183,7 @@ def estimate_boson_corr_spectrum_norms(chi: Gf) -> List[float]:
         chi_iw << Fourier(chi)
         return np.pi * np.array([chi_iw.data[0, n, n].real for n in range(N)])
 
-    elif isinstance(chi, GfLegendre):
+    elif isinstance(chi.mesh, MeshLegendre):
         # \chi(i\Omega = 0) = \chi(l = 0)
         return np.pi * np.array([chi.data[0, n, n].real for n in range(N)])
     else:
