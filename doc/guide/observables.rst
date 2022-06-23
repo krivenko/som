@@ -147,7 +147,7 @@ operator.
   \langle \mathbf{T}_\tau \hat N(\tau) \hat N(0)\rangle`;
 - Longitudinal magnetic susceptibility :math:`\chi_{zz}(\tau) =
   \langle \mathbf{T}_\tau \hat S_z(\tau) \hat S_z(0)\rangle`;
-- Transversal magnetic susceptibility :math:`\chi_{-+}(\tau) =
+- Transverse magnetic susceptibility :math:`\chi_{-+}(\tau) =
   \langle \mathbf{T}_\tau \hat S_-(\tau) \hat S_+(0)\rangle`;
 - Optical conductivity :math:`\sigma(\tau) =
   \langle \mathbf{T}_\tau \hat j(\tau) \hat j(0)\rangle`.

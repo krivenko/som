@@ -74,7 +74,7 @@ script will have the following basic parts.
   * :ref:`FermionGf <fermiongf>` - fermionic Green's function or self-energy;
   * :ref:`FermionGfSymm <fermiongfsymm>` - fermionic Green's function or
     self-energy with enforced particle-hole symmetry.
-  * :ref:`BosonCorr <bosoncorr>` - bosonic Green's function, transversal
+  * :ref:`BosonCorr <bosoncorr>` - bosonic Green's function, transverse
     magnetic susceptibility, general dynamical correlator of the form
     :math:`\chi_{OO^\dagger}(\tau) = \langle \mathbf{T}_\tau \hat O(\tau)
     \hat O^\dagger(0)\rangle`, where :math:`\hat O` is a boson-like
