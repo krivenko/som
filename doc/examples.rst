@@ -7,3 +7,4 @@ Usage examples
     :maxdepth: 1
 
     examples/fermiongf/example
+    examples/fermiongfsymm/example

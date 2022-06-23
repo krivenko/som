@@ -24,6 +24,8 @@ acc_params['f'] = 100
 acc_params['t'] = 50
 # Accumulate histogram of \chi
 acc_params['make_histograms'] = True
+# Right boundary of the histogram, in units of \chi_{min}
+acc_params['hist_max'] = 1.01
 
 # Read G(\tau) from an archive.
 # Could be G(i\omega_n) or G_l as well.
@@ -43,7 +45,7 @@ error_bars.data[:] = 0.01
 # norms = [norm_1, norm_2, ..., norm_M], where M is the target dimension of
 # g_input (only diagonal elements will be continued). All norms are set to 1.0
 # by default.
-cont = Som(g_input, error_bars, kind="FermionGf", norms=[1.0, 1.0])
+cont = Som(g_input, error_bars, kind="FermionGfSymm", norms=[1.0])
 
 # Accumulate particular solutions. This may take some time ...
 cont.accumulate(**acc_params)
@@ -51,7 +53,7 @@ cont.accumulate(**acc_params)
 # Construct the final solution as a sum of good particular solutions with
 # equal weights. Good particular solutions are those with \chi <= good_d_abs
 # and \chi/\chi_{min} <= good_d_rel.
-good_chi_abs = 0.06
+good_chi_abs = 0.4
 good_chi_rel = 2.0
 cont.compute_final_solution(good_chi_abs=good_chi_abs,
                             good_chi_rel=good_chi_rel,
