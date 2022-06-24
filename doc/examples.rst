@@ -11,3 +11,4 @@ Usage examples
     examples/bosoncorr/example
     examples/bosonautocorr/example
     examples/zerotemp/example
+    examples/cov_matrix/example
