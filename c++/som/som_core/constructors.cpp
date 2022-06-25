@@ -22,6 +22,9 @@
 #include <cmath>
 #include <iostream>
 #include <string>
+#include <type_traits>
+
+#include <triqs/utility/is_complex.hpp>
 
 #include <som/kernels/mesh_traits.hpp>
 
@@ -32,6 +35,18 @@ namespace som {
 
 using std::to_string;
 using namespace triqs::mesh;
+
+template <typename A> bool isfinite(A const& arr) {
+  using value_type = std::remove_const_t<typename A::value_type>;
+  for(auto x : arr) {
+    if constexpr(triqs::is_complex<value_type>::value) {
+      if((!std::isfinite(x.real())) || (!std::isfinite(x.imag()))) return false;
+    } else {
+      if(!std::isfinite(x)) return false;
+    }
+  }
+  return true;
+}
 
 template <typename Mesh, typename... GfOpts>
 void check_input_gf_and_error_bars(gf_const_view<Mesh, GfOpts...> g,
@@ -45,6 +60,11 @@ void check_input_gf_and_error_bars(gf_const_view<Mesh, GfOpts...> g,
   auto shape = g.target_shape();
   if(shape[0] != shape[1])
     fatal_error("matrix-valued input quantities must be square");
+
+  if(!isfinite(g.data()))
+    fatal_error("input quantity contains infinite or NaN values");
+  if(!isfinite(error_bars.data()))
+    fatal_error("error bars contain infinite or NaN values");
 }
 
 template <typename Mesh, typename... GfOpts>
@@ -64,6 +84,11 @@ void check_input_gf_and_cov_matrices(
     fatal_error(
         "Covariance matrices are defined on a mesh different from that of the "
         "RHS");
+
+  if(!isfinite(g.data()))
+    fatal_error("input quantity contains infinite or NaN values");
+  if(!isfinite(cov_matrices.data()))
+    fatal_error("covariance matrices contain infinite or NaN values");
 }
 
 void check_norms(nda::vector<double> const& norms, long gf_dim) {
