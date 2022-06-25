@@ -21,30 +21,29 @@ For the Hermitian operators, the auxiliary spectral function
 This kind of correlators is treated by the :ref:`BosonAutoCorr <bosonautocorr>`
 kernels, which are faster and more robust than :ref:`BosonCorr <bosoncorr>`.
 
-Perform analytic continuation using the :ref:`BosonAutoCorr <bosonautocorr>` kernel
------------------------------------------------------------------------------------
+.. rubric:: Perform analytic continuation using the
+            :ref:`BosonAutoCorr <bosonautocorr>` kernel
+
 
 .. literalinclude:: example.py
 
 Download input file :download:`input.h5`.
 
-Plot input and reconstructed correlators at Matsubara frequencies
------------------------------------------------------------------
+.. rubric:: Plot input and reconstructed correlators at Matsubara frequencies
 
 .. plot:: examples/bosonautocorr/plot_chi_iw.py
     :include-source:
     :scale: 100
 
-Plot the correlator on the real frequency axis and its tail coefficients
-------------------------------------------------------------------------
+.. rubric:: Plot the correlator on the real frequency axis and
+            its tail coefficients
 
 .. plot:: examples/bosonautocorr/plot_chi_w.py
     :include-source:
     :scale: 100
 
 
-Plot :math:`\chi`-histograms
-----------------------------
+.. rubric:: Plot :math:`\chi`-histograms
 
 .. plot:: examples/bosonautocorr/plot_hist.py
     :include-source:

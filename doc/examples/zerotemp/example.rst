@@ -17,29 +17,26 @@ The spectral function is defined only on the positive half-axis of energy,
 since :math:`(1\pm e^{-\beta\epsilon})^{-1}` vanishes for negative
 :math:`\epsilon` in the zero temperature limit.
 
-Perform analytic continuation using the :ref:`ZeroTemp <zerotemp>` kernel
--------------------------------------------------------------------------
+.. rubric:: Perform analytic continuation using the
+            :ref:`ZeroTemp <zerotemp>` kernel
 
 .. literalinclude:: example.py
 
 Download input file :download:`input.h5`.
 
-Plot input and reconstructed imaginary-time correlators
--------------------------------------------------------
+.. rubric:: Plot input and reconstructed imaginary-time correlators
 
 .. plot:: examples/zerotemp/plot_g_tau.py
     :include-source:
     :scale: 100
 
-Plot spectral function and tail coefficients
---------------------------------------------
+.. rubric:: Plot spectral function and tail coefficients
 
 .. plot:: examples/zerotemp/plot_g_w.py
     :include-source:
     :scale: 100
 
-Plot :math:`\chi`-histogram
----------------------------
+.. rubric:: Plot :math:`\chi`-histogram
 
 .. plot:: examples/zerotemp/plot_hist.py
     :include-source:

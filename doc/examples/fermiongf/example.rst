@@ -18,29 +18,26 @@ Fermionic Green's function or self-energy
         Modifying the iterative perturbation theory"
         M. Potthoff, T. Wegner, and W. Nolting, Phys. Rev. B 55, 16132 (1997)
 
-Perform analytic continuation using the :ref:`FermionGf <fermiongf>` kernel
----------------------------------------------------------------------------
+.. rubric:: Perform analytic continuation using the
+            :ref:`FermionGf <fermiongf>` kernel
 
 .. literalinclude:: example.py
 
 Download input file :download:`input.h5`.
 
-Plot input and reconstructed imaginary-time GF's
-------------------------------------------------
+.. rubric:: Plot input and reconstructed imaginary-time GF's
 
 .. plot:: examples/fermiongf/plot_g_tau.py
     :include-source:
     :scale: 100
 
-Plot spectral functions and tail coefficients
----------------------------------------------
+.. rubric:: Plot spectral functions and tail coefficients
 
 .. plot:: examples/fermiongf/plot_g_w.py
     :include-source:
     :scale: 100
 
-Plot :math:`\chi`-histograms
-----------------------------
+.. rubric:: Plot :math:`\chi`-histograms
 
 .. plot:: examples/fermiongf/plot_hist.py
     :include-source:

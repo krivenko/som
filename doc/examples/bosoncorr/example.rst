@@ -32,29 +32,27 @@ is non-negative but not necessarily symmetric.
     :ref:`BosonAutoCorr <bosonautocorr>` observable kind instead
     of :ref:`BosonCorr <bosoncorr>` shown here.
 
-Perform analytic continuation using the :ref:`BosonCorr <bosoncorr>` kernel
----------------------------------------------------------------------------
+.. rubric:: Perform analytic continuation using the
+            :ref:`BosonCorr <bosoncorr>` kernel
 
 .. literalinclude:: example.py
 
 Download input file :download:`input.h5`.
 
-Plot input and reconstructed correlators at Matsubara frequencies
------------------------------------------------------------------
+.. rubric:: Plot input and reconstructed correlators at Matsubara frequencies
 
 .. plot:: examples/bosoncorr/plot_chi_iw.py
     :include-source:
     :scale: 100
 
-Plot the correlator on the real frequency axis and its tail coefficients
-------------------------------------------------------------------------
+.. rubric:: Plot the correlator on the real frequency axis and
+            its tail coefficients
 
 .. plot:: examples/bosoncorr/plot_chi_w.py
     :include-source:
     :scale: 100
 
-Plot :math:`\chi`-histograms
-----------------------------
+.. rubric:: Plot :math:`\chi`-histograms
 
 .. plot:: examples/bosoncorr/plot_hist.py
     :include-source:

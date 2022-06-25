@@ -14,22 +14,19 @@ of input data (here, of an imaginary time fermionic Green's function
   eigenvalues shifted up by a constant :math:`l^2`, where :math:`l` is so called
   :ref:`filtering level <cov_matrix_filtered>`.
 
-Perform analytic continuation
------------------------------
+.. rubric:: Perform analytic continuation
 
 .. literalinclude:: example.py
 
 Download input file :download:`input.h5`.
 
-Plot input and reconstructed imaginary-time GF's
-------------------------------------------------
+.. rubric:: Plot input and reconstructed imaginary-time GF's
 
 .. plot:: examples/cov_matrix/plot_g_tau.py
     :include-source:
     :scale: 100
 
-Plot spectral functions
------------------------
+.. rubric:: Plot spectral functions
 
 .. plot:: examples/cov_matrix/plot_g_w.py
     :include-source:
