@@ -13,3 +13,4 @@ Usage examples
     examples/zerotemp/example
     examples/meshes/example
     examples/cov_matrix/example
+    examples/spectral_stats/example
