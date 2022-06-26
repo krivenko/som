@@ -14,3 +14,4 @@ Usage examples
     examples/meshes/example
     examples/cov_matrix/example
     examples/spectral_stats/example
+    examples/socc/example
