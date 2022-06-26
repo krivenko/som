@@ -49,14 +49,14 @@ using triqs::utility::clock_callback;
 
   for(auto const &[rx, ry] : itertools::zip(x, y)) {
     if(std::abs(rx.center - ry.center) > tolerance)
-      return ::testing::AssertionFailure()
-          << "Rectangles " << rx << " and " << ry << " have different centers";
+      return ::testing::AssertionFailure() << "Rectangles " << rx << " and "
+                                           << ry << " have different centers";
     if(std::abs(rx.width - ry.width) > tolerance)
-      return ::testing::AssertionFailure()
-          << "Rectangles " << rx << " and " << ry << " have different widths";
+      return ::testing::AssertionFailure() << "Rectangles " << rx << " and "
+                                           << ry << " have different widths";
     if(std::abs(rx.height - ry.height) > tolerance)
-      return ::testing::AssertionFailure()
-          << "Rectangles " << rx << " and " << ry << " have different heights";
+      return ::testing::AssertionFailure() << "Rectangles " << rx << " and "
+                                           << ry << " have different heights";
   }
 
   return ::testing::AssertionSuccess();
