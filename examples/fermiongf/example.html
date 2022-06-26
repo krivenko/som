@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Example: Fermionic Green’s function or self-energy &mdash; SOM  documentation</title>
+  <title>Fermionic Green’s function or self-energy &mdash; SOM  documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -20,7 +20,9 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../about.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" /> 
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Fermionic Green’s function or self-energy with enforced particle-hole symmetry" href="../fermiongfsymm/example.html" />
+    <link rel="prev" title="Usage examples" href="../../examples.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -41,7 +43,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../install.html#docker">Docker</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../install.html#compiling-som-from-source">Compiling SOM from source</a><ul>
@@ -76,7 +78,18 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Usage examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../examples.html">Usage examples</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Fermionic Green’s function or self-energy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fermiongfsymm/example.html">Fermionic Green’s function or self-energy with enforced particle-hole symmetry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../bosoncorr/example.html">Green’s function of bosons and transverse magnetic susceptibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../bosonautocorr/example.html">Charge susceptibility, longitudinal magnetic susceptibility and optical conductivity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../zerotemp/example.html">Dynamical response function at zero temperature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../meshes/example.html">Input data defined on various meshes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cov_matrix/example.html">Full covariance matrix of input data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../spectral_stats/example.html">Statistical analysis of ensembles of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../socc/example.html">Stochastic Optimization with Consistent Constraints</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Python API reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../reference/som.html"><code class="docutils literal notranslate"><span class="pre">som</span></code>: Main Python module of SOM</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../reference/som.html#som-som"><code class="docutils literal notranslate"><span class="pre">som.Som</span></code></a></li>
@@ -134,7 +147,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Example: Fermionic Green’s function or self-energy</li>
+          <li><a href="../../examples.html">Usage examples</a> &raquo;</li>
+      <li>Fermionic Green’s function or self-energy</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/examples/fermiongf/example.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -144,103 +158,119 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="example-fermionic-green-s-function-or-self-energy">
-<span id="example-fermiongf"></span><h1>Example: Fermionic Green’s function or self-energy<a class="headerlink" href="#example-fermionic-green-s-function-or-self-energy" title="Permalink to this heading"></a></h1>
-<p>Observable kind: <a class="reference internal" href="../../guide/observables.html#fermiongf"><span class="std std-ref">FermionGf</span></a>.</p>
+  <div class="section" id="fermionic-green-s-function-or-self-energy">
+<span id="example-fermiongf"></span><h1>Fermionic Green’s function or self-energy<a class="headerlink" href="#fermionic-green-s-function-or-self-energy" title="Permalink to this heading"></a></h1>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>With <cite>FermionGf</cite> one can also continue a self-energy function as long as it
-does not contain a static Hartree-Fock contribution (decays to 0 at <span class="math notranslate nohighlight">\(\omega\to\infty\)</span>).
-In this case norms must be precomputed separately as first spectral moments of
-the self-energy.</p>
+<p>One can continue a self-energy function as long as it does not contain
+a static Hartree-Fock contribution (i.e. decays to 0 at
+<span class="math notranslate nohighlight">\(\omega\to\infty\)</span>). In this case norms must be precomputed separately
+as first spectral moments of the self-energy.</p>
 <p>For derivation of spectral moments see, for instance,</p>
-<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;Interpolating self-energy of the infinite-dimensional Hubbard model:</span>
-<span class="n">Modifying</span> <span class="n">the</span> <span class="n">iterative</span> <span class="n">perturbation</span> <span class="n">theory</span><span class="s2">&quot;</span>
-<span class="n">M</span><span class="o">.</span> <span class="n">Potthoff</span><span class="p">,</span> <span class="n">T</span><span class="o">.</span> <span class="n">Wegner</span><span class="p">,</span> <span class="ow">and</span> <span class="n">W</span><span class="o">.</span> <span class="n">Nolting</span><span class="p">,</span> <span class="n">Phys</span><span class="o">.</span> <span class="n">Rev</span><span class="o">.</span> <span class="n">B</span> <span class="mi">55</span><span class="p">,</span> <span class="mi">16132</span> <span class="p">(</span><span class="mi">1997</span><span class="p">)</span>
+<div class="last highlight-text notranslate"><div class="highlight"><pre><span></span>&quot;Interpolating self-energy of the infinite-dimensional Hubbard model:
+Modifying the iterative perturbation theory&quot;
+M. Potthoff, T. Wegner, and W. Nolting, Phys. Rev. B 55, 16132 (1997)
 </pre></div>
 </div>
 </div>
-<div class="section" id="run-analytical-continuation">
-<h2>Run analytical continuation<a class="headerlink" href="#run-analytical-continuation" title="Permalink to this heading"></a></h2>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import some TRIQS modules and NumPy</span>
+<p class="rubric">Perform analytic continuation using the
+<a class="reference internal" href="../../guide/observables.html#fermiongf"><span class="std std-ref">FermionGf</span></a> kernel</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import HDFArchive and some TRIQS modules</span>
 <span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
 <span class="kn">from</span> <span class="nn">triqs.gf</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">import</span> <span class="nn">triqs.utility.mpi</span> <span class="k">as</span> <span class="nn">mpi</span>
-<span class="kn">import</span> <span class="nn">numpy</span>
 
-<span class="c1"># Import main SOM class</span>
-<span class="kn">from</span> <span class="nn">som</span> <span class="kn">import</span> <span class="n">Som</span>
+<span class="c1"># Import main SOM class and utility functions</span>
+<span class="kn">from</span> <span class="nn">som</span> <span class="kn">import</span> <span class="n">Som</span><span class="p">,</span> <span class="n">fill_refreq</span><span class="p">,</span> <span class="n">compute_tail</span><span class="p">,</span> <span class="n">reconstruct</span>
 
-<span class="n">n_tau</span> <span class="o">=</span> <span class="mi">500</span>                 <span class="c1"># Number of tau-slices for the input GF</span>
+<span class="n">n_tau</span> <span class="o">=</span> <span class="mi">500</span>                  <span class="c1"># Number of \tau-slices for the input GF</span>
 
-<span class="n">n_w</span> <span class="o">=</span> <span class="mi">801</span>                   <span class="c1"># Number of energy slices for the solution</span>
-<span class="n">energy_window</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">4.0</span><span class="p">,</span><span class="mf">4.0</span><span class="p">)</span>  <span class="c1"># Energy window to search the solution in</span>
-<span class="n">tail_max_order</span> <span class="o">=</span> <span class="mi">5</span>          <span class="c1"># Maximum high energy expansion order to be computed</span>
+<span class="n">n_w</span> <span class="o">=</span> <span class="mi">801</span>                    <span class="c1"># Number of energy slices for G(\omega)</span>
+<span class="n">energy_window</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">)</span>  <span class="c1"># Energy window to search the solution in</span>
+<span class="n">tail_max_order</span> <span class="o">=</span> <span class="mi">10</span>          <span class="c1"># Maximum tail expansion order to be computed</span>
 
-<span class="c1"># Parameters for Som.run()</span>
-<span class="n">run_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;energy_window&#39;</span> <span class="p">:</span> <span class="n">energy_window</span><span class="p">}</span>
+<span class="c1"># Parameters for Som.accumulate()</span>
+<span class="n">acc_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;energy_window&#39;</span><span class="p">:</span> <span class="n">energy_window</span><span class="p">}</span>
 <span class="c1"># Verbosity level</span>
-<span class="n">run_params</span><span class="p">[</span><span class="s1">&#39;verbosity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">acc_params</span><span class="p">[</span><span class="s1">&#39;verbosity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="c1"># Number of particular solutions to accumulate</span>
-<span class="n">run_params</span><span class="p">[</span><span class="s1">&#39;l&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2000</span>
+<span class="n">acc_params</span><span class="p">[</span><span class="s1">&#39;l&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1000</span>
 <span class="c1"># Number of global updates</span>
-<span class="n">run_params</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">acc_params</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span>
 <span class="c1"># Number of local updates per global update</span>
-<span class="n">run_params</span><span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">50</span>
-<span class="c1"># Accumulate histogram of the objective function values</span>
-<span class="n">run_params</span><span class="p">[</span><span class="s1">&#39;make_histograms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">acc_params</span><span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="c1"># Accumulate histogram of \chi</span>
+<span class="n">acc_params</span><span class="p">[</span><span class="s1">&#39;make_histograms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
-<span class="c1"># Read G(\tau) from archive</span>
+<span class="c1"># Read G(\tau) from an archive.</span>
 <span class="c1"># Could be G(i\omega_n) or G_l as well.</span>
+<span class="n">g_tau</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;input.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)[</span><span class="s1">&#39;g_tau&#39;</span><span class="p">]</span>
+<span class="c1"># g_tau stored in input.h5 has a dense mesh with 10001 slices</span>
 
-<span class="n">g_tau</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;example.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)[</span><span class="s1">&#39;g_tau&#39;</span><span class="p">]</span>
-<span class="c1"># g_tau stored in example.h5 has a dense mesh with 10001 slices</span>
-
-<span class="c1"># Prepare input data: reduce the number of \tau-slices from 10001 to n_tau</span>
+<span class="c1"># Prepare input data: Reduce the number of \tau-slices from 10001 to n_tau</span>
 <span class="n">g_input</span> <span class="o">=</span> <span class="n">rebinning_tau</span><span class="p">(</span><span class="n">g_tau</span><span class="p">,</span> <span class="n">n_tau</span><span class="p">)</span>
 
-<span class="c1"># Set the weight function S to a constant (all points of g_tau are equally important)</span>
-<span class="n">S</span> <span class="o">=</span> <span class="n">g_input</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">S</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="c1"># Set the error bars to a constant (all points of g_tau are equally important)</span>
+<span class="n">error_bars</span> <span class="o">=</span> <span class="n">g_input</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">error_bars</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="mf">0.01</span>
 
 <span class="c1"># Construct a SOM object</span>
 <span class="c1">#</span>
 <span class="c1"># Expected norms of spectral functions can be passed to the constructor as</span>
-<span class="c1"># norms = numpy.array([norm_1, norm_2, ..., norm_N]), where N is the matrix</span>
-<span class="c1"># dimension of g_input (only diagonal elements will be continued). All norms</span>
-<span class="c1"># are set to 1.0 by default.</span>
-<span class="n">cont</span> <span class="o">=</span> <span class="n">Som</span><span class="p">(</span><span class="n">g_input</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">kind</span> <span class="o">=</span> <span class="s2">&quot;FermionGf&quot;</span><span class="p">,</span> <span class="n">norms</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]))</span>
+<span class="c1"># norms = [norm_1, norm_2, ..., norm_M], where M is the target dimension of</span>
+<span class="c1"># g_input (only diagonal elements will be continued). All norms are set to 1.0</span>
+<span class="c1"># by default.</span>
+<span class="n">cont</span> <span class="o">=</span> <span class="n">Som</span><span class="p">(</span><span class="n">g_input</span><span class="p">,</span> <span class="n">error_bars</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;FermionGf&quot;</span><span class="p">,</span> <span class="n">norms</span><span class="o">=</span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
 
-<span class="c1"># Run!</span>
-<span class="c1"># Takes 5-10 minutes on 16 cores ...</span>
-<span class="n">cont</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">run_params</span><span class="p">)</span>
+<span class="c1"># Accumulate particular solutions. This may take some time ...</span>
+<span class="n">cont</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="o">**</span><span class="n">acc_params</span><span class="p">)</span>
 
-<span class="c1"># Evaluate the solution on an energy mesh</span>
-<span class="c1"># NB: we can use *any* energy window at this point, not necessarily that from run_params</span>
-<span class="n">g_w</span> <span class="o">=</span> <span class="n">GfReFreq</span><span class="p">(</span><span class="n">window</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">5.0</span><span class="p">,</span><span class="mf">5.0</span><span class="p">),</span> <span class="n">n_points</span> <span class="o">=</span> <span class="n">n_w</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">cont</span><span class="o">.</span><span class="n">fill_observable</span><span class="p">(</span><span class="n">g_w</span><span class="p">)</span>
+<span class="c1"># Construct the final solution as a sum of good particular solutions with</span>
+<span class="c1"># equal weights. Good particular solutions are those with \chi &lt;= good_d_abs</span>
+<span class="c1"># and \chi/\chi_{min} &lt;= good_d_rel.</span>
+<span class="n">good_chi_abs</span> <span class="o">=</span> <span class="mf">0.06</span>
+<span class="n">good_chi_rel</span> <span class="o">=</span> <span class="mf">2.0</span>
+<span class="n">cont</span><span class="o">.</span><span class="n">compute_final_solution</span><span class="p">(</span><span class="n">good_chi_abs</span><span class="o">=</span><span class="n">good_chi_abs</span><span class="p">,</span>
+                            <span class="n">good_chi_rel</span><span class="o">=</span><span class="n">good_chi_rel</span><span class="p">,</span>
+                            <span class="n">verbosity</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Recover G(\omega) on an energy mesh.</span>
+<span class="c1"># NB: we can use *any* energy window at this point, not necessarily that</span>
+<span class="c1"># from &#39;acc_params&#39;.</span>
+<span class="n">g_w</span> <span class="o">=</span> <span class="n">GfReFreq</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">),</span>
+               <span class="n">n_points</span><span class="o">=</span><span class="n">n_w</span><span class="p">,</span>
+               <span class="n">indices</span><span class="o">=</span><span class="n">g_tau</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+<span class="n">fill_refreq</span><span class="p">(</span><span class="n">g_w</span><span class="p">,</span> <span class="n">cont</span><span class="p">)</span>
+
+<span class="c1"># Do the same, but this time without binning.</span>
+<span class="n">g_w_wo_binning</span> <span class="o">=</span> <span class="n">GfReFreq</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">),</span>
+                          <span class="n">n_points</span><span class="o">=</span><span class="n">n_w</span><span class="p">,</span>
+                          <span class="n">indices</span><span class="o">=</span><span class="n">g_tau</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+<span class="n">fill_refreq</span><span class="p">(</span><span class="n">g_w_wo_binning</span><span class="p">,</span> <span class="n">cont</span><span class="p">,</span> <span class="n">with_binning</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Compute tail coefficients of G(\omega)</span>
+<span class="n">tail</span> <span class="o">=</span> <span class="n">compute_tail</span><span class="p">(</span><span class="n">tail_max_order</span><span class="p">,</span> <span class="n">cont</span><span class="p">)</span>
 
 <span class="c1"># G(\tau) reconstructed from the solution</span>
 <span class="n">g_rec_tau</span> <span class="o">=</span> <span class="n">g_input</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">cont</span><span class="o">.</span><span class="n">fill_observable</span><span class="p">(</span><span class="n">g_rec_tau</span><span class="p">)</span>
+<span class="n">reconstruct</span><span class="p">(</span><span class="n">g_rec_tau</span><span class="p">,</span> <span class="n">cont</span><span class="p">)</span>
 
-<span class="c1"># Compute tail coefficients</span>
-<span class="n">tail</span> <span class="o">=</span> <span class="n">cont</span><span class="o">.</span><span class="n">compute_tail</span><span class="p">(</span><span class="n">tail_max_order</span><span class="p">)</span>
-
-<span class="c1"># On master node, save results to an archive</span>
+<span class="c1"># On master node, save parameters and results to an archive</span>
 <span class="k">if</span> <span class="n">mpi</span><span class="o">.</span><span class="n">is_master_node</span><span class="p">():</span>
-    <span class="k">with</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s2">&quot;results.h5&quot;</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ar</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s2">&quot;results.h5&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ar</span><span class="p">:</span>
+        <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;acc_params&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">acc_params</span>
+        <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;good_chi_abs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">good_chi_abs</span>
+        <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;good_chi_rel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">good_chi_rel</span>
         <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;g_tau&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g_tau</span>
         <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;g_rec_tau&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g_rec_tau</span>
         <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;g_w&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g_w</span>
+        <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;g_w_wo_binning&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g_w_wo_binning</span>
         <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tail</span>
         <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;histograms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cont</span><span class="o">.</span><span class="n">histograms</span>
 </pre></div>
 </div>
-<p>Download input file <a class="reference download internal" download="" href="../../_downloads/dffff912a47ef2c0ee71ce108713a73f/example.h5"><code class="xref download docutils literal notranslate"><span class="pre">example.h5</span></code></a>.</p>
-</div>
-<div class="section" id="plot-input-and-reconstructed-imaginary-time-gf-s">
-<h2>Plot input and reconstructed imaginary-time GF’s<a class="headerlink" href="#plot-input-and-reconstructed-imaginary-time-gf-s" title="Permalink to this heading"></a></h2>
+<p>Download input file <a class="reference download internal" download="" href="../../_downloads/dea13fa8677745ffb0513bcfe885d51e/input.h5"><code class="xref download docutils literal notranslate"><span class="pre">input.h5</span></code></a>.</p>
+<p class="rubric">Plot input and reconstructed imaginary-time GF’s</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
 <span class="kn">from</span> <span class="nn">triqs.gf</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
@@ -249,51 +279,116 @@ the self-energy.</p>
 <span class="c1"># Read data from archive</span>
 <span class="n">ar</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;results.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
 
-<span class="c1"># Plot input and reconstructed G(\tau)</span>
-<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s1">&#39;g_tau&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>     <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;$G_</span><span class="si">{00}</span><span class="s2">(</span><span class="se">\\</span><span class="s2">tau)$&quot;</span><span class="p">)</span>
-<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s1">&#39;g_tau&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span>     <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;$G_</span><span class="si">{11}</span><span class="s2">(</span><span class="se">\\</span><span class="s2">tau)$&quot;</span><span class="p">)</span>
-<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s1">&#39;g_rec_tau&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;$G_</span><span class="si">{00}</span><span class="s2">^\mathrm</span><span class="si">{rec}</span><span class="s2">(</span><span class="se">\\</span><span class="s2">tau)$&quot;</span><span class="p">)</span>
-<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s1">&#39;g_rec_tau&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;$G_</span><span class="si">{11}</span><span class="s2">^\mathrm</span><span class="si">{rec}</span><span class="s2">(</span><span class="se">\\</span><span class="s2">tau)$&quot;</span><span class="p">)</span>
+<span class="n">g_tau</span> <span class="o">=</span> <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;g_tau&#39;</span><span class="p">]</span>
+<span class="n">g_rec_tau</span> <span class="o">=</span> <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;g_rec_tau&#39;</span><span class="p">]</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;$G(</span><span class="se">\\</span><span class="s2">tau)$&quot;</span><span class="p">)</span>
+<span class="c1"># Plot input and reconstructed G(\tau)</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">g_tau</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>     <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$G_</span><span class="si">{00}</span><span class="s2">(\tau)$&quot;</span><span class="p">)</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">g_tau</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>     <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$G_</span><span class="si">{11}</span><span class="s2">(\tau)$&quot;</span><span class="p">)</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">g_rec_tau</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$G_</span><span class="si">{00}</span><span class="s2">^\mathrm</span><span class="si">{rec}</span><span class="s2">(\tau)$&quot;</span><span class="p">)</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">g_rec_tau</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$G_</span><span class="si">{11}</span><span class="s2">^\mathrm</span><span class="si">{rec}</span><span class="s2">(\tau)$&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">g_tau</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">beta</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$G(\tau)$&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower center&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>(<a class="reference external" href="../../../build/doc/../../doc/examples/fermiongf/plot_g_tau.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/fermiongf/plot_g_tau.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/fermiongf/plot_g_tau.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/fermiongf/plot_g_tau.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
 <div class="figure align-default">
-<a class="reference internal image-reference" href="../../_images/plot_g_tau.png"><img alt="../../_images/plot_g_tau.png" src="../../_images/plot_g_tau.png" style="width: 512.0px; height: 384.0px;" /></a>
+<a class="reference internal image-reference" href="../../_images/plot_g_tau2.png"><img alt="../../_images/plot_g_tau2.png" src="../../_images/plot_g_tau2.png" style="width: 512.0px; height: 384.0px;" /></a>
 </div>
-</div>
-<div class="section" id="plot-the-spectral-function">
-<h2>Plot the spectral function<a class="headerlink" href="#plot-the-spectral-function" title="Permalink to this heading"></a></h2>
+<p class="rubric">Plot spectral functions and tail coefficients</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
 <span class="kn">from</span> <span class="nn">triqs.gf</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits.axes_grid1.inset_locator</span> <span class="kn">import</span> <span class="n">inset_axes</span>
 <span class="kn">from</span> <span class="nn">triqs.plot.mpl_interface</span> <span class="kn">import</span> <span class="n">oplot</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
 
 <span class="c1"># Read data from archive</span>
 <span class="n">ar</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;results.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
 
-<span class="c1"># Plot the spectral functions</span>
-<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s1">&#39;g_w&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;$A_0(</span><span class="se">\\</span><span class="s2">omega)$&quot;</span><span class="p">)</span>
-<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s1">&#39;g_w&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;$A_1(</span><span class="se">\\</span><span class="s2">omega)$&quot;</span><span class="p">)</span>
+<span class="n">g_w</span> <span class="o">=</span> <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;g_w&#39;</span><span class="p">]</span>
+<span class="n">g_w_wob</span> <span class="o">=</span> <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;g_w_wo_binning&#39;</span><span class="p">]</span>
+<span class="n">tail</span> <span class="o">=</span> <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.4</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;$A(</span><span class="se">\\</span><span class="s2">omega)$&quot;</span><span class="p">)</span>
+<span class="c1"># Plot spectral functions with and without binning</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">g_w_wob</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$A_0(\omega)$, w/o binning&quot;</span><span class="p">)</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">g_w_wob</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$A_1(\omega)$, w/o binning&quot;</span><span class="p">)</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">g_w</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$A_0(\omega)$&quot;</span><span class="p">)</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">g_w</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$A_1(\omega)$&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$A(\omega)$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper left&quot;</span><span class="p">)</span>
+
+<span class="c1"># Plot tail coefficients</span>
+<span class="n">tail_orders</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">tail</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+<span class="n">tail_ax</span> <span class="o">=</span> <span class="n">inset_axes</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">(),</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;30%&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;60%&quot;</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper right&quot;</span><span class="p">)</span>
+<span class="n">tail_ax</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="n">tail_orders</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">tail</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$G_0(\omega)$&quot;</span><span class="p">)</span>
+<span class="n">tail_ax</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="n">tail_orders</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">tail</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$G_1(\omega)$&quot;</span><span class="p">)</span>
+<span class="n">tail_ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">((</span><span class="n">tail_orders</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">tail_orders</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+<span class="n">tail_ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;$|a_i|$&quot;</span><span class="p">)</span>
+<span class="n">tail_ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">tick_right</span><span class="p">()</span>
+<span class="n">tail_ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>(<a class="reference external" href="../../../build/doc/../../doc/examples/fermiongf/plot_g_w.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/fermiongf/plot_g_w.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/fermiongf/plot_g_w.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/fermiongf/plot_g_w.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
 <div class="figure align-default">
-<a class="reference internal image-reference" href="../../_images/plot_g_w.png"><img alt="../../_images/plot_g_w.png" src="../../_images/plot_g_w.png" style="width: 512.0px; height: 384.0px;" /></a>
+<a class="reference internal image-reference" href="../../_images/plot_g_w2.png"><img alt="../../_images/plot_g_w2.png" src="../../_images/plot_g_w2.png" style="width: 512.0px; height: 384.0px;" /></a>
 </div>
+<p class="rubric">Plot <span class="math notranslate nohighlight">\(\chi\)</span>-histograms</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="kn">from</span> <span class="nn">triqs.stat</span> <span class="kn">import</span> <span class="n">Histogram</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">som</span> <span class="kn">import</span> <span class="n">count_good_solutions</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="c1"># Read data from archive</span>
+<span class="n">ar</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;results.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+
+<span class="n">hists</span> <span class="o">=</span> <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;histograms&#39;</span><span class="p">]</span>
+<span class="n">good_chi_abs</span> <span class="o">=</span> <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;good_chi_abs&#39;</span><span class="p">]</span>
+<span class="n">good_chi_rel</span> <span class="o">=</span> <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;good_chi_rel&#39;</span><span class="p">]</span>
+
+<span class="c1"># Plot histograms</span>
+<span class="n">chi_min</span><span class="p">,</span> <span class="n">chi_max</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">hist</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">hists</span><span class="p">):</span>
+    <span class="n">chi_grid</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">hist</span><span class="o">.</span><span class="n">mesh_point</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">hist</span><span class="p">))])</span>
+    <span class="n">chi_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">chi_min</span><span class="p">,</span> <span class="n">chi_grid</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">chi_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">chi_min</span><span class="p">,</span> <span class="n">chi_grid</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">chi_grid</span><span class="p">,</span> <span class="n">hist</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;Histogram for $A_</span><span class="si">%d</span><span class="s2">(\omega)$&quot;</span> <span class="o">%</span> <span class="n">n</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="n">chi_min</span><span class="p">,</span> <span class="n">chi_max</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\chi$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$P(\chi)$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper right&quot;</span><span class="p">)</span>
+
+<span class="c1"># Count good solutions using saved histograms</span>
+<span class="n">n_good_sol</span> <span class="o">=</span> <span class="p">[</span><span class="n">count_good_solutions</span><span class="p">(</span><span class="n">h</span><span class="p">,</span>
+                                   <span class="n">good_chi_abs</span><span class="o">=</span><span class="n">good_chi_abs</span><span class="p">,</span>
+                                   <span class="n">good_chi_rel</span><span class="o">=</span><span class="n">good_chi_rel</span><span class="p">)</span>
+              <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hists</span><span class="p">]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.06</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span>
+         <span class="p">(</span><span class="s2">&quot;# good solutions in $A_0(</span><span class="se">\\</span><span class="s2">omega)$: </span><span class="si">%d</span><span class="se">\n</span><span class="s2">&quot;</span>
+          <span class="s2">&quot;# good solutions in $A_1(</span><span class="se">\\</span><span class="s2">omega)$: </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">%</span>
+         <span class="p">(</span><span class="n">n_good_sol</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">n_good_sol</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../../../build/doc/../../doc/examples/fermiongf/plot_hist.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/fermiongf/plot_hist.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/fermiongf/plot_hist.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/fermiongf/plot_hist.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../../_images/plot_hist3.png"><img alt="../../_images/plot_hist3.png" src="../../_images/plot_hist3.png" style="width: 512.0px; height: 384.0px;" /></a>
 </div>
 </div>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../../examples.html" class="btn btn-neutral float-left" title="Usage examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../fermiongfsymm/example.html" class="btn btn-neutral float-right" title="Fermionic Green’s function or self-energy with enforced particle-hole symmetry" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

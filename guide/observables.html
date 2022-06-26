@@ -78,7 +78,18 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../examples.html">Usage examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Usage examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../examples/fermiongf/example.html">Fermionic Green’s function or self-energy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/fermiongfsymm/example.html">Fermionic Green’s function or self-energy with enforced particle-hole symmetry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/bosoncorr/example.html">Green’s function of bosons and transverse magnetic susceptibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/bosonautocorr/example.html">Charge susceptibility, longitudinal magnetic susceptibility and optical conductivity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/zerotemp/example.html">Dynamical response function at zero temperature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/meshes/example.html">Input data defined on various meshes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/cov_matrix/example.html">Full covariance matrix of input data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/spectral_stats/example.html">Statistical analysis of ensembles of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/socc/example.html">Stochastic Optimization with Consistent Constraints</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Python API reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../reference/som.html"><code class="docutils literal notranslate"><span class="pre">som</span></code>: Main Python module of SOM</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../reference/som.html#som-som"><code class="docutils literal notranslate"><span class="pre">som.Som</span></code></a></li>
@@ -156,7 +167,7 @@ and explicitly states the integral equation being solved for each of them.</p>
 <p id="fermiongf">A Green’s function of fermions at temperature <span class="math notranslate nohighlight">\(T = 1/\beta\)</span> is defined
 as</p>
 <div class="math notranslate nohighlight">
-\[G(\tau) = -\langle \mathbf{T}_\tau c(\tau) c^\dagger(0)\rangle.\]</div>
+\[G(\tau) = -\langle \mathbb{T}_\tau c(\tau) c^\dagger(0)\rangle.\]</div>
 <p>Its real-frequency counterpart is the retarded Green’s function
 <span class="math notranslate nohighlight">\(G^\mathrm{ret}(\epsilon)\)</span>, which is directly connected to the spectral
 function <span class="math notranslate nohighlight">\(A(\epsilon)\)</span>,</p>
@@ -272,20 +283,20 @@ the first kind.</p>
 <h2>Thermal Green’s function of bosons, dynamical susceptibilities and conductivity<a class="headerlink" href="#thermal-green-s-function-of-bosons-dynamical-susceptibilities-and-conductivity" title="Permalink to this heading"></a></h2>
 <p id="bosoncorr">The following correlators share the same general form
 <span class="math notranslate nohighlight">\(\chi_{OO^\dagger}(\tau) =
-\langle \mathbf{T}_\tau \hat O(\tau) \hat O^\dagger(0)\rangle\)</span>,
+\langle \mathbb{T}_\tau \hat O(\tau) \hat O^\dagger(0)\rangle\)</span>,
 where <span class="math notranslate nohighlight">\(\hat O\)</span> is a bosonic or boson-like (fermion-number-conserving)
 operator.</p>
 <ul class="simple">
 <li>Matsubara Green’s function of bosons <span class="math notranslate nohighlight">\(G(\tau) =
-\langle \mathbf{T}_\tau a(\tau) a^\dagger(0)\rangle\)</span>;</li>
+\langle \mathbb{T}_\tau a(\tau) a^\dagger(0)\rangle\)</span>;</li>
 <li>Charge susceptibility <span class="math notranslate nohighlight">\(\chi_{NN}(\tau) =
-\langle \mathbf{T}_\tau \hat N(\tau) \hat N(0)\rangle\)</span>;</li>
+\langle \mathbb{T}_\tau \hat N(\tau) \hat N(0)\rangle\)</span>;</li>
 <li>Longitudinal magnetic susceptibility <span class="math notranslate nohighlight">\(\chi_{zz}(\tau) =
-\langle \mathbf{T}_\tau \hat S_z(\tau) \hat S_z(0)\rangle\)</span>;</li>
-<li>Transversal magnetic susceptibility <span class="math notranslate nohighlight">\(\chi_{-+}(\tau) =
-\langle \mathbf{T}_\tau \hat S_-(\tau) \hat S_+(0)\rangle\)</span>;</li>
+\langle \mathbb{T}_\tau \hat S_z(\tau) \hat S_z(0)\rangle\)</span>;</li>
+<li>Transverse magnetic susceptibility <span class="math notranslate nohighlight">\(\chi_{-+}(\tau) =
+\langle \mathbb{T}_\tau \hat S_-(\tau) \hat S_+(0)\rangle\)</span>;</li>
 <li>Optical conductivity <span class="math notranslate nohighlight">\(\sigma(\tau) =
-\langle \mathbf{T}_\tau \hat j(\tau) \hat j(0)\rangle\)</span>.</li>
+\langle \mathbb{T}_\tau \hat j(\tau) \hat j(0)\rangle\)</span>.</li>
 </ul>
 <p>The real-time and real-frequency counterparts of <span class="math notranslate nohighlight">\(\chi_{OO^\dagger}(\tau)\)</span>
 are</p>
@@ -372,20 +383,20 @@ part of <span class="math notranslate nohighlight">\(A(\epsilon)\)</span>;</li>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td><div class="first last math notranslate nohighlight">
-\[\chi_{AA}(\tau) = \int\limits_{-\infty}^\infty
+\[\chi_{OO}(\tau) = \int\limits_{-\infty}^\infty
     \frac{d\epsilon}{2\pi}
     \frac{\epsilon (e^{-\tau\epsilon}+e^{-(\beta-\tau)\epsilon})}
     {1-e^{-\beta\epsilon}}
     A(\epsilon).\]</div>
 </td>
 <td><div class="first last math notranslate nohighlight">
-\[\chi_{AA}(i\Omega_n) = \int\limits_{-\infty}^\infty
+\[\chi_{OO}(i\Omega_n) = \int\limits_{-\infty}^\infty
     \frac{d\epsilon}{\pi}
     \frac{\epsilon^2}{\Omega_n^2+\epsilon^2}
     A(\epsilon).\]</div>
 </td>
 <td><div class="first math notranslate nohighlight">
-\[\begin{split}\chi_{AA}(\ell) = \left\{
+\[\begin{split}\chi_{OO}(\ell) = \left\{
     \begin{array}{ll}
     \int\limits_{-\infty}^\infty
     \frac{d\epsilon}{\pi}

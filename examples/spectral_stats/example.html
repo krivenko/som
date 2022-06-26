@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Statistical analysis of ensembles of spectral functions &mdash; SOM  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Stochastic Optimization with Consistent Constraints" href="../socc/example.html" />
+    <link rel="prev" title="Full covariance matrix of input data" href="../cov_matrix/example.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #7E588A" >
+            <a href="../../index.html" class="icon icon-home"> SOM
+          </a>
+              <div class="version">
+                2.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#docker">Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#compiling-som-from-source">Compiling SOM from source</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../install.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../install.html#installation-steps">Installation steps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../install.html#custom-cmake-options">Custom CMake options</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guide/index.html">User guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/basic.html">Basic description of the method</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/basic.html#integral-equation-of-the-analytic-continuation-problem">Integral equation of the analytic continuation problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/basic.html#goodness-of-fit-functionals">Goodness of fit functionals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/basic.html#minimization-of-the-chi-2-functionals">Minimization of the <span class="math notranslate nohighlight">\(\chi^2\)</span>-functionals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/basic.html#post-processing-of-spectral-functions">Post-processing of spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/observables.html">Supported observables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/observables.html#thermal-green-s-function-of-fermions">Thermal Green’s function of fermions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/observables.html#thermal-green-s-function-of-bosons-dynamical-susceptibilities-and-conductivity">Thermal Green’s function of bosons, dynamical susceptibilities and conductivity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/observables.html#dynamical-response-functions-at-zero-temperature">Dynamical response functions at zero temperature</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/recovery.html">Recovery of observables on a real-frequency mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/spectral_stats.html">Statistical analysis of ensembles of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/socc.html">Stochastic Optimization with Consistent Constraints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/socc.html#consistent-constraints-updates">Consistent-constraints updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/socc.html#construction-of-final-solution-using-the-consistent-constraints-protocol">Construction of final solution using the consistent-constraints protocol</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../examples.html">Usage examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../fermiongf/example.html">Fermionic Green’s function or self-energy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fermiongfsymm/example.html">Fermionic Green’s function or self-energy with enforced particle-hole symmetry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../bosoncorr/example.html">Green’s function of bosons and transverse magnetic susceptibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../bosonautocorr/example.html">Charge susceptibility, longitudinal magnetic susceptibility and optical conductivity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../zerotemp/example.html">Dynamical response function at zero temperature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../meshes/example.html">Input data defined on various meshes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cov_matrix/example.html">Full covariance matrix of input data</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Statistical analysis of ensembles of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../socc/example.html">Stochastic Optimization with Consistent Constraints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Python API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../reference/som.html"><code class="docutils literal notranslate"><span class="pre">som</span></code>: Main Python module of SOM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/som.html#som-som"><code class="docutils literal notranslate"><span class="pre">som.Som</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/som.html#free-functions">Free functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/som.html#auxiliary-types">Auxiliary types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../reference/spectral_stats.html"><code class="docutils literal notranslate"><span class="pre">som.spectral_stats</span></code>: Statistical analysis of noisy spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../script_porting.html">SOM 1.x script porting guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#python-modules">Python modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#construction-of-the-som-object">Construction of the <code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code> object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#deprecation-of-som-run">Deprecation of <code class="xref py py-func docutils literal notranslate"><span class="pre">Som.run()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#post-processing-of-spectral-functions">Post-processing of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#direct-access-to-spectral-functions">Direct access to spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../issues.html">Reporting issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About SOM</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#authors">Authors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#triqs">TRIQS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#acknowledgements">Acknowledgements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#usage-disclaimer">Usage disclaimer</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../ChangeLog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#unreleased">2.0.0 (unreleased)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../ChangeLog.html#major-changes-and-new-features">Major changes and new features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../ChangeLog.html#python-api-changes">Python API changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../ChangeLog.html#build-system-and-developer-tools">Build system and developer tools</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id2">1.2 (2020-03-15)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id3">1.1 (2017-04-23)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id4">1.0 (2017-03-19)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../search.html">Search</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #7E588A" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">SOM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../examples.html">Usage examples</a> &raquo;</li>
+      <li>Statistical analysis of ensembles of spectral functions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/examples/spectral_stats/example.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="statistical-analysis-of-ensembles-of-spectral-functions">
+<span id="example-spectral-stats"></span><h1>Statistical analysis of ensembles of spectral functions<a class="headerlink" href="#statistical-analysis-of-ensembles-of-spectral-functions" title="Permalink to this heading"></a></h1>
+<p>This example is an illustration of the <a class="reference internal" href="../../guide/spectral_stats.html#spectral-stats"><span class="std std-ref">spectral statistical analysis API</span></a>. In the script below, we use the same input data for a
+two-component fermionic Green’s function as in
+<a class="reference internal" href="../fermiongf/example.html#example-fermiongf"><span class="std std-ref">another example</span></a>, but never construct a final
+solution out of accumulated particular solutions. Instead, we estimate it by
+computing spectral averages over the ensemble of the particular solutions, along
+with error bars (dispersions) and two-point correlations.
+Use of all three <a class="reference internal" href="../../guide/spectral_stats.html#resolution-functions"><span class="std std-ref">resolution functions</span></a> is shown.</p>
+<p class="rubric">Accumulate particular solutions and compute
+statistical characteristics</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import HDFArchive and some TRIQS modules</span>
+<span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="kn">from</span> <span class="nn">triqs.gf</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">triqs.utility.mpi</span> <span class="k">as</span> <span class="nn">mpi</span>
+
+<span class="c1"># Import main SOM class</span>
+<span class="kn">from</span> <span class="nn">som</span> <span class="kn">import</span> <span class="n">Som</span>
+<span class="c1"># Import statistical analysis functions</span>
+<span class="kn">from</span> <span class="nn">som.spectral_stats</span> <span class="kn">import</span> <span class="n">spectral_avg</span><span class="p">,</span> <span class="n">spectral_disp</span><span class="p">,</span> <span class="n">spectral_corr</span>
+
+<span class="n">energy_window</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">)</span>  <span class="c1"># Energy window to search the solution in</span>
+
+<span class="c1"># Parameters for Som.accumulate()</span>
+<span class="n">acc_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;energy_window&#39;</span><span class="p">:</span> <span class="n">energy_window</span><span class="p">}</span>
+<span class="n">acc_params</span><span class="p">[</span><span class="s1">&#39;verbosity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># Verbosity level</span>
+<span class="n">acc_params</span><span class="p">[</span><span class="s1">&#39;l&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1000</span>       <span class="c1"># Number of particular solutions to accumulate</span>
+<span class="n">acc_params</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span>        <span class="c1"># Number of global updates</span>
+<span class="n">acc_params</span><span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">50</span>         <span class="c1"># Number of local updates per global update</span>
+
+<span class="c1"># Read G(\tau) from an archive.</span>
+<span class="n">g_tau</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;input.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)[</span><span class="s1">&#39;g_tau&#39;</span><span class="p">]</span>
+
+<span class="c1"># Set the error bars to a constant (all points of g_tau are equally important)</span>
+<span class="n">error_bars</span> <span class="o">=</span> <span class="n">g_tau</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">error_bars</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="mf">0.01</span>
+
+<span class="c1"># Construct a SOM object</span>
+<span class="n">cont</span> <span class="o">=</span> <span class="n">Som</span><span class="p">(</span><span class="n">g_tau</span><span class="p">,</span> <span class="n">error_bars</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;FermionGf&quot;</span><span class="p">)</span>
+
+<span class="c1"># Accumulate particular solutions. This may take some time ...</span>
+<span class="n">cont</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="o">**</span><span class="n">acc_params</span><span class="p">)</span>
+
+<span class="c1">#</span>
+<span class="c1"># Compute statistical characteristics of the ensemble of the accumulated</span>
+<span class="c1"># particular solutions.</span>
+<span class="c1">#</span>
+
+<span class="c1"># We use a set of energy intervals centered around points of this mesh</span>
+<span class="n">w_mesh</span> <span class="o">=</span> <span class="n">MeshReFreq</span><span class="p">(</span><span class="o">*</span><span class="n">energy_window</span><span class="p">,</span> <span class="mi">401</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="c1"># Compute spectral averages using different resolution functions.</span>
+    <span class="n">avg_rect</span> <span class="o">=</span> <span class="n">spectral_avg</span><span class="p">(</span><span class="n">cont</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">w_mesh</span><span class="p">,</span> <span class="s2">&quot;rectangle&quot;</span><span class="p">)</span>
+    <span class="n">avg_lorentz</span> <span class="o">=</span> <span class="n">spectral_avg</span><span class="p">(</span><span class="n">cont</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">w_mesh</span><span class="p">,</span> <span class="s2">&quot;lorentzian&quot;</span><span class="p">)</span>
+    <span class="n">avg_gauss</span> <span class="o">=</span> <span class="n">spectral_avg</span><span class="p">(</span><span class="n">cont</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">w_mesh</span><span class="p">,</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Compute spectral dispersions using different resolution functions.</span>
+    <span class="n">disp_rect</span> <span class="o">=</span> <span class="n">spectral_disp</span><span class="p">(</span><span class="n">cont</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">w_mesh</span><span class="p">,</span> <span class="n">avg_rect</span><span class="p">,</span> <span class="s2">&quot;rectangle&quot;</span><span class="p">)</span>
+    <span class="n">disp_lorentz</span> <span class="o">=</span> <span class="n">spectral_disp</span><span class="p">(</span><span class="n">cont</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">w_mesh</span><span class="p">,</span> <span class="n">avg_lorentz</span><span class="p">,</span> <span class="s2">&quot;lorentzian&quot;</span><span class="p">)</span>
+    <span class="n">disp_gauss</span> <span class="o">=</span> <span class="n">spectral_disp</span><span class="p">(</span><span class="n">cont</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">w_mesh</span><span class="p">,</span> <span class="n">avg_gauss</span><span class="p">,</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Compute two-point correlators using different resolution functions.</span>
+    <span class="n">corr_rect</span> <span class="o">=</span> <span class="n">spectral_corr</span><span class="p">(</span><span class="n">cont</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">w_mesh</span><span class="p">,</span> <span class="n">avg_rect</span><span class="p">,</span> <span class="s2">&quot;rectangle&quot;</span><span class="p">)</span>
+    <span class="n">corr_lorentz</span> <span class="o">=</span> <span class="n">spectral_corr</span><span class="p">(</span><span class="n">cont</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">w_mesh</span><span class="p">,</span> <span class="n">avg_lorentz</span><span class="p">,</span> <span class="s2">&quot;lorentzian&quot;</span><span class="p">)</span>
+    <span class="n">corr_gauss</span> <span class="o">=</span> <span class="n">spectral_corr</span><span class="p">(</span><span class="n">cont</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">w_mesh</span><span class="p">,</span> <span class="n">avg_gauss</span><span class="p">,</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">)</span>
+
+    <span class="c1"># On master node, save results to an archive</span>
+    <span class="k">if</span> <span class="n">mpi</span><span class="o">.</span><span class="n">is_master_node</span><span class="p">():</span>
+        <span class="k">with</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s2">&quot;results.h5&quot;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ar</span><span class="p">:</span>
+            <span class="n">ar</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+            <span class="n">gr</span> <span class="o">=</span> <span class="n">ar</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span>
+            <span class="n">gr</span><span class="p">[</span><span class="s1">&#39;w_mesh&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">w_mesh</span>
+            <span class="n">gr</span><span class="p">[</span><span class="s1">&#39;avg_rect&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">avg_rect</span>
+            <span class="n">gr</span><span class="p">[</span><span class="s1">&#39;avg_lorentz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">avg_lorentz</span>
+            <span class="n">gr</span><span class="p">[</span><span class="s1">&#39;avg_gauss&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">avg_gauss</span>
+            <span class="n">gr</span><span class="p">[</span><span class="s1">&#39;disp_rect&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">disp_rect</span>
+            <span class="n">gr</span><span class="p">[</span><span class="s1">&#39;disp_lorentz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">disp_lorentz</span>
+            <span class="n">gr</span><span class="p">[</span><span class="s1">&#39;disp_gauss&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">disp_gauss</span>
+            <span class="n">gr</span><span class="p">[</span><span class="s1">&#39;corr_rect&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">corr_rect</span>
+            <span class="n">gr</span><span class="p">[</span><span class="s1">&#39;corr_lorentz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">corr_lorentz</span>
+            <span class="n">gr</span><span class="p">[</span><span class="s1">&#39;corr_gauss&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">corr_gauss</span>
+</pre></div>
+</div>
+<p>Download input file <a class="reference download internal" download="" href="../../_downloads/150c9113cfcf81b0cc3a3cefc5ca5b6d/input.h5"><code class="xref download docutils literal notranslate"><span class="pre">input.h5</span></code></a>.</p>
+<p class="rubric">Plot statistical characteristics</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="kn">from</span> <span class="nn">triqs.gf</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Read data from archive</span>
+<span class="n">ar</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;results.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+
+<span class="n">w_mesh</span> <span class="o">=</span> <span class="n">ar</span><span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">][</span><span class="s2">&quot;w_mesh&quot;</span><span class="p">]</span>
+<span class="n">w_points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">w_mesh</span><span class="p">])</span>
+
+<span class="c1">#</span>
+<span class="c1"># Plot averaged spectra with error bars derived from estimated dispersions</span>
+<span class="c1">#</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="n">gr</span> <span class="o">=</span> <span class="n">ar</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span>
+
+    <span class="c1"># Rectangular resolution function</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">w_points</span><span class="p">,</span>
+                        <span class="n">gr</span><span class="p">[</span><span class="s2">&quot;avg_rect&quot;</span><span class="p">],</span>
+                        <span class="n">xerr</span><span class="o">=</span><span class="n">w_mesh</span><span class="o">.</span><span class="n">delta</span><span class="p">,</span>
+                        <span class="n">yerr</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">gr</span><span class="p">[</span><span class="s2">&quot;disp_rect&quot;</span><span class="p">]),</span>
+                        <span class="n">lw</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$A_</span><span class="si">%d</span><span class="s2">(\omega)$, Rectangular&quot;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
+
+    <span class="c1"># Lorentzian resolution function</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">w_points</span><span class="p">,</span>
+                        <span class="n">gr</span><span class="p">[</span><span class="s2">&quot;avg_lorentz&quot;</span><span class="p">],</span>
+                        <span class="n">xerr</span><span class="o">=</span><span class="n">w_mesh</span><span class="o">.</span><span class="n">delta</span><span class="p">,</span>
+                        <span class="n">yerr</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">gr</span><span class="p">[</span><span class="s2">&quot;disp_lorentz&quot;</span><span class="p">]),</span>
+                        <span class="n">lw</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$A_</span><span class="si">%d</span><span class="s2">(\omega)$, Lorentz&quot;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
+
+    <span class="c1"># Gaussian resolution function</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">w_points</span><span class="p">,</span>
+                        <span class="n">gr</span><span class="p">[</span><span class="s2">&quot;avg_gauss&quot;</span><span class="p">],</span>
+                        <span class="n">xerr</span><span class="o">=</span><span class="n">w_mesh</span><span class="o">.</span><span class="n">delta</span><span class="p">,</span>
+                        <span class="n">yerr</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">gr</span><span class="p">[</span><span class="s2">&quot;disp_gauss&quot;</span><span class="p">]),</span>
+                        <span class="n">lw</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$A_</span><span class="si">%d</span><span class="s2">(\omega)$, Gaussian&quot;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="n">w_points</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">w_points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\omega$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../../../build/doc/../../doc/examples/spectral_stats/plot.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/spectral_stats/plot_00_00.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/spectral_stats/plot_00_00.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/spectral_stats/plot_00_00.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../../_images/plot_00_001.png"><img alt="../../_images/plot_00_001.png" src="../../_images/plot_00_001.png" style="width: 640.0px; height: 800.0px;" /></a>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#</span>
+<span class="c1"># Plot two-point correlators</span>
+<span class="c1">#</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="n">gr</span> <span class="o">=</span> <span class="n">ar</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span>
+
+    <span class="n">extent</span> <span class="o">=</span> <span class="p">[</span><span class="n">w_points</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">w_points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">w_points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">w_points</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+
+    <span class="c1"># Rectangular resolution function</span>
+    <span class="n">corr</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">gr</span><span class="p">[</span><span class="s2">&quot;corr_rect&quot;</span><span class="p">],</span> <span class="n">extent</span><span class="o">=</span><span class="n">extent</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;hot&quot;</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">corr</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">])</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\sigma_{\omega\omega&#39;}^{(</span><span class="si">%d</span><span class="s2">)}$, Rectangular&quot;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
+
+    <span class="c1"># Lorentzian resolution function</span>
+    <span class="n">corr</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">gr</span><span class="p">[</span><span class="s2">&quot;corr_lorentz&quot;</span><span class="p">],</span> <span class="n">extent</span><span class="o">=</span><span class="n">extent</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;hot&quot;</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">corr</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">])</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\sigma_{\omega\omega&#39;}^{(</span><span class="si">%d</span><span class="s2">)}$, Lorentz&quot;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
+
+    <span class="c1"># Gaussian resolution function</span>
+    <span class="n">corr</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">gr</span><span class="p">[</span><span class="s2">&quot;corr_gauss&quot;</span><span class="p">],</span> <span class="n">extent</span><span class="o">=</span><span class="n">extent</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;hot&quot;</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">corr</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="p">])</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\sigma_{\omega\omega&#39;}^{(</span><span class="si">%d</span><span class="s2">)}$, Gaussian&quot;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../../../build/doc/../../doc/examples/spectral_stats/plot_01_00.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/spectral_stats/plot_01_00.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/spectral_stats/plot_01_00.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../../_images/plot_01_001.png"><img alt="../../_images/plot_01_001.png" src="../../_images/plot_01_001.png" style="width: 640.0px; height: 800.0px;" /></a>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../cov_matrix/example.html" class="btn btn-neutral float-left" title="Full covariance matrix of input data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../socc/example.html" class="btn btn-neutral float-right" title="Stochastic Optimization with Consistent Constraints" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2022, Igor Krivenko.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

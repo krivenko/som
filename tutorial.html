@@ -78,7 +78,18 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Usage examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Usage examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/fermiongf/example.html">Fermionic Green’s function or self-energy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/fermiongfsymm/example.html">Fermionic Green’s function or self-energy with enforced particle-hole symmetry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/bosoncorr/example.html">Green’s function of bosons and transverse magnetic susceptibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/bosonautocorr/example.html">Charge susceptibility, longitudinal magnetic susceptibility and optical conductivity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/zerotemp/example.html">Dynamical response function at zero temperature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/meshes/example.html">Input data defined on various meshes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/cov_matrix/example.html">Full covariance matrix of input data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/spectral_stats/example.html">Statistical analysis of ensembles of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/socc/example.html">Stochastic Optimization with Consistent Constraints</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="reference/index.html">Python API reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="reference/som.html"><code class="docutils literal notranslate"><span class="pre">som</span></code>: Main Python module of SOM</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="reference/som.html#som-som"><code class="docutils literal notranslate"><span class="pre">som.Som</span></code></a></li>
@@ -210,15 +221,15 @@ shape.</p>
 <li><a class="reference internal" href="guide/observables.html#fermiongf"><span class="std std-ref">FermionGf</span></a> - fermionic Green’s function or self-energy;</li>
 <li><a class="reference internal" href="guide/observables.html#fermiongfsymm"><span class="std std-ref">FermionGfSymm</span></a> - fermionic Green’s function or
 self-energy with enforced particle-hole symmetry.</li>
-<li><a class="reference internal" href="guide/observables.html#bosoncorr"><span class="std std-ref">BosonCorr</span></a> - bosonic Green’s function, transversal
+<li><a class="reference internal" href="guide/observables.html#bosoncorr"><span class="std std-ref">BosonCorr</span></a> - bosonic Green’s function, transverse
 magnetic susceptibility, general dynamical correlator of the form
-<span class="math notranslate nohighlight">\(\chi_{OO^\dagger}(\tau) = \langle \mathbf{T}_\tau \hat O(\tau)
+<span class="math notranslate nohighlight">\(\chi_{OO^\dagger}(\tau) = \langle \mathbb{T}_\tau \hat O(\tau)
 \hat O^\dagger(0)\rangle\)</span>, where <span class="math notranslate nohighlight">\(\hat O\)</span> is a boson-like
 (fermion-number-conserving) operator.</li>
 <li><a class="reference internal" href="guide/observables.html#bosonautocorr"><span class="std std-ref">BosonAutoCorr</span></a> - charge susceptibility,
 longitudinal magnetic susceptibility, optical conductivity,
 general dynamical correlator of the form
-<span class="math notranslate nohighlight">\(\chi_{OO}(\tau) = \langle \mathbf{T}_\tau \hat O(\tau)
+<span class="math notranslate nohighlight">\(\chi_{OO}(\tau) = \langle \mathbb{T}_\tau \hat O(\tau)
 \hat O(0)\rangle\)</span>.</li>
 <li><a class="reference internal" href="guide/observables.html#zerotemp"><span class="std std-ref">ZeroTemp</span></a> - dynamical correlator computed in the
 Matsubara formalism but at zero temperature.</li>

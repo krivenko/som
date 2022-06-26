@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Full covariance matrix of input data &mdash; SOM  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Statistical analysis of ensembles of spectral functions" href="../spectral_stats/example.html" />
+    <link rel="prev" title="Input data defined on various meshes" href="../meshes/example.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #7E588A" >
+            <a href="../../index.html" class="icon icon-home"> SOM
+          </a>
+              <div class="version">
+                2.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#docker">Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#compiling-som-from-source">Compiling SOM from source</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../install.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../install.html#installation-steps">Installation steps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../install.html#custom-cmake-options">Custom CMake options</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guide/index.html">User guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/basic.html">Basic description of the method</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/basic.html#integral-equation-of-the-analytic-continuation-problem">Integral equation of the analytic continuation problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/basic.html#goodness-of-fit-functionals">Goodness of fit functionals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/basic.html#minimization-of-the-chi-2-functionals">Minimization of the <span class="math notranslate nohighlight">\(\chi^2\)</span>-functionals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/basic.html#post-processing-of-spectral-functions">Post-processing of spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/observables.html">Supported observables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/observables.html#thermal-green-s-function-of-fermions">Thermal Green’s function of fermions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/observables.html#thermal-green-s-function-of-bosons-dynamical-susceptibilities-and-conductivity">Thermal Green’s function of bosons, dynamical susceptibilities and conductivity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/observables.html#dynamical-response-functions-at-zero-temperature">Dynamical response functions at zero temperature</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/recovery.html">Recovery of observables on a real-frequency mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/spectral_stats.html">Statistical analysis of ensembles of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/socc.html">Stochastic Optimization with Consistent Constraints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/socc.html#consistent-constraints-updates">Consistent-constraints updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/socc.html#construction-of-final-solution-using-the-consistent-constraints-protocol">Construction of final solution using the consistent-constraints protocol</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../examples.html">Usage examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../fermiongf/example.html">Fermionic Green’s function or self-energy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fermiongfsymm/example.html">Fermionic Green’s function or self-energy with enforced particle-hole symmetry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../bosoncorr/example.html">Green’s function of bosons and transverse magnetic susceptibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../bosonautocorr/example.html">Charge susceptibility, longitudinal magnetic susceptibility and optical conductivity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../zerotemp/example.html">Dynamical response function at zero temperature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../meshes/example.html">Input data defined on various meshes</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Full covariance matrix of input data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../spectral_stats/example.html">Statistical analysis of ensembles of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../socc/example.html">Stochastic Optimization with Consistent Constraints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Python API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../reference/som.html"><code class="docutils literal notranslate"><span class="pre">som</span></code>: Main Python module of SOM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/som.html#som-som"><code class="docutils literal notranslate"><span class="pre">som.Som</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/som.html#free-functions">Free functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/som.html#auxiliary-types">Auxiliary types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../reference/spectral_stats.html"><code class="docutils literal notranslate"><span class="pre">som.spectral_stats</span></code>: Statistical analysis of noisy spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../script_porting.html">SOM 1.x script porting guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#python-modules">Python modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#construction-of-the-som-object">Construction of the <code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code> object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#deprecation-of-som-run">Deprecation of <code class="xref py py-func docutils literal notranslate"><span class="pre">Som.run()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#post-processing-of-spectral-functions">Post-processing of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#direct-access-to-spectral-functions">Direct access to spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../issues.html">Reporting issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About SOM</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#authors">Authors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#triqs">TRIQS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#acknowledgements">Acknowledgements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#usage-disclaimer">Usage disclaimer</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../ChangeLog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#unreleased">2.0.0 (unreleased)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../ChangeLog.html#major-changes-and-new-features">Major changes and new features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../ChangeLog.html#python-api-changes">Python API changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../ChangeLog.html#build-system-and-developer-tools">Build system and developer tools</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id2">1.2 (2020-03-15)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id3">1.1 (2017-04-23)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id4">1.0 (2017-03-19)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../search.html">Search</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #7E588A" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">SOM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../examples.html">Usage examples</a> &raquo;</li>
+      <li>Full covariance matrix of input data</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/examples/cov_matrix/example.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="full-covariance-matrix-of-input-data">
+<span id="example-cov-matrix"></span><h1>Full covariance matrix of input data<a class="headerlink" href="#full-covariance-matrix-of-input-data" title="Permalink to this heading"></a></h1>
+<p>This example demonstrates three ways to provide information about uncertainty
+of input data (here, of an imaginary time fermionic Green’s function
+<span class="math notranslate nohighlight">\(G(\tau)\)</span>),</p>
+<ul class="simple">
+<li>As <a class="reference internal" href="../../guide/basic.html#error-bars"><span class="std std-ref">estimated error bars</span></a> <span class="math notranslate nohighlight">\(\sigma(\tau)\)</span>;</li>
+<li>As a <a class="reference internal" href="../../guide/basic.html#cov-matrix"><span class="std std-ref">full covariance matrix</span></a> <span class="math notranslate nohighlight">\(\hat\Sigma_{\tau\tau'}\)</span>
+;</li>
+<li>As a full covariance matrix <span class="math notranslate nohighlight">\(\hat\Sigma_{\tau\tau'}\)</span> with all
+eigenvalues shifted up by a constant <span class="math notranslate nohighlight">\(l^2\)</span>, where <span class="math notranslate nohighlight">\(l\)</span> is so called
+<a class="reference internal" href="../../guide/basic.html#cov-matrix-filtered"><span class="std std-ref">filtering level</span></a>.</li>
+</ul>
+<p class="rubric">Perform analytic continuation</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import HDFArchive, some TRIQS modules and NumPy</span>
+<span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="kn">from</span> <span class="nn">triqs.gf</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">triqs.utility.mpi</span> <span class="k">as</span> <span class="nn">mpi</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Import main SOM class and utility functions</span>
+<span class="kn">from</span> <span class="nn">som</span> <span class="kn">import</span> <span class="n">Som</span><span class="p">,</span> <span class="n">fill_refreq</span><span class="p">,</span> <span class="n">reconstruct</span>
+
+<span class="n">n_w</span> <span class="o">=</span> <span class="mi">801</span>                    <span class="c1"># Number of energy slices for G(\omega)</span>
+<span class="n">energy_window</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">)</span>  <span class="c1"># Energy window to search solutions in</span>
+
+<span class="c1"># Parameters for Som.accumulate()</span>
+<span class="n">acc_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;energy_window&#39;</span><span class="p">:</span> <span class="n">energy_window</span><span class="p">}</span>
+<span class="n">acc_params</span><span class="p">[</span><span class="s1">&#39;verbosity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># Verbosity level</span>
+<span class="n">acc_params</span><span class="p">[</span><span class="s1">&#39;l&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1000</span>       <span class="c1"># Number of particular solutions to accumulate</span>
+<span class="n">acc_params</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span>        <span class="c1"># Number of global updates</span>
+<span class="n">acc_params</span><span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">50</span>         <span class="c1"># Number of local updates per global update</span>
+
+<span class="c1"># Read G(\tau) from an archive.</span>
+<span class="n">g_tau</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;input.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)[</span><span class="s1">&#39;g_tau&#39;</span><span class="p">]</span>
+<span class="n">n_tau</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">g_tau</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
+
+<span class="c1"># Estimated error bars on all slices of &#39;g_tau&#39;</span>
+<span class="n">sigma</span> <span class="o">=</span> <span class="mf">0.01</span>
+
+<span class="c1">#</span>
+<span class="c1"># Construct a Som object using the estimated error bars.</span>
+<span class="c1">#</span>
+
+<span class="n">error_bars</span> <span class="o">=</span> <span class="n">g_tau</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">error_bars</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">sigma</span>
+
+<span class="n">cont_eb</span> <span class="o">=</span> <span class="n">Som</span><span class="p">(</span><span class="n">g_tau</span><span class="p">,</span> <span class="n">error_bars</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;FermionGf&quot;</span><span class="p">)</span>
+
+<span class="c1">#</span>
+<span class="c1"># Construct a Som object using a full covariance matrix.</span>
+<span class="c1">#</span>
+
+<span class="c1"># Create a GF container for the covariance matrix.</span>
+<span class="c1"># It is defined on an &#39;n_tau x n_tau&#39; mesh and has a 1D target shape</span>
+<span class="c1"># with each target element corresponding to one diagonal element of &#39;g_tau&#39;.</span>
+<span class="n">cov_matrix</span> <span class="o">=</span> <span class="n">Gf</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">MeshProduct</span><span class="p">(</span><span class="n">g_tau</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span> <span class="n">g_tau</span><span class="o">.</span><span class="n">mesh</span><span class="p">),</span>
+                <span class="n">target_shape</span><span class="o">=</span><span class="p">(</span><span class="n">g_tau</span><span class="o">.</span><span class="n">target_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],))</span>
+
+<span class="c1"># Diagonal covariance matrix equivalent to using &#39;error_bars&#39;</span>
+<span class="n">cov_matrix</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">sigma</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">n_tau</span><span class="p">)</span>
+<span class="c1"># Add slight correlations between adjacent \tau-slices</span>
+<span class="n">cov_matrix</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="mf">0.00005</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_tau</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">cov_matrix</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="mf">0.00005</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_tau</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">k</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">cont_cm</span> <span class="o">=</span> <span class="n">Som</span><span class="p">(</span><span class="n">g_tau</span><span class="p">,</span> <span class="n">cov_matrix</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;FermionGf&quot;</span><span class="p">)</span>
+
+<span class="c1">#</span>
+<span class="c1"># Construct a Som object using the same covariance matrix and a finite filtering</span>
+<span class="c1"># level.</span>
+<span class="c1">#</span>
+
+<span class="c1"># Before using the covariance matrix, SOM will shift its eigenvalues up by fl^2.</span>
+<span class="n">fl</span> <span class="o">=</span> <span class="mf">0.01</span>
+<span class="n">cont_cmfl</span> <span class="o">=</span> <span class="n">Som</span><span class="p">(</span><span class="n">g_tau</span><span class="p">,</span> <span class="n">cov_matrix</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;FermionGf&quot;</span><span class="p">,</span> <span class="n">filtering_levels</span><span class="o">=</span><span class="p">[</span><span class="n">fl</span><span class="p">])</span>
+
+<span class="c1">#</span>
+<span class="c1"># Perform analytic continuation</span>
+<span class="c1">#</span>
+
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">cont</span> <span class="ow">in</span> <span class="p">((</span><span class="s2">&quot;error_bars&quot;</span><span class="p">,</span> <span class="n">cont_eb</span><span class="p">),</span>
+                   <span class="p">(</span><span class="s2">&quot;cov_matrix&quot;</span><span class="p">,</span> <span class="n">cont_cm</span><span class="p">),</span>
+                   <span class="p">(</span><span class="s2">&quot;cov_matrix_fl&quot;</span><span class="p">,</span> <span class="n">cont_cmfl</span><span class="p">)):</span>
+    <span class="n">cont</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="o">**</span><span class="n">acc_params</span><span class="p">)</span>
+    <span class="n">cont</span><span class="o">.</span><span class="n">compute_final_solution</span><span class="p">(</span><span class="n">verbosity</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Recover G(\omega) on an energy mesh</span>
+    <span class="n">g_w</span> <span class="o">=</span> <span class="n">GfReFreq</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="n">energy_window</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="n">n_w</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">g_tau</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+    <span class="n">fill_refreq</span><span class="p">(</span><span class="n">g_w</span><span class="p">,</span> <span class="n">cont</span><span class="p">)</span>
+
+    <span class="c1"># G(\tau) reconstructed from the solution</span>
+    <span class="n">g_rec_tau</span> <span class="o">=</span> <span class="n">g_tau</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">reconstruct</span><span class="p">(</span><span class="n">g_rec_tau</span><span class="p">,</span> <span class="n">cont</span><span class="p">)</span>
+
+    <span class="c1"># On master node, save results to an archive</span>
+    <span class="k">if</span> <span class="n">mpi</span><span class="o">.</span><span class="n">is_master_node</span><span class="p">():</span>
+        <span class="k">with</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s2">&quot;results.h5&quot;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ar</span><span class="p">:</span>
+            <span class="n">ar</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">gr</span> <span class="o">=</span> <span class="n">ar</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="n">gr</span><span class="p">[</span><span class="s1">&#39;g_tau&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g_tau</span>
+            <span class="n">gr</span><span class="p">[</span><span class="s1">&#39;g_w&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g_w</span>
+            <span class="n">gr</span><span class="p">[</span><span class="s1">&#39;g_rec_tau&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g_rec_tau</span>
+</pre></div>
+</div>
+<p>Download input file <a class="reference download internal" download="" href="../../_downloads/3ca352f7037124d0c0ad8d418f656769/input.h5"><code class="xref download docutils literal notranslate"><span class="pre">input.h5</span></code></a>.</p>
+<p class="rubric">Plot input and reconstructed imaginary-time GF’s</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="kn">from</span> <span class="nn">triqs.gf</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">triqs.plot.mpl_interface</span> <span class="kn">import</span> <span class="n">oplot</span>
+
+<span class="c1"># Read data from archive</span>
+<span class="n">ar</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;results.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+
+<span class="n">g_tau</span> <span class="o">=</span> <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;error_bars&#39;</span><span class="p">][</span><span class="s1">&#39;g_tau&#39;</span><span class="p">]</span>
+
+<span class="c1"># Plot input and reconstructed G(\tau)</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">g_tau</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$G(\tau)$&quot;</span><span class="p">)</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s1">&#39;error_bars&#39;</span><span class="p">][</span><span class="s1">&#39;g_rec_tau&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+      <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$G^</span><span class="si">{rec}</span><span class="s2">(\tau)$, error bars&quot;</span><span class="p">)</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s1">&#39;cov_matrix&#39;</span><span class="p">][</span><span class="s1">&#39;g_rec_tau&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+      <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$G^</span><span class="si">{rec}</span><span class="s2">(\tau)$, covariance matrix&quot;</span><span class="p">)</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s1">&#39;cov_matrix_fl&#39;</span><span class="p">][</span><span class="s1">&#39;g_rec_tau&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+      <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$G^</span><span class="si">{rec}</span><span class="s2">(\tau)$, covariance matrix with filtering&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">g_tau</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">beta</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$G(\tau)$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower center&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../../../build/doc/../../doc/examples/cov_matrix/plot_g_tau.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/cov_matrix/plot_g_tau.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/cov_matrix/plot_g_tau.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/cov_matrix/plot_g_tau.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../../_images/plot_g_tau1.png"><img alt="../../_images/plot_g_tau1.png" src="../../_images/plot_g_tau1.png" style="width: 512.0px; height: 384.0px;" /></a>
+</div>
+<p class="rubric">Plot spectral functions</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="kn">from</span> <span class="nn">triqs.gf</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">triqs.plot.mpl_interface</span> <span class="kn">import</span> <span class="n">oplot</span>
+
+<span class="c1"># Read data from archive</span>
+<span class="n">ar</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;results.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+
+<span class="c1"># Plot spectral functions</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s1">&#39;error_bars&#39;</span><span class="p">][</span><span class="s1">&#39;g_w&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+      <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;Error bars&quot;</span><span class="p">)</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s1">&#39;cov_matrix&#39;</span><span class="p">][</span><span class="s1">&#39;g_w&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+      <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;Covariance matrix&quot;</span><span class="p">)</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s1">&#39;cov_matrix_fl&#39;</span><span class="p">][</span><span class="s1">&#39;g_w&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+      <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;Covariance matrix with filtering&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$A(\omega)$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper left&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../../../build/doc/../../doc/examples/cov_matrix/plot_g_w.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/cov_matrix/plot_g_w.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/cov_matrix/plot_g_w.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/cov_matrix/plot_g_w.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../../_images/plot_g_w1.png"><img alt="../../_images/plot_g_w1.png" src="../../_images/plot_g_w1.png" style="width: 512.0px; height: 384.0px;" /></a>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../meshes/example.html" class="btn btn-neutral float-left" title="Input data defined on various meshes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../spectral_stats/example.html" class="btn btn-neutral float-right" title="Statistical analysis of ensembles of spectral functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2022, Igor Krivenko.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stochastic Optimization with Consistent Constraints &mdash; SOM  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Python API reference" href="../../reference/index.html" />
+    <link rel="prev" title="Statistical analysis of ensembles of spectral functions" href="../spectral_stats/example.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #7E588A" >
+            <a href="../../index.html" class="icon icon-home"> SOM
+          </a>
+              <div class="version">
+                2.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#docker">Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#compiling-som-from-source">Compiling SOM from source</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../install.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../install.html#installation-steps">Installation steps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../install.html#custom-cmake-options">Custom CMake options</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guide/index.html">User guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/basic.html">Basic description of the method</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/basic.html#integral-equation-of-the-analytic-continuation-problem">Integral equation of the analytic continuation problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/basic.html#goodness-of-fit-functionals">Goodness of fit functionals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/basic.html#minimization-of-the-chi-2-functionals">Minimization of the <span class="math notranslate nohighlight">\(\chi^2\)</span>-functionals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/basic.html#post-processing-of-spectral-functions">Post-processing of spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/observables.html">Supported observables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/observables.html#thermal-green-s-function-of-fermions">Thermal Green’s function of fermions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/observables.html#thermal-green-s-function-of-bosons-dynamical-susceptibilities-and-conductivity">Thermal Green’s function of bosons, dynamical susceptibilities and conductivity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/observables.html#dynamical-response-functions-at-zero-temperature">Dynamical response functions at zero temperature</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/recovery.html">Recovery of observables on a real-frequency mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/spectral_stats.html">Statistical analysis of ensembles of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/socc.html">Stochastic Optimization with Consistent Constraints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/socc.html#consistent-constraints-updates">Consistent-constraints updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/socc.html#construction-of-final-solution-using-the-consistent-constraints-protocol">Construction of final solution using the consistent-constraints protocol</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../examples.html">Usage examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../fermiongf/example.html">Fermionic Green’s function or self-energy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fermiongfsymm/example.html">Fermionic Green’s function or self-energy with enforced particle-hole symmetry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../bosoncorr/example.html">Green’s function of bosons and transverse magnetic susceptibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../bosonautocorr/example.html">Charge susceptibility, longitudinal magnetic susceptibility and optical conductivity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../zerotemp/example.html">Dynamical response function at zero temperature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../meshes/example.html">Input data defined on various meshes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cov_matrix/example.html">Full covariance matrix of input data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../spectral_stats/example.html">Statistical analysis of ensembles of spectral functions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Stochastic Optimization with Consistent Constraints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Python API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../reference/som.html"><code class="docutils literal notranslate"><span class="pre">som</span></code>: Main Python module of SOM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/som.html#som-som"><code class="docutils literal notranslate"><span class="pre">som.Som</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/som.html#free-functions">Free functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/som.html#auxiliary-types">Auxiliary types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../reference/spectral_stats.html"><code class="docutils literal notranslate"><span class="pre">som.spectral_stats</span></code>: Statistical analysis of noisy spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../script_porting.html">SOM 1.x script porting guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#python-modules">Python modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#construction-of-the-som-object">Construction of the <code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code> object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#deprecation-of-som-run">Deprecation of <code class="xref py py-func docutils literal notranslate"><span class="pre">Som.run()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#post-processing-of-spectral-functions">Post-processing of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#direct-access-to-spectral-functions">Direct access to spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../issues.html">Reporting issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About SOM</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#authors">Authors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#triqs">TRIQS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#acknowledgements">Acknowledgements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#usage-disclaimer">Usage disclaimer</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../ChangeLog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#unreleased">2.0.0 (unreleased)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../ChangeLog.html#major-changes-and-new-features">Major changes and new features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../ChangeLog.html#python-api-changes">Python API changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../ChangeLog.html#build-system-and-developer-tools">Build system and developer tools</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id2">1.2 (2020-03-15)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id3">1.1 (2017-04-23)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id4">1.0 (2017-03-19)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../search.html">Search</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #7E588A" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">SOM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../examples.html">Usage examples</a> &raquo;</li>
+      <li>Stochastic Optimization with Consistent Constraints</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/examples/socc/example.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="stochastic-optimization-with-consistent-constraints">
+<span id="example-socc"></span><h1>Stochastic Optimization with Consistent Constraints<a class="headerlink" href="#stochastic-optimization-with-consistent-constraints" title="Permalink to this heading"></a></h1>
+<p>Both aspects of SOCC functionality are covered by this example: It shows how to
+enable the <a class="reference internal" href="../../guide/socc.html#cc-update"><span class="std std-ref">consistent-constraints updates</span></a> and how to invoke
+the <a class="reference internal" href="../../guide/socc.html#final-solution-cc"><span class="std std-ref">SOCC self-consistent optimization algorithm</span></a>
+to construct the final solution.</p>
+<p>When calculating the final solution, we use a predefined default model
+(“target”) and a monitor function that stores SOCC regularization parameters
+as they change from one iteration of the optimization process to the next.</p>
+<p class="rubric">Accumulate particular solutions and apply both SOM and SOCC
+procedures to construct the final solution</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import HDFArchive, some TRIQS modules and NumPy</span>
+<span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="kn">from</span> <span class="nn">triqs.gf</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">triqs.utility.mpi</span> <span class="k">as</span> <span class="nn">mpi</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Import main SOM class and utility functions</span>
+<span class="kn">from</span> <span class="nn">som</span> <span class="kn">import</span> <span class="n">Som</span><span class="p">,</span> <span class="n">fill_refreq</span><span class="p">,</span> <span class="n">reconstruct</span>
+
+<span class="n">n_w</span> <span class="o">=</span> <span class="mi">501</span>                    <span class="c1"># Number of energy slices for the solution</span>
+<span class="n">energy_window</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">)</span>  <span class="c1"># Energy window to search the solution in</span>
+
+<span class="c1"># Parameters for Som.accumulate()</span>
+<span class="n">acc_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;energy_window&#39;</span><span class="p">:</span> <span class="n">energy_window</span><span class="p">}</span>
+<span class="c1"># Verbosity level</span>
+<span class="n">acc_params</span><span class="p">[</span><span class="s1">&#39;verbosity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="c1"># Number of particular solutions to accumulate</span>
+<span class="n">acc_params</span><span class="p">[</span><span class="s1">&#39;l&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="c1"># Number of global updates</span>
+<span class="n">acc_params</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="c1"># Number of local updates per global update</span>
+<span class="n">acc_params</span><span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="c1"># Enable CC updates</span>
+<span class="n">acc_params</span><span class="p">[</span><span class="s1">&#39;cc_update&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="c1"># Two consecutive CC updates are separated by this number of elementary updates</span>
+<span class="n">acc_params</span><span class="p">[</span><span class="s1">&#39;cc_update_cycle_length&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">20</span>
+
+<span class="c1"># Read g(\tau) from an archive.</span>
+<span class="k">with</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;input.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ar</span><span class="p">:</span>
+    <span class="n">g_tau</span> <span class="o">=</span> <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;g_tau&#39;</span><span class="p">]</span>
+
+<span class="c1"># Set the error bars to a constant</span>
+<span class="n">error_bars</span> <span class="o">=</span> <span class="n">g_tau</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">error_bars</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="mf">0.001</span>
+
+<span class="c1"># Construct a SOM object</span>
+<span class="n">cont</span> <span class="o">=</span> <span class="n">Som</span><span class="p">(</span><span class="n">g_tau</span><span class="p">,</span> <span class="n">error_bars</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;FermionGfSymm&quot;</span><span class="p">)</span>
+
+<span class="c1"># Accumulate particular solutions</span>
+<span class="n">cont</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="o">**</span><span class="n">acc_params</span><span class="p">)</span>
+
+<span class="c1">#</span>
+<span class="c1"># Use the standard SOM procedure to construct the final solution and to compute</span>
+<span class="c1"># the value it delivers to the \chi^2 functional.</span>
+<span class="c1">#</span>
+
+<span class="n">chi2</span> <span class="o">=</span> <span class="n">cont</span><span class="o">.</span><span class="n">compute_final_solution</span><span class="p">(</span><span class="n">good_chi_rel</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Recover g(\omega) on an energy mesh</span>
+<span class="n">g_w</span> <span class="o">=</span> <span class="n">GfReFreq</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="n">energy_window</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="n">n_w</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">fill_refreq</span><span class="p">(</span><span class="n">g_w</span><span class="p">,</span> <span class="n">cont</span><span class="p">)</span>
+
+<span class="c1"># g(\tau) reconstructed from the solution</span>
+<span class="n">g_rec_tau</span> <span class="o">=</span> <span class="n">g_tau</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">reconstruct</span><span class="p">(</span><span class="n">g_rec_tau</span><span class="p">,</span> <span class="n">cont</span><span class="p">)</span>
+
+<span class="c1"># On master node, save results to an archive</span>
+<span class="k">if</span> <span class="n">mpi</span><span class="o">.</span><span class="n">is_master_node</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s2">&quot;results.h5&quot;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ar</span><span class="p">:</span>
+        <span class="n">ar</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;som&quot;</span><span class="p">)</span>
+        <span class="n">gr</span> <span class="o">=</span> <span class="n">ar</span><span class="p">[</span><span class="s2">&quot;som&quot;</span><span class="p">]</span>
+        <span class="n">gr</span><span class="p">[</span><span class="s1">&#39;g_tau&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g_tau</span>
+        <span class="n">gr</span><span class="p">[</span><span class="s1">&#39;chi2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">chi2</span>
+        <span class="n">gr</span><span class="p">[</span><span class="s1">&#39;g_w&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g_w</span>
+        <span class="n">gr</span><span class="p">[</span><span class="s1">&#39;g_rec_tau&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g_rec_tau</span>
+
+<span class="c1">#</span>
+<span class="c1"># Use the SOCC protocol to construct the final solution and to compute</span>
+<span class="c1"># the value it delivers to the \chi^2 functional.</span>
+<span class="c1">#</span>
+
+<span class="c1"># Real frequency mesh to be used in the SOCC optimization protocol</span>
+<span class="n">refreq_mesh</span> <span class="o">=</span> <span class="n">MeshReFreq</span><span class="p">(</span><span class="o">*</span><span class="n">energy_window</span><span class="p">,</span> <span class="n">n_w</span><span class="p">)</span>
+
+<span class="c1"># Parameters of compute_final_solution_cc()</span>
+<span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;refreq_mesh&#39;</span><span class="p">:</span> <span class="n">refreq_mesh</span><span class="p">}</span>
+<span class="n">params</span><span class="p">[</span><span class="s1">&#39;good_chi_rel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">4.0</span>
+<span class="n">params</span><span class="p">[</span><span class="s1">&#39;verbosity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="c1"># One can optionally provide a target (default) model so that the final solution</span>
+<span class="c1"># is &#39;pulled&#39; towards it. Here, we use a Gaussian spectral function.</span>
+<span class="n">default_model</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+                          <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">refreq_mesh</span><span class="p">])</span>
+<span class="n">params</span><span class="p">[</span><span class="s1">&#39;default_model&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">default_model</span>
+<span class="c1"># Set importance of the default model equal for all real energy points.</span>
+<span class="n">params</span><span class="p">[</span><span class="s1">&#39;default_model_weights&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_w</span><span class="p">)</span>
+
+<span class="c1"># Monitor function for compute_final_solution_cc().</span>
+<span class="c1">#</span>
+<span class="c1"># It saves expansion coefficients of the final solution, magnitudes and</span>
+<span class="c1"># derivatives of the solution, and values of the regularization parameters at</span>
+<span class="c1"># each CC iteration.</span>
+<span class="n">cc_iterations</span> <span class="o">=</span> <span class="p">[]</span>
+
+
+<span class="k">def</span> <span class="nf">monitor_f</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">AQ</span><span class="p">,</span> <span class="n">ApD</span><span class="p">,</span> <span class="n">AppB</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">mpi</span><span class="o">.</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">A_k</span><span class="p">,</span> <span class="n">Q_k</span> <span class="o">=</span> <span class="n">AQ</span>
+        <span class="n">Ap_k</span><span class="p">,</span> <span class="n">D_k</span> <span class="o">=</span> <span class="n">ApD</span>
+        <span class="n">App_k</span><span class="p">,</span> <span class="n">B_k</span> <span class="o">=</span> <span class="n">AppB</span>
+        <span class="n">cc_iterations</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="n">c</span><span class="p">,</span>
+                              <span class="s1">&#39;A_k&#39;</span><span class="p">:</span> <span class="n">A_k</span><span class="p">,</span> <span class="s1">&#39;Q_k&#39;</span><span class="p">:</span> <span class="n">Q_k</span><span class="p">,</span>
+                              <span class="s1">&#39;Ap_k&#39;</span><span class="p">:</span> <span class="n">Ap_k</span><span class="p">,</span> <span class="s1">&#39;D_k&#39;</span><span class="p">:</span> <span class="n">D_k</span><span class="p">,</span>
+                              <span class="s1">&#39;App_k&#39;</span><span class="p">:</span> <span class="n">App_k</span><span class="p">,</span> <span class="s1">&#39;B_k&#39;</span><span class="p">:</span> <span class="n">B_k</span><span class="p">})</span>
+    <span class="c1"># Returning &#39;True&#39; would instruct compute_final_solution_cc() to</span>
+    <span class="c1"># terminate iterations.</span>
+    <span class="k">return</span> <span class="kc">False</span>
+
+
+<span class="n">params</span><span class="p">[</span><span class="s1">&#39;monitor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">monitor_f</span>
+
+<span class="c1"># Various fine-tuning options</span>
+<span class="n">params</span><span class="p">[</span><span class="s1">&#39;max_iter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">params</span><span class="p">[</span><span class="s1">&#39;ew_penalty_coeff&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">params</span><span class="p">[</span><span class="s1">&#39;amp_penalty_max&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e3</span>
+<span class="n">params</span><span class="p">[</span><span class="s1">&#39;amp_penalty_divisor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">10.0</span>
+<span class="n">params</span><span class="p">[</span><span class="s1">&#39;der_penalty_init&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">params</span><span class="p">[</span><span class="s1">&#39;der_penalty_coeff&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.0</span>
+
+<span class="n">chi2</span> <span class="o">=</span> <span class="n">cont</span><span class="o">.</span><span class="n">compute_final_solution_cc</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
+
+<span class="c1"># Recover g(\omega) on an energy mesh</span>
+<span class="n">g_w</span> <span class="o">=</span> <span class="n">GfReFreq</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="n">energy_window</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="n">n_w</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">fill_refreq</span><span class="p">(</span><span class="n">g_w</span><span class="p">,</span> <span class="n">cont</span><span class="p">)</span>
+
+<span class="c1"># g(\tau) reconstructed from the solution</span>
+<span class="n">g_rec_tau</span> <span class="o">=</span> <span class="n">g_tau</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">reconstruct</span><span class="p">(</span><span class="n">g_rec_tau</span><span class="p">,</span> <span class="n">cont</span><span class="p">)</span>
+
+<span class="c1"># On master node, save results to an archive</span>
+<span class="k">if</span> <span class="n">mpi</span><span class="o">.</span><span class="n">is_master_node</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s2">&quot;results.h5&quot;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ar</span><span class="p">:</span>
+        <span class="n">ar</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;socc&quot;</span><span class="p">)</span>
+        <span class="n">gr</span> <span class="o">=</span> <span class="n">ar</span><span class="p">[</span><span class="s2">&quot;socc&quot;</span><span class="p">]</span>
+        <span class="n">gr</span><span class="p">[</span><span class="s1">&#39;g_tau&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g_tau</span>
+        <span class="n">gr</span><span class="p">[</span><span class="s1">&#39;default_model&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">default_model</span>
+        <span class="n">gr</span><span class="p">[</span><span class="s1">&#39;chi2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">chi2</span>
+        <span class="n">gr</span><span class="p">[</span><span class="s1">&#39;g_w&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g_w</span>
+        <span class="n">gr</span><span class="p">[</span><span class="s1">&#39;g_rec_tau&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g_rec_tau</span>
+        <span class="n">gr</span><span class="p">[</span><span class="s1">&#39;iterations&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cc_iterations</span>
+</pre></div>
+</div>
+<p class="rubric">Plot spectral functions, reconstructed Green’s functions and
+evolution of SOCC regularization parameters</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="kn">from</span> <span class="nn">triqs.gf</span> <span class="kn">import</span> <span class="n">Gf</span>                                             <span class="c1"># noqa: F401</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">matplotlib.colors</span> <span class="kn">import</span> <span class="n">LogNorm</span>
+<span class="kn">from</span> <span class="nn">triqs.plot.mpl_interface</span> <span class="kn">import</span> <span class="n">oplot</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Read data from archive</span>
+<span class="n">ar</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s2">&quot;results.h5&quot;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+
+<span class="c1"># Energy mesh</span>
+<span class="n">energy_mesh</span> <span class="o">=</span> <span class="n">ar</span><span class="p">[</span><span class="s2">&quot;som&quot;</span><span class="p">][</span><span class="s2">&quot;g_w&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mesh</span>
+<span class="n">w_points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">energy_mesh</span><span class="p">])</span>
+
+<span class="c1"># Plot spectral functions obtained using SOM and SOCC procedures</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s2">&quot;som&quot;</span><span class="p">][</span><span class="s2">&quot;g_w&quot;</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+      <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;SOM, $\chi^2=</span><span class="si">%f</span><span class="s1">$&#39;</span> <span class="o">%</span> <span class="n">ar</span><span class="p">[</span><span class="s2">&quot;som&quot;</span><span class="p">][</span><span class="s2">&quot;chi2&quot;</span><span class="p">])</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s2">&quot;socc&quot;</span><span class="p">][</span><span class="s2">&quot;g_w&quot;</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+      <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;SOCC, $\chi^2=</span><span class="si">%f</span><span class="s1">$&#39;</span> <span class="o">%</span> <span class="n">ar</span><span class="p">[</span><span class="s2">&quot;socc&quot;</span><span class="p">][</span><span class="s2">&quot;chi2&quot;</span><span class="p">])</span>
+
+<span class="c1"># Plot the default model</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">w_points</span><span class="p">,</span> <span class="n">ar</span><span class="p">[</span><span class="s2">&quot;socc&quot;</span><span class="p">][</span><span class="s2">&quot;default_model&quot;</span><span class="p">],</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+         <span class="n">label</span><span class="o">=</span><span class="s2">&quot;default model&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="n">energy_mesh</span><span class="o">.</span><span class="n">omega_min</span><span class="p">,</span> <span class="n">energy_mesh</span><span class="o">.</span><span class="n">omega_max</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$A(\omega)$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_00_00.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_00_00.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_00_00.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../../_images/plot_00_00.png"><img alt="../../_images/plot_00_00.png" src="../../_images/plot_00_00.png" style="width: 512.0px; height: 384.0px;" /></a>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot input and reconstructed G(\tau)</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s2">&quot;som&quot;</span><span class="p">][</span><span class="s2">&quot;g_tau&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$G(\tau)$&quot;</span><span class="p">)</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s2">&quot;som&quot;</span><span class="p">][</span><span class="s2">&quot;g_rec_tau&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+      <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$G^\mathrm</span><span class="si">{rec}</span><span class="s2">(\tau)$, SOM&quot;</span><span class="p">)</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s2">&quot;socc&quot;</span><span class="p">][</span><span class="s2">&quot;g_rec_tau&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+      <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$G^\mathrm</span><span class="si">{rec}</span><span class="s2">(\tau)$, SOCC&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">ar</span><span class="p">[</span><span class="s2">&quot;som&quot;</span><span class="p">][</span><span class="s2">&quot;g_tau&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">beta</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$G(\tau)$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower center&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_01_00.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_01_00.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_01_00.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../../_images/plot_01_00.png"><img alt="../../_images/plot_01_00.png" src="../../_images/plot_01_00.png" style="width: 512.0px; height: 384.0px;" /></a>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#</span>
+<span class="c1"># Plot evolution of SOCC regularization parameters with iterations</span>
+<span class="c1">#</span>
+
+<span class="n">socc_iterations</span> <span class="o">=</span> <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;socc&#39;</span><span class="p">][</span><span class="s1">&#39;iterations&#39;</span><span class="p">]</span>
+<span class="n">N_iter</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">socc_iterations</span><span class="p">)</span>
+<span class="n">N_k</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">socc_iterations</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;Q_k&#39;</span><span class="p">])</span>
+
+<span class="n">A_k</span><span class="p">,</span> <span class="n">Q_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N_k</span><span class="p">,</span> <span class="n">N_iter</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N_k</span><span class="p">,</span> <span class="n">N_iter</span><span class="p">))</span>
+<span class="n">Ap_k</span><span class="p">,</span> <span class="n">D_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N_k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">N_iter</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N_k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">N_iter</span><span class="p">))</span>
+<span class="n">App_k</span><span class="p">,</span> <span class="n">B_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N_k</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="n">N_iter</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N_k</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="n">N_iter</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">socc_iterations</span><span class="p">):</span>
+    <span class="n">A_k</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">it</span><span class="p">[</span><span class="s1">&#39;A_k&#39;</span><span class="p">]</span>
+    <span class="n">Q_k</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">it</span><span class="p">[</span><span class="s1">&#39;Q_k&#39;</span><span class="p">]</span>
+    <span class="n">Ap_k</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">it</span><span class="p">[</span><span class="s1">&#39;Ap_k&#39;</span><span class="p">]</span>
+    <span class="n">D_k</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">it</span><span class="p">[</span><span class="s1">&#39;D_k&#39;</span><span class="p">]</span>
+    <span class="n">App_k</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">it</span><span class="p">[</span><span class="s1">&#39;App_k&#39;</span><span class="p">]</span>
+    <span class="n">B_k</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">it</span><span class="p">[</span><span class="s1">&#39;B_k&#39;</span><span class="p">]</span>
+
+<span class="c1"># Amplitude regularization parameters</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="s1">&#39;row&#39;</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mf">3.6</span><span class="p">))</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;Evolution of SOCC amplitude regularization parameters&quot;</span><span class="p">)</span>
+
+<span class="n">A_k_image</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">A_k</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">N_iter</span><span class="p">,</span> <span class="n">w_points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">w_points</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$A_k$&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;# iteration&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\omega_k$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">A_k_image</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">)</span>
+
+<span class="n">Q_k_image</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">Q_k</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">N_iter</span><span class="p">,</span> <span class="n">w_points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">w_points</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$Q_k$&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;# iteration&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\omega_k$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">Q_k_image</span><span class="p">,</span>
+             <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+             <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">,</span>
+             <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">Q_k</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vmax</span><span class="o">=</span><span class="n">Q_k</span><span class="o">.</span><span class="n">max</span><span class="p">()))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_02_00.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_02_00.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_02_00.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../../_images/plot_02_00.png"><img alt="../../_images/plot_02_00.png" src="../../_images/plot_02_00.png" style="width: 640.0px; height: 288.0px;" /></a>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Derivative regularization parameters</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="s1">&#39;row&#39;</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mf">3.6</span><span class="p">))</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;Evolution of SOCC derivative regularization parameters&quot;</span><span class="p">)</span>
+
+<span class="n">Ap_k_image</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">Ap_k</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">N_iter</span><span class="p">,</span> <span class="n">w_points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">w_points</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$A&#39;_k$&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;# iteration&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\omega_k$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">Ap_k_image</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">)</span>
+
+<span class="n">D_k_image</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">D_k</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">N_iter</span><span class="p">,</span> <span class="n">w_points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">w_points</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$D_k$&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;# iteration&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\omega_k$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">D_k_image</span><span class="p">,</span>
+             <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+             <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">,</span>
+             <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">D_k</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vmax</span><span class="o">=</span><span class="n">D_k</span><span class="o">.</span><span class="n">max</span><span class="p">()))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_03_00.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_03_00.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_03_00.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../../_images/plot_03_00.png"><img alt="../../_images/plot_03_00.png" src="../../_images/plot_03_00.png" style="width: 640.0px; height: 288.0px;" /></a>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Second derivative regularization parameters</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="s1">&#39;row&#39;</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mf">3.6</span><span class="p">))</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;Evolution of SOCC second derivative regularization parameters&quot;</span><span class="p">)</span>
+
+<span class="n">App_k_image</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">App_k</span><span class="p">,</span>
+                             <span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">N_iter</span><span class="p">,</span> <span class="n">w_points</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">w_points</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$A&#39;&#39;_k$&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;# iteration&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\omega_k$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">App_k_image</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">)</span>
+
+<span class="n">B_k_image</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">B_k</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">N_iter</span><span class="p">,</span> <span class="n">w_points</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">w_points</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$D_k$&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;# iteration&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\omega_k$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">B_k_image</span><span class="p">,</span>
+             <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+             <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">,</span>
+             <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">B_k</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vmax</span><span class="o">=</span><span class="n">B_k</span><span class="o">.</span><span class="n">max</span><span class="p">()))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_04_00.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_04_00.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_04_00.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../../_images/plot_04_00.png"><img alt="../../_images/plot_04_00.png" src="../../_images/plot_04_00.png" style="width: 640.0px; height: 288.0px;" /></a>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../spectral_stats/example.html" class="btn btn-neutral float-left" title="Statistical analysis of ensembles of spectral functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../reference/index.html" class="btn btn-neutral float-right" title="Python API reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2022, Igor Krivenko.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

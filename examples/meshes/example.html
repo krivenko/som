@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Input data defined on various meshes &mdash; SOM  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Full covariance matrix of input data" href="../cov_matrix/example.html" />
+    <link rel="prev" title="Dynamical response function at zero temperature" href="../zerotemp/example.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #7E588A" >
+            <a href="../../index.html" class="icon icon-home"> SOM
+          </a>
+              <div class="version">
+                2.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#docker">Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#compiling-som-from-source">Compiling SOM from source</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../install.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../install.html#installation-steps">Installation steps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../install.html#custom-cmake-options">Custom CMake options</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guide/index.html">User guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/basic.html">Basic description of the method</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/basic.html#integral-equation-of-the-analytic-continuation-problem">Integral equation of the analytic continuation problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/basic.html#goodness-of-fit-functionals">Goodness of fit functionals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/basic.html#minimization-of-the-chi-2-functionals">Minimization of the <span class="math notranslate nohighlight">\(\chi^2\)</span>-functionals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/basic.html#post-processing-of-spectral-functions">Post-processing of spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/observables.html">Supported observables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/observables.html#thermal-green-s-function-of-fermions">Thermal Green’s function of fermions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/observables.html#thermal-green-s-function-of-bosons-dynamical-susceptibilities-and-conductivity">Thermal Green’s function of bosons, dynamical susceptibilities and conductivity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/observables.html#dynamical-response-functions-at-zero-temperature">Dynamical response functions at zero temperature</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/recovery.html">Recovery of observables on a real-frequency mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/spectral_stats.html">Statistical analysis of ensembles of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/socc.html">Stochastic Optimization with Consistent Constraints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/socc.html#consistent-constraints-updates">Consistent-constraints updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guide/socc.html#construction-of-final-solution-using-the-consistent-constraints-protocol">Construction of final solution using the consistent-constraints protocol</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../examples.html">Usage examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../fermiongf/example.html">Fermionic Green’s function or self-energy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fermiongfsymm/example.html">Fermionic Green’s function or self-energy with enforced particle-hole symmetry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../bosoncorr/example.html">Green’s function of bosons and transverse magnetic susceptibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../bosonautocorr/example.html">Charge susceptibility, longitudinal magnetic susceptibility and optical conductivity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../zerotemp/example.html">Dynamical response function at zero temperature</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Input data defined on various meshes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cov_matrix/example.html">Full covariance matrix of input data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../spectral_stats/example.html">Statistical analysis of ensembles of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../socc/example.html">Stochastic Optimization with Consistent Constraints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Python API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../reference/som.html"><code class="docutils literal notranslate"><span class="pre">som</span></code>: Main Python module of SOM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/som.html#som-som"><code class="docutils literal notranslate"><span class="pre">som.Som</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/som.html#free-functions">Free functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../reference/som.html#auxiliary-types">Auxiliary types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../reference/spectral_stats.html"><code class="docutils literal notranslate"><span class="pre">som.spectral_stats</span></code>: Statistical analysis of noisy spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../script_porting.html">SOM 1.x script porting guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#python-modules">Python modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#construction-of-the-som-object">Construction of the <code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code> object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#deprecation-of-som-run">Deprecation of <code class="xref py py-func docutils literal notranslate"><span class="pre">Som.run()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#post-processing-of-spectral-functions">Post-processing of spectral functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../script_porting.html#direct-access-to-spectral-functions">Direct access to spectral functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../issues.html">Reporting issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About SOM</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#authors">Authors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#triqs">TRIQS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#acknowledgements">Acknowledgements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../about.html#usage-disclaimer">Usage disclaimer</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../ChangeLog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#unreleased">2.0.0 (unreleased)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../ChangeLog.html#major-changes-and-new-features">Major changes and new features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../ChangeLog.html#python-api-changes">Python API changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../ChangeLog.html#build-system-and-developer-tools">Build system and developer tools</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id2">1.2 (2020-03-15)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id3">1.1 (2017-04-23)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id4">1.0 (2017-03-19)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../search.html">Search</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #7E588A" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">SOM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../examples.html">Usage examples</a> &raquo;</li>
+      <li>Input data defined on various meshes</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/examples/meshes/example.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="input-data-defined-on-various-meshes">
+<span id="example-meshes"></span><h1>Input data defined on various meshes<a class="headerlink" href="#input-data-defined-on-various-meshes" title="Permalink to this heading"></a></h1>
+<p>In this example we analytically continue the same dynamical susceptibility
+<span class="math notranslate nohighlight">\(\chi\)</span>, whose values are given on three different meshes:</p>
+<ul class="simple">
+<li>Bosonic <a class="reference external" href="https://triqs.github.io/triqs/3.1.x/documentation/python_api/triqs.gf.meshes.MeshImFreq.html#triqs.gf.meshes.MeshImFreq" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Matsubara</span> <span class="pre">frequencies</span></code></a>;</li>
+<li>Points of an <a class="reference external" href="https://triqs.github.io/triqs/3.1.x/documentation/python_api/triqs.gf.meshes.MeshImTime.html#triqs.gf.meshes.MeshImTime" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">imaginary</span> <span class="pre">time</span> <span class="pre">grid</span></code></a>;</li>
+<li>Indices of
+<a class="reference external" href="https://triqs.github.io/triqs/3.1.x/documentation/python_api/triqs.gf.meshes.MeshLegendre.html#triqs.gf.meshes.MeshLegendre" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Legendre</span> <span class="pre">orthogonal</span> <span class="pre">polynomials</span></code></a>.</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import HDFArchive and some TRIQS modules</span>
+<span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="kn">from</span> <span class="nn">triqs.gf</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">triqs.utility.mpi</span> <span class="k">as</span> <span class="nn">mpi</span>
+
+<span class="c1"># Import main SOM class and utility functions</span>
+<span class="kn">from</span> <span class="nn">som</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Som</span><span class="p">,</span>
+                 <span class="n">fill_refreq</span><span class="p">,</span>
+                 <span class="n">compute_tail</span><span class="p">,</span>
+                 <span class="n">reconstruct</span><span class="p">,</span>
+                 <span class="n">estimate_boson_corr_spectrum_norms</span><span class="p">)</span>
+
+<span class="n">n_w</span> <span class="o">=</span> <span class="mi">501</span>                    <span class="c1"># Number of energy slices for the solution</span>
+<span class="n">energy_window</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">)</span>  <span class="c1"># Energy window to search the solution in</span>
+<span class="n">tail_max_order</span> <span class="o">=</span> <span class="mi">10</span>          <span class="c1"># Maximum tail expansion order to be computed</span>
+
+<span class="c1"># Parameters for Som.accumulate()</span>
+<span class="n">acc_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;energy_window&#39;</span><span class="p">:</span> <span class="n">energy_window</span><span class="p">}</span>
+<span class="n">acc_params</span><span class="p">[</span><span class="s1">&#39;verbosity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># Verbosity level</span>
+<span class="n">acc_params</span><span class="p">[</span><span class="s1">&#39;l&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2000</span>       <span class="c1"># Number of particular solutions to accumulate</span>
+<span class="n">acc_params</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span>        <span class="c1"># Number of global updates</span>
+<span class="n">acc_params</span><span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">50</span>         <span class="c1"># Number of local updates per global update</span>
+
+<span class="c1"># Read \chi(i\Omega_n), \chi(\tau) and \chi_l from an archive.</span>
+<span class="k">with</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;input.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ar</span><span class="p">:</span>
+    <span class="n">chi_iw</span> <span class="o">=</span> <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;chi_iw&#39;</span><span class="p">]</span>
+    <span class="n">chi_tau</span> <span class="o">=</span> <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;chi_tau&#39;</span><span class="p">]</span>
+    <span class="n">chi_l</span> <span class="o">=</span> <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;chi_l&#39;</span><span class="p">]</span>
+
+<span class="c1">#</span>
+<span class="c1"># Analytically continue \chi(i\Omega_n), \chi(\tau) and \chi_l</span>
+<span class="c1">#</span>
+
+<span class="k">for</span> <span class="n">mesh_name</span><span class="p">,</span> <span class="n">chi</span> <span class="ow">in</span> <span class="p">((</span><span class="s2">&quot;ImFreq&quot;</span><span class="p">,</span> <span class="n">chi_iw</span><span class="p">),</span>
+                       <span class="p">(</span><span class="s2">&quot;ImTime&quot;</span><span class="p">,</span> <span class="n">chi_tau</span><span class="p">),</span>
+                       <span class="p">(</span><span class="s2">&quot;Legendre&quot;</span><span class="p">,</span> <span class="n">chi_l</span><span class="p">)):</span>
+
+    <span class="c1"># Estimate norms of spectral functions from input data</span>
+    <span class="n">norms</span> <span class="o">=</span> <span class="n">estimate_boson_corr_spectrum_norms</span><span class="p">(</span><span class="n">chi</span><span class="p">)</span>
+
+    <span class="c1"># Set the error bars to a constant</span>
+    <span class="n">error_bars</span> <span class="o">=</span> <span class="n">chi</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">error_bars</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="mf">0.001</span>
+
+    <span class="c1"># Construct a SOM object</span>
+    <span class="n">cont</span> <span class="o">=</span> <span class="n">Som</span><span class="p">(</span><span class="n">chi</span><span class="p">,</span> <span class="n">error_bars</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;BosonAutoCorr&quot;</span><span class="p">,</span> <span class="n">norms</span><span class="o">=</span><span class="n">norms</span><span class="p">)</span>
+
+    <span class="c1"># Accumulate particular solutions</span>
+    <span class="n">cont</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="o">**</span><span class="n">acc_params</span><span class="p">)</span>
+
+    <span class="c1"># Construct the final solution</span>
+    <span class="n">cont</span><span class="o">.</span><span class="n">compute_final_solution</span><span class="p">(</span><span class="n">good_chi_rel</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Recover \chi(\omega) on an energy mesh.</span>
+    <span class="n">chi_w</span> <span class="o">=</span> <span class="n">GfReFreq</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="n">energy_window</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="n">n_w</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">chi</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+    <span class="n">fill_refreq</span><span class="p">(</span><span class="n">chi_w</span><span class="p">,</span> <span class="n">cont</span><span class="p">)</span>
+
+    <span class="c1"># \chi reconstructed from the solution</span>
+    <span class="n">chi_rec</span> <span class="o">=</span> <span class="n">chi</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">reconstruct</span><span class="p">(</span><span class="n">chi_rec</span><span class="p">,</span> <span class="n">cont</span><span class="p">)</span>
+
+    <span class="c1"># On master node, save results to an archive</span>
+    <span class="k">if</span> <span class="n">mpi</span><span class="o">.</span><span class="n">is_master_node</span><span class="p">():</span>
+        <span class="k">with</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s2">&quot;results.h5&quot;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ar</span><span class="p">:</span>
+            <span class="n">ar</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="n">mesh_name</span><span class="p">)</span>
+            <span class="n">gr</span> <span class="o">=</span> <span class="n">ar</span><span class="p">[</span><span class="n">mesh_name</span><span class="p">]</span>
+            <span class="n">gr</span><span class="p">[</span><span class="s1">&#39;norms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">norms</span>
+            <span class="n">gr</span><span class="p">[</span><span class="s1">&#39;chi&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">chi</span>
+            <span class="n">gr</span><span class="p">[</span><span class="s1">&#39;chi_w&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">chi_w</span>
+            <span class="n">gr</span><span class="p">[</span><span class="s1">&#39;chi_rec&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">chi_rec</span>
+</pre></div>
+</div>
+<p>Download input file <a class="reference download internal" download="" href="../../_downloads/4194acad2d4fd5a0a38a4a71d201c6fa/input.h5"><code class="xref download docutils literal notranslate"><span class="pre">input.h5</span></code></a>.</p>
+<p class="rubric">Plot input and reconstructed susceptibility</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="kn">from</span> <span class="nn">triqs.gf</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">triqs.plot.mpl_interface</span> <span class="kn">import</span> <span class="n">oplot</span>
+
+<span class="c1"># Read data from archive</span>
+<span class="n">ar</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;results.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+
+<span class="c1"># Plot input and reconstructed \chi(i\Omega_n)</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s1">&#39;ImFreq&#39;</span><span class="p">][</span><span class="s1">&#39;chi&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\chi(i\Omega_n)$&quot;</span><span class="p">)</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s1">&#39;ImFreq&#39;</span><span class="p">][</span><span class="s1">&#39;chi_rec&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+      <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\chi^</span><span class="si">{rec}</span><span class="s2">(i\Omega_n)$&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\chi(i\Omega_n)$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper right&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../../../build/doc/../../doc/examples/meshes/plot_chi_rec.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/meshes/plot_chi_rec_00_00.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/meshes/plot_chi_rec_00_00.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/meshes/plot_chi_rec_00_00.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../../_images/plot_chi_rec_00_00.png"><img alt="../../_images/plot_chi_rec_00_00.png" src="../../_images/plot_chi_rec_00_00.png" style="width: 512.0px; height: 384.0px;" /></a>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot input and reconstructed \chi(\tau)</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s1">&#39;ImTime&#39;</span><span class="p">][</span><span class="s1">&#39;chi&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\chi(\tau)$&quot;</span><span class="p">)</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s1">&#39;ImTime&#39;</span><span class="p">][</span><span class="s1">&#39;chi_rec&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+      <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\chi^</span><span class="si">{rec}</span><span class="s2">(\tau)$&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\chi(\tau)$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper center&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../../../build/doc/../../doc/examples/meshes/plot_chi_rec_01_00.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/meshes/plot_chi_rec_01_00.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/meshes/plot_chi_rec_01_00.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../../_images/plot_chi_rec_01_00.png"><img alt="../../_images/plot_chi_rec_01_00.png" src="../../_images/plot_chi_rec_01_00.png" style="width: 512.0px; height: 384.0px;" /></a>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot input and reconstructed \chi(\ell)</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s1">&#39;Legendre&#39;</span><span class="p">][</span><span class="s1">&#39;chi&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\chi(\ell)$&quot;</span><span class="p">)</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s1">&#39;Legendre&#39;</span><span class="p">][</span><span class="s1">&#39;chi_rec&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+      <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\chi^</span><span class="si">{rec}</span><span class="s2">(\ell)$&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\chi(\ell)$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper right&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../../../build/doc/../../doc/examples/meshes/plot_chi_rec_02_00.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/meshes/plot_chi_rec_02_00.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/meshes/plot_chi_rec_02_00.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../../_images/plot_chi_rec_02_00.png"><img alt="../../_images/plot_chi_rec_02_00.png" src="../../_images/plot_chi_rec_02_00.png" style="width: 512.0px; height: 384.0px;" /></a>
+</div>
+<p class="rubric">Plot spectral functions</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="kn">from</span> <span class="nn">triqs.gf</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">triqs.plot.mpl_interface</span> <span class="kn">import</span> <span class="n">oplot</span>
+
+<span class="c1"># Read data from archive</span>
+<span class="n">ar</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;results.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+
+<span class="c1">#</span>
+<span class="c1"># Plot susceptibility as a function of real frequencies</span>
+<span class="c1">#</span>
+
+<span class="c1"># Real parts</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s1">&#39;ImFreq&#39;</span><span class="p">][</span><span class="s1">&#39;chi_w&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+      <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\chi&#39;(\omega)$ from $\chi(i\Omega_n)$&quot;</span><span class="p">)</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s1">&#39;ImTime&#39;</span><span class="p">][</span><span class="s1">&#39;chi_w&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+      <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\chi&#39;(\omega)$ from $\chi(\tau)$&quot;</span><span class="p">)</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s1">&#39;Legendre&#39;</span><span class="p">][</span><span class="s1">&#39;chi_w&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+      <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\chi&#39;(\omega)$ from $\chi(\ell)$&quot;</span><span class="p">)</span>
+
+<span class="c1"># Imaginary parts</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s1">&#39;ImFreq&#39;</span><span class="p">][</span><span class="s1">&#39;chi_w&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+      <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\chi&#39;&#39;(\omega)$ from $\chi(i\Omega_n)$&quot;</span><span class="p">)</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s1">&#39;ImTime&#39;</span><span class="p">][</span><span class="s1">&#39;chi_w&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+      <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\chi&#39;&#39;(\omega)$ from $\chi(\tau)$&quot;</span><span class="p">)</span>
+<span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s1">&#39;Legendre&#39;</span><span class="p">][</span><span class="s1">&#39;chi_w&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+      <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\chi&#39;&#39;(\omega)$ from $\chi(\ell)$&quot;</span><span class="p">)</span>
+
+<span class="c1"># Spectrum normalization constants extracted from input data</span>
+<span class="n">norms_text</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="sa">r</span><span class="s2">&quot;Spectrum norm from $\chi(i\Omega_n)$: </span><span class="si">%.3f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;ImFreq&#39;</span><span class="p">][</span><span class="s1">&#39;norms&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+      <span class="sa">r</span><span class="s2">&quot;Spectrum norm from $\chi(\tau)$: </span><span class="si">%.3f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;ImTime&#39;</span><span class="p">][</span><span class="s1">&#39;norms&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+      <span class="sa">r</span><span class="s2">&quot;Spectrum norm from $\chi(\ell)$: </span><span class="si">%.3f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ar</span><span class="p">[</span><span class="s1">&#39;Legendre&#39;</span><span class="p">][</span><span class="s1">&#39;norms&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="p">]</span>
+<span class="n">norms_text</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">norms_text</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">norms_text</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\chi(\omega)$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper left&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../../../build/doc/../../doc/examples/meshes/plot_chi_w.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/meshes/plot_chi_w.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/meshes/plot_chi_w.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/meshes/plot_chi_w.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../../_images/plot_chi_w2.png"><img alt="../../_images/plot_chi_w2.png" src="../../_images/plot_chi_w2.png" style="width: 512.0px; height: 384.0px;" /></a>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../zerotemp/example.html" class="btn btn-neutral float-left" title="Dynamical response function at zero temperature" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../cov_matrix/example.html" class="btn btn-neutral float-right" title="Full covariance matrix of input data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016-2022, Igor Krivenko.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

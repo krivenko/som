@@ -10,7 +10,7 @@ Docker
 
 A Docker image including the latest version of SOM as well as other TRIQS
 applications is available
-`here <https://hub.docker.com/repository/docker/ikrivenko/som>`_.
+`here <https://hub.docker.com/r/ikrivenko/som/tags>`_.
 
 Compiling SOM from source
 -------------------------
