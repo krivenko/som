@@ -2,7 +2,7 @@
 
 # Changelog
 
-## [2.0.0](https://github.com/krivenko/som/tree/2.0.0) (unreleased)
+## [2.0.0](https://github.com/krivenko/som/tree/2.0.0) (2022-06-27)
 [Full Changelog](https://github.com/krivenko/som/compare/1.2..2.0.0)
 
 ### Major changes and new features
