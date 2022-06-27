@@ -11,7 +11,7 @@ to solve the issue please follow these guidelines:
 
 #. In all cases specify which version of the application you are using. You can
    find the version number in the file ``CMakeLists.txt`` at the root of the
-   application sources. It is also reported by CMake early in the configuartion
+   application sources. It is also reported by CMake early in the configuration
    process. If the application is already installed, you can learn its version
    number by running
 
