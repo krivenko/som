@@ -1,15 +1,36 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>SOM 1.x script porting guide &mdash; SOM  documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  
+
+  
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
@@ -18,7 +39,10 @@
         <script src="_static/sphinx_highlight.js"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script src="_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -26,16 +50,33 @@
     <link rel="prev" title="som.spectral_stats: Statistical analysis of noisy spectral functions" href="reference/spectral_stats.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: #7E588A" >
+          
+
+          
             <a href="index.html" class="icon icon-home"> SOM
+          
+
+          
           </a>
+
+          
+            
+            
               <div class="version">
                 2.0.0
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -43,7 +84,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="install.html#docker">Docker</a></li>
@@ -188,32 +240,73 @@
 <li class="toctree-l1"><a class="reference internal" href="search.html">Search Page</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #7E588A" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">SOM</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
-      <li class="breadcrumb-item active">SOM 1.x script porting guide</li>
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>SOM 1.x script porting guide</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
+          
             <a href="_sources/script_porting.rst.txt" rel="nofollow"> View page source</a>
+          
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <div class="section" id="som-1-x-script-porting-guide">
-<span id="script-porting"></span><h1>SOM 1.x script porting guide<a class="headerlink" href="#som-1-x-script-porting-guide" title="Permalink to this heading"></a></h1>
+<span id="script-porting"></span><h1>SOM 1.x script porting guide<a class="headerlink" href="#som-1-x-script-porting-guide" title="Permalink to this heading">¶</a></h1>
 <p>Porting computational scripts from SOM 1.x to SOM 2.0 means switching from
 Python 2.7 to Python 3 and from TRIQS 1.4 to TRIQS 3.1. This guide covers
 only the SOM-specific portion of changes that need to be made. Please, refer to
@@ -224,7 +317,7 @@ becoming a function instead of a statement, and the new semantics of the integer
 division. There is also a page about <a class="reference external" href="https://triqs.github.io/triqs/latest/porting_to_triqs3.html" rel="noopener noreferrer" target="_blank">porting applications</a> to TRIQS 3.0
 provided by TRIQS’ developers.</p>
 <div class="section" id="python-modules">
-<h2>Python modules<a class="headerlink" href="#python-modules" title="Permalink to this heading"></a></h2>
+<h2>Python modules<a class="headerlink" href="#python-modules" title="Permalink to this heading">¶</a></h2>
 <p>Following a convention change for naming of TRIQS applications, the main Python
 module of SOM has been renamed.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 1.x ###</span>
@@ -246,7 +339,7 @@ functions</span></a> are collected in a new module,</p>
 </div>
 </div>
 <div class="section" id="construction-of-the-som-object">
-<h2>Construction of the <a class="reference internal" href="reference/som.html#som.Som" title="som.Som"><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code></a> object<a class="headerlink" href="#construction-of-the-som-object" title="Permalink to this heading"></a></h2>
+<h2>Construction of the <a class="reference internal" href="reference/som.html#som.Som" title="som.Som"><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code></a> object<a class="headerlink" href="#construction-of-the-som-object" title="Permalink to this heading">¶</a></h2>
 <ul>
 <li><p class="first">It is now possible to provide full <a class="reference internal" href="guide/basic.html#cov-matrix"><span class="std std-ref">covariance matrices</span></a>
 as an alternative to estimated error bars upon construction of the
@@ -299,7 +392,7 @@ by calling a new utility function <a class="reference internal" href="reference/
 </ul>
 </div>
 <div class="section" id="deprecation-of-som-run">
-<h2>Deprecation of <a class="reference internal" href="reference/som.html#som.Som.run" title="som.Som.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">Som.run()</span></code></a><a class="headerlink" href="#deprecation-of-som-run" title="Permalink to this heading"></a></h2>
+<h2>Deprecation of <a class="reference internal" href="reference/som.html#som.Som.run" title="som.Som.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">Som.run()</span></code></a><a class="headerlink" href="#deprecation-of-som-run" title="Permalink to this heading">¶</a></h2>
 <p>In order to accommodate for new features, method <a class="reference internal" href="reference/som.html#som.Som.run" title="som.Som.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">Som.run()</span></code></a> has been
 declared deprecated, and its functionality has been split between a few new
 methods.</p>
@@ -360,7 +453,7 @@ which used to be one of <a class="reference internal" href="reference/som.html#s
 </div>
 </div>
 <div class="section" id="post-processing-of-spectral-functions">
-<h2>Post-processing of spectral functions<a class="headerlink" href="#post-processing-of-spectral-functions" title="Permalink to this heading"></a></h2>
+<h2>Post-processing of spectral functions<a class="headerlink" href="#post-processing-of-spectral-functions" title="Permalink to this heading">¶</a></h2>
 <p>Due to changes in the TRIQS Green’s function library, it is no longer possible
 to use the <code class="docutils literal notranslate"><span class="pre">g</span> <span class="pre">&lt;&lt;</span> <span class="pre">cont</span></code> syntax. Furthermore, information about the high
 frequency expansion (tail) coefficients has been separated from Green’s function
@@ -398,7 +491,7 @@ time/Matsubara frequency/Legendre coefficient data and computing the tail.</p>
 disabled by passing <code class="docutils literal notranslate"><span class="pre">with_binning=False</span></code>.</p>
 </div>
 <div class="section" id="direct-access-to-spectral-functions">
-<h2>Direct access to spectral functions<a class="headerlink" href="#direct-access-to-spectral-functions" title="Permalink to this heading"></a></h2>
+<h2>Direct access to spectral functions<a class="headerlink" href="#direct-access-to-spectral-functions" title="Permalink to this heading">¶</a></h2>
 <p>A few new attributes added to <a class="reference internal" href="reference/som.html#som.Som" title="som.Som"><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code></a> give access to the accumulated
 particular solutions, the final solution and their respective values of the
 <span class="math notranslate nohighlight">\(\chi^2\)</span>-functional.</p>
@@ -432,30 +525,42 @@ value of energy, stored to/loaded from an
 
 
            </div>
+           
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="reference/spectral_stats.html" class="btn btn-neutral float-left" title="som.spectral_stats: Statistical analysis of noisy spectral functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="issues.html" class="btn btn-neutral float-right" title="Reporting issues" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="reference/spectral_stats.html" class="btn btn-neutral float-left" title="som.spectral_stats: Statistical analysis of noisy spectral functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2016-2022, Igor Krivenko.</p>
-  </div>
+    <p>
+        &#169; Copyright 2016-2022, Igor Krivenko.
 
-   
+    </p>
+  </div> 
 
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
-  <script>
+  
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
