@@ -326,31 +326,31 @@ In the following, we will assume that it is installed in the directory
 <li>Download the source code of the latest stable version by cloning the
 <code class="docutils literal notranslate"><span class="pre">krivenko/som</span></code> repository from GitHub:</li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git clone -b <span class="m">2</span>.0.0 https://github.com/krivenko/som.git som.src
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>-b<span class="w"> </span><span class="m">2</span>.0.0<span class="w"> </span>https://github.com/krivenko/som.git<span class="w"> </span>som.src
 </pre></div>
 </div>
 <ol class="arabic">
 <li><p class="first">Create and move to a new directory where you will compile the code:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ mkdir som.build <span class="o">&amp;&amp;</span> <span class="nb">cd</span> som.build
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>mkdir<span class="w"> </span>som.build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>som.build
 </pre></div>
 </div>
 </li>
 <li><p class="first">Ensure that your shell contains the TRIQS environment variables by sourcing
 the <code class="docutils literal notranslate"><span class="pre">triqsvars.sh</span></code> file from your TRIQS installation:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ <span class="nb">source</span> path_to_triqs/share/triqs/triqsvars.sh
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">source</span><span class="w"> </span>path_to_triqs/share/triqs/triqsvars.sh
 </pre></div>
 </div>
 </li>
 <li><p class="first">In the build directory call <code class="docutils literal notranslate"><span class="pre">cmake</span></code>, including any additional custom CMake
 options, see below:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ cmake ../som.src
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>cmake<span class="w"> </span>../som.src
 </pre></div>
 </div>
 </li>
 <li><p class="first">Compile the code, run the unit tests and install the application:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make
-$ make <span class="nb">test</span>
-$ make install
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make
+$<span class="w"> </span>make<span class="w"> </span><span class="nb">test</span>
+$<span class="w"> </span>make<span class="w"> </span>install
 </pre></div>
 </div>
 </li>
@@ -359,7 +359,7 @@ $ make install
 <div class="section" id="custom-cmake-options">
 <span id="install-options"></span><h3>Custom CMake options<a class="headerlink" href="#custom-cmake-options" title="Permalink to this heading">¶</a></h3>
 <p>The compilation of SOM can be configured using CMake-options:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake ../som.src -DOPTION1<span class="o">=</span>value1 -DOPTION2<span class="o">=</span>value2 ...
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>../som.src<span class="w"> </span>-DOPTION1<span class="o">=</span>value1<span class="w"> </span>-DOPTION2<span class="o">=</span>value2<span class="w"> </span>...
 </pre></div>
 </div>
 <table border="1" class="docutils align-default">

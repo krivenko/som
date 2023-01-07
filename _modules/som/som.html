@@ -341,7 +341,7 @@
 
 
 <div class="viewcode-block" id="Som"><a class="viewcode-back" href="../../reference/som.html#som.Som">[docs]</a><span class="k">class</span> <span class="nc">Som</span><span class="p">(</span><span class="n">SomCore</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Implementation of the Stochastic Optimization Method.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Implementation of the Stochastic Optimization Method.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Som.__init__"><a class="viewcode-back" href="../../reference/som.html#som.Som.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">rhs</span><span class="p">:</span> <span class="n">Gf</span><span class="p">,</span>
@@ -351,7 +351,7 @@
                  <span class="o">*</span><span class="p">,</span>
                  <span class="n">filtering_levels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param rhs: Right hand side of the :ref:`integral equation</span>
 <span class="sd">                  &lt;integral_equation&gt;` to be solved, defined on</span>
 <span class="sd">                  :class:`triqs.gf.meshes.MeshImTime`,</span>
@@ -447,7 +447,7 @@
 
 
 <div class="viewcode-block" id="estimate_boson_corr_spectrum_norms"><a class="viewcode-back" href="../../reference/som.html#som.estimate_boson_corr_spectrum_norms">[docs]</a><span class="k">def</span> <span class="nf">estimate_boson_corr_spectrum_norms</span><span class="p">(</span><span class="n">chi</span><span class="p">:</span> <span class="n">Gf</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a correlator :math:`\chi` of bosonic or boson-like</span>
 <span class="sd">    (fermion-number-conserving) operators, estimates the corresponding spectrum</span>
 <span class="sd">    normalization constants :math:`\mathcal{N}`.</span>
@@ -495,7 +495,7 @@
 <div class="viewcode-block" id="count_good_solutions"><a class="viewcode-back" href="../../reference/som.html#som.count_good_solutions">[docs]</a><span class="k">def</span> <span class="nf">count_good_solutions</span><span class="p">(</span><span class="n">hist</span><span class="p">:</span> <span class="n">Histogram</span><span class="p">,</span>
                          <span class="n">good_chi_rel</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
                          <span class="n">good_chi_abs</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">cmath</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a histogram of values :math:`\chi` for the objective function</span>
 <span class="sd">    :math:`\chi^2`, counts the number of such solutions that</span>
 <span class="sd">    :math:`\chi \leq` ``good_chi_abs`` and</span>
