@@ -1,36 +1,15 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>Green’s function of bosons and transverse magnetic susceptibility &mdash; SOM  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
@@ -39,10 +18,7 @@
         <script src="../../_static/sphinx_highlight.js"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../about.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -50,52 +26,28 @@
     <link rel="prev" title="Fermionic Green’s function or self-energy with enforced particle-hole symmetry" href="../fermiongfsymm/example.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: #7E588A" >
-          
 
           
-            <a href="../../index.html" class="icon icon-home"> SOM
           
-
-          
+          <a href="../../index.html" class="icon icon-home">
+            SOM
           </a>
-
-          
-            
-            
               <div class="version">
                 2.0.0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../install.html#docker">Docker</a></li>
@@ -240,75 +192,33 @@
 <li class="toctree-l1"><a class="reference internal" href="../../search.html">Search Page</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #7E588A" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">SOM</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../../examples.html">Usage examples</a> &raquo;</li>
-        
-      <li>Green’s function of bosons and transverse magnetic susceptibility</li>
-    
-    
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../examples.html">Usage examples</a></li>
+      <li class="breadcrumb-item active">Green’s function of bosons and transverse magnetic susceptibility</li>
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../../_sources/examples/bosoncorr/example.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <div class="section" id="greens-function-of-bosons-and-transverse-magnetic-susceptibility">
-<span id="example-bosoncorr"></span><h1>Green’s function of bosons and transverse magnetic susceptibility<a class="headerlink" href="#greens-function-of-bosons-and-transverse-magnetic-susceptibility" title="Permalink to this heading">¶</a></h1>
+<span id="example-bosoncorr"></span><h1>Green’s function of bosons and transverse magnetic susceptibility<a class="headerlink" href="#greens-function-of-bosons-and-transverse-magnetic-susceptibility" title="Permalink to this heading"></a></h1>
 <p>A general correlation function of boson-like operators <span class="math notranslate nohighlight">\(\hat O\)</span> and
 <span class="math notranslate nohighlight">\(\hat O^\dagger\)</span> is defined as</p>
 <blockquote>
@@ -550,42 +460,30 @@ its tail coefficients</p>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="../bosonautocorr/example.html" class="btn btn-neutral float-right" title="Charge susceptibility, longitudinal magnetic susceptibility and optical conductivity" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../fermiongfsymm/example.html" class="btn btn-neutral float-left" title="Fermionic Green’s function or self-energy with enforced particle-hole symmetry" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../bosonautocorr/example.html" class="btn btn-neutral float-right" title="Charge susceptibility, longitudinal magnetic susceptibility and optical conductivity" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2016-2022, Igor Krivenko.
+    <p>&#169; Copyright 2016-2022, Igor Krivenko.</p>
+  </div>
 
-    </p>
-  </div> 
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
