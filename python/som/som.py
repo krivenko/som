@@ -55,10 +55,10 @@ class Som(SomCore):
                   :class:`triqs.gf.meshes.MeshImTime`,
                   :class:`triqs.gf.meshes.MeshImFreq` or
                   :class:`triqs.gf.meshes.MeshLegendre`.
-                  If target shape of ``rhs`` is :math:`M{\times}M`, only its
-                  diagonal matrix elements will be considered and
-                  used as input data for :math:`M` independent continuation
-                  problems.
+                  The target shape of ``rhs`` must be :math:`M{\times}M`.
+                  If :math:`M>1`, only its diagonal matrix elements will be
+                  considered and used as input data for :math:`M` independent
+                  continuation problems.
         :type rhs: :class:`triqs.gf.gf.Gf`
 
         :param errors: Either :ref:`error bars <error_bars>` :math:`\sigma_n`
@@ -100,6 +100,9 @@ class Som(SomCore):
         :type filtering_levels: :class:`float` or
                                 :class:`list` [:class:`float`], optional
         """
+
+        if rhs.target_rank != 2:
+            raise RuntimeError("'rhs' must be a square matrix-valued GF object")
 
         if norms is None:
             try:
