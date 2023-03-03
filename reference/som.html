@@ -10,10 +10,8 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/sphinx_highlight.js"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -237,10 +235,10 @@
 <a class="reference external" href="https://triqs.github.io/triqs/3.1.x/documentation/python_api/triqs.gf.meshes.MeshImTime.html#triqs.gf.meshes.MeshImTime" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.meshes.MeshImTime</span></code></a>,
 <a class="reference external" href="https://triqs.github.io/triqs/3.1.x/documentation/python_api/triqs.gf.meshes.MeshImFreq.html#triqs.gf.meshes.MeshImFreq" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.meshes.MeshImFreq</span></code></a> or
 <a class="reference external" href="https://triqs.github.io/triqs/3.1.x/documentation/python_api/triqs.gf.meshes.MeshLegendre.html#triqs.gf.meshes.MeshLegendre" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.meshes.MeshLegendre</span></code></a>.
-If target shape of <code class="docutils literal notranslate"><span class="pre">rhs</span></code> is <span class="math notranslate nohighlight">\(M{\times}M\)</span>, only its
-diagonal matrix elements will be considered and
-used as input data for <span class="math notranslate nohighlight">\(M\)</span> independent continuation
-problems.</li>
+The target shape of <code class="docutils literal notranslate"><span class="pre">rhs</span></code> must be <span class="math notranslate nohighlight">\(M{\times}M\)</span>.
+If <span class="math notranslate nohighlight">\(M&gt;1\)</span>, only its diagonal matrix elements will be
+considered and used as input data for <span class="math notranslate nohighlight">\(M\)</span> independent
+continuation problems.</li>
 <li><strong>errors</strong> – Either <a class="reference internal" href="../guide/basic.html#error-bars"><span class="std std-ref">error bars</span></a> <span class="math notranslate nohighlight">\(\sigma_n\)</span>
 (GF container of the same type and target shape as
 <code class="docutils literal notranslate"><span class="pre">rhs</span></code>) or a packed list of <a class="reference internal" href="../guide/basic.html#cov-matrix"><span class="std std-ref">covariance matrices</span></a> (<code class="docutils literal notranslate"><span class="pre">Gf(mesh=MeshProduct(rhs.mesh,</span> <span class="pre">rhs.mesh),</span>
@@ -1689,7 +1687,7 @@ solutions.</li>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2016-2022, Igor Krivenko.</p>
+    <p>&#169; Copyright 2016-2023, Igor Krivenko.</p>
   </div>
 
    

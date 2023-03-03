@@ -10,10 +10,8 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -217,7 +215,7 @@
 <span class="c1">#</span>
 <span class="c1"># SOM: Stochastic Optimization Method for Analytic Continuation</span>
 <span class="c1">#</span>
-<span class="c1"># Copyright (C) 2016-2022 Igor Krivenko &lt;igor.s.krivenko@gmail.com&gt;</span>
+<span class="c1"># Copyright (C) 2016-2023 Igor Krivenko &lt;igor.s.krivenko@gmail.com&gt;</span>
 <span class="c1">#</span>
 <span class="c1"># SOM is free software: you can redistribute it and/or modify it under the</span>
 <span class="c1"># terms of the GNU General Public License as published by the Free Software</span>
@@ -270,10 +268,10 @@
 <span class="sd">                  :class:`triqs.gf.meshes.MeshImTime`,</span>
 <span class="sd">                  :class:`triqs.gf.meshes.MeshImFreq` or</span>
 <span class="sd">                  :class:`triqs.gf.meshes.MeshLegendre`.</span>
-<span class="sd">                  If target shape of ``rhs`` is :math:`M{\times}M`, only its</span>
-<span class="sd">                  diagonal matrix elements will be considered and</span>
-<span class="sd">                  used as input data for :math:`M` independent continuation</span>
-<span class="sd">                  problems.</span>
+<span class="sd">                  The target shape of ``rhs`` must be :math:`M{\times}M`.</span>
+<span class="sd">                  If :math:`M&gt;1`, only its diagonal matrix elements will be</span>
+<span class="sd">                  considered and used as input data for :math:`M` independent</span>
+<span class="sd">                  continuation problems.</span>
 <span class="sd">        :type rhs: :class:`triqs.gf.gf.Gf`</span>
 
 <span class="sd">        :param errors: Either :ref:`error bars &lt;error_bars&gt;` :math:`\sigma_n`</span>
@@ -315,6 +313,9 @@
 <span class="sd">        :type filtering_levels: :class:`float` or</span>
 <span class="sd">                                :class:`list` [:class:`float`], optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">rhs</span><span class="o">.</span><span class="n">target_rank</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;&#39;rhs&#39; must be a square matrix-valued GF object&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">norms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
@@ -436,7 +437,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2016-2022, Igor Krivenko.</p>
+    <p>&#169; Copyright 2016-2023, Igor Krivenko.</p>
   </div>
 
    
