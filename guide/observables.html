@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Supported observables &mdash; SOM  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -10,11 +11,11 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -216,11 +217,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="supported-observables">
+  <section id="supported-observables">
 <span id="observables"></span><h1>Supported observables<a class="headerlink" href="#supported-observables" title="Permalink to this heading"></a></h1>
 <p>This page lists all kinds of dynamical observables currently supported by SOM
 and explicitly states the integral equation being solved for each of them.</p>
-<div class="section" id="thermal-green-s-function-of-fermions">
+<section id="thermal-green-s-function-of-fermions">
 <h2>Thermal Green’s function of fermions<a class="headerlink" href="#thermal-green-s-function-of-fermions" title="Permalink to this heading"></a></h2>
 <p id="fermiongf">A Green’s function of fermions at temperature <span class="math notranslate nohighlight">\(T = 1/\beta\)</span> is defined
 as</p>
@@ -239,7 +240,7 @@ d\epsilon' \frac{A(\epsilon')}{\epsilon' - \epsilon - i0}.\]</div>
 <div class="math notranslate nohighlight">
 \[\mathcal{N} = \int\limits_{-\infty}^\infty d\epsilon A(\epsilon).\]</div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
+<p class="admonition-title">Note</p>
 <p><span class="math notranslate nohighlight">\(\mathcal{N} = 1\)</span> for a fermionic Green’s function.</p>
 <p>Using the same integral equations, one can also continue fermionic
 self-energies as long as they do not contain a static Hartree-Fock
@@ -247,40 +248,40 @@ contribution (i.e. they decay to 0 as <span class="math notranslate nohighlight"
 In this case norms must be computed separately by the user as first spectral
 moments of the self-energy. For derivation of the spectral moments see,
 for instance,</p>
-<p class="last"><a class="reference external" href="https://journals.aps.org/prb/abstract/10.1103/PhysRevB.55.16132" rel="noopener noreferrer" target="_blank">M. Potthoff, T. Wegner, and W. Nolting, Phys. Rev. B 55, 16132 (1997)</a>.</p>
+<p><a class="reference external" href="https://journals.aps.org/prb/abstract/10.1103/PhysRevB.55.16132" rel="noopener noreferrer" target="_blank">M. Potthoff, T. Wegner, and W. Nolting, Phys. Rev. B 55, 16132 (1997)</a>.</p>
 </div>
 <p>This observable kind is selected and one of the following integral equations
 is solved when the <a class="reference internal" href="../reference/som.html#som.Som" title="som.Som"><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code></a> object is constructed with <code class="docutils literal notranslate"><span class="pre">kind=&quot;FermionGf&quot;</span></code>.</p>
-<table border="1" class="docutils align-default">
+<table class="docutils align-default">
 <colgroup>
-<col width="25%" />
-<col width="25%" />
-<col width="50%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Imaginary time</th>
-<th class="head">Imaginary frequencies</th>
-<th class="head">Legendre orthogonal polynomials</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Imaginary time</p></th>
+<th class="head"><p>Imaginary frequencies</p></th>
+<th class="head"><p>Legendre orthogonal polynomials</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><div class="first last math notranslate nohighlight">
+<tbody>
+<tr class="row-even"><td><div class="math notranslate nohighlight">
 \[G(\tau) = -\int\limits_{-\infty}^\infty d\epsilon
     \frac{e^{-\tau\epsilon}}{1+e^{-\beta\epsilon}}
     A(\epsilon).\]</div>
 </td>
-<td><div class="first last math notranslate nohighlight">
+<td><div class="math notranslate nohighlight">
 \[G(i\omega_n) = \int\limits_{-\infty}^\infty d\epsilon
     \frac{1}{i\omega_n-\epsilon}
     A(\epsilon).\]</div>
 </td>
-<td><div class="first math notranslate nohighlight">
+<td><div class="math notranslate nohighlight">
 \[G(\ell) = -\int\limits_{-\infty}^\infty d\epsilon
     \frac{\beta\sqrt{2\ell+1} (-\mathrm{sgn}(\epsilon))^\ell
         i_{\ell}(\beta|\epsilon|/2)}
     {2\cosh(\beta\epsilon/2)}
     A(\epsilon),\]</div>
-<p class="last">where <span class="math notranslate nohighlight">\(i_\ell(x)\)</span> is the modified spherical Bessel function of
+<p>where <span class="math notranslate nohighlight">\(i_\ell(x)\)</span> is the modified spherical Bessel function of
 the first kind.</p>
 </td>
 </tr>
@@ -292,36 +293,36 @@ symmetry, which manifests itself in the symmetry of the spectral  function,
 One can enforce this symmetry by constructing <a class="reference internal" href="../reference/som.html#som.Som" title="som.Som"><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code></a> with
 <code class="docutils literal notranslate"><span class="pre">kind=&quot;FermionGfSymm&quot;</span></code>. More precisely, SOM will</p>
 <ul class="simple">
-<li>Use symmetrized integral kernels (see below) sensitive only to the symmetric
-part of <span class="math notranslate nohighlight">\(A(\epsilon)\)</span>;</li>
-<li>Symmetrize calculated <a class="reference internal" href="basic.html#final-solution"><span class="std std-ref">final solution</span></a>
-<span class="math notranslate nohighlight">\(A(\epsilon)\)</span> before recovering <span class="math notranslate nohighlight">\(G^\mathrm{ret}(\epsilon)\)</span>.</li>
+<li><p>Use symmetrized integral kernels (see below) sensitive only to the symmetric
+part of <span class="math notranslate nohighlight">\(A(\epsilon)\)</span>;</p></li>
+<li><p>Symmetrize calculated <a class="reference internal" href="basic.html#final-solution"><span class="std std-ref">final solution</span></a>
+<span class="math notranslate nohighlight">\(A(\epsilon)\)</span> before recovering <span class="math notranslate nohighlight">\(G^\mathrm{ret}(\epsilon)\)</span>.</p></li>
 </ul>
-<table border="1" class="docutils align-default">
+<table class="docutils align-default">
 <colgroup>
-<col width="25%" />
-<col width="25%" />
-<col width="50%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Imaginary time</th>
-<th class="head">Imaginary frequencies</th>
-<th class="head">Legendre orthogonal polynomials</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Imaginary time</p></th>
+<th class="head"><p>Imaginary frequencies</p></th>
+<th class="head"><p>Legendre orthogonal polynomials</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><div class="first last math notranslate nohighlight">
+<tbody>
+<tr class="row-even"><td><div class="math notranslate nohighlight">
 \[G(\tau) = -\int\limits_{-\infty}^\infty \frac{d\epsilon}{2}
     \frac{e^{-\tau\epsilon} + e^{-(\beta-\tau)\epsilon}}
     {1+e^{-\beta\epsilon}}
     A(\epsilon).\]</div>
 </td>
-<td><div class="first last math notranslate nohighlight">
+<td><div class="math notranslate nohighlight">
 \[G(i\omega_n) = -\int\limits_{-\infty}^\infty d\epsilon
     \frac{i\omega_n}{\omega_n^2+\epsilon^2}
     A(\epsilon).\]</div>
 </td>
-<td><div class="first math notranslate nohighlight">
+<td><div class="math notranslate nohighlight">
 \[\begin{split}G(\ell) = \left\{
     \begin{array}{ll}
     -\int\limits_{-\infty}^\infty
@@ -330,14 +331,14 @@ part of <span class="math notranslate nohighlight">\(A(\epsilon)\)</span>;</li>
     {2\cosh(\beta\epsilon/2)} A(\epsilon), &amp;\ell\ \mathrm{ even},\\
     0, &amp;\ell\ \mathrm{odd}.
     \end{array}\right.,\end{split}\]</div>
-<p class="last">where <span class="math notranslate nohighlight">\(i_\ell(x)\)</span> is the modified spherical Bessel function of
+<p>where <span class="math notranslate nohighlight">\(i_\ell(x)\)</span> is the modified spherical Bessel function of
 the first kind.</p>
 </td>
 </tr>
 </tbody>
 </table>
-</div>
-<div class="section" id="thermal-green-s-function-of-bosons-dynamical-susceptibilities-and-conductivity">
+</section>
+<section id="thermal-green-s-function-of-bosons-dynamical-susceptibilities-and-conductivity">
 <h2>Thermal Green’s function of bosons, dynamical susceptibilities and conductivity<a class="headerlink" href="#thermal-green-s-function-of-bosons-dynamical-susceptibilities-and-conductivity" title="Permalink to this heading"></a></h2>
 <p id="bosoncorr">The following correlators share the same general form
 <span class="math notranslate nohighlight">\(\chi_{OO^\dagger}(\tau) =
@@ -345,16 +346,16 @@ the first kind.</p>
 where <span class="math notranslate nohighlight">\(\hat O\)</span> is a bosonic or boson-like (fermion-number-conserving)
 operator.</p>
 <ul class="simple">
-<li>Matsubara Green’s function of bosons <span class="math notranslate nohighlight">\(G(\tau) =
-\langle \mathbb{T}_\tau a(\tau) a^\dagger(0)\rangle\)</span>;</li>
-<li>Charge susceptibility <span class="math notranslate nohighlight">\(\chi_{NN}(\tau) =
-\langle \mathbb{T}_\tau \hat N(\tau) \hat N(0)\rangle\)</span>;</li>
-<li>Longitudinal magnetic susceptibility <span class="math notranslate nohighlight">\(\chi_{zz}(\tau) =
-\langle \mathbb{T}_\tau \hat S_z(\tau) \hat S_z(0)\rangle\)</span>;</li>
-<li>Transverse magnetic susceptibility <span class="math notranslate nohighlight">\(\chi_{-+}(\tau) =
-\langle \mathbb{T}_\tau \hat S_-(\tau) \hat S_+(0)\rangle\)</span>;</li>
-<li>Optical conductivity <span class="math notranslate nohighlight">\(\sigma(\tau) =
-\langle \mathbb{T}_\tau \hat j(\tau) \hat j(0)\rangle\)</span>.</li>
+<li><p>Matsubara Green’s function of bosons <span class="math notranslate nohighlight">\(G(\tau) =
+\langle \mathbb{T}_\tau a(\tau) a^\dagger(0)\rangle\)</span>;</p></li>
+<li><p>Charge susceptibility <span class="math notranslate nohighlight">\(\chi_{NN}(\tau) =
+\langle \mathbb{T}_\tau \hat N(\tau) \hat N(0)\rangle\)</span>;</p></li>
+<li><p>Longitudinal magnetic susceptibility <span class="math notranslate nohighlight">\(\chi_{zz}(\tau) =
+\langle \mathbb{T}_\tau \hat S_z(\tau) \hat S_z(0)\rangle\)</span>;</p></li>
+<li><p>Transverse magnetic susceptibility <span class="math notranslate nohighlight">\(\chi_{-+}(\tau) =
+\langle \mathbb{T}_\tau \hat S_-(\tau) \hat S_+(0)\rangle\)</span>;</p></li>
+<li><p>Optical conductivity <span class="math notranslate nohighlight">\(\sigma(\tau) =
+\langle \mathbb{T}_\tau \hat j(\tau) \hat j(0)\rangle\)</span>.</p></li>
 </ul>
 <p>The real-time and real-frequency counterparts of <span class="math notranslate nohighlight">\(\chi_{OO^\dagger}(\tau)\)</span>
 are</p>
@@ -379,38 +380,38 @@ d\epsilon' \frac{\epsilon' A(\epsilon')}{\epsilon' - \epsilon - i0}.\]</div>
 </div></blockquote>
 <p>This observable kind is selected and one of the following integral equations
 is solved when the <a class="reference internal" href="../reference/som.html#som.Som" title="som.Som"><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code></a> object is constructed with <code class="docutils literal notranslate"><span class="pre">kind=&quot;BosonCorr&quot;</span></code>.</p>
-<table border="1" class="docutils align-default">
+<table class="docutils align-default">
 <colgroup>
-<col width="25%" />
-<col width="25%" />
-<col width="50%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Imaginary time</th>
-<th class="head">Imaginary frequencies</th>
-<th class="head">Legendre orthogonal polynomials</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Imaginary time</p></th>
+<th class="head"><p>Imaginary frequencies</p></th>
+<th class="head"><p>Legendre orthogonal polynomials</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><div class="first last math notranslate nohighlight">
+<tbody>
+<tr class="row-even"><td><div class="math notranslate nohighlight">
 \[\chi_{OO^\dagger}(\tau) =
     \int\limits_{-\infty}^\infty \frac{d\epsilon}{\pi}
     \frac{\epsilon e^{-\tau\epsilon}}{1-e^{-\beta\epsilon}}
     A(\epsilon).\]</div>
 </td>
-<td><div class="first last math notranslate nohighlight">
+<td><div class="math notranslate nohighlight">
 \[\chi_{OO^\dagger}(i\Omega_n) = \int\limits_{-\infty}^\infty
     \frac{d\epsilon}{\pi}\frac{-\epsilon}{i\Omega_n - \epsilon}
     A(\epsilon).\]</div>
 </td>
-<td><div class="first math notranslate nohighlight">
+<td><div class="math notranslate nohighlight">
 \[\chi_{OO^\dagger}(\ell) = \int\limits_{-\infty}^\infty
     \frac{d\epsilon}{\pi}
     \frac{\beta\epsilon\sqrt{2\ell+1}(-\mathrm{sgn}(\epsilon))^\ell
     i_{\ell}(\beta|\epsilon|/2)}
     {2\sinh(\beta\epsilon/2)}
     A(\epsilon),\]</div>
-<p class="last">where <span class="math notranslate nohighlight">\(i_\ell(x)\)</span> is the modified spherical Bessel function of
+<p>where <span class="math notranslate nohighlight">\(i_\ell(x)\)</span> is the modified spherical Bessel function of
 the first kind.</p>
 </td>
 </tr>
@@ -422,38 +423,38 @@ conductivity, it is <strong>recommended</strong> to exploit the additional spect
 <span class="math notranslate nohighlight">\(A(-\epsilon) = A(\epsilon)\)</span>. If <a class="reference internal" href="../reference/som.html#som.Som" title="som.Som"><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code></a> is constructed with
 <code class="docutils literal notranslate"><span class="pre">kind=&quot;BosonAutoCorr&quot;</span></code>, it</p>
 <ul class="simple">
-<li>Uses symmetrized integral kernels (see below) sensitive only to the symmetric
-part of <span class="math notranslate nohighlight">\(A(\epsilon)\)</span>;</li>
-<li>Symmetrizes calculated <a class="reference internal" href="basic.html#final-solution"><span class="std std-ref">final solution</span></a>
-<span class="math notranslate nohighlight">\(A(\epsilon)\)</span> before recovering <span class="math notranslate nohighlight">\(\chi_{OO^\dagger}(\epsilon)\)</span>.</li>
+<li><p>Uses symmetrized integral kernels (see below) sensitive only to the symmetric
+part of <span class="math notranslate nohighlight">\(A(\epsilon)\)</span>;</p></li>
+<li><p>Symmetrizes calculated <a class="reference internal" href="basic.html#final-solution"><span class="std std-ref">final solution</span></a>
+<span class="math notranslate nohighlight">\(A(\epsilon)\)</span> before recovering <span class="math notranslate nohighlight">\(\chi_{OO^\dagger}(\epsilon)\)</span>.</p></li>
 </ul>
-<table border="1" class="docutils align-default">
+<table class="docutils align-default">
 <colgroup>
-<col width="25%" />
-<col width="25%" />
-<col width="50%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Imaginary time</th>
-<th class="head">Imaginary frequencies</th>
-<th class="head">Legendre orthogonal polynomials</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Imaginary time</p></th>
+<th class="head"><p>Imaginary frequencies</p></th>
+<th class="head"><p>Legendre orthogonal polynomials</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><div class="first last math notranslate nohighlight">
+<tbody>
+<tr class="row-even"><td><div class="math notranslate nohighlight">
 \[\chi_{OO}(\tau) = \int\limits_{-\infty}^\infty
     \frac{d\epsilon}{2\pi}
     \frac{\epsilon (e^{-\tau\epsilon}+e^{-(\beta-\tau)\epsilon})}
     {1-e^{-\beta\epsilon}}
     A(\epsilon).\]</div>
 </td>
-<td><div class="first last math notranslate nohighlight">
+<td><div class="math notranslate nohighlight">
 \[\chi_{OO}(i\Omega_n) = \int\limits_{-\infty}^\infty
     \frac{d\epsilon}{\pi}
     \frac{\epsilon^2}{\Omega_n^2+\epsilon^2}
     A(\epsilon).\]</div>
 </td>
-<td><div class="first math notranslate nohighlight">
+<td><div class="math notranslate nohighlight">
 \[\begin{split}\chi_{OO}(\ell) = \left\{
     \begin{array}{ll}
     \int\limits_{-\infty}^\infty
@@ -464,14 +465,14 @@ part of <span class="math notranslate nohighlight">\(A(\epsilon)\)</span>;</li>
         A(\epsilon),&amp;\ell\ \mathrm{ even},\\
     0, &amp;\ell\ \mathrm{odd}.
     \end{array}\right.,\end{split}\]</div>
-<p class="last">where <span class="math notranslate nohighlight">\(i_\ell(x)\)</span> is the modified spherical Bessel function of
+<p>where <span class="math notranslate nohighlight">\(i_\ell(x)\)</span> is the modified spherical Bessel function of
 the first kind.</p>
 </td>
 </tr>
 </tbody>
 </table>
-</div>
-<div class="section" id="dynamical-response-functions-at-zero-temperature">
+</section>
+<section id="dynamical-response-functions-at-zero-temperature">
 <h2>Dynamical response functions at zero temperature<a class="headerlink" href="#dynamical-response-functions-at-zero-temperature" title="Permalink to this heading"></a></h2>
 <p id="zerotemp">In the limit of zero temperature (<span class="math notranslate nohighlight">\(\beta=1/T\to\infty\)</span>), both Fermi-Dirac
 and Bose-Einstein distributions approach the shape of a step function
@@ -494,43 +495,43 @@ to introduce a countable sequence of fictitious Matsubara frequencies
 d\epsilon' \frac{A(\epsilon')}{\epsilon' - \epsilon - i0}.\]</div>
 <p>This observable kind is selected and one of the following integral equations
 is solved when the <a class="reference internal" href="../reference/som.html#som.Som" title="som.Som"><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code></a> object is constructed with <code class="docutils literal notranslate"><span class="pre">kind=&quot;ZeroTemp&quot;</span></code>.</p>
-<table border="1" class="docutils align-default">
+<table class="docutils align-default">
 <colgroup>
-<col width="25%" />
-<col width="25%" />
-<col width="50%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Imaginary time</th>
-<th class="head">Imaginary frequencies</th>
-<th class="head">Legendre orthogonal polynomials</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Imaginary time</p></th>
+<th class="head"><p>Imaginary frequencies</p></th>
+<th class="head"><p>Legendre orthogonal polynomials</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><div class="first last math notranslate nohighlight">
+<tbody>
+<tr class="row-even"><td><div class="math notranslate nohighlight">
 \[G(\tau) = -\int\limits_0^\infty d\epsilon
     e^{-\tau\epsilon}
     A(\epsilon).\]</div>
 </td>
-<td><div class="first last math notranslate nohighlight">
+<td><div class="math notranslate nohighlight">
 \[G(i\omega_n) = \int\limits_0^\infty d\epsilon
     \frac{1}{i\omega_n-\epsilon}
     A(\epsilon).\]</div>
 </td>
-<td><div class="first math notranslate nohighlight">
+<td><div class="math notranslate nohighlight">
 \[G(\ell) = \int\limits_0^\infty d\epsilon
     \tau_\mathrm{max}(-1)^{\ell+1}\sqrt{2\ell+1}
     i_{\ell}\left(\frac{\epsilon\tau_\mathrm{max}}{2}\right)
     \exp\left(-\frac{\epsilon\tau_\mathrm{max}}{2}\right)
     A(\epsilon),\]</div>
-<p class="last">where <span class="math notranslate nohighlight">\(i_\ell(x)\)</span> is the modified spherical Bessel function of
+<p>where <span class="math notranslate nohighlight">\(i_\ell(x)\)</span> is the modified spherical Bessel function of
 the first kind.</p>
 </td>
 </tr>
 </tbody>
 </table>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

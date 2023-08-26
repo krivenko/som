@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Basic description of the method &mdash; SOM  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -10,11 +11,11 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -216,9 +217,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="basic-description-of-the-method">
+  <section id="basic-description-of-the-method">
 <span id="basic"></span><h1>Basic description of the method<a class="headerlink" href="#basic-description-of-the-method" title="Permalink to this heading"></a></h1>
-<div class="section" id="integral-equation-of-the-analytic-continuation-problem">
+<section id="integral-equation-of-the-analytic-continuation-problem">
 <span id="integral-equation"></span><h2>Integral equation of the analytic continuation problem<a class="headerlink" href="#integral-equation-of-the-analytic-continuation-problem" title="Permalink to this heading"></a></h2>
 <p>The analytic continuation problem amounts to solving a Fredholm integral
 equation of the first kind with an approximately known right hand side
@@ -232,19 +233,19 @@ K(n, \epsilon) A(\epsilon) d\epsilon = G(n).\]</div>
 function, susceptibility, conductivity). The formal discrete index
 <span class="math notranslate nohighlight">\(n = \overline{1, N}\)</span> may denote one of the following variables,</p>
 <ul class="simple">
-<li>Fermionic of bosonic
-<a class="reference external" href="https://triqs.github.io/triqs/3.1.x/documentation/python_api/triqs.gf.meshes.MeshImFreq.html#triqs.gf.meshes.MeshImFreq" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Matsubara</span> <span class="pre">frequencies</span></code></a>;</li>
-<li>Points of an <a class="reference external" href="https://triqs.github.io/triqs/3.1.x/documentation/python_api/triqs.gf.meshes.MeshImTime.html#triqs.gf.meshes.MeshImTime" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">imaginary</span> <span class="pre">time</span> <span class="pre">grid</span></code></a>;</li>
-<li>Indices of
-<a class="reference external" href="https://triqs.github.io/triqs/3.1.x/documentation/python_api/triqs.gf.meshes.MeshLegendre.html#triqs.gf.meshes.MeshLegendre" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Legendre</span> <span class="pre">orthogonal</span> <span class="pre">polynomials</span></code></a>.</li>
+<li><p>Fermionic of bosonic
+<a class="reference external" href="https://triqs.github.io/triqs/3.1.x/documentation/python_api/triqs.gf.meshes.MeshImFreq.html#triqs.gf.meshes.MeshImFreq" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Matsubara</span> <span class="pre">frequencies</span></code></a>;</p></li>
+<li><p>Points of an <a class="reference external" href="https://triqs.github.io/triqs/3.1.x/documentation/python_api/triqs.gf.meshes.MeshImTime.html#triqs.gf.meshes.MeshImTime" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">imaginary</span> <span class="pre">time</span> <span class="pre">grid</span></code></a>;</p></li>
+<li><p>Indices of
+<a class="reference external" href="https://triqs.github.io/triqs/3.1.x/documentation/python_api/triqs.gf.meshes.MeshLegendre.html#triqs.gf.meshes.MeshLegendre" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Legendre</span> <span class="pre">orthogonal</span> <span class="pre">polynomials</span></code></a>.</p></li>
 </ul>
 <p id="solution-norm">The integral equation is solved with respect to a non-negative spectral function
 <span class="math notranslate nohighlight">\(A(\epsilon)\)</span> subject to a normalization condition</p>
 <div class="math notranslate nohighlight">
 \[\int_{\epsilon_\mathrm{min}}^{\epsilon_\mathrm{max}}
 A(\epsilon) d\epsilon = \mathcal{N}.\]</div>
-</div>
-<div class="section" id="goodness-of-fit-functionals">
+</section>
+<section id="goodness-of-fit-functionals">
 <span id="goodness-of-fit"></span><h2>Goodness of fit functionals<a class="headerlink" href="#goodness-of-fit-functionals" title="Permalink to this heading"></a></h2>
 <p>The right hand side <span class="math notranslate nohighlight">\(G(n)\)</span> is typically obtained via statistical
 (Monte Carlo) sampling and averaging of a random quantity,</p>
@@ -293,8 +294,8 @@ of <span class="math notranslate nohighlight">\(\hat\Sigma^{-1}\)</span>,</p>
 \hat U^\dagger.\]</div>
 <p>Here, <span class="math notranslate nohighlight">\(\hat U\)</span> is a <span class="math notranslate nohighlight">\(N{\times}\tilde N\)</span> matrix, whose columns are
 eigenvectors of <span class="math notranslate nohighlight">\(\hat{\Sigma}\)</span> corresponding to the retained eigenvalues.</p>
-</div>
-<div class="section" id="minimization-of-the-chi-2-functionals">
+</section>
+<section id="minimization-of-the-chi-2-functionals">
 <h2>Minimization of the <span class="math notranslate nohighlight">\(\chi^2\)</span>-functionals<a class="headerlink" href="#minimization-of-the-chi-2-functionals" title="Permalink to this heading"></a></h2>
 <p id="particular-solutions">The <span class="math notranslate nohighlight">\(\chi^2\)</span>-minimization proceeds in two steps.</p>
 <p>At first, a stochastic minimization algorithm is used to accumulate <span class="math notranslate nohighlight">\(J\)</span>
@@ -326,26 +327,26 @@ close to a user-defined default model.</p>
 <a class="reference internal" href="spectral_stats.html#spectral-stats"><span class="std std-ref">statistical analysis technique</span></a> from Sections I-II of
 <a class="reference internal" href="../about.html#gmpps2017" id="id3"><span>[GMPPS2017]</span></a> to estimate averages, dispersions and 2-point correlations of
 the particular solution ensemble.</p>
-</div>
-<div class="section" id="post-processing-of-spectral-functions">
+</section>
+<section id="post-processing-of-spectral-functions">
 <h2>Post-processing of spectral functions<a class="headerlink" href="#post-processing-of-spectral-functions" title="Permalink to this heading"></a></h2>
 <p>There are a few operations one can perform with a computed final spectral
 function <span class="math notranslate nohighlight">\(A(\epsilon)\)</span>.</p>
 <ul class="simple">
-<li><a class="reference internal" href="../reference/som.html#som.Som.solutions" title="som.Som.solutions"><code class="xref py py-func docutils literal notranslate"><span class="pre">Extract</span></code></a> and inspect individual rectangles of the
-final solutions in their <a class="reference internal" href="../reference/som.html#som.Configuration" title="som.Configuration"><code class="xref py py-class docutils literal notranslate"><span class="pre">sum-of-rectangles</span> <span class="pre">form</span></code></a>.</li>
-<li><a class="reference internal" href="recovery.html#recovery"><span class="std std-ref">Recover the real-frequency version</span></a> of the studied
+<li><p><a class="reference internal" href="../reference/som.html#som.Som.solutions" title="som.Som.solutions"><code class="xref py py-func docutils literal notranslate"><span class="pre">Extract</span></code></a> and inspect individual rectangles of the
+final solutions in their <a class="reference internal" href="../reference/som.html#som.Configuration" title="som.Configuration"><code class="xref py py-class docutils literal notranslate"><span class="pre">sum-of-rectangles</span> <span class="pre">form</span></code></a>.</p></li>
+<li><p><a class="reference internal" href="recovery.html#recovery"><span class="std std-ref">Recover the real-frequency version</span></a> of the studied
 observable by projecting it onto a <a class="reference external" href="https://triqs.github.io/triqs/3.1.x/documentation/python_api/triqs.gf.meshes.MeshReFreq.html#triqs.gf.meshes.MeshReFreq" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">real</span> <span class="pre">frequency</span> <span class="pre">mesh</span></code></a>.
 For instance, the retarded Green’s function <span class="math notranslate nohighlight">\(G^\mathcal{ret}(\epsilon)\)</span>
-can be recovered from a fermionic Matsubara Green’s function <span class="math notranslate nohighlight">\(G(\tau)\)</span>.</li>
-<li><a class="reference internal" href="recovery.html#compute-tail"><span class="std std-ref">Compute the high frequency expansion coefficients</span></a>
-of the real-frequency observable.</li>
-<li>Back-substitute <span class="math notranslate nohighlight">\(A(\epsilon)\)</span> into the original integral equation and
+can be recovered from a fermionic Matsubara Green’s function <span class="math notranslate nohighlight">\(G(\tau)\)</span>.</p></li>
+<li><p><a class="reference internal" href="recovery.html#compute-tail"><span class="std std-ref">Compute the high frequency expansion coefficients</span></a>
+of the real-frequency observable.</p></li>
+<li><p>Back-substitute <span class="math notranslate nohighlight">\(A(\epsilon)\)</span> into the original integral equation and
 reconstruct the rights hand side (not necessarily on the same <span class="math notranslate nohighlight">\(n\)</span>-mesh).
-This feature is useful for a quick assessment of quality of the solution.</li>
+This feature is useful for a quick assessment of quality of the solution.</p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

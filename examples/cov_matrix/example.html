@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Full covariance matrix of input data &mdash; SOM  documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -10,11 +11,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -216,18 +217,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="full-covariance-matrix-of-input-data">
+  <section id="full-covariance-matrix-of-input-data">
 <span id="example-cov-matrix"></span><h1>Full covariance matrix of input data<a class="headerlink" href="#full-covariance-matrix-of-input-data" title="Permalink to this heading"></a></h1>
 <p>This example demonstrates three ways to provide information about uncertainty
 of input data (here, of an imaginary time fermionic Green’s function
 <span class="math notranslate nohighlight">\(G(\tau)\)</span>),</p>
 <ul class="simple">
-<li>As <a class="reference internal" href="../../guide/basic.html#error-bars"><span class="std std-ref">estimated error bars</span></a> <span class="math notranslate nohighlight">\(\sigma(\tau)\)</span>;</li>
-<li>As a <a class="reference internal" href="../../guide/basic.html#cov-matrix"><span class="std std-ref">full covariance matrix</span></a> <span class="math notranslate nohighlight">\(\hat\Sigma_{\tau\tau'}\)</span>
-;</li>
-<li>As a full covariance matrix <span class="math notranslate nohighlight">\(\hat\Sigma_{\tau\tau'}\)</span> with all
+<li><p>As <a class="reference internal" href="../../guide/basic.html#error-bars"><span class="std std-ref">estimated error bars</span></a> <span class="math notranslate nohighlight">\(\sigma(\tau)\)</span>;</p></li>
+<li><p>As a <a class="reference internal" href="../../guide/basic.html#cov-matrix"><span class="std std-ref">full covariance matrix</span></a> <span class="math notranslate nohighlight">\(\hat\Sigma_{\tau\tau'}\)</span>
+;</p></li>
+<li><p>As a full covariance matrix <span class="math notranslate nohighlight">\(\hat\Sigma_{\tau\tau'}\)</span> with all
 eigenvalues shifted up by a constant <span class="math notranslate nohighlight">\(l^2\)</span>, where <span class="math notranslate nohighlight">\(l\)</span> is so called
-<a class="reference internal" href="../../guide/basic.html#cov-matrix-filtered"><span class="std std-ref">filtering level</span></a>.</li>
+<a class="reference internal" href="../../guide/basic.html#cov-matrix-filtered"><span class="std std-ref">filtering level</span></a>.</p></li>
 </ul>
 <p class="rubric">Perform analytic continuation</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import HDFArchive, some TRIQS modules and NumPy</span>
@@ -347,9 +348,9 @@ eigenvalues shifted up by a constant <span class="math notranslate nohighlight">
 </pre></div>
 </div>
 <p>(<a class="reference external" href="../../../build/doc/../../doc/examples/cov_matrix/plot_g_tau.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/cov_matrix/plot_g_tau.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/cov_matrix/plot_g_tau.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/cov_matrix/plot_g_tau.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
-<div class="figure align-default">
+<figure class="align-default">
 <a class="reference internal image-reference" href="../../_images/plot_g_tau1.png"><img alt="../../_images/plot_g_tau1.png" src="../../_images/plot_g_tau1.png" style="width: 512.0px; height: 384.0px;" /></a>
-</div>
+</figure>
 <p class="rubric">Plot spectral functions</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
 <span class="kn">from</span> <span class="nn">triqs.gf</span> <span class="kn">import</span> <span class="o">*</span>
@@ -373,10 +374,10 @@ eigenvalues shifted up by a constant <span class="math notranslate nohighlight">
 </pre></div>
 </div>
 <p>(<a class="reference external" href="../../../build/doc/../../doc/examples/cov_matrix/plot_g_w.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/cov_matrix/plot_g_w.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/cov_matrix/plot_g_w.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/cov_matrix/plot_g_w.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
-<div class="figure align-default">
+<figure class="align-default">
 <a class="reference internal image-reference" href="../../_images/plot_g_w1.png"><img alt="../../_images/plot_g_w1.png" src="../../_images/plot_g_w1.png" style="width: 512.0px; height: 384.0px;" /></a>
-</div>
-</div>
+</figure>
+</section>
 
 
            </div>

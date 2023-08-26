@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tutorial &mdash; SOM  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -10,11 +11,11 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -215,7 +216,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="tutorial">
+  <section id="tutorial">
 <span id="id1"></span><h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this heading"></a></h1>
 <p>Running SOM to analytically continue input data requires writing a simple Python
 script. Details of the script will vary depending on the physical quantity to be
@@ -223,7 +224,7 @@ continued, and its representation (function of imaginary time, Matsubara
 frequencies, or a list of Legendre basis coefficients). Nonetheless, a typical
 script will have the following basic parts.</p>
 <ul>
-<li><p class="first">Import TRIQS and SOM Python modules.</p>
+<li><p>Import TRIQS and SOM Python modules.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Green&#39;s function containers</span>
 <span class="kn">from</span> <span class="nn">triqs.gf</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="c1"># HDFArchive interface to .h5 files</span>
@@ -237,7 +238,7 @@ script will have the following basic parts.</p>
 </pre></div>
 </div>
 </li>
-<li><p class="first"><em>Optional:</em> Load input data from an
+<li><p><em>Optional:</em> Load input data from an
 <a class="reference external" href="https://triqs.github.io/triqs/3.1.x/userguide/hdf5/hdf5_tutorial_python.html#hdf5-tutorial" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><span class="xref std std-ref">HDF5 archive</span></a>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Open an HDF5 file in read-only mode</span>
 <span class="n">arch</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;input.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
@@ -255,7 +256,7 @@ script will have the following basic parts.</p>
 For instance, it could be loaded from text files or generated in the very
 same script by a quantum Monte-Carlo impurity solver.</p>
 </li>
-<li><p class="first">Construct the <a class="reference internal" href="reference/som.html#som.Som" title="som.Som"><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code></a> object. Here, you must specify the kind of the
+<li><p>Construct the <a class="reference internal" href="reference/som.html#som.Som" title="som.Som"><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code></a> object. Here, you must specify the kind of the
 physical observable in question.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create Som object using the estimated error bars</span>
 <span class="n">cont</span> <span class="o">=</span> <span class="n">Som</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">error_bars</span><span class="p">,</span> <span class="n">kind</span> <span class="o">=</span> <span class="s2">&quot;FermionGf&quot;</span><span class="p">,</span> <span class="n">norms</span> <span class="o">=</span> <span class="n">norms</span><span class="p">)</span>
@@ -276,21 +277,21 @@ the same type <a class="reference external" href="https://triqs.github.io/triqs/
 shape.</p>
 <p>Currently supported observable kinds are</p>
 <ul class="simple">
-<li><a class="reference internal" href="guide/observables.html#fermiongf"><span class="std std-ref">FermionGf</span></a> - fermionic Green’s function or self-energy;</li>
-<li><a class="reference internal" href="guide/observables.html#fermiongfsymm"><span class="std std-ref">FermionGfSymm</span></a> - fermionic Green’s function or
-self-energy with enforced particle-hole symmetry.</li>
-<li><a class="reference internal" href="guide/observables.html#bosoncorr"><span class="std std-ref">BosonCorr</span></a> - bosonic Green’s function, transverse
+<li><p><a class="reference internal" href="guide/observables.html#fermiongf"><span class="std std-ref">FermionGf</span></a> - fermionic Green’s function or self-energy;</p></li>
+<li><p><a class="reference internal" href="guide/observables.html#fermiongfsymm"><span class="std std-ref">FermionGfSymm</span></a> - fermionic Green’s function or
+self-energy with enforced particle-hole symmetry.</p></li>
+<li><p><a class="reference internal" href="guide/observables.html#bosoncorr"><span class="std std-ref">BosonCorr</span></a> - bosonic Green’s function, transverse
 magnetic susceptibility, general dynamical correlator of the form
 <span class="math notranslate nohighlight">\(\chi_{OO^\dagger}(\tau) = \langle \mathbb{T}_\tau \hat O(\tau)
 \hat O^\dagger(0)\rangle\)</span>, where <span class="math notranslate nohighlight">\(\hat O\)</span> is a boson-like
-(fermion-number-conserving) operator.</li>
-<li><a class="reference internal" href="guide/observables.html#bosonautocorr"><span class="std std-ref">BosonAutoCorr</span></a> - charge susceptibility,
+(fermion-number-conserving) operator.</p></li>
+<li><p><a class="reference internal" href="guide/observables.html#bosonautocorr"><span class="std std-ref">BosonAutoCorr</span></a> - charge susceptibility,
 longitudinal magnetic susceptibility, optical conductivity,
 general dynamical correlator of the form
 <span class="math notranslate nohighlight">\(\chi_{OO}(\tau) = \langle \mathbb{T}_\tau \hat O(\tau)
-\hat O(0)\rangle\)</span>.</li>
-<li><a class="reference internal" href="guide/observables.html#zerotemp"><span class="std std-ref">ZeroTemp</span></a> - dynamical correlator computed in the
-Matsubara formalism but at zero temperature.</li>
+\hat O(0)\rangle\)</span>.</p></li>
+<li><p><a class="reference internal" href="guide/observables.html#zerotemp"><span class="std std-ref">ZeroTemp</span></a> - dynamical correlator computed in the
+Matsubara formalism but at zero temperature.</p></li>
 </ul>
 <p>Refer to ‘<a class="reference internal" href="guide/observables.html#observables"><span class="std std-ref">Supported observables</span></a>’ for a detailed description of the implemented
 observable kinds.</p>
@@ -315,7 +316,7 @@ Each target element of this container holds one covariance matrix. It is
 also advised to specify positive <a class="reference internal" href="guide/basic.html#cov-matrix-filtered"><span class="std std-ref">filtering levels</span></a>
 via the <code class="docutils literal notranslate"><span class="pre">filtering_levels</span></code> argument.</p>
 </li>
-<li><p class="first">Set parameters for accumulation of
+<li><p>Set parameters for accumulation of
 <a class="reference internal" href="guide/basic.html#particular-solutions"><span class="std std-ref">particular solutions</span></a>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dictionary containing all accumulate() parameters</span>
 <span class="n">acc_params</span> <span class="o">=</span> <span class="p">{}</span>
@@ -365,7 +366,7 @@ You can find a detailed discussion of the latter in Sections 3 and 4 of
 <p>See the documentation of the method <a class="reference internal" href="reference/som.html#som.Som.accumulate" title="som.Som.accumulate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Som.accumulate()</span></code></a> for a full list
 of accepted parameters.</p>
 </li>
-<li><p class="first">Accumulate particular solutions.</p>
+<li><p>Accumulate particular solutions.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cont</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="o">**</span><span class="n">acc_params</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -373,7 +374,7 @@ of accepted parameters.</p>
 <a class="reference internal" href="reference/som.html#som.Som.accumulate" title="som.Som.accumulate"><code class="xref py py-func docutils literal notranslate"><span class="pre">Som.accumulate()</span></code></a> multiple times will incrementally extend the pool
 of the accumulated solutions.</p>
 </li>
-<li><p class="first">Construct the <a class="reference internal" href="guide/basic.html#final-solution"><span class="std std-ref">final solution</span></a> out of the accumulated
+<li><p>Construct the <a class="reference internal" href="guide/basic.html#final-solution"><span class="std std-ref">final solution</span></a> out of the accumulated
 particular solutions. One can choose to use either the standard SOM procedure
 and average selected particular solutions with equal weights,</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cont</span><span class="o">.</span><span class="n">compute_final_solution</span><span class="p">()</span>
@@ -387,7 +388,7 @@ SOM 2.0.</p>
 <p>Behavior of <a class="reference internal" href="reference/som.html#som.Som.compute_final_solution_cc" title="som.Som.compute_final_solution_cc"><code class="xref py py-func docutils literal notranslate"><span class="pre">Som.compute_final_solution_cc()</span></code></a> can be fine-tuned via
 the many keyword arguments it accepts.</p>
 </li>
-<li><p class="first">Extract the final solution,
+<li><p>Extract the final solution,
 <a class="reference internal" href="guide/recovery.html#recovery"><span class="std std-ref">recover the real-frequency version</span></a> of <code class="docutils literal notranslate"><span class="pre">inp</span></code>,
 its <a class="reference external" href="https://triqs.github.io/triqs/3.1.x/documentation/manual/triqs/gfs/c%2B%2B/tail.html#gf-tail" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><span class="xref std std-ref">tail expansion coefficients</span></a> and
 reconstruct the input.</p>
@@ -420,7 +421,7 @@ rectangles. The final solutions are accessible as a list of
 <p>It is necessary (but not sufficient) to have <code class="docutils literal notranslate"><span class="pre">rec</span></code> close to <code class="docutils literal notranslate"><span class="pre">inp</span></code>
 to ensure good quality of the final solution.</p>
 </li>
-<li><p class="first"><em>Optional:</em> Save results to an HDF5 archive.</p>
+<li><p><em>Optional:</em> Save results to an HDF5 archive.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># On master node, save results to an archive</span>
 <span class="k">if</span> <span class="n">mpi</span><span class="o">.</span><span class="n">is_master_node</span><span class="p">():</span>
     <span class="k">with</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s2">&quot;results.h5&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ar</span><span class="p">:</span>
@@ -434,7 +435,7 @@ to ensure good quality of the final solution.</p>
 </pre></div>
 </div>
 </li>
-<li><p class="first"><em>Optional</em>: Study <a class="reference internal" href="guide/spectral_stats.html#spectral-stats"><span class="std std-ref">statistical properties</span></a> of the
+<li><p><em>Optional</em>: Study <a class="reference internal" href="guide/spectral_stats.html#spectral-stats"><span class="std std-ref">statistical properties</span></a> of the
 accumulated particular solutions.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">som.spectral_stats</span> <span class="kn">import</span> <span class="n">spectral_avg</span><span class="p">,</span> <span class="n">spectral_disp</span><span class="p">,</span> <span class="n">spectral_corr</span>
 
@@ -454,7 +455,7 @@ accumulated particular solutions.</p>
 </ul>
 <p>There are a few <a class="reference internal" href="examples.html#examples"><span class="std std-ref">examples</span></a> explaining how to run SOM for
 various observables and how to use its more advanced features.</p>
-</div>
+</section>
 
 
            </div>

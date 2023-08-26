@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fermionic Green’s function or self-energy &mdash; SOM  documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -10,11 +11,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -216,16 +217,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="fermionic-green-s-function-or-self-energy">
+  <section id="fermionic-green-s-function-or-self-energy">
 <span id="example-fermiongf"></span><h1>Fermionic Green’s function or self-energy<a class="headerlink" href="#fermionic-green-s-function-or-self-energy" title="Permalink to this heading"></a></h1>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
+<p class="admonition-title">Note</p>
 <p>One can continue a self-energy function as long as it does not contain
 a static Hartree-Fock contribution (i.e. decays to 0 at
 <span class="math notranslate nohighlight">\(\omega\to\infty\)</span>). In this case norms must be precomputed separately
 as first spectral moments of the self-energy.</p>
 <p>For derivation of spectral moments see, for instance,</p>
-<div class="last highlight-text notranslate"><div class="highlight"><pre><span></span>&quot;Interpolating self-energy of the infinite-dimensional Hubbard model:
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&quot;Interpolating self-energy of the infinite-dimensional Hubbard model:
 Modifying the iterative perturbation theory&quot;
 M. Potthoff, T. Wegner, and W. Nolting, Phys. Rev. B 55, 16132 (1997)
 </pre></div>
@@ -352,9 +353,9 @@ M. Potthoff, T. Wegner, and W. Nolting, Phys. Rev. B 55, 16132 (1997)
 </pre></div>
 </div>
 <p>(<a class="reference external" href="../../../build/doc/../../doc/examples/fermiongf/plot_g_tau.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/fermiongf/plot_g_tau.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/fermiongf/plot_g_tau.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/fermiongf/plot_g_tau.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
-<div class="figure align-default">
+<figure class="align-default">
 <a class="reference internal image-reference" href="../../_images/plot_g_tau2.png"><img alt="../../_images/plot_g_tau2.png" src="../../_images/plot_g_tau2.png" style="width: 512.0px; height: 384.0px;" /></a>
-</div>
+</figure>
 <p class="rubric">Plot spectral functions and tail coefficients</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
 <span class="kn">from</span> <span class="nn">triqs.gf</span> <span class="kn">import</span> <span class="o">*</span>
@@ -392,9 +393,9 @@ M. Potthoff, T. Wegner, and W. Nolting, Phys. Rev. B 55, 16132 (1997)
 </pre></div>
 </div>
 <p>(<a class="reference external" href="../../../build/doc/../../doc/examples/fermiongf/plot_g_w.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/fermiongf/plot_g_w.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/fermiongf/plot_g_w.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/fermiongf/plot_g_w.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
-<div class="figure align-default">
+<figure class="align-default">
 <a class="reference internal image-reference" href="../../_images/plot_g_w2.png"><img alt="../../_images/plot_g_w2.png" src="../../_images/plot_g_w2.png" style="width: 512.0px; height: 384.0px;" /></a>
-</div>
+</figure>
 <p class="rubric">Plot <span class="math notranslate nohighlight">\(\chi\)</span>-histograms</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
 <span class="kn">from</span> <span class="nn">triqs.stat</span> <span class="kn">import</span> <span class="n">Histogram</span>
@@ -435,10 +436,10 @@ M. Potthoff, T. Wegner, and W. Nolting, Phys. Rev. B 55, 16132 (1997)
 </pre></div>
 </div>
 <p>(<a class="reference external" href="../../../build/doc/../../doc/examples/fermiongf/plot_hist.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/fermiongf/plot_hist.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/fermiongf/plot_hist.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/fermiongf/plot_hist.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
-<div class="figure align-default">
+<figure class="align-default">
 <a class="reference internal image-reference" href="../../_images/plot_hist3.png"><img alt="../../_images/plot_hist3.png" src="../../_images/plot_hist3.png" style="width: 512.0px; height: 384.0px;" /></a>
-</div>
-</div>
+</figure>
+</section>
 
 
            </div>

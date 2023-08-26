@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Green’s function of bosons and transverse magnetic susceptibility &mdash; SOM  documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -10,11 +11,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -216,7 +217,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="greens-function-of-bosons-and-transverse-magnetic-susceptibility">
+  <section id="greens-function-of-bosons-and-transverse-magnetic-susceptibility">
 <span id="example-bosoncorr"></span><h1>Green’s function of bosons and transverse magnetic susceptibility<a class="headerlink" href="#greens-function-of-bosons-and-transverse-magnetic-susceptibility" title="Permalink to this heading"></a></h1>
 <p>A general correlation function of boson-like operators <span class="math notranslate nohighlight">\(\hat O\)</span> and
 <span class="math notranslate nohighlight">\(\hat O^\dagger\)</span> is defined as</p>
@@ -237,8 +238,8 @@ Green’s function of bosons
 <p>The auxiliary spectral function <span class="math notranslate nohighlight">\(A(\epsilon) = \Im\chi(\epsilon)/\epsilon\)</span>
 is non-negative but not necessarily symmetric.</p>
 <div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">When <span class="math notranslate nohighlight">\(\hat O = \hat O^\dagger\)</span> (for instance, in the case of charge or
+<p class="admonition-title">Warning</p>
+<p>When <span class="math notranslate nohighlight">\(\hat O = \hat O^\dagger\)</span> (for instance, in the case of charge or
 longitudinal magnetic susceptibility), it is strongly recommended to use the
 <a class="reference internal" href="../../guide/observables.html#bosonautocorr"><span class="std std-ref">BosonAutoCorr</span></a> observable kind instead
 of <a class="reference internal" href="../../guide/observables.html#bosoncorr"><span class="std std-ref">BosonCorr</span></a> shown here.</p>
@@ -359,9 +360,9 @@ of <a class="reference internal" href="../../guide/observables.html#bosoncorr"><
 </pre></div>
 </div>
 <p>(<a class="reference external" href="../../../build/doc/../../doc/examples/bosoncorr/plot_chi_iw.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/bosoncorr/plot_chi_iw_00_00.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/bosoncorr/plot_chi_iw_00_00.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/bosoncorr/plot_chi_iw_00_00.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
-<div class="figure align-default">
+<figure class="align-default">
 <a class="reference internal image-reference" href="../../_images/plot_chi_iw_00_00.png"><img alt="../../_images/plot_chi_iw_00_00.png" src="../../_images/plot_chi_iw_00_00.png" style="width: 512.0px; height: 384.0px;" /></a>
-</div>
+</figure>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot imaginary part of input and reconstructed \chi(i\omega_n)</span>
 <span class="n">oplot</span><span class="p">(</span><span class="n">chi_iw</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>     <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\chi&#39;&#39;_0(i\omega_n)$&quot;</span><span class="p">)</span>
 <span class="n">oplot</span><span class="p">(</span><span class="n">chi_rec_iw</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\chi&#39;&#39;_{0,rec}(i\omega_n)$&quot;</span><span class="p">)</span>
@@ -374,9 +375,9 @@ of <a class="reference internal" href="../../guide/observables.html#bosoncorr"><
 </pre></div>
 </div>
 <p>(<a class="reference external" href="../../../build/doc/../../doc/examples/bosoncorr/plot_chi_iw_01_00.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/bosoncorr/plot_chi_iw_01_00.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/bosoncorr/plot_chi_iw_01_00.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
-<div class="figure align-default">
+<figure class="align-default">
 <a class="reference internal image-reference" href="../../_images/plot_chi_iw_01_00.png"><img alt="../../_images/plot_chi_iw_01_00.png" src="../../_images/plot_chi_iw_01_00.png" style="width: 512.0px; height: 384.0px;" /></a>
-</div>
+</figure>
 <p class="rubric">Plot the correlator on the real frequency axis and
 its tail coefficients</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
@@ -407,9 +408,9 @@ its tail coefficients</p>
 </pre></div>
 </div>
 <p>(<a class="reference external" href="../../../build/doc/../../doc/examples/bosoncorr/plot_chi_w.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/bosoncorr/plot_chi_w.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/bosoncorr/plot_chi_w.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/bosoncorr/plot_chi_w.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
-<div class="figure align-default">
+<figure class="align-default">
 <a class="reference internal image-reference" href="../../_images/plot_chi_w1.png"><img alt="../../_images/plot_chi_w1.png" src="../../_images/plot_chi_w1.png" style="width: 512.0px; height: 384.0px;" /></a>
-</div>
+</figure>
 <p class="rubric">Plot <span class="math notranslate nohighlight">\(\chi\)</span>-histograms</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
 <span class="kn">from</span> <span class="nn">triqs.stat</span> <span class="kn">import</span> <span class="n">Histogram</span>
@@ -452,10 +453,10 @@ its tail coefficients</p>
 </pre></div>
 </div>
 <p>(<a class="reference external" href="../../../build/doc/../../doc/examples/bosoncorr/plot_hist.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/bosoncorr/plot_hist.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/bosoncorr/plot_hist.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/bosoncorr/plot_hist.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
-<div class="figure align-default">
+<figure class="align-default">
 <a class="reference internal image-reference" href="../../_images/plot_hist2.png"><img alt="../../_images/plot_hist2.png" src="../../_images/plot_hist2.png" style="width: 512.0px; height: 384.0px;" /></a>
-</div>
-</div>
+</figure>
+</section>
 
 
            </div>
