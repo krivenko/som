@@ -54,7 +54,7 @@ objective_function<KernelType>::objective_function(
   auto r = nda::range(first_positive_sigma2, ev.size());
   sigma2 = ev(r);
   sigma2() += filtering_level * filtering_level;
-  U_dagger = dagger(vecs(nda::range(), r));
+  U_dagger = dagger(vecs(nda::range::all, r));
 }
 
 template <typename KernelType>

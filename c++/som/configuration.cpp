@@ -246,7 +246,7 @@ void h5_write(h5::group gr, std::string const& name, configuration const& c) {
   using nda::array;
   array<double, 2> data(c.size(), 3);
   for(int i = 0; i < c.size(); ++i)
-    data(i, nda::range()) =
+    data(i, nda::range::all) =
         array<double, 1>{c[i].center, c[i].width, c[i].height};
   h5_write(gr, name, data);
   auto ds = gr.open_dataset(name);

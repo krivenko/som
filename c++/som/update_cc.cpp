@@ -289,25 +289,25 @@ void update_consistent_constraints<KernelType>::prepare_chi2_data() {
   if(U_dagger) { // Covariance matrix
     for(auto k : r_K) {
       kern.apply(proposed_conf[k], int_kernel_one_rect());
-      int_kernel(k, range()) =
+      int_kernel(k, range::all) =
           (*U_dagger) * vector_const_view<rhs_scalar_type>(int_kernel_one_rect);
     }
   } else { // Estimated error bars
-    for(auto k : r_K) kern.apply(proposed_conf[k], int_kernel(k, range()));
+    for(auto k : r_K) kern.apply(proposed_conf[k], int_kernel(k, range::all));
   }
 
   // Fill chi2_rhs
   for(auto k : r_K) {
     chi2_rhs(k) = std::real(sum(chi2_eigenvalue_prefactors *
-                                int_kernel(k, range()) * chi2_conj_rhs));
+                                int_kernel(k, range::all) * chi2_conj_rhs));
   }
 
   // Fill chi2_mat
   for(auto k1 : r_K) {
     for(auto k2 : r_K) {
       chi2_mat(k1, k2) = std::real(
-          sum(chi2_eigenvalue_prefactors * conj(int_kernel(k1, range())) *
-              int_kernel(k2, range())));
+          sum(chi2_eigenvalue_prefactors * conj(int_kernel(k1, range::all)) *
+              int_kernel(k2, range::all)));
     }
   }
 

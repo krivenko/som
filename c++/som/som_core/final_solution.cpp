@@ -230,7 +230,7 @@ vector<double> make_rhs_vector(array<double, 2> const& A_j_block,
     auto const my_j_start = long(index_map.range_start(my_rank));
     auto const my_j_size = long(index_map.range_size(my_rank));
     for(auto j : range(my_j_size))
-      f(my_j_start + j) += sum(T_k * A_T_k * A_j_block(j, range()));
+      f(my_j_start + j) += sum(T_k * A_T_k * A_j_block(j, range::all));
     f = mpi::all_reduce(f, comm);
   }
 
@@ -301,17 +301,17 @@ void update_O_mat(array<double, 2>& A_j_local_block,
         auto j2 = index_map(j_block2, j2_local);
 
         // Terms O_Q, O_D and O_B
-        O_mat(j1, j2) += sum(Q_k * Q_k * A_j_block1(j1_local, range()) *
-                             A_j_block2(j2_local, range()));
-        O_mat(j1, j2) += sum(D_k * D_k * Ap_j_block1(j1_local, range()) *
-                             Ap_j_block2(j2_local, range()));
-        O_mat(j1, j2) += sum(B_k * B_k * App_j_block1(j1_local, range()) *
-                             App_j_block2(j2_local, range()));
+        O_mat(j1, j2) += sum(Q_k * Q_k * A_j_block1(j1_local, range::all) *
+                             A_j_block2(j2_local, range::all));
+        O_mat(j1, j2) += sum(D_k * D_k * Ap_j_block1(j1_local, range::all) *
+                             Ap_j_block2(j2_local, range::all));
+        O_mat(j1, j2) += sum(B_k * B_k * App_j_block1(j1_local, range::all) *
+                             App_j_block2(j2_local, range::all));
 
         // Term O_T
         if(!T_k.empty())
-          O_mat(j1, j2) += sum(T_k * A_j_block1(j1_local, range()) *
-                               A_j_block2(j2_local, range()));
+          O_mat(j1, j2) += sum(T_k * A_j_block1(j1_local, range::all) *
+                               A_j_block2(j2_local, range::all));
       }
     }
   }
@@ -356,11 +356,11 @@ std::vector<cc_protocol_iter_result_t> cc_protocol(
     for(auto [k, e_k] : enumerate(e_k_list))
       A_block(j, k) = particular_solutions[s_index].first(e_k);
 
-    auto A_view = make_array_const_view(A_block(j, range()));
+    auto A_view = make_array_const_view(A_block(j, range::all));
     // Fill Ap
-    finite_diff_forward(A_view, e_k_list, Ap_block(j, range()));
+    finite_diff_forward(A_view, e_k_list, Ap_block(j, range::all));
     // Fill App
-    finite_diff_2_symm(A_view, e_k_list, App_block(j, range()));
+    finite_diff_2_symm(A_view, e_k_list, App_block(j, range::all));
   }
 
   // Sum of A_j(e_k) over j

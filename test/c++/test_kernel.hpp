@@ -92,7 +92,7 @@ void test_kernel(std::string const& filename,
 
     for(auto i : range(long(conf.size())))
       EXPECT_TRUE(
-          array_are_close(results(i, range()), kern(conf[i]), tolerance));
+          array_are_close(results(i, range::all), kern(conf[i]), tolerance));
   }
 }
 

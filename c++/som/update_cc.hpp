@@ -81,7 +81,9 @@ template <typename KernelType> class update_consistent_constraints {
   configuration proposed_conf;
 
   // range(K), range(K - 1), range(K - 2)
-  nda::range r_K, r_K1, r_K2;
+  nda::range r_K = nda::range(0);
+  nda::range r_K1 = nda::range(0);
+  nda::range r_K2 = nda::range(0);
 
   // Objective function value for the proposed configuration.
   double new_objf_value = NAN;
