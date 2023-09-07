@@ -589,13 +589,15 @@ std::vector<double> som_core::compute_final_solution_cc_impl(
     KernelType kernel(m);
     auto of = d.make_objf<KernelType>(kernel);
 
+    using rhs_type = typename decltype(of)::rhs_type;
+    using rhs_scalar_type = typename decltype(of)::rhs_scalar_type;
+
     // Convergence tolerance for CC iterations
     auto const& U_dagger = of.get_U_dagger();
-    auto rhs =
+    auto const rhs =
         U_dagger
-            ? (*U_dagger) *
-                  vector_const_view<typename decltype(of)::rhs_scalar_type>(
-                      of.get_rhs())
+            ? rhs_type(matvecmul(
+                  *U_dagger, vector_const_view<rhs_scalar_type>(of.get_rhs())))
             : of.get_rhs();
     double convergence_tol = min_element(sqrt(of.get_sigma2()) / abs(rhs));
 
