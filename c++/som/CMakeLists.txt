@@ -91,6 +91,7 @@ if(ANALYZE_SOURCES)
           --verbose
           --force
           --quiet
+          -DBOOST_PP_SEQ_FOR_EACH_PRODUCT
           ${sources}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )

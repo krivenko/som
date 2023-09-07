@@ -36,7 +36,7 @@ class polynomial : boost::operators<polynomial<CoeffType, AutoLowerDegree>> {
 
   // Coefficients of the polynomial; the constant term goes first
   using coeffs_type = nda::vector<CoeffType>;
-  coeffs_type coeffs_;
+  coeffs_type coeffs_ = {};
 
   constexpr static double auto_lower_degree_tolerance = 1e-16;
 
@@ -44,7 +44,8 @@ public:
   using coeff_type = CoeffType;
   static constexpr bool auto_lower_degree = AutoLowerDegree;
 
-  polynomial(coeffs_type coeffs = {});
+  polynomial() = default;
+  explicit polynomial(coeffs_type coeffs);
   explicit polynomial(std::initializer_list<CoeffType> const& coeffs);
 
   // Evaluation using Horner's rule

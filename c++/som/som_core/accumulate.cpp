@@ -124,12 +124,13 @@ template <typename KernelType> void som_core::accumulate_impl() {
 
     solution_worker<KernelType> worker(
         of, d.norm, ci, params, stop_callback, params.f);
-    auto& rng = worker.get_rng();
+    auto& rng = worker.get_rng(); // cppcheck-suppress constVariable
 
     // Reset final solution as it is no more valid
     d.final_solution.clear();
 
-    int n_sol_max = 0;    // Number of solutions to be accumulated
+    int n_sol_max = 0; // Number of solutions to be accumulated
+    // cppcheck-suppress unreadVariable
     int n_sol = 0, i = 0; // Global and rank-local indices of solution
     int n_good_solutions = 0,
         n_verygood_solutions = 0; // Number of good and very good solutions

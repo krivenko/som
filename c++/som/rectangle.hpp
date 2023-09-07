@@ -110,9 +110,9 @@ public:
 
   // POD version of the rectangle, used in MPI operations
   struct pod_t {
-    double center;
-    double width;
-    double height;
+    double center = {};
+    double width = {};
+    double height = {};
     pod_t() = default;
     explicit pod_t(rectangle const& r)
        : center(r.center), width(r.width), height(r.height) {}
