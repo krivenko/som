@@ -1,2 +1,2 @@
-Checks: '-*,modernize-*,cppcoreguidelines-*,-modernize-use-trailing-return-type,-cppcoreguidelines-avoid-magic-numbers,-cppcoreguidelines-macro-usage'
+Checks: '-*,modernize-*,cppcoreguidelines-*,-cppcoreguidelines-avoid-const-or-ref-data-members,-cppcoreguidelines-avoid-do-while,-modernize-use-trailing-return-type,-cppcoreguidelines-avoid-magic-numbers,-cppcoreguidelines-macro-usage'
 HeaderFilterRegex: 'som'
