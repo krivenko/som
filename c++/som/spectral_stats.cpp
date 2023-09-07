@@ -84,7 +84,7 @@ vector<double> spectral_integral(triqs::mesh::refreq const& mesh,
   vector<double> integrals(mesh.size());
   double de = mesh.delta();
   for(auto e : mesh)
-    integrals(e.linear_index()) = spectral_integral(e, de, c, r_func);
+    integrals(e.data_index()) = spectral_integral(e, de, c, r_func);
   return integrals;
 }
 
@@ -115,7 +115,7 @@ vector<double> spectral_avg(som_core const& cont,
   double de = mesh.delta();
   for(auto e : mesh) {
     for(auto const& s : solutions)
-      avg(e.linear_index()) += spectral_integral(e, de, s.first, r_func);
+      avg(e.data_index()) += spectral_integral(e, de, s.first, r_func);
   }
 
   avg = mpi::all_reduce(avg, cont.get_comm());
@@ -161,8 +161,8 @@ vector<double> spectral_disp(som_core const& cont,
   for(auto e : mesh) {
     for(auto const& s : solutions) {
       double diff =
-          spectral_integral(e, de, s.first, r_func) - avg(e.linear_index());
-      disp(e.linear_index()) += diff * diff;
+          spectral_integral(e, de, s.first, r_func) - avg(e.data_index());
+      disp(e.data_index()) += diff * diff;
     }
   }
 
@@ -213,11 +213,11 @@ matrix<double> spectral_corr(som_core const& cont,
   for(auto e1 : mesh) {
     for(auto e2 : mesh) {
       for(auto const& s : solutions) {
-        double diff1 = (spectral_integral(e1, de, s.first, r_func) -
-                        avg(e1.linear_index()));
-        double diff2 = (spectral_integral(e2, de, s.first, r_func) -
-                        avg(e2.linear_index()));
-        corr(e1.linear_index(), e2.linear_index()) += diff1 * diff2;
+        double diff1 =
+            (spectral_integral(e1, de, s.first, r_func) - avg(e1.data_index()));
+        double diff2 =
+            (spectral_integral(e2, de, s.first, r_func) - avg(e2.data_index()));
+        corr(e1.data_index(), e2.data_index()) += diff1 * diff2;
       }
     }
   }

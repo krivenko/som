@@ -30,7 +30,7 @@ using namespace triqs::gfs;
 kernel<FermionGfSymm, imfreq>::kernel(
     kernel<FermionGfSymm, imfreq>::mesh_type const& mesh)
    : kernel_base(mesh.get_positive_freq().size())
-   , beta(mesh.domain().beta)
+   , beta(mesh.beta())
    , mesh(mesh.get_positive_freq()) {}
 
 // Apply to a rectangle
@@ -42,7 +42,7 @@ void kernel<FermionGfSymm, imfreq>::apply(rectangle const& rect,
 
   for(auto iw : mesh) {
     auto w = dcomplex(iw).imag();
-    res(iw.linear_index()) =
+    res(iw.data_index()) =
         1i * rect.height * (std::atan(e1 / w) - std::atan(e2 / w));
   }
 }

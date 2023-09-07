@@ -32,7 +32,7 @@
 #include <som/kernels/fermiongf_imtime.hpp>
 #include <som/solution_worker.hpp>
 
-//#define REPACKAGE_ARCHIVE
+// #define REPACKAGE_ARCHIVE
 
 using namespace nda;
 using namespace som;

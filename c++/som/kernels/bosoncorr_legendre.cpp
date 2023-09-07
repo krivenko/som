@@ -107,12 +107,12 @@ double kernel<BosonCorr, legendre>::evaluator::operator()(double x) const {
 /////////////////////////////////
 
 kernel<BosonCorr, legendre>::kernel(mesh_type const& mesh)
-   : kernel_base(mesh.size()), beta(mesh.domain().beta), mesh(mesh) {
+   : kernel_base(mesh.size()), beta(mesh.beta()), mesh(mesh) {
   evaluators.reserve(mesh.size());
 
   double x0 = x0_start_l0;
   for(auto l : mesh) {
-    evaluators.emplace_back(l, x0, beta);
+    evaluators.emplace_back(l.index(), x0, beta);
     x0 = evaluators.back().x0;
   }
 }
@@ -124,7 +124,8 @@ void kernel<BosonCorr, legendre>::apply(rectangle const& rect,
   double e2 = rect.right();
 
   for(auto l : mesh)
-    res(l.linear_index()) = rect.height * (Lambda(l, e2) - Lambda(l, e1));
+    res(l.data_index()) =
+        rect.height * (Lambda(l.index(), e2) - Lambda(l.index(), e1));
 }
 
 double kernel<BosonCorr, legendre>::Lambda(long l, double Omega) const {

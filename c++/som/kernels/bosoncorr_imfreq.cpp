@@ -30,7 +30,7 @@ using namespace triqs::gfs;
 kernel<BosonCorr, imfreq>::kernel(
     kernel<BosonCorr, imfreq>::mesh_type const& mesh)
    : kernel_base(mesh.get_positive_freq().size())
-   , beta(mesh.domain().beta)
+   , beta(mesh.beta())
    , mesh(mesh.get_positive_freq()) {}
 
 // Apply to a rectangle
@@ -41,10 +41,10 @@ void kernel<BosonCorr, imfreq>::apply(rectangle const& rect,
   double e2 = rect.right();
 
   auto it = std::begin(mesh);
-  res((*it).linear_index()) = rect.height * rect.width / M_PI; // \Omega = 0
+  res((*it).data_index()) = rect.height * rect.width / M_PI; // \Omega = 0
   for(++it; it != std::end(mesh); ++it) {
     auto iw = dcomplex(*it);
-    res((*it).linear_index()) =
+    res((*it).data_index()) =
         (rect.height / M_PI) *
         (rect.width + iw * std::log((iw - e2) / (iw - e1)));
   }
