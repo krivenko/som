@@ -273,6 +273,7 @@ g_l = GfLegendre(beta=beta,
                  statistic="Fermion",
                  n_points=n_l,
                  indices=indices)
+# FIXME: TRIQS issue #914
 g_l << Function(g_l_model)
 
 error_bars_l = make_error_bars_l(g_l)

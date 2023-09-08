@@ -37,7 +37,7 @@ import numpy as np
 def print_master(msg):
     if mpi.rank == 0:
         print(msg)
-    mpi.barrier()
+    mpi.barrier(poll_msec=0)
 
 
 #

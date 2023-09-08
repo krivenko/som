@@ -116,12 +116,12 @@ def make_g_tau_page(gr, s):
     tau_mesh = [tau.real for tau in g_tau.mesh]
     ax = fig.add_axes([.1, .1, .54, .35])
     ax.plot(tau_mesh,
-            g_tau.data[:, 0, 0],
+            g_tau.data[:, 0, 0].real,
             color='blue',
             linewidth=0.6,
             label='original')
     ax.plot(tau_mesh,
-            g_tau_rec.data[:, 0, 0],
+            g_tau_rec.data[:, 0, 0].real,
             color='red',
             linewidth=0.6,
             label='reconstructed')

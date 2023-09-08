@@ -99,7 +99,7 @@ cfs_cc_params['default_model_weights'] = 1e-4 * np.ones(n_w)
 def print_master(msg):
     if mpi.rank == 0:
         print(msg)
-    mpi.barrier()
+    mpi.barrier(poll_msec=0)
 
 
 def make_output(cont):
