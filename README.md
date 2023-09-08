@@ -17,7 +17,7 @@ SOM 2.x offers new features, including the more advanced SOCC ([stochastic
 optimization with consistent constraints](
 https://doi.org/10.1103/PhysRevB.95.014102)) analytic continuation protocol.
 
-SOM uses the TRIQS library version 3.1.x. The TRIQS website is under
+SOM uses the TRIQS library version 3.2.x. The TRIQS website is under
 <https://triqs.github.io/triqs/>. Start there to learn about TRIQS.
 
 **Legacy SOM versions 1.x are based on TRIQS 1.4.2. The 1.x source code is still

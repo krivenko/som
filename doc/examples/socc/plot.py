@@ -22,7 +22,7 @@ oplot(ar["socc"]["g_w"], mode='S', lw=0.8,
 plt.plot(w_points, ar["socc"]["default_model"], lw=0.8,
          label="default model")
 
-plt.xlim((energy_mesh.omega_min, energy_mesh.omega_max))
+plt.xlim((energy_mesh.w_min, energy_mesh.w_max))
 plt.ylim((0, 0.4))
 plt.ylabel(r"$A(\omega)$")
 plt.legend()

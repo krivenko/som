@@ -5,8 +5,8 @@ SOM 1.x script porting guide
 
 .. currentmodule:: som
 
-Porting computational scripts from SOM 1.x to SOM 2.0 means switching from
-Python 2.7 to Python 3 and from TRIQS 1.4 to TRIQS 3.1. This guide covers
+Porting computational scripts from SOM 1.x to SOM 2.x means switching from
+Python 2.7 to Python 3 and from TRIQS 1.4 to TRIQS 3.x. This guide covers
 only the SOM-specific portion of changes that need to be made. Please, refer to
 the official Python
 `porting guide <https://docs.python.org/3/howto/pyporting.html>`_ to learn about
@@ -29,7 +29,7 @@ module of SOM has been renamed.
 
 ::
 
-    ### SOM 2.0 ###
+    ### SOM 2.x ###
     from som import Som
 
 Functions implementing the :ref:`statistical analysis of ensembles of spectral
@@ -37,7 +37,7 @@ functions <spectral_stats>` are collected in a new module,
 
 ::
 
-    ### SOM 2.0 ###
+    ### SOM 2.x ###
     from som.spectral_stats import (spectral_integral,
                                     spectral_avg,
                                     spectral_disp,
@@ -57,7 +57,7 @@ Construction of the :class:`Som` object
 
   ::
 
-      ### SOM 2.0 ###
+      ### SOM 2.x ###
       cont_eb = Som(g, error_bars, kind=kind, norms=norms)
       cont_cm = Som(g,
                     cov_matrices,
@@ -88,7 +88,7 @@ Construction of the :class:`Som` object
 
   ::
 
-      ### SOM 2.0 ###
+      ### SOM 2.x ###
       from som import estimate_boson_corr_spectrum_norms
 
       # Given a correlator of boson-like operators $\chi$ defined on any
@@ -112,7 +112,7 @@ methods.
 
   ::
 
-      ### SOM 2.0 ###
+      ### SOM 2.x ###
 
       # Accumulate particular solutions.
       cont.accumulate(**acc_params)
@@ -136,7 +136,7 @@ pool of accumulated particular solutions. :func:`Som.clear()` will remove
 all accumulated solutions.
 
 In SOM 1.x, :func:`Som.run()` was selecting good particular solutions based on
-a criterion established by parameter ``adjust_l_good_d``. With SOM 2.0,
+a criterion established by parameter ``adjust_l_good_d``. With SOM 2.x,
 selection of good particular solutions is performed as part of algorithms
 implemented in :func:`Som.compute_final_solution` and
 :func:`Som.compute_final_solution_cc`.
@@ -159,7 +159,7 @@ which used to be one of :func:`Som.run`'s features, is now available as method
 
 ::
 
-    ### SOM 2.0 ###
+    ### SOM 2.x ###
 
     # Adjust the number of global updates.
     f = cont.adjust_f(energy_window=(-5, 5))
@@ -190,7 +190,7 @@ time/Matsubara frequency/Legendre coefficient data and computing the tail.
 
 ::
 
-  ### SOM 2.0 ###
+  ### SOM 2.x ###
 
   from som import fill_refreq, compute_tail, reconstruct
 
@@ -217,7 +217,7 @@ particular solutions, the final solution and their respective values of the
 
 ::
 
-    ### SOM 2.0 ###
+    ### SOM 2.x ###
 
     # Extract a list of pairs (accumulated particular solution, its \chi^2) for
     # the 0-th diagonal component of the observable.
@@ -240,4 +240,5 @@ All solutions extracted this way are instances of a new class
 :class:`Configuration`, which is a collection of :class:`Rectangle`'s.
 Configurations (spectral functions) can be iterated over, evaluated at a given
 value of energy, stored to/loaded from an
-:ref:`HDF5 archive <triqslibs:hdf5_tutorial>`.
+:ref:`HDF5 archive \
+<triqslibs:/userguide/python/tutorials/basics/02-archiving_your_data.ipynb>`.

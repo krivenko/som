@@ -604,7 +604,7 @@ F^>(z)|_{z>x_0} = F^<(x_0) + \left.\left\{
 \section{Objective function $\chi^2$}
 \label{objective_function}
 
-SOM 2.0 supports two different forms of the objective functional $\chi^2$. When only the estimated error bars $\sigma_n > 0$ of the right-hand side are known,
+SOM 2.x supports two different forms of the objective functional $\chi^2$. When only the estimated error bars $\sigma_n > 0$ of the right-hand side are known,
 $\chi^2$ reads
 \begin{equation}\label{objective_function:chi2}
     \chi^2 = \frac{1}{N} \sum_{n=1}^{N}
@@ -854,7 +854,7 @@ CC protocol iterations are organized as follows.
     \end{align*}
     where $W$ is the energy window width and $\mathcal{N}$ is the requested solution norm.
 
-    \item The regularization parameters are used to compute matrix $\hat O = 
+    \item The regularization parameters are used to compute matrix $\hat O =
     \hat O_{\chi^2} + \hat O_{(0)} + \hat O_{(1)} + \hat O_{(2)}$.
 
     \item Minimize a quadratic function
@@ -911,7 +911,7 @@ fulfilling $\chi^2[A_j] \leq \chi^2_c$ ($\chi_c$ is set by user) and construct a
     A(\epsilon) = \sum_{j=1}^J c_j A_j(\epsilon), \quad
     \sum_{j=1}^J c_j = 1.
 \end{equation}
-Prior to SOM 2.0, the only available choice of the coefficients was $c_j = J^{-1}, \forall j=\overline{1,J}$. SOM 2.0 features an optimization procedure, which finds a vector of coefficients $\mathbf{c}$ resulting in a smoother final solution. It also allows to bias the final solution towards a user-provided default model.
+Prior to SOM 2.0, the only available choice of the coefficients was $c_j = J^{-1}, \forall j=\overline{1,J}$. SOM 2.x features an optimization procedure, which finds a vector of coefficients $\mathbf{c}$ resulting in a smoother final solution. It also allows to bias the final solution towards a user-provided default model.
 
 The optimization procedure minimizes a quadratic function of $\mathbf{c}$ depending on a few sets of regularization parameters,
 \begin{equation}
@@ -991,7 +991,7 @@ The iterative optimization procedure proceeds as follows.
     \end{align*}
 
     \item Use the regularization parameters to compute matrix $\hat O = \hat O_Q + \hat O_D + \hat O_B + \hat O_T + \hat O_U$.
-    
+
     \item Minimize a quadratic function
     \begin{equation}
         \mathbf{c}^T \hat O \mathbf{c} -2\mathbf{f}^T\mathbf{c}
