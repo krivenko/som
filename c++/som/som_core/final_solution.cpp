@@ -591,12 +591,8 @@ std::vector<double> som_core::compute_final_solution_cc_impl(
 
     // Convergence tolerance for CC iterations
     auto const& U_dagger = of.get_U_dagger();
-    auto rhs =
-        U_dagger
-            ? (*U_dagger) *
-                  vector_const_view<typename decltype(of)::rhs_scalar_type>(
-                      of.get_rhs())
-            : of.get_rhs();
+    auto rhs = of.get_rhs();
+    if(U_dagger) rhs = matvecmul(*U_dagger, rhs);
     double convergence_tol = min_element(sqrt(of.get_sigma2()) / abs(rhs));
 
     if(p.verbosity > 1)
