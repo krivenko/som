@@ -60,7 +60,7 @@ void check_gf_dim(gf_view<MeshType> g, std::size_t expected_dim) {
 
 template <typename MeshType>
 void check_gf_stat(gf_const_view<MeshType> g, statistic_enum expected_stat) {
-  if(g.domain().statistic != expected_stat)
+  if(g.mesh().statistic() != expected_stat)
     fatal_error("expected a " + mesh_traits<MeshType>::name() +
                 " Green's function with " +
                 (expected_stat == Fermion ? "fermionic" : "bosonic") +
