@@ -113,8 +113,8 @@ kernel<BosonAutoCorr, legendre>::kernel(mesh_type const& mesh)
 
   double x0 = x0_start_l0;
   for(auto l : mesh) {
-    if(l % 2 == 1) continue;
-    evaluators.emplace_back(l, x0, beta);
+    if(l.index() % 2 == 1) continue;
+    evaluators.emplace_back(l.index(), x0, beta);
     x0 = evaluators.back().x0;
   }
 }
