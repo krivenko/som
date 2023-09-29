@@ -36,7 +36,7 @@ get_directory_property(IS_SUBPROJECT PARENT_DIRECTORY)
 
 # ############
 # Load TRIQS and CPP2PY
-set(REQUIRED_TRIQS_VERSION 3.1)
+set(REQUIRED_TRIQS_VERSION 3.2)
 find_package(TRIQS ${REQUIRED_TRIQS_VERSION} REQUIRED)
 
 # Get the git hash & print status
