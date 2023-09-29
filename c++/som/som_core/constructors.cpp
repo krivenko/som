@@ -287,8 +287,8 @@ som_core::som_core(triqs::gfs::gf_const_view<imfreq> g_iw,
     using namespace triqs::gfs;
     auto cov_matrix_pos = gf<prod<imfreq, imfreq>, scalar_valued>{
         {g_iw_pos.mesh(), g_iw_pos.mesh()}};
-    triqs::clef::placeholder<0> iw1;
-    triqs::clef::placeholder<1> iw2;
+    nda::clef::placeholder<0> iw1;
+    nda::clef::placeholder<1> iw2;
     cov_matrix_pos(iw1, iw2) << cov_matrix_iw(iw1, iw2);
     return cov_matrix_pos;
   };

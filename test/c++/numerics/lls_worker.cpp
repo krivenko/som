@@ -41,8 +41,8 @@ TEST(lls_worker, M_exceeds_N) {
                                           {1, 4, 5, 6},
                                           {1, 5, 6, 7}};
   // clang-format on
-  auto M = int(first_dim(A));
-  auto N = int(second_dim(A));
+  auto M = int(A.shape()[0]);
+  auto N = int(A.shape()[1]);
 
   nda::vector<double> b = {7, 7, 8, 8, 9};
   nda::vector<double> x(N);
@@ -67,8 +67,8 @@ TEST(lls_worker, N_exceeds_M) {
                                           {2, 3, 4, 5, 6},
                                           {3, 4, 5, 6, 7}};
   // clang-format on
-  auto M = int(first_dim(A));
-  auto N = int(second_dim(A));
+  auto M = int(A.shape()[0]);
+  auto N = int(A.shape()[1]);
 
   nda::vector<double> b = {7, 7, 8, 8};
   nda::vector<double> x(N);

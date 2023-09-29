@@ -101,7 +101,7 @@ double kernel<ZeroTemp, legendre>::evaluator::operator()(double x) const {
 ////////////////////////////////
 
 kernel<ZeroTemp, legendre>::kernel(mesh_type const& mesh)
-   : kernel_base(mesh.size()), mesh(mesh), tau_max(mesh.domain().beta) {
+   : kernel_base(mesh.size()), mesh(mesh), tau_max(mesh.beta()) {
   evaluators.reserve(mesh.size());
 
   double x0 = x0_start_l0;
@@ -118,7 +118,7 @@ void kernel<ZeroTemp, legendre>::apply(rectangle const& rect,
   double e2 = rect.right();
 
   for(auto l : mesh)
-    res(l.linear_index()) = rect.height * (Lambda(l, e2) - Lambda(l, e1));
+    res(l.data_index()) = rect.height * (Lambda(l, e2) - Lambda(l, e1));
 }
 
 double kernel<ZeroTemp, legendre>::Lambda(long l, double Omega) const {

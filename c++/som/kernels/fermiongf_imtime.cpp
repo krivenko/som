@@ -47,9 +47,9 @@ kernel<FermionGf, imtime>::evaluator::evaluator(
   // Limit for spline interpolation
   static const double x0 = -2 * std::log(tolerance);
 
-  size_t i = tau.linear_index();
+  size_t i = tau.data_index();
   size_t s = mesh.size();
-  double beta_ = mesh.domain().beta;
+  double beta_ = mesh.beta();
   alpha = double(tau) / beta_;
   double dx = x0 / (n_spline_knots - 1);
 
@@ -167,7 +167,7 @@ double kernel<FermionGf, imtime>::evaluator::operator()(double x) const {
 ///////////////////////////////
 
 kernel<FermionGf, imtime>::kernel(mesh_type const& mesh)
-   : kernel_base(mesh.size()), beta(mesh.domain().beta), mesh(mesh) {
+   : kernel_base(mesh.size()), beta(mesh.beta()), mesh(mesh) {
 
   lambdas.reserve(mesh.size());
   for(auto tau : mesh) lambdas.emplace_back(mesh, tau);
@@ -181,8 +181,8 @@ void kernel<FermionGf, imtime>::apply(rectangle const& rect,
   double x2 = beta * rect.right();
 
   for(auto tau : mesh) {
-    auto const& lambda = lambdas[tau.linear_index()];
-    res(tau.linear_index()) = rect.height * (lambda(x2) - lambda(x1));
+    auto const& lambda = lambdas[tau.data_index()];
+    res(tau.data_index()) = rect.height * (lambda(x2) - lambda(x1));
   }
 }
 

@@ -46,7 +46,7 @@ double fit_quality<KernelType>::corr(std::complex<double> z1,
 template <typename KernelType>
 double fit_quality<KernelType>::operator()(configuration const& c) const {
   rhs_type delta = (rhs - kern(c)) / error_bars;
-  int M = first_dim(delta);
+  int M = delta.shape()[0];
   double kappa = 0;
   for(int i = 1; i < M; ++i) kappa += corr(delta(i), delta(i - 1));
   kappa /= M - 1;

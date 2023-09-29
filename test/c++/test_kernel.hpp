@@ -86,13 +86,13 @@ void test_kernel(std::string const& filename,
                 KernelType::kind == ZeroTemp
                     ? triqs::gfs::Fermion
                     : observable_statistics(KernelType::kind),
-                second_dim(results));
+                results.shape()[1]);
     KernelType kern(mesh);
     ci.invalidate_all();
 
     for(auto i : range(long(conf.size())))
       EXPECT_TRUE(
-          array_are_close(results(i, range()), kern(conf[i]), tolerance));
+          array_are_close(results(i, range::all), kern(conf[i]), tolerance));
   }
 }
 

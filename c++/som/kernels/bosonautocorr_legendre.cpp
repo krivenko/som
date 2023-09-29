@@ -108,7 +108,7 @@ double kernel<BosonAutoCorr, legendre>::evaluator::operator()(double x) const {
 /////////////////////////////////////
 
 kernel<BosonAutoCorr, legendre>::kernel(mesh_type const& mesh)
-   : kernel_base(mesh.size()), beta(mesh.domain().beta), mesh(mesh) {
+   : kernel_base(mesh.size()), beta(mesh.beta()), mesh(mesh) {
   evaluators.reserve(mesh.size() / 2 + 1);
 
   double x0 = x0_start_l0;
@@ -126,7 +126,7 @@ void kernel<BosonAutoCorr, legendre>::apply(rectangle const& rect,
   double e2 = rect.right();
 
   for(auto l : mesh) {
-    auto li = l.linear_index();
+    auto li = l.data_index();
     res(li) = (li % 2) ? 0 : rect.height * (Lambda(li, e2) - Lambda(li, e1));
   }
 }

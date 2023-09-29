@@ -42,7 +42,7 @@
 
 namespace som {
 
-using namespace triqs::arrays;
+using namespace nda;
 
 template <typename KernelType>
 update_consistent_constraints<KernelType>::update_consistent_constraints(
@@ -84,10 +84,9 @@ update_consistent_constraints<KernelType>::update_consistent_constraints(
    , Q12_increase_coeff(der_penalty_increase_coeff)
    , Q12_limiter(der_penalty_limiter)
    , chi2_eigenvalue_prefactors(1.0 / (N_sigma2 * data.objf.get_sigma2()))
-   , chi2_conj_rhs(init_chi2_conj_rhs(data.objf))
+   , chi2_conjhs(init_chi2_conjhs(data.objf))
 #ifdef EXT_DEBUG
-   , chi2_const(
-         std::real(sum(chi2_eigenvalue_prefactors * abs2(chi2_conj_rhs))))
+   , chi2_const(std::real(sum(chi2_eigenvalue_prefactors * abs2(chi2_conjhs))))
 #endif
    , proposed_conf(data.temp_conf.cache_ptr.get_ci())
    , int_kernel_one_rect(data.objf.get_rhs().size())
@@ -108,7 +107,7 @@ update_consistent_constraints<KernelType>::update_consistent_constraints(
 }
 
 template <typename KernelType>
-auto update_consistent_constraints<KernelType>::init_chi2_conj_rhs(
+auto update_consistent_constraints<KernelType>::init_chi2_conjhs(
     objective_function<KernelType> const& objf)
     -> nda::array<rhs_scalar_type, 1> {
   auto const& U_dagger = objf.get_U_dagger();
@@ -289,25 +288,25 @@ void update_consistent_constraints<KernelType>::prepare_chi2_data() {
   if(U_dagger) { // Covariance matrix
     for(auto k : r_K) {
       kern.apply(proposed_conf[k], int_kernel_one_rect());
-      int_kernel(k, range()) =
+      int_kernel(k, range::all) =
           (*U_dagger) * vector_const_view<rhs_scalar_type>(int_kernel_one_rect);
     }
   } else { // Estimated error bars
-    for(auto k : r_K) kern.apply(proposed_conf[k], int_kernel(k, range()));
+    for(auto k : r_K) kern.apply(proposed_conf[k], int_kernel(k, range::all));
   }
 
   // Fill chi2_rhs
   for(auto k : r_K) {
     chi2_rhs(k) = std::real(sum(chi2_eigenvalue_prefactors *
-                                int_kernel(k, range()) * chi2_conj_rhs));
+                                int_kernel(k, range::all) * chi2_conjhs));
   }
 
   // Fill chi2_mat
   for(auto k1 : r_K) {
     for(auto k2 : r_K) {
       chi2_mat(k1, k2) = std::real(
-          sum(chi2_eigenvalue_prefactors * conj(int_kernel(k1, range())) *
-              int_kernel(k2, range())));
+          sum(chi2_eigenvalue_prefactors * conj(int_kernel(k1, range::all)) *
+              int_kernel(k2, range::all)));
     }
   }
 

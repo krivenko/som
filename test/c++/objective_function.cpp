@@ -151,7 +151,7 @@ public:
   objective_function_imtime_test()
      : mesh(beta, triqs::mesh::Fermion, 11), kern(mesh), g(mesh.size()) {
     for(auto pt : mesh) {
-      size_t i = pt.linear_index();
+      size_t i = pt.data_index();
       auto tau = double(pt);
       g(i) = -0.5 * (std::exp(-tau * 1.3) / (1 + std::exp(-beta * 1.3)) +
                      std::exp(tau * 0.7) / (1 + std::exp(beta * 0.7)));
@@ -168,7 +168,7 @@ class objective_function_imtime_error_bars_test
   array<double, 1> make_error_bars() {
     array<double, 1> res(mesh.size());
     for(auto pt : mesh) {
-      size_t i = pt.linear_index();
+      size_t i = pt.data_index();
       auto tau = double(pt);
       res(i) = 0.05 * std::exp(-std::abs(tau - 0.5 * beta));
     }
@@ -261,7 +261,7 @@ public:
      , kern(mesh)
      , g(mesh.size()) {
     for(auto pt : mesh) {
-      size_t i = pt.linear_index();
+      size_t i = pt.data_index();
       auto w = dcomplex(pt);
       g(i) = 0.5 * (1.0 / (w - 1.3) + 1.0 / (w + 0.7));
     }
@@ -277,7 +277,7 @@ class objective_function_imfreq_error_bars_test
   array<dcomplex, 1> make_error_bars() {
     array<dcomplex, 1> res(mesh.size());
     for(auto pt : mesh) {
-      size_t i = pt.linear_index();
+      size_t i = pt.data_index();
       auto w = dcomplex(pt);
       res(i) = 0.05 / std::abs(w);
     }

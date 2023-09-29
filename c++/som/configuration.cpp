@@ -246,7 +246,7 @@ void h5_write(h5::group gr, std::string const& name, configuration const& c) {
   using nda::array;
   array<double, 2> data(c.size(), 3);
   for(int i = 0; i < c.size(); ++i)
-    data(i, nda::range()) =
+    data(i, nda::range::all) =
         array<double, 1>{c[i].center, c[i].width, c[i].height};
   h5_write(gr, name, data);
   auto ds = gr.open_dataset(name);
@@ -257,7 +257,7 @@ void h5_read(h5::group gr, std::string const& name, configuration& c) {
   nda::array<double, 2> data;
   h5_read(gr, name, data);
   c.clear();
-  for(int i = 0; i < first_dim(data); ++i)
+  for(int i = 0; i < data.shape()[0]; ++i)
     if(c.cache_ptr)
       c.insert({data(i, 0), data(i, 1), data(i, 2), c.cache_ptr.get_ci()});
     else

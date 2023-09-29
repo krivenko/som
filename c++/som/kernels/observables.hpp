@@ -33,6 +33,7 @@
 // clang-format on
 
 #include <triqs/gfs.hpp>
+#include <triqs/mesh.hpp>
 
 #include "../config_update.hpp"
 #include "../configuration.hpp"

@@ -38,7 +38,7 @@ void kernel<ZeroTemp, imfreq>::apply(rectangle const& rect,
   double e2 = rect.right();
 
   for(auto iw : mesh)
-    res(iw.linear_index()) =
+    res(iw.data_index()) =
         rect.height * std::log((dcomplex(iw) - e1) / (dcomplex(iw) - e2));
 }
 
@@ -46,9 +46,9 @@ std::ostream& operator<<(std::ostream& os,
                          kernel<ZeroTemp, imfreq> const& kern) {
   os << R"(A(ϵ) -> G_{T=0}(iω), )";
   os << "Statistics = "
-     << (kern.mesh.domain().statistic == Fermion ? "Fermion" : "Boson") << ", "
-     << R"(Δω = )" << (2 * M_PI) / kern.mesh.domain().beta << ", "
-     << kern.mesh.size() << " Matsubara frequencies";
+     << (kern.mesh.statistic() == Fermion ? "Fermion" : "Boson") << ", "
+     << R"(Δω = )" << (2 * M_PI) / kern.mesh.beta() << ", " << kern.mesh.size()
+     << " Matsubara frequencies";
   return os;
 }
 

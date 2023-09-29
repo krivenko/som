@@ -44,7 +44,7 @@ void kernel<ZeroTemp, imtime>::apply(rectangle const& rect,
   res(0) = -rect.height * rect.width;
   for(++it; it != mesh.end(); ++it) {
     auto tau = double(*it);
-    res((*it).linear_index()) =
+    res((*it).data_index()) =
         rect.height * (std::exp(-tau * e2) - std::exp(-tau * e1)) / tau;
   }
 }
@@ -53,8 +53,8 @@ std::ostream& operator<<(std::ostream& os,
                          kernel<ZeroTemp, imtime> const& kern) {
   os << R"(A(ϵ) -> G_{T=0}(τ), )";
   os << "Statistics = "
-     << (kern.mesh.domain().statistic == Fermion ? "Fermion" : "Boson") << ", "
-     << R"(τ_{max} = )" << kern.mesh.domain().beta << ", " << kern.mesh.size()
+     << (kern.mesh.statistic() == Fermion ? "Fermion" : "Boson") << ", "
+     << R"(τ_{max} = )" << kern.mesh.beta() << ", " << kern.mesh.size()
      << R"( τ-points)";
   return os;
 }

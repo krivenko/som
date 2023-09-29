@@ -94,7 +94,7 @@ public:
     h5_read(arch, "cov_matrix_tau", cov_matrix_tau);
     h5_read(arch, "filtering_level", filtering_level);
 
-    mesh = {beta, triqs::mesh::Fermion, first_dim(g_tau)};
+    mesh = {beta, triqs::mesh::Fermion, g_tau.shape()[0]};
   }
 };
 

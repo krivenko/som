@@ -32,6 +32,7 @@
 #include <mpi/mpi.hpp>
 #include <nda/nda.hpp>
 #include <triqs/gfs.hpp>
+#include <triqs/mesh.hpp>
 #include <triqs/stat/histograms.hpp>
 
 #include "parameters.hpp"

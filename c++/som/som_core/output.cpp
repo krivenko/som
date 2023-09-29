@@ -72,7 +72,7 @@ array<dcomplex, 3> compute_tail(int max_order, som_core const& cont) {
   auto gf_dim = cont.get_dim();
   array<dcomplex, 3> tail(max_order + 1, gf_dim, gf_dim);
   for(auto i : range(gf_dim)) {
-    tail(range(), i, i) = som::compute_tail(
+    tail(range::all, i, i) = som::compute_tail(
         kind, cont.get_solution(i), max_order, cont.get_comm());
   }
   return tail;
@@ -84,7 +84,7 @@ array<dcomplex, 3> compute_tail(int max_order,
   auto gf_dim = long(solutions.size());
   array<dcomplex, 3> tail(max_order + 1, gf_dim, gf_dim);
   for(auto i : range(gf_dim)) {
-    tail(range(), i, i) = som::compute_tail(kind, solutions[i], max_order);
+    tail(range::all, i, i) = som::compute_tail(kind, solutions[i], max_order);
   }
   return tail;
 }
@@ -94,17 +94,17 @@ array<dcomplex, 3> compute_tail(int max_order,
 ///////////////////
 
 void fill_data(gf_view<imtime> g_tau, long i, vector<double> const& data) {
-  g_tau.data()(range(), i, i) = data;
+  g_tau.data()(range::all, i, i) = data;
 }
 
 void fill_data(gf_view<imfreq> g_iw, long i, vector<dcomplex> const& data) {
   auto g_positive_freq = positive_freq_view(g_iw);
-  g_positive_freq.data()(range(), i, i) = data;
+  g_positive_freq.data()(range::all, i, i) = data;
   g_iw = make_gf_from_real_gf(make_const_view(g_positive_freq));
 }
 
 void fill_data(gf_view<legendre> g_l, long i, vector<double> const& data) {
-  g_l.data()(range(), i, i) = data;
+  g_l.data()(range::all, i, i) = data;
 }
 
 template <typename MeshType, typename Solutions>

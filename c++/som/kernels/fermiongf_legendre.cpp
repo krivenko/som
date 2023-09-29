@@ -102,7 +102,7 @@ double kernel<FermionGf, legendre>::evaluator::operator()(double x) const {
 /////////////////////////////////
 
 kernel<FermionGf, legendre>::kernel(mesh_type const& mesh)
-   : kernel_base(mesh.size()), beta(mesh.domain().beta), mesh(mesh) {
+   : kernel_base(mesh.size()), beta(mesh.beta()), mesh(mesh) {
   evaluators.reserve(mesh.size());
 
   double x0 = x0_start_l0;
@@ -119,7 +119,7 @@ void kernel<FermionGf, legendre>::apply(rectangle const& rect,
   double e2 = rect.right();
 
   for(auto l : mesh)
-    res(l.linear_index()) = rect.height * (Lambda(l, e2) - Lambda(l, e1));
+    res(l.data_index()) = rect.height * (Lambda(l, e2) - Lambda(l, e1));
 }
 
 double kernel<FermionGf, legendre>::Lambda(long l, double Omega) const {

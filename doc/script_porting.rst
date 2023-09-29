@@ -25,7 +25,7 @@ module of SOM has been renamed.
 ::
 
     ### SOM 1.x ###
-    from pytriqs.applications.analytical_continuation.som import Som
+    from triqs.applications.analytical_continuation.som import Som
 
 ::
 

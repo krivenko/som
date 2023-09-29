@@ -44,7 +44,7 @@ template <typename Derived, typename ResultType> class kernel_base {
 
   inline void check_cache_size(const cache_index& ci) const {
     if(lhs_cache.size() < ci.size())
-      lhs_cache.resize(ci.size(), ResultType(first_dim(lhs_cache[0])));
+      lhs_cache.resize(ci.size(), ResultType(lhs_cache[0].shape()[0]));
   }
 
 public:
@@ -113,8 +113,8 @@ public:
 
   // Apply kernel to a configuration ignoring the cache
   inline ResultType apply_wo_caching(configuration const& c) const {
-    ResultType res = ResultType::zeros({first_dim(lhs_cache[0])});
-    ResultType tmp(first_dim(lhs_cache[0]));
+    ResultType res = ResultType::zeros({lhs_cache[0].shape()[0]});
+    ResultType tmp(lhs_cache[0].shape()[0]);
     for(auto const& r : c) {
       DERIVED->apply(r, tmp);
       res += tmp;

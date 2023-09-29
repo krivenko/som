@@ -91,8 +91,8 @@ int lls_worker::operator()(nda::matrix<double, nda::F_layout> &A,
                            nda::vector<double> const &rhs,
                            nda::vector<double> &x,
                            double rcond) {
-  assert(first_dim(A) == M);
-  assert(second_dim(A) == N);
+  assert(A.shape()[0] == M);
+  assert(A.shape()[1] == N);
   assert(rhs.size() == M);
   assert(x.size() == N);
 

@@ -78,7 +78,7 @@ TEST_F(spectral_stats_test, spectral_integral) {
   EXPECT_NEAR(spectral_integral(2.0, 1.5, c, lorentzian), 1.9842074284, 1e-10);
   EXPECT_NEAR(spectral_integral(2.0, 1.5, c, gaussian), 2.4419081106, 1e-10);
 
-  triqs::arrays::vector<double> ref(mesh.size());
+  nda::vector<double> ref(mesh.size());
 
   ref = {0., 0., 1.7, 2.8, 0.3};
   EXPECT_ARRAY_NEAR(spectral_integral(mesh, c, rectangle), ref, 1e-10);

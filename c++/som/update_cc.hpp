@@ -71,7 +71,7 @@ template <typename KernelType> class update_consistent_constraints {
   // Coefficients (1 / \tilde N) (\sigma_n^2 + l^2)^{-1}
   nda::array<double, 1> const chi2_eigenvalue_prefactors;
   // conj(\hat U^\dagger g_n)
-  nda::array<rhs_scalar_type, 1> const chi2_conj_rhs;
+  nda::array<rhs_scalar_type, 1> const chi2_conjhs;
 #ifdef EXT_DEBUG
   // Constant (1/\tilde N) \sum_n |\hat U^\dagger g_n|^2 / (\sigma_n^2 + l^2)
   double const chi2_const;
@@ -128,9 +128,9 @@ template <typename KernelType> class update_consistent_constraints {
   // Second derivative of the proposed configuration.
   nda::array<double, 1> conf_2nd_der;
 
-  // Initialize chi2_conj_rhs
+  // Initialize chi2_conjhs
   static nda::array<rhs_scalar_type, 1>
-  init_chi2_conj_rhs(objective_function<KernelType> const& objf);
+  init_chi2_conjhs(objective_function<KernelType> const& objf);
 
   // Prepare matrix of quadratic form \chi^2 and coefficients of
   // linear shifts in \chi^2.
