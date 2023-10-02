@@ -35,7 +35,7 @@ onto the frequency mesh as
 
 .. _binning:
 
-By default, SOM 2.0 uses binning while projecting onto the frequency mesh.
+By default, SOM 2.x uses binning while projecting onto the frequency mesh.
 It splits the energy window
 :math:`[\epsilon_\mathrm{min};\epsilon_\mathrm{max}]` into :math:`I` bins,
 

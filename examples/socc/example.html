@@ -7,15 +7,16 @@
   <title>Stochastic Optimization with Consistent Constraints &mdash; SOM  documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../about.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -36,7 +37,7 @@
             SOM
           </a>
               <div class="version">
-                2.0.0
+                2.1.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -175,6 +176,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../ChangeLog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#unreleased">[2.1.0] - Unreleased</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id2">2.0.0 (2022-06-27)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../ChangeLog.html#major-changes-and-new-features">Major changes and new features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../ChangeLog.html#python-api-changes">Python API changes</a></li>
@@ -216,7 +218,7 @@
            <div itemprop="articleBody">
              
   <section id="stochastic-optimization-with-consistent-constraints">
-<span id="example-socc"></span><h1>Stochastic Optimization with Consistent Constraints<a class="headerlink" href="#stochastic-optimization-with-consistent-constraints" title="Permalink to this heading"></a></h1>
+<span id="example-socc"></span><h1>Stochastic Optimization with Consistent Constraints<a class="headerlink" href="#stochastic-optimization-with-consistent-constraints" title="Link to this heading"></a></h1>
 <p>Both aspects of SOCC functionality are covered by this example: It shows how to
 enable the <a class="reference internal" href="../../guide/socc.html#cc-update"><span class="std std-ref">consistent-constraints updates</span></a> and how to invoke
 the <a class="reference internal" href="../../guide/socc.html#final-solution-cc"><span class="std std-ref">SOCC self-consistent optimization algorithm</span></a>
@@ -394,7 +396,7 @@ evolution of SOCC regularization parameters</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">w_points</span><span class="p">,</span> <span class="n">ar</span><span class="p">[</span><span class="s2">&quot;socc&quot;</span><span class="p">][</span><span class="s2">&quot;default_model&quot;</span><span class="p">],</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
          <span class="n">label</span><span class="o">=</span><span class="s2">&quot;default model&quot;</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="n">energy_mesh</span><span class="o">.</span><span class="n">omega_min</span><span class="p">,</span> <span class="n">energy_mesh</span><span class="o">.</span><span class="n">omega_max</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="n">energy_mesh</span><span class="o">.</span><span class="n">w_min</span><span class="p">,</span> <span class="n">energy_mesh</span><span class="o">.</span><span class="n">w_max</span><span class="p">))</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">))</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$A(\omega)$&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
@@ -403,7 +405,7 @@ evolution of SOCC regularization parameters</p>
 </div>
 <p>(<a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_00_00.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_00_00.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_00_00.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
 <figure class="align-default">
-<a class="reference internal image-reference" href="../../_images/plot_00_00.png"><img alt="../../_images/plot_00_00.png" src="../../_images/plot_00_00.png" style="width: 512.0px; height: 384.0px;" /></a>
+<a class="plot-directive reference internal image-reference" href="../../_images/plot_00_00.png"><img alt="../../_images/plot_00_00.png" class="plot-directive" src="../../_images/plot_00_00.png" style="width: 512.0px; height: 384.0px;" /></a>
 </figure>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot input and reconstructed G(\tau)</span>
 <span class="n">oplot</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="s2">&quot;som&quot;</span><span class="p">][</span><span class="s2">&quot;g_tau&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$G(\tau)$&quot;</span><span class="p">)</span>
@@ -420,7 +422,7 @@ evolution of SOCC regularization parameters</p>
 </div>
 <p>(<a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_01_00.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_01_00.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_01_00.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
 <figure class="align-default">
-<a class="reference internal image-reference" href="../../_images/plot_01_00.png"><img alt="../../_images/plot_01_00.png" src="../../_images/plot_01_00.png" style="width: 512.0px; height: 384.0px;" /></a>
+<a class="plot-directive reference internal image-reference" href="../../_images/plot_01_00.png"><img alt="../../_images/plot_01_00.png" class="plot-directive" src="../../_images/plot_01_00.png" style="width: 512.0px; height: 384.0px;" /></a>
 </figure>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#</span>
 <span class="c1"># Plot evolution of SOCC regularization parameters with iterations</span>
@@ -466,7 +468,7 @@ evolution of SOCC regularization parameters</p>
 </div>
 <p>(<a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_02_00.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_02_00.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_02_00.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
 <figure class="align-default">
-<a class="reference internal image-reference" href="../../_images/plot_02_00.png"><img alt="../../_images/plot_02_00.png" src="../../_images/plot_02_00.png" style="width: 640.0px; height: 288.0px;" /></a>
+<a class="plot-directive reference internal image-reference" href="../../_images/plot_02_00.png"><img alt="../../_images/plot_02_00.png" class="plot-directive" src="../../_images/plot_02_00.png" style="width: 640.0px; height: 288.0px;" /></a>
 </figure>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Derivative regularization parameters</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="s1">&#39;row&#39;</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mf">3.6</span><span class="p">))</span>
@@ -493,7 +495,7 @@ evolution of SOCC regularization parameters</p>
 </div>
 <p>(<a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_03_00.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_03_00.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_03_00.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
 <figure class="align-default">
-<a class="reference internal image-reference" href="../../_images/plot_03_00.png"><img alt="../../_images/plot_03_00.png" src="../../_images/plot_03_00.png" style="width: 640.0px; height: 288.0px;" /></a>
+<a class="plot-directive reference internal image-reference" href="../../_images/plot_03_00.png"><img alt="../../_images/plot_03_00.png" class="plot-directive" src="../../_images/plot_03_00.png" style="width: 640.0px; height: 288.0px;" /></a>
 </figure>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Second derivative regularization parameters</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="s1">&#39;row&#39;</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mf">3.6</span><span class="p">))</span>
@@ -521,7 +523,7 @@ evolution of SOCC regularization parameters</p>
 </div>
 <p>(<a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_04_00.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_04_00.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/socc/plot_04_00.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
 <figure class="align-default">
-<a class="reference internal image-reference" href="../../_images/plot_04_00.png"><img alt="../../_images/plot_04_00.png" src="../../_images/plot_04_00.png" style="width: 640.0px; height: 288.0px;" /></a>
+<a class="plot-directive reference internal image-reference" href="../../_images/plot_04_00.png"><img alt="../../_images/plot_04_00.png" class="plot-directive" src="../../_images/plot_04_00.png" style="width: 640.0px; height: 288.0px;" /></a>
 </figure>
 </section>
 

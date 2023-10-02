@@ -7,15 +7,16 @@
   <title>Changelog &mdash; SOM  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+      <link rel="stylesheet" href="_static/plot_directive.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -38,7 +39,7 @@
             SOM
           </a>
               <div class="version">
-                2.0.0
+                2.1.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -177,6 +178,7 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#unreleased">[2.1.0] - Unreleased</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id2">2.0.0 (2022-06-27)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#major-changes-and-new-features">Major changes and new features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#python-api-changes">Python API changes</a></li>
@@ -217,12 +219,18 @@
            <div itemprop="articleBody">
              
   <section class="tex2jax_ignore mathjax_ignore" id="changelog">
-<span id="id1"></span><h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this heading"></a></h1>
+<span id="id1"></span><h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading"></a></h1>
+<section id="unreleased">
+<h2>[2.1.0] - Unreleased<a class="headerlink" href="#unreleased" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Port to <a class="reference external" href="https://github.com/TRIQS/triqs/releases/tag/3.2.0" rel="noopener noreferrer" target="_blank">TRIQS 3.2</a>.</p></li>
+</ul>
+</section>
 <section id="id2">
-<h2><a class="reference external" href="https://github.com/krivenko/som/tree/2.0.0" rel="noopener noreferrer" target="_blank">2.0.0</a> (2022-06-27)<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h2>
+<h2><a class="reference external" href="https://github.com/krivenko/som/tree/2.0.0" rel="noopener noreferrer" target="_blank">2.0.0</a> (2022-06-27)<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
 <p><a class="reference external" href="https://github.com/krivenko/som/compare/1.2..2.0.0" rel="noopener noreferrer" target="_blank">Full Changelog</a></p>
 <section id="major-changes-and-new-features">
-<h3>Major changes and new features<a class="headerlink" href="#major-changes-and-new-features" title="Permalink to this heading"></a></h3>
+<h3>Major changes and new features<a class="headerlink" href="#major-changes-and-new-features" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Complete port to <a class="reference external" href="https://github.com/TRIQS/triqs/releases/tag/3.1.0" rel="noopener noreferrer" target="_blank">TRIQS 3.1</a> and Python 3.</p></li>
 <li><p>Implementation of the Stochastic Optimization with Consistent Constraints
@@ -258,7 +266,7 @@ observable is integrated over bins centered around points of the mesh.</p></li>
 </ul>
 </section>
 <section id="python-api-changes">
-<h3>Python API changes<a class="headerlink" href="#python-api-changes" title="Permalink to this heading"></a></h3>
+<h3>Python API changes<a class="headerlink" href="#python-api-changes" title="Link to this heading"></a></h3>
 <ul>
 <li><p>Following a convention change for TRIQS applications, the Python package of
 SOM has been renamed from <code class="docutils literal notranslate"><span class="pre">pytriqs.applications.analytical_continuation.som</span></code>
@@ -305,7 +313,7 @@ supported mesh, it returns a list of spectrum normalization constants
 </ul>
 </section>
 <section id="build-system-and-developer-tools">
-<h3>Build system and developer tools<a class="headerlink" href="#build-system-and-developer-tools" title="Permalink to this heading"></a></h3>
+<h3>Build system and developer tools<a class="headerlink" href="#build-system-and-developer-tools" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Minimum required CMake version has been bumped to 3.12.4.</p></li>
 <li><p>Structure of the project has been adjusted to follow conventions established
@@ -326,7 +334,7 @@ sanitizers (<code class="docutils literal notranslate"><span class="pre">Address
 </section>
 </section>
 <section id="id3">
-<h2><a class="reference external" href="https://github.com/krivenko/som/tree/1.2" rel="noopener noreferrer" target="_blank">1.2</a> (2020-03-15)<a class="headerlink" href="#id3" title="Permalink to this heading"></a></h2>
+<h2><a class="reference external" href="https://github.com/krivenko/som/tree/1.2" rel="noopener noreferrer" target="_blank">1.2</a> (2020-03-15)<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
 <p><a class="reference external" href="https://github.com/krivenko/som/compare/1.1...1.2" rel="noopener noreferrer" target="_blank">Full Changelog</a></p>
 <ul class="simple">
 <li><p>Improvements and small fixes in documentation.</p></li>
@@ -338,7 +346,7 @@ sanitizers (<code class="docutils literal notranslate"><span class="pre">Address
 </ul>
 </section>
 <section id="id4">
-<h2><a class="reference external" href="https://github.com/krivenko/som/tree/1.1" rel="noopener noreferrer" target="_blank">1.1</a> (2017-04-23)<a class="headerlink" href="#id4" title="Permalink to this heading"></a></h2>
+<h2><a class="reference external" href="https://github.com/krivenko/som/tree/1.1" rel="noopener noreferrer" target="_blank">1.1</a> (2017-04-23)<a class="headerlink" href="#id4" title="Link to this heading"></a></h2>
 <p><a class="reference external" href="https://github.com/krivenko/som/compare/1.0...1.1" rel="noopener noreferrer" target="_blank">Full Changelog</a></p>
 <ul class="simple">
 <li><p>Massive extension of documentation.</p></li>
@@ -347,7 +355,7 @@ sanitizers (<code class="docutils literal notranslate"><span class="pre">Address
 </ul>
 </section>
 <section id="id5">
-<h2><a class="reference external" href="https://github.com/krivenko/som/tree/1.0" rel="noopener noreferrer" target="_blank">1.0</a> (2017-03-19)<a class="headerlink" href="#id5" title="Permalink to this heading"></a></h2>
+<h2><a class="reference external" href="https://github.com/krivenko/som/tree/1.0" rel="noopener noreferrer" target="_blank">1.0</a> (2017-03-19)<a class="headerlink" href="#id5" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>First official release.</p></li>
 <li><p>Supports 12 integral kernels:</p>

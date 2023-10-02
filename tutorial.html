@@ -7,15 +7,16 @@
   <title>Tutorial &mdash; SOM  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+      <link rel="stylesheet" href="_static/plot_directive.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -38,7 +39,7 @@
             SOM
           </a>
               <div class="version">
-                2.0.0
+                2.1.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -177,6 +178,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ChangeLog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#unreleased">[2.1.0] - Unreleased</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id2">2.0.0 (2022-06-27)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="ChangeLog.html#major-changes-and-new-features">Major changes and new features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ChangeLog.html#python-api-changes">Python API changes</a></li>
@@ -217,7 +219,7 @@
            <div itemprop="articleBody">
              
   <section id="tutorial">
-<span id="id1"></span><h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this heading"></a></h1>
+<span id="id1"></span><h1>Tutorial<a class="headerlink" href="#tutorial" title="Link to this heading"></a></h1>
 <p>Running SOM to analytically continue input data requires writing a simple Python
 script. Details of the script will vary depending on the physical quantity to be
 continued, and its representation (function of imaginary time, Matsubara
@@ -239,7 +241,7 @@ script will have the following basic parts.</p>
 </div>
 </li>
 <li><p><em>Optional:</em> Load input data from an
-<a class="reference external" href="https://triqs.github.io/triqs/3.1.x/userguide/hdf5/hdf5_tutorial_python.html#hdf5-tutorial" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><span class="xref std std-ref">HDF5 archive</span></a>.</p>
+<a class="reference external" href="https://triqs.github.io/triqs/3.2.x/userguide/python/tutorials/Basics/02-Archiving_your_data.html" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.2.0)"><span class="xref std std-ref">HDF5 archive </span></a>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Open an HDF5 file in read-only mode</span>
 <span class="n">arch</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;input.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
 
@@ -271,9 +273,9 @@ physical observable in question.</p>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">inp</span></code> and <code class="docutils literal notranslate"><span class="pre">error_bars</span></code> must be Green’s function containers of
-the same type <a class="reference external" href="https://triqs.github.io/triqs/3.1.x/documentation/python_api/triqs.gf.gf.Gf.html#triqs.gf.gf.Gf" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.gf.Gf</span></code></a>, defined on the same mesh
-(<a class="reference external" href="https://triqs.github.io/triqs/3.1.x/documentation/python_api/triqs.gf.meshes.MeshImTime.html#triqs.gf.meshes.MeshImTime" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.meshes.MeshImTime</span></code></a>, <a class="reference external" href="https://triqs.github.io/triqs/3.1.x/documentation/python_api/triqs.gf.meshes.MeshImFreq.html#triqs.gf.meshes.MeshImFreq" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.meshes.MeshImFreq</span></code></a> or
-<a class="reference external" href="https://triqs.github.io/triqs/3.1.x/documentation/python_api/triqs.gf.meshes.MeshLegendre.html#triqs.gf.meshes.MeshLegendre" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.meshes.MeshLegendre</span></code></a>) and having the same square target
+the same type <a class="reference external" href="https://triqs.github.io/triqs/3.2.x/documentation/python_api/triqs.gf.gf.Gf.html#triqs.gf.gf.Gf" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.gf.Gf</span></code></a>, defined on the same mesh
+(<a class="reference external" href="https://triqs.github.io/triqs/3.2.x/documentation/python_api/triqs.gf.meshes.MeshImTime.html#triqs.gf.meshes.MeshImTime" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.meshes.MeshImTime</span></code></a>, <a class="reference external" href="https://triqs.github.io/triqs/3.2.x/documentation/python_api/triqs.gf.meshes.MeshImFreq.html#triqs.gf.meshes.MeshImFreq" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.meshes.MeshImFreq</span></code></a> or
+<a class="reference external" href="https://triqs.github.io/triqs/3.2.x/documentation/python_api/triqs.gf.meshes.MeshLegendre.html#triqs.gf.meshes.MeshLegendre" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.meshes.MeshLegendre</span></code></a>) and having the same square target
 shape.</p>
 <p>Currently supported observable kinds are</p>
 <ul class="simple">
@@ -390,7 +392,7 @@ the many keyword arguments it accepts.</p>
 </li>
 <li><p>Extract the final solution,
 <a class="reference internal" href="guide/recovery.html#recovery"><span class="std std-ref">recover the real-frequency version</span></a> of <code class="docutils literal notranslate"><span class="pre">inp</span></code>,
-its <a class="reference external" href="https://triqs.github.io/triqs/3.1.x/documentation/manual/triqs/gfs/c%2B%2B/tail.html#gf-tail" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><span class="xref std std-ref">tail expansion coefficients</span></a> and
+its <a class="reference external" href="https://triqs.github.io/triqs/3.2.x/documentation/manual/triqs/gfs/c%2B%2B/tail.html#gf-tail" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.2.0)"><span class="xref std std-ref">tail expansion coefficients</span></a> and
 reconstruct the input.</p>
 <p>SOM internally represents spectral functions (configurations) as sums of
 rectangles. The final solutions are accessible as a list of

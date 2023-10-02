@@ -7,15 +7,16 @@
   <title>Supported observables &mdash; SOM  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -38,7 +39,7 @@
             SOM
           </a>
               <div class="version">
-                2.0.0
+                2.1.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -177,6 +178,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../ChangeLog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../ChangeLog.html#unreleased">[2.1.0] - Unreleased</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../ChangeLog.html#id2">2.0.0 (2022-06-27)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../ChangeLog.html#major-changes-and-new-features">Major changes and new features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../ChangeLog.html#python-api-changes">Python API changes</a></li>
@@ -218,11 +220,11 @@
            <div itemprop="articleBody">
              
   <section id="supported-observables">
-<span id="observables"></span><h1>Supported observables<a class="headerlink" href="#supported-observables" title="Permalink to this heading"></a></h1>
+<span id="observables"></span><h1>Supported observables<a class="headerlink" href="#supported-observables" title="Link to this heading"></a></h1>
 <p>This page lists all kinds of dynamical observables currently supported by SOM
 and explicitly states the integral equation being solved for each of them.</p>
 <section id="thermal-green-s-function-of-fermions">
-<h2>Thermal Green’s function of fermions<a class="headerlink" href="#thermal-green-s-function-of-fermions" title="Permalink to this heading"></a></h2>
+<h2>Thermal Green’s function of fermions<a class="headerlink" href="#thermal-green-s-function-of-fermions" title="Link to this heading"></a></h2>
 <p id="fermiongf">A Green’s function of fermions at temperature <span class="math notranslate nohighlight">\(T = 1/\beta\)</span> is defined
 as</p>
 <div class="math notranslate nohighlight">
@@ -339,7 +341,7 @@ the first kind.</p>
 </table>
 </section>
 <section id="thermal-green-s-function-of-bosons-dynamical-susceptibilities-and-conductivity">
-<h2>Thermal Green’s function of bosons, dynamical susceptibilities and conductivity<a class="headerlink" href="#thermal-green-s-function-of-bosons-dynamical-susceptibilities-and-conductivity" title="Permalink to this heading"></a></h2>
+<h2>Thermal Green’s function of bosons, dynamical susceptibilities and conductivity<a class="headerlink" href="#thermal-green-s-function-of-bosons-dynamical-susceptibilities-and-conductivity" title="Link to this heading"></a></h2>
 <p id="bosoncorr">The following correlators share the same general form
 <span class="math notranslate nohighlight">\(\chi_{OO^\dagger}(\tau) =
 \langle \mathbb{T}_\tau \hat O(\tau) \hat O^\dagger(0)\rangle\)</span>,
@@ -473,7 +475,7 @@ the first kind.</p>
 </table>
 </section>
 <section id="dynamical-response-functions-at-zero-temperature">
-<h2>Dynamical response functions at zero temperature<a class="headerlink" href="#dynamical-response-functions-at-zero-temperature" title="Permalink to this heading"></a></h2>
+<h2>Dynamical response functions at zero temperature<a class="headerlink" href="#dynamical-response-functions-at-zero-temperature" title="Link to this heading"></a></h2>
 <p id="zerotemp">In the limit of zero temperature (<span class="math notranslate nohighlight">\(\beta=1/T\to\infty\)</span>), both Fermi-Dirac
 and Bose-Einstein distributions approach the shape of a step function
 <span class="math notranslate nohighlight">\(\theta(\epsilon)\)</span>. It is, therefore, sufficient to consider a spectral

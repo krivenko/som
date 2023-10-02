@@ -7,15 +7,16 @@
   <title>Recovery of observables on a real-frequency mesh &mdash; SOM  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -38,7 +39,7 @@
             SOM
           </a>
               <div class="version">
-                2.0.0
+                2.1.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -177,6 +178,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../ChangeLog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../ChangeLog.html#unreleased">[2.1.0] - Unreleased</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../ChangeLog.html#id2">2.0.0 (2022-06-27)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../ChangeLog.html#major-changes-and-new-features">Major changes and new features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../ChangeLog.html#python-api-changes">Python API changes</a></li>
@@ -218,7 +220,7 @@
            <div itemprop="articleBody">
              
   <section id="recovery-of-observables-on-a-real-frequency-mesh">
-<span id="recovery"></span><h1>Recovery of observables on a real-frequency mesh<a class="headerlink" href="#recovery-of-observables-on-a-real-frequency-mesh" title="Permalink to this heading"></a></h1>
+<span id="recovery"></span><h1>Recovery of observables on a real-frequency mesh<a class="headerlink" href="#recovery-of-observables-on-a-real-frequency-mesh" title="Link to this heading"></a></h1>
 <p>Recovery of the real-frequency version of a dynamical observable, such as the
 <a class="reference internal" href="observables.html#fermiongf"><span class="std std-ref">retarded Green’s function</span></a> <span class="math notranslate nohighlight">\(G^\mathrm{ret}(\epsilon)\)</span>,
 from a spectral function <span class="math notranslate nohighlight">\(A(\epsilon)\)</span> is performed by function
@@ -238,7 +240,7 @@ onto the frequency mesh as</p>
   \frac{A(\epsilon')}{\epsilon' - \epsilon_i - i0} =
   -\sum_{k=1}^K h_k \int\limits_{c_k-w_k/2}^{c_k+w_k/2}
   \frac{d\epsilon'}{\epsilon' - \epsilon_i - i0}.\]</div>
-<p id="binning">By default, SOM 2.0 uses binning while projecting onto the frequency mesh.
+<p id="binning">By default, SOM 2.x uses binning while projecting onto the frequency mesh.
 It splits the energy window
 <span class="math notranslate nohighlight">\([\epsilon_\mathrm{min};\epsilon_\mathrm{max}]\)</span> into <span class="math notranslate nohighlight">\(I\)</span> bins,</p>
 <div class="math notranslate nohighlight">
@@ -268,7 +270,7 @@ resulting curves for the same number of energy points <span class="math notransl
 The old behavior can be enabled by passing <code class="docutils literal notranslate"><span class="pre">with_binning=False</span></code> to
 <a class="reference internal" href="../reference/som.html#som.fill_refreq" title="som.fill_refreq"><code class="xref py py-func docutils literal notranslate"><span class="pre">som.fill_refreq()</span></code></a>.</p>
 <p id="compute-tail"><a class="reference internal" href="../reference/som.html#som.compute_tail" title="som.compute_tail"><code class="xref py py-func docutils literal notranslate"><span class="pre">som.compute_tail()</span></code></a> is another useful function that extracts information
-about the <a class="reference external" href="https://triqs.github.io/triqs/3.1.x/documentation/manual/triqs/gfs/c%2B%2B/tail.html#gf-tail" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><span class="xref std std-ref">high frequency expansion coefficients</span></a>
+about the <a class="reference external" href="https://triqs.github.io/triqs/3.2.x/documentation/manual/triqs/gfs/c%2B%2B/tail.html#gf-tail" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.2.0)"><span class="xref std std-ref">high frequency expansion coefficients</span></a>
 of <span class="math notranslate nohighlight">\(G^\mathrm{ret}(\epsilon)\)</span> from <span class="math notranslate nohighlight">\(A(\epsilon)\)</span>.</p>
 </section>
 

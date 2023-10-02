@@ -7,15 +7,16 @@
   <title>SOM 1.x script porting guide &mdash; SOM  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+      <link rel="stylesheet" href="_static/plot_directive.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -38,7 +39,7 @@
             SOM
           </a>
               <div class="version">
-                2.0.0
+                2.1.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -177,6 +178,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ChangeLog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#unreleased">[2.1.0] - Unreleased</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id2">2.0.0 (2022-06-27)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="ChangeLog.html#major-changes-and-new-features">Major changes and new features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ChangeLog.html#python-api-changes">Python API changes</a></li>
@@ -217,9 +219,9 @@
            <div itemprop="articleBody">
              
   <section id="som-1-x-script-porting-guide">
-<span id="script-porting"></span><h1>SOM 1.x script porting guide<a class="headerlink" href="#som-1-x-script-porting-guide" title="Permalink to this heading"></a></h1>
-<p>Porting computational scripts from SOM 1.x to SOM 2.0 means switching from
-Python 2.7 to Python 3 and from TRIQS 1.4 to TRIQS 3.1. This guide covers
+<span id="script-porting"></span><h1>SOM 1.x script porting guide<a class="headerlink" href="#som-1-x-script-porting-guide" title="Link to this heading"></a></h1>
+<p>Porting computational scripts from SOM 1.x to SOM 2.x means switching from
+Python 2.7 to Python 3 and from TRIQS 1.4 to TRIQS 3.x. This guide covers
 only the SOM-specific portion of changes that need to be made. Please, refer to
 the official Python
 <a class="reference external" href="https://docs.python.org/3/howto/pyporting.html" rel="noopener noreferrer" target="_blank">porting guide</a> to learn about
@@ -228,20 +230,20 @@ becoming a function instead of a statement, and the new semantics of the integer
 division. There is also a page about <a class="reference external" href="https://triqs.github.io/triqs/latest/porting_to_triqs3.html" rel="noopener noreferrer" target="_blank">porting applications</a> to TRIQS 3.0
 provided by TRIQS’ developers.</p>
 <section id="python-modules">
-<h2>Python modules<a class="headerlink" href="#python-modules" title="Permalink to this heading"></a></h2>
+<h2>Python modules<a class="headerlink" href="#python-modules" title="Link to this heading"></a></h2>
 <p>Following a convention change for naming of TRIQS applications, the main Python
 module of SOM has been renamed.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 1.x ###</span>
 <span class="kn">from</span> <span class="nn">pytriqs.applications.analytical_continuation.som</span> <span class="kn">import</span> <span class="n">Som</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 2.0 ###</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 2.x ###</span>
 <span class="kn">from</span> <span class="nn">som</span> <span class="kn">import</span> <span class="n">Som</span>
 </pre></div>
 </div>
 <p>Functions implementing the <a class="reference internal" href="guide/spectral_stats.html#spectral-stats"><span class="std std-ref">statistical analysis of ensembles of spectral
 functions</span></a> are collected in a new module,</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 2.0 ###</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 2.x ###</span>
 <span class="kn">from</span> <span class="nn">som.spectral_stats</span> <span class="kn">import</span> <span class="p">(</span><span class="n">spectral_integral</span><span class="p">,</span>
                                 <span class="n">spectral_avg</span><span class="p">,</span>
                                 <span class="n">spectral_disp</span><span class="p">,</span>
@@ -250,7 +252,7 @@ functions</span></a> are collected in a new module,</p>
 </div>
 </section>
 <section id="construction-of-the-som-object">
-<h2>Construction of the <a class="reference internal" href="reference/som.html#som.Som" title="som.Som"><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code></a> object<a class="headerlink" href="#construction-of-the-som-object" title="Permalink to this heading"></a></h2>
+<h2>Construction of the <a class="reference internal" href="reference/som.html#som.Som" title="som.Som"><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code></a> object<a class="headerlink" href="#construction-of-the-som-object" title="Link to this heading"></a></h2>
 <ul>
 <li><p>It is now possible to provide full <a class="reference internal" href="guide/basic.html#cov-matrix"><span class="std std-ref">covariance matrices</span></a>
 as an alternative to estimated error bars upon construction of the
@@ -259,7 +261,7 @@ as an alternative to estimated error bars upon construction of the
 <span class="n">cont</span> <span class="o">=</span> <span class="n">Som</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">error_bars</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">,</span> <span class="n">norms</span><span class="o">=</span><span class="n">norms</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 2.0 ###</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 2.x ###</span>
 <span class="n">cont_eb</span> <span class="o">=</span> <span class="n">Som</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">error_bars</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">,</span> <span class="n">norms</span><span class="o">=</span><span class="n">norms</span><span class="p">)</span>
 <span class="n">cont_cm</span> <span class="o">=</span> <span class="n">Som</span><span class="p">(</span><span class="n">g</span><span class="p">,</span>
               <span class="n">cov_matrices</span><span class="p">,</span>
@@ -286,7 +288,7 @@ constants by 2 for <code class="docutils literal notranslate"><span class="pre">
 <li><p>If normalization constants for the <code class="docutils literal notranslate"><span class="pre">BosonCorr</span></code> or <code class="docutils literal notranslate"><span class="pre">BosonAutoCorr</span></code>
 spectra are not known a priori, they can be estimated from the input data
 by calling a new utility function <a class="reference internal" href="reference/som.html#som.estimate_boson_corr_spectrum_norms" title="som.estimate_boson_corr_spectrum_norms"><code class="xref py py-func docutils literal notranslate"><span class="pre">estimate_boson_corr_spectrum_norms()</span></code></a>.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 2.0 ###</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 2.x ###</span>
 <span class="kn">from</span> <span class="nn">som</span> <span class="kn">import</span> <span class="n">estimate_boson_corr_spectrum_norms</span>
 
 <span class="c1"># Given a correlator of boson-like operators $\chi$ defined on any</span>
@@ -301,7 +303,7 @@ by calling a new utility function <a class="reference internal" href="reference/
 </ul>
 </section>
 <section id="deprecation-of-som-run">
-<h2>Deprecation of <a class="reference internal" href="reference/som.html#som.Som.run" title="som.Som.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">Som.run()</span></code></a><a class="headerlink" href="#deprecation-of-som-run" title="Permalink to this heading"></a></h2>
+<h2>Deprecation of <a class="reference internal" href="reference/som.html#som.Som.run" title="som.Som.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">Som.run()</span></code></a><a class="headerlink" href="#deprecation-of-som-run" title="Link to this heading"></a></h2>
 <p>In order to accommodate for new features, method <a class="reference internal" href="reference/som.html#som.Som.run" title="som.Som.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">Som.run()</span></code></a> has been
 declared deprecated, and its functionality has been split between a few new
 methods.</p>
@@ -310,7 +312,7 @@ methods.</p>
 <span class="n">cont</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 2.0 ###</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 2.x ###</span>
 
 <span class="c1"># Accumulate particular solutions.</span>
 <span class="n">cont</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="o">**</span><span class="n">acc_params</span><span class="p">)</span>
@@ -334,7 +336,7 @@ named <code class="docutils literal notranslate"><span class="pre">cc_update_*</
 pool of accumulated particular solutions. <a class="reference internal" href="reference/som.html#som.Som.clear" title="som.Som.clear"><code class="xref py py-func docutils literal notranslate"><span class="pre">Som.clear()</span></code></a> will remove
 all accumulated solutions.</p>
 <p>In SOM 1.x, <a class="reference internal" href="reference/som.html#som.Som.run" title="som.Som.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">Som.run()</span></code></a> was selecting good particular solutions based on
-a criterion established by parameter <code class="docutils literal notranslate"><span class="pre">adjust_l_good_d</span></code>. With SOM 2.0,
+a criterion established by parameter <code class="docutils literal notranslate"><span class="pre">adjust_l_good_d</span></code>. With SOM 2.x,
 selection of good particular solutions is performed as part of algorithms
 implemented in <a class="reference internal" href="reference/som.html#som.Som.compute_final_solution" title="som.Som.compute_final_solution"><code class="xref py py-func docutils literal notranslate"><span class="pre">Som.compute_final_solution()</span></code></a> and
 <a class="reference internal" href="reference/som.html#som.Som.compute_final_solution_cc" title="som.Som.compute_final_solution_cc"><code class="xref py py-func docutils literal notranslate"><span class="pre">Som.compute_final_solution_cc()</span></code></a>.
@@ -352,7 +354,7 @@ user-provided default model.</p>
 <p>Automatic adjustment of the number of global updates per solution (<span class="math notranslate nohighlight">\(F\)</span>),
 which used to be one of <a class="reference internal" href="reference/som.html#som.Som.run" title="som.Som.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">Som.run()</span></code></a>’s features, is now available as method
 <a class="reference internal" href="reference/som.html#som.Som.adjust_f" title="som.Som.adjust_f"><code class="xref py py-func docutils literal notranslate"><span class="pre">Som.adjust_f()</span></code></a>.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 2.0 ###</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 2.x ###</span>
 
 <span class="c1"># Adjust the number of global updates.</span>
 <span class="n">f</span> <span class="o">=</span> <span class="n">cont</span><span class="o">.</span><span class="n">adjust_f</span><span class="p">(</span><span class="n">energy_window</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
@@ -362,7 +364,7 @@ which used to be one of <a class="reference internal" href="reference/som.html#s
 </div>
 </section>
 <section id="post-processing-of-spectral-functions">
-<h2>Post-processing of spectral functions<a class="headerlink" href="#post-processing-of-spectral-functions" title="Permalink to this heading"></a></h2>
+<h2>Post-processing of spectral functions<a class="headerlink" href="#post-processing-of-spectral-functions" title="Link to this heading"></a></h2>
 <p>Due to changes in the TRIQS Green’s function library, it is no longer possible
 to use the <code class="docutils literal notranslate"><span class="pre">g</span> <span class="pre">&lt;&lt;</span> <span class="pre">cont</span></code> syntax. Furthermore, information about the high
 frequency expansion (tail) coefficients has been separated from Green’s function
@@ -380,7 +382,7 @@ time/Matsubara frequency/Legendre coefficient data and computing the tail.</p>
 <span class="n">g_rec</span> <span class="o">&lt;&lt;</span> <span class="n">cont</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 2.0 ###</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 2.x ###</span>
 
 <span class="kn">from</span> <span class="nn">som</span> <span class="kn">import</span> <span class="n">fill_refreq</span><span class="p">,</span> <span class="n">compute_tail</span><span class="p">,</span> <span class="n">reconstruct</span>
 
@@ -400,11 +402,11 @@ time/Matsubara frequency/Legendre coefficient data and computing the tail.</p>
 disabled by passing <code class="docutils literal notranslate"><span class="pre">with_binning=False</span></code>.</p>
 </section>
 <section id="direct-access-to-spectral-functions">
-<h2>Direct access to spectral functions<a class="headerlink" href="#direct-access-to-spectral-functions" title="Permalink to this heading"></a></h2>
+<h2>Direct access to spectral functions<a class="headerlink" href="#direct-access-to-spectral-functions" title="Link to this heading"></a></h2>
 <p>A few new attributes added to <a class="reference internal" href="reference/som.html#som.Som" title="som.Som"><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code></a> give access to the accumulated
 particular solutions, the final solution and their respective values of the
 <span class="math notranslate nohighlight">\(\chi^2\)</span>-functional.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 2.0 ###</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 2.x ###</span>
 
 <span class="c1"># Extract a list of pairs (accumulated particular solution, its \chi^2) for</span>
 <span class="c1"># the 0-th diagonal component of the observable.</span>
@@ -428,7 +430,7 @@ particular solutions, the final solution and their respective values of the
 <a class="reference internal" href="reference/som.html#som.Configuration" title="som.Configuration"><code class="xref py py-class docutils literal notranslate"><span class="pre">Configuration</span></code></a>, which is a collection of <a class="reference internal" href="reference/som.html#som.Rectangle" title="som.Rectangle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rectangle</span></code></a>’s.
 Configurations (spectral functions) can be iterated over, evaluated at a given
 value of energy, stored to/loaded from an
-<a class="reference external" href="https://triqs.github.io/triqs/3.1.x/userguide/hdf5/hdf5_tutorial_python.html#hdf5-tutorial" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><span class="xref std std-ref">HDF5 archive</span></a>.</p>
+<a class="reference external" href="https://triqs.github.io/triqs/3.2.x/userguide/python/tutorials/Basics/02-Archiving_your_data.html" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.2.0)"><span class="xref std std-ref">HDF5 archive </span></a>.</p>
 </section>
 </section>
 

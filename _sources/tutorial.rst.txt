@@ -27,7 +27,8 @@ script will have the following basic parts.
         from som import Som
 
 * *Optional:* Load input data from an
-  :ref:`HDF5 archive <triqslibs:hdf5_tutorial>`.
+  :ref:`HDF5 archive \
+  <triqslibs:/userguide/python/tutorials/basics/02-archiving_your_data.ipynb>`.
 
   ::
 

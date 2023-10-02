@@ -25,9 +25,11 @@ to solve the issue please follow these guidelines:
    from the build directory. Please include these outputs in a
    `gist <http://gist.github.com/>`_ file referenced in the issue.
 
-#. If you are experiencing a problem during the execution of the application, provide
-   a script, which allows to quickly reproduce the problem. If the problem is caused by
-   a specific set of input data, please, consider providing the corresponding data file
-   (preferably, as a TRIQS-compatible :ref:`HDF5-archive <hdf5_tutorial>`).
+#. If you are experiencing a problem during the execution of the application,
+   provide a script, which allows to quickly reproduce the problem. If the
+   problem is caused by a specific set of input data, please, consider providing
+   the corresponding data file (preferably, as a TRIQS-compatible
+   :ref:`HDF5-archive \
+   <triqslibs:/userguide/python/tutorials/basics/02-archiving_your_data.ipynb>`).
 
 Thanks!

@@ -172,7 +172,7 @@ CC protocol iterations are organized as follows.
 Construction of final solution using the consistent-constraints protocol
 ------------------------------------------------------------------------
 
-SOM 2.0 features an optimization procedure that finds a vector of
+SOM 2.x features an optimization procedure that finds a vector of
 :ref:`final solution <final_solution>` coefficients :math:`\mathbf{c}`
 resulting in a smoother spectral function. It also allows to bias the final
 solution towards a user-provided default model.

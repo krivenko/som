@@ -6,15 +6,16 @@
   <title>som.som &mdash; SOM  documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../about.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -33,7 +34,7 @@
             SOM
           </a>
               <div class="version">
-                2.0.0
+                2.1.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -172,6 +173,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../ChangeLog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#unreleased">[2.1.0] - Unreleased</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id2">2.0.0 (2022-06-27)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../ChangeLog.html#major-changes-and-new-features">Major changes and new features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../ChangeLog.html#python-api-changes">Python API changes</a></li>
@@ -252,10 +254,14 @@
 <span class="kn">from</span> <span class="nn">.som_core</span> <span class="kn">import</span> <span class="n">SomCore</span>
 
 
-<div class="viewcode-block" id="Som"><a class="viewcode-back" href="../../reference/som.html#som.Som">[docs]</a><span class="k">class</span> <span class="nc">Som</span><span class="p">(</span><span class="n">SomCore</span><span class="p">):</span>
+<div class="viewcode-block" id="Som">
+<a class="viewcode-back" href="../../reference/som.html#som.Som">[docs]</a>
+<span class="k">class</span> <span class="nc">Som</span><span class="p">(</span><span class="n">SomCore</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Implementation of the Stochastic Optimization Method.&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Som.__init__"><a class="viewcode-back" href="../../reference/som.html#som.Som.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<div class="viewcode-block" id="Som.__init__">
+<a class="viewcode-back" href="../../reference/som.html#som.Som.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">rhs</span><span class="p">:</span> <span class="n">Gf</span><span class="p">,</span>
                  <span class="n">errors</span><span class="p">:</span> <span class="n">Gf</span><span class="p">,</span>
                  <span class="n">kind</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;FermionGf&quot;</span><span class="p">,</span>
@@ -358,10 +364,14 @@
 
         <span class="c1"># Give up</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Argument &#39;errors&#39; has unsupported format&quot;</span><span class="p">)</span></div></div>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Argument &#39;errors&#39; has unsupported format&quot;</span><span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="estimate_boson_corr_spectrum_norms"><a class="viewcode-back" href="../../reference/som.html#som.estimate_boson_corr_spectrum_norms">[docs]</a><span class="k">def</span> <span class="nf">estimate_boson_corr_spectrum_norms</span><span class="p">(</span><span class="n">chi</span><span class="p">:</span> <span class="n">Gf</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+
+<div class="viewcode-block" id="estimate_boson_corr_spectrum_norms">
+<a class="viewcode-back" href="../../reference/som.html#som.estimate_boson_corr_spectrum_norms">[docs]</a>
+<span class="k">def</span> <span class="nf">estimate_boson_corr_spectrum_norms</span><span class="p">(</span><span class="n">chi</span><span class="p">:</span> <span class="n">Gf</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a correlator :math:`\chi` of bosonic or boson-like</span>
 <span class="sd">    (fermion-number-conserving) operators, estimates the corresponding spectrum</span>
@@ -407,7 +417,10 @@
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Unexpected type of &#39;chi&#39;&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="count_good_solutions"><a class="viewcode-back" href="../../reference/som.html#som.count_good_solutions">[docs]</a><span class="k">def</span> <span class="nf">count_good_solutions</span><span class="p">(</span><span class="n">hist</span><span class="p">:</span> <span class="n">Histogram</span><span class="p">,</span>
+
+<div class="viewcode-block" id="count_good_solutions">
+<a class="viewcode-back" href="../../reference/som.html#som.count_good_solutions">[docs]</a>
+<span class="k">def</span> <span class="nf">count_good_solutions</span><span class="p">(</span><span class="n">hist</span><span class="p">:</span> <span class="n">Histogram</span><span class="p">,</span>
                          <span class="n">good_chi_rel</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
                          <span class="n">good_chi_abs</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">cmath</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -429,6 +442,7 @@
     <span class="n">chi_c</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">good_chi_abs</span><span class="p">,</span> <span class="n">chi_min</span> <span class="o">*</span> <span class="n">good_chi_rel</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">c</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">hist</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
                    <span class="k">if</span> <span class="n">hist</span><span class="o">.</span><span class="n">mesh_point</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">chi_c</span><span class="p">))</span></div>
+
 </pre></div>
 
            </div>

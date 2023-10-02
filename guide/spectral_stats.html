@@ -7,15 +7,16 @@
   <title>Statistical analysis of ensembles of spectral functions &mdash; SOM  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -38,7 +39,7 @@
             SOM
           </a>
               <div class="version">
-                2.0.0
+                2.1.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -177,6 +178,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../ChangeLog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../ChangeLog.html#unreleased">[2.1.0] - Unreleased</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../ChangeLog.html#id2">2.0.0 (2022-06-27)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../ChangeLog.html#major-changes-and-new-features">Major changes and new features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../ChangeLog.html#python-api-changes">Python API changes</a></li>
@@ -218,7 +220,7 @@
            <div itemprop="articleBody">
              
   <section id="statistical-analysis-of-ensembles-of-spectral-functions">
-<span id="spectral-stats"></span><h1>Statistical analysis of ensembles of spectral functions<a class="headerlink" href="#statistical-analysis-of-ensembles-of-spectral-functions" title="Permalink to this heading"></a></h1>
+<span id="spectral-stats"></span><h1>Statistical analysis of ensembles of spectral functions<a class="headerlink" href="#statistical-analysis-of-ensembles-of-spectral-functions" title="Link to this heading"></a></h1>
 <p>A theoretical framework presented in Sections I-II of <a class="reference internal" href="../about.html#gmpps2017" id="id1"><span>[GMPPS2017]</span></a> offers a way
 to estimate statistical properties (averages, dispersions and two-point
 correlations) of ensembles of
@@ -233,7 +235,7 @@ the spectral integrals are defined as</p>
 <span class="math notranslate nohighlight">\(\{\Delta_m\}\)</span>.</p>
 <p>Function <a class="reference internal" href="../reference/spectral_stats.html#som.spectral_stats.spectral_integral" title="som.spectral_stats.spectral_integral"><code class="xref py py-func docutils literal notranslate"><span class="pre">som.spectral_stats.spectral_integral()</span></code></a> evaluates <span class="math notranslate nohighlight">\(i_m\)</span> for
 a single interval <span class="math notranslate nohighlight">\(\Delta_m\)</span>, for all intervals induced by a
-<a class="reference external" href="https://triqs.github.io/triqs/3.1.x/documentation/python_api/triqs.gf.meshes.MeshReFreq.html#triqs.gf.meshes.MeshReFreq" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">real</span> <span class="pre">frequency</span> <span class="pre">mesh</span></code></a>, or for an
+<a class="reference external" href="https://triqs.github.io/triqs/3.2.x/documentation/python_api/triqs.gf.meshes.MeshReFreq.html#triqs.gf.meshes.MeshReFreq" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">real</span> <span class="pre">frequency</span> <span class="pre">mesh</span></code></a>, or for an
 arbitrary set of intervals. It supports a few kernels <span class="math notranslate nohighlight">\(\bar K(m, z)\)</span>
 switched by the keyword argument <code class="docutils literal notranslate"><span class="pre">resolution_function</span></code>,</p>
 <ul id="resolution-functions">
