@@ -132,7 +132,7 @@ if mpi.is_master_node():
 def print_master(msg):
     if mpi.rank == 0:
         print(msg)
-    mpi.barrier()
+    mpi.barrier(poll_msec=0)
 
 
 def quad_complex(f, a, b, **kwargs):
@@ -273,8 +273,8 @@ g_l = GfLegendre(beta=beta,
                  statistic="Fermion",
                  n_points=n_l,
                  indices=indices)
-# FIXME: TRIQS issue #914
-g_l << Function(g_l_model)
+for ell in g_l.mesh:
+    g_l[ell] = g_l_model(ell.index)
 
 error_bars_l = make_error_bars_l(g_l)
 cov_matrix_l = make_cov_matrix_l(g_l)
@@ -353,7 +353,8 @@ def g_l_model(ell):
 
 
 g_l = GfLegendre(beta=beta, statistic="Fermion", n_points=n_l, indices=indices)
-g_l << Function(g_l_model)
+for ell in g_l.mesh:
+    g_l[ell] = g_l_model(ell.index)
 
 error_bars_l = make_error_bars_l(g_l)
 cov_matrix_l = make_cov_matrix_l(g_l)
@@ -437,7 +438,8 @@ def chi_l_model(ell):
 
 
 chi_l = GfLegendre(beta=beta, statistic="Boson", n_points=n_l, indices=indices)
-chi_l << Function(chi_l_model)
+for ell in chi_l.mesh:
+    chi_l[ell] = chi_l_model(ell.index)
 
 error_bars_l = make_error_bars_l(chi_l)
 cov_matrix_l = make_cov_matrix_l(chi_l)
@@ -523,7 +525,8 @@ chi_auto_l = GfLegendre(beta=beta,
                         statistic="Boson",
                         n_points=n_l,
                         indices=indices)
-chi_auto_l << Function(chi_auto_l_model)
+for ell in chi_auto_l.mesh:
+    chi_auto_l[ell] = chi_auto_l_model(ell.index)
 
 error_bars_l = make_error_bars_l(chi_auto_l)
 cov_matrix_l = make_cov_matrix_l(chi_auto_l)
@@ -596,7 +599,8 @@ def g_zt_l_model(ell):
 
 
 g_zt_l = GfLegendre(beta=beta, n_points=n_l, indices=indices)
-g_zt_l << Function(g_zt_l_model)
+for ell in g_zt_l.mesh:
+    g_zt_l[ell] = g_zt_l_model(ell.index)
 
 error_bars_l = make_error_bars_l(g_zt_l)
 cov_matrix_l = make_cov_matrix_l(g_zt_l)
