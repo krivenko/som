@@ -2,13 +2,14 @@
 
 # Changelog
 
-## [2.1.0] - Unreleased
+## [2.1.0](https://github.com/krivenko/som/tree/2.1.0) (2023-10-03)
+[Full Changelog](https://github.com/krivenko/som/compare/2.0.0...2.1.0)
 
 - Port to [TRIQS 3.2](
   https://github.com/TRIQS/triqs/releases/tag/3.2.0).
 
 ## [2.0.0](https://github.com/krivenko/som/tree/2.0.0) (2022-06-27)
-[Full Changelog](https://github.com/krivenko/som/compare/1.2..2.0.0)
+[Full Changelog](https://github.com/krivenko/som/compare/1.2...2.0.0)
 
 ### Major changes and new features
 
