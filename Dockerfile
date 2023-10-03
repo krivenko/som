@@ -7,6 +7,8 @@ USER root
 RUN useradd -m -s /bin/bash -u 999 build && echo "build:build" | chpasswd
 RUN apt-get update && \
     apt-get install -y --no-install-recommends make g++-12 apt-utils file
+RUN sh -c 'echo -e "\nrmaps_base_oversubscribe = 1" >> \
+          /etc/openmpi/openmpi-mca-params.conf'
 
 COPY requirements.txt /src/$APPNAME/requirements.txt
 RUN pip3 install -r /src/$APPNAME/requirements.txt
