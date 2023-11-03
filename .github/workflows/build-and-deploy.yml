@@ -34,6 +34,8 @@ jobs:
         sudo apt-get install
         g++-12
         clang-15
+        libc++-15-dev
+        libc++abi-15-dev
         libomp-15-dev
         libgfortran5
         gfortran
@@ -75,6 +77,10 @@ jobs:
       run: |
            python -m pip install --upgrade pip
            pip install sphinx nbsphinx linkify-it-py sphinx-rtd-theme myst-parser
+
+    - name: Force use of libc++
+      if: startsWith(matrix.cxx, 'clang')
+      run: echo "CXXFLAGS=-stdlib=libc++" >> $GITHUB_ENV
 
     - name: Build & install TRIQS
       env:
