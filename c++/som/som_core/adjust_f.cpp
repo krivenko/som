@@ -116,7 +116,8 @@ int som_core::adjust_f_impl(adjust_f_parameters_t const& p) {
         }
 
         solution_worker<KernelType> worker(of, d.norm, ci, p, stop_callback, F);
-        auto& rng = worker.get_rng(); // cppcheck-suppress constVariable
+        // cppcheck-suppress constVariableReference
+        auto& rng = worker.get_rng();
 
         int n_sol = {};
         for(int i = 0; (n_sol = comm.rank() + i * comm.size()) < p.l; ++i) {

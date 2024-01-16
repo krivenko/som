@@ -224,7 +224,7 @@ configuration solution_worker<KernelType>::operator()(int init_config_size) {
       << std::endl;
 #endif
 
-  auto& rng = mc.get_rng(); // cppcheck-suppress constVariable
+  auto& rng = mc.get_rng(); // cppcheck-suppress constVariableReference
 
   configuration conf(ci);
   for(int i = 0; i < init_config_size; ++i) {
