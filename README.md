@@ -6,7 +6,7 @@ https://github.com/krivenko/som/actions/workflows/build-and-deploy.yml)
 [![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-red)](
 https://krivenko.github.io/som)
 
-Copyright (C) 2016-2023 Igor Krivenko <igor.s.krivenko @ gmail.com>
+Copyright (C) 2016-2024 Igor Krivenko <igor.s.krivenko @ gmail.com>
 
 This program is an optimized implementation of an analytic continuation
 method proposed by Andrey S. Mishchenko. A detailed description of
