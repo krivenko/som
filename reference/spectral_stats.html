@@ -228,7 +228,8 @@ I-II of <a class="reference internal" href="../about.html#gmpps2017" id="id1"><s
 <dl class="py function">
 <dt class="sig sig-object py" id="som.spectral_stats.spectral_integral">
 <span class="sig-prename descclassname"><span class="pre">som.spectral_stats.</span></span><span class="sig-name descname"><span class="pre">spectral_integral</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#som.spectral_stats.spectral_integral" title="Link to this definition"></a></dt>
-<dd><p>Evaluate spectral integral</p>
+<dd><p>Signature : (float z_m, float delta_m, configuration c, resolution_function r_func) -&gt; float
+Evaluate spectral integral</p>
 <div class="math notranslate nohighlight">
 \[i_m^{(j)} = \int_{-\infty}^\infty dz \bar K(m, z) A^{(j)}(z)\]</div>
 <p>for a single energy interval.</p>
@@ -248,72 +249,13 @@ I-II of <a class="reference internal" href="../about.html#gmpps2017" id="id1"><s
 </dd>
 </dl>
 <p><strong>Returns:</strong> <a class="reference external" href="https://docs.python.org/3.10/library/functions.html#float" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, Value of the integral.</p>
-<dl>
-<dt>Signature<span class="classifier">(float z_m, float delta_m, configuration c, resolution_function r_func) -&gt; float</span></dt><dd><p>Evaluate spectral integral</p>
-<div class="math notranslate nohighlight">
-\[i_m^{(j)} = \int_{-\infty}^\infty dz \bar K(m, z) A^{(j)}(z)\]</div>
-<p>for a single energy interval.</p>
-<p><strong>Parameters:</strong></p>
-<dl class="field-list simple">
-<dt class="field-odd">z_m<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#float" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, Center of the energy interval.</p>
-</dd>
-<dt class="field-even">delta_m<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#float" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, Length of the energy interval.</p>
-</dd>
-<dt class="field-odd">c<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="som.html#som.Configuration" title="som.Configuration"><code class="xref py py-class docutils literal notranslate"><span class="pre">som.Configuration</span></code></a>, Spectral function <span class="math notranslate nohighlight">\(A^{(j)}(z)\)</span>.</p>
-</dd>
-<dt class="field-even">r_func<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#str" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, Name of the <a class="reference internal" href="../guide/spectral_stats.html#resolution-functions"><span class="std std-ref">resolution function</span></a> <span class="math notranslate nohighlight">\(\bar K(m, z)\)</span>, one of <code class="docutils literal notranslate"><span class="pre">rectangle</span></code>, <code class="docutils literal notranslate"><span class="pre">lorentzian</span></code>, <code class="docutils literal notranslate"><span class="pre">gaussian</span></code>.</p>
-</dd>
-</dl>
-<p><strong>Returns:</strong> <a class="reference external" href="https://docs.python.org/3.10/library/functions.html#float" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, Value of the integral.</p>
-</dd>
-<dt>Signature<span class="classifier">(triqs::mesh::refreq mesh, configuration c, resolution_function r_func) -&gt; vector&lt;double&gt;</span></dt><dd><p>Evaluate spectral integrals</p>
-<div class="math notranslate nohighlight">
-\[i_m^{(j)} = \int_{-\infty}^\infty dz \bar K(m, z) A^{(j)}(z)\]</div>
-<p>for energy intervals centered around points of a regular energy mesh.</p>
-<p><strong>Parameters:</strong></p>
-<dl class="field-list simple">
-<dt class="field-odd">mesh<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://triqs.github.io/triqs/3.2.x/documentation/python_api/triqs.gf.meshes.MeshReFreq.html#triqs.gf.meshes.MeshReFreq" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.meshes.MeshReFreq</span></code></a>, Real energy mesh.</p>
-</dd>
-<dt class="field-even">c<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="som.html#som.Configuration" title="som.Configuration"><code class="xref py py-class docutils literal notranslate"><span class="pre">som.Configuration</span></code></a>, Spectral function <span class="math notranslate nohighlight">\(A^{(j)}(z)\)</span>.</p>
-</dd>
-<dt class="field-odd">r_func<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#str" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, Name of the <a class="reference internal" href="../guide/spectral_stats.html#resolution-functions"><span class="std std-ref">resolution function</span></a> <span class="math notranslate nohighlight">\(\bar K(m, z)\)</span>, one of <code class="docutils literal notranslate"><span class="pre">rectangle</span></code>, <code class="docutils literal notranslate"><span class="pre">lorentzian</span></code>, <code class="docutils literal notranslate"><span class="pre">gaussian</span></code>.</p>
-</dd>
-</dl>
-<p><strong>Returns:</strong> Real 1D NumPy array of values <span class="math notranslate nohighlight">\(i_m^{(j)}\)</span>.</p>
-</dd>
-<dt>Signature<span class="classifier">(list[std::pair&lt;double,double&gt;] intervals, configuration c, resolution_function r_func) -&gt; vector&lt;double&gt;</span></dt><dd><p>Evaluate spectral integrals</p>
-<div class="math notranslate nohighlight">
-\[i_m^{(j)} = \int_{-\infty}^\infty dz \bar K(m, z) A^{(j)}(z)\]</div>
-<p>for a list of real energy intervals.</p>
-<p><strong>Parameters:</strong></p>
-<dl class="field-list simple">
-<dt class="field-odd">intervals<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#list" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> [<a class="reference external" href="https://docs.python.org/3.10/library/functions.html#float" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3.10/library/functions.html#float" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>], List of pairs
-(left interval boundary, right interval boundary).</p>
-</dd>
-<dt class="field-even">c<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="som.html#som.Configuration" title="som.Configuration"><code class="xref py py-class docutils literal notranslate"><span class="pre">som.Configuration</span></code></a>, Spectral function <span class="math notranslate nohighlight">\(A^{(j)}(z)\)</span>.</p>
-</dd>
-<dt class="field-odd">r_func<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#str" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, Name of the <a class="reference internal" href="../guide/spectral_stats.html#resolution-functions"><span class="std std-ref">resolution function</span></a> <span class="math notranslate nohighlight">\(\bar K(m, z)\)</span>, one of <code class="docutils literal notranslate"><span class="pre">rectangle</span></code>, <code class="docutils literal notranslate"><span class="pre">lorentzian</span></code>, <code class="docutils literal notranslate"><span class="pre">gaussian</span></code>.</p>
-</dd>
-</dl>
-<p><strong>Returns:</strong> Real 1D NumPy array of values <span class="math notranslate nohighlight">\(i_m^{(j)}\)</span>.</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="som.spectral_stats.spectral_avg">
 <span class="sig-prename descclassname"><span class="pre">som.spectral_stats.</span></span><span class="sig-name descname"><span class="pre">spectral_avg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#som.spectral_stats.spectral_avg" title="Link to this definition"></a></dt>
-<dd><p>Compute spectral averages over a set of accumulated
+<dd><p>Signature : (som_core cont, int i, triqs::mesh::refreq mesh, resolution_function r_func) -&gt; vector&lt;double&gt;
+Compute spectral averages over a set of accumulated
 particular solutions</p>
 <div class="math notranslate nohighlight">
 \[i_m = \frac{1}{J} \sum_{j=1}^J i_m^{(j)}\]</div>
@@ -328,68 +270,20 @@ particular solutions</p>
 to construct <code class="docutils literal notranslate"><span class="pre">cont</span></code>.</p>
 </dd>
 <dt class="field-odd">Mesh<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://triqs.github.io/triqs/3.2.x/documentation/python_api/triqs.gf.meshes.MeshReFreq.html#triqs.gf.meshes.MeshReFreq" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.meshes.MeshReFreq</span></code></a>, Real energy mesh.</p>
+<dd class="field-odd"><p><a class="reference external" href="https://triqs.github.io/triqs/3.3.x/documentation/python_api/triqs.gf.meshes.MeshReFreq.html#triqs.gf.meshes.MeshReFreq" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.meshes.MeshReFreq</span></code></a>, Real energy mesh.</p>
 </dd>
 <dt class="field-even">R_func<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#str" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, Name of the <a class="reference internal" href="../guide/spectral_stats.html#resolution-functions"><span class="std std-ref">resolution function</span></a> <span class="math notranslate nohighlight">\(\bar K(m, z)\)</span>, one of <code class="docutils literal notranslate"><span class="pre">rectangle</span></code>, <code class="docutils literal notranslate"><span class="pre">lorentzian</span></code>, <code class="docutils literal notranslate"><span class="pre">gaussian</span></code>.</p>
 </dd>
 </dl>
 <p><strong>Returns:</strong> Real 1D NumPy array of values <span class="math notranslate nohighlight">\(i_m\)</span>.</p>
-<dl>
-<dt>Signature<span class="classifier">(som_core cont, int i, triqs::mesh::refreq mesh, resolution_function r_func) -&gt; vector&lt;double&gt;</span></dt><dd><p>Compute spectral averages over a set of accumulated
-particular solutions</p>
-<div class="math notranslate nohighlight">
-\[i_m = \frac{1}{J} \sum_{j=1}^J i_m^{(j)}\]</div>
-<p>for energy intervals centered around points of a regular energy mesh.</p>
-<p><strong>Parameters:</strong></p>
-<dl class="field-list simple">
-<dt class="field-odd">cont<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code>, Analytic continuation object.</p>
-</dd>
-<dt class="field-even">i<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, Index of the diagonal matrix element of the observable used
-to construct <code class="docutils literal notranslate"><span class="pre">cont</span></code>.</p>
-</dd>
-<dt class="field-odd">mesh<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://triqs.github.io/triqs/3.2.x/documentation/python_api/triqs.gf.meshes.MeshReFreq.html#triqs.gf.meshes.MeshReFreq" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.meshes.MeshReFreq</span></code></a>, Real energy mesh.</p>
-</dd>
-<dt class="field-even">r_func<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#str" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, Name of the <a class="reference internal" href="../guide/spectral_stats.html#resolution-functions"><span class="std std-ref">resolution function</span></a> <span class="math notranslate nohighlight">\(\bar K(m, z)\)</span>, one of <code class="docutils literal notranslate"><span class="pre">rectangle</span></code>, <code class="docutils literal notranslate"><span class="pre">lorentzian</span></code>, <code class="docutils literal notranslate"><span class="pre">gaussian</span></code>.</p>
-</dd>
-</dl>
-<p><strong>Returns:</strong> Real 1D NumPy array of values <span class="math notranslate nohighlight">\(i_m\)</span>.</p>
-</dd>
-<dt>Signature<span class="classifier">(som_core cont, int i, list[std::pair&lt;double,double&gt;] intervals, resolution_function r_func) -&gt; vector&lt;double&gt;</span></dt><dd><p>Compute spectral averages over a set of accumulated
-particular solutions</p>
-<div class="math notranslate nohighlight">
-\[i_m = \frac{1}{J} \sum_{j=1}^J i_m^{(j)}\]</div>
-<p>for a list of real energy intervals.</p>
-<p><strong>Parameters:</strong></p>
-<dl class="field-list simple">
-<dt class="field-odd">cont<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code>, Analytic continuation object.</p>
-</dd>
-<dt class="field-even">i<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, Index of the diagonal matrix element of the observable used
-to construct <code class="docutils literal notranslate"><span class="pre">cont</span></code>.</p>
-</dd>
-<dt class="field-odd">intervals<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#list" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> [<a class="reference external" href="https://docs.python.org/3.10/library/functions.html#float" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3.10/library/functions.html#float" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>], List of pairs
-(left interval boundary, right interval boundary).</p>
-</dd>
-<dt class="field-even">r_func<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#str" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, Name of the <a class="reference internal" href="../guide/spectral_stats.html#resolution-functions"><span class="std std-ref">resolution function</span></a> <span class="math notranslate nohighlight">\(\bar K(m, z)\)</span>, one of <code class="docutils literal notranslate"><span class="pre">rectangle</span></code>, <code class="docutils literal notranslate"><span class="pre">lorentzian</span></code>, <code class="docutils literal notranslate"><span class="pre">gaussian</span></code>.</p>
-</dd>
-</dl>
-<p><strong>Returns:</strong> Real 1D NumPy array of values <span class="math notranslate nohighlight">\(i_m\)</span>.</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="som.spectral_stats.spectral_disp">
 <span class="sig-prename descclassname"><span class="pre">som.spectral_stats.</span></span><span class="sig-name descname"><span class="pre">spectral_disp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#som.spectral_stats.spectral_disp" title="Link to this definition"></a></dt>
-<dd><p>Compute spectral dispersions of a set of accumulated
+<dd><p>Signature : (som_core cont, int i, triqs::mesh::refreq mesh, vector&lt;double&gt; avg, resolution_function r_func) -&gt; vector&lt;double&gt;
+Compute spectral dispersions of a set of accumulated
 particular solutions</p>
 <div class="math notranslate nohighlight">
 \[\sigma^2_m = \frac{1}{J} \sum_{j=1}^J (i_m^{(j)} - i_m)^2\]</div>
@@ -404,7 +298,7 @@ particular solutions</p>
 to construct <code class="docutils literal notranslate"><span class="pre">cont</span></code>.</p>
 </dd>
 <dt class="field-odd">Mesh<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://triqs.github.io/triqs/3.2.x/documentation/python_api/triqs.gf.meshes.MeshReFreq.html#triqs.gf.meshes.MeshReFreq" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.meshes.MeshReFreq</span></code></a>, Real energy mesh.</p>
+<dd class="field-odd"><p><a class="reference external" href="https://triqs.github.io/triqs/3.3.x/documentation/python_api/triqs.gf.meshes.MeshReFreq.html#triqs.gf.meshes.MeshReFreq" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.meshes.MeshReFreq</span></code></a>, Real energy mesh.</p>
 </dd>
 <dt class="field-even">Avg<span class="colon">:</span></dt>
 <dd class="field-even"><p>Real 1D NumPy array of precomputed averages <span class="math notranslate nohighlight">\(i_m\)</span>.</p>
@@ -414,67 +308,13 @@ to construct <code class="docutils literal notranslate"><span class="pre">cont</
 </dd>
 </dl>
 <p><strong>Returns:</strong> Real 1D NumPy array of values <span class="math notranslate nohighlight">\(\sigma_m\)</span>.</p>
-<dl>
-<dt>Signature<span class="classifier">(som_core cont, int i, triqs::mesh::refreq mesh, vector&lt;double&gt; avg, resolution_function r_func) -&gt; vector&lt;double&gt;</span></dt><dd><p>Compute spectral dispersions of a set of accumulated
-particular solutions</p>
-<div class="math notranslate nohighlight">
-\[\sigma^2_m = \frac{1}{J} \sum_{j=1}^J (i_m^{(j)} - i_m)^2\]</div>
-<p>for energy intervals centered around points of a regular energy mesh.</p>
-<p><strong>Parameters:</strong></p>
-<dl class="field-list simple">
-<dt class="field-odd">cont<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code>, Analytic continuation object.</p>
-</dd>
-<dt class="field-even">i<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, Index of the diagonal matrix element of the observable used
-to construct <code class="docutils literal notranslate"><span class="pre">cont</span></code>.</p>
-</dd>
-<dt class="field-odd">mesh<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://triqs.github.io/triqs/3.2.x/documentation/python_api/triqs.gf.meshes.MeshReFreq.html#triqs.gf.meshes.MeshReFreq" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.meshes.MeshReFreq</span></code></a>, Real energy mesh.</p>
-</dd>
-<dt class="field-even">avg<span class="colon">:</span></dt>
-<dd class="field-even"><p>Real 1D NumPy array of precomputed averages <span class="math notranslate nohighlight">\(i_m\)</span>.</p>
-</dd>
-<dt class="field-odd">r_func<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#str" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, Name of the <a class="reference internal" href="../guide/spectral_stats.html#resolution-functions"><span class="std std-ref">resolution function</span></a> <span class="math notranslate nohighlight">\(\bar K(m, z)\)</span>, one of <code class="docutils literal notranslate"><span class="pre">rectangle</span></code>, <code class="docutils literal notranslate"><span class="pre">lorentzian</span></code>, <code class="docutils literal notranslate"><span class="pre">gaussian</span></code>.</p>
-</dd>
-</dl>
-<p><strong>Returns:</strong> Real 1D NumPy array of values <span class="math notranslate nohighlight">\(\sigma_m\)</span>.</p>
-</dd>
-<dt>Signature<span class="classifier">(som_core cont, int i, list[std::pair&lt;double,double&gt;] intervals, vector&lt;double&gt; avg, resolution_function r_func) -&gt; vector&lt;double&gt;</span></dt><dd><p>Compute spectral dispersions of a set of accumulated
-particular solutions</p>
-<div class="math notranslate nohighlight">
-\[\sigma^2_m = \frac{1}{J} \sum_{j=1}^J (i_m^{(j)} - i_m)^2\]</div>
-<p>for a list of real energy intervals.</p>
-<p><strong>Parameters:</strong></p>
-<dl class="field-list simple">
-<dt class="field-odd">cont<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code>, Analytic continuation object.</p>
-</dd>
-<dt class="field-even">i<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, Index of the diagonal matrix element of the observable used
-to construct <code class="docutils literal notranslate"><span class="pre">cont</span></code>.</p>
-</dd>
-<dt class="field-odd">intervals<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#list" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> [<a class="reference external" href="https://docs.python.org/3.10/library/functions.html#float" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3.10/library/functions.html#float" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>], List of pairs
-(left interval boundary, right interval boundary).</p>
-</dd>
-<dt class="field-even">avg<span class="colon">:</span></dt>
-<dd class="field-even"><p>Real 1D NumPy array of precomputed averages <span class="math notranslate nohighlight">\(i_m\)</span>.</p>
-</dd>
-<dt class="field-odd">r_func<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#str" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, Name of the <a class="reference internal" href="../guide/spectral_stats.html#resolution-functions"><span class="std std-ref">resolution function</span></a> <span class="math notranslate nohighlight">\(\bar K(m, z)\)</span>, one of <code class="docutils literal notranslate"><span class="pre">rectangle</span></code>, <code class="docutils literal notranslate"><span class="pre">lorentzian</span></code>, <code class="docutils literal notranslate"><span class="pre">gaussian</span></code>.</p>
-</dd>
-</dl>
-<p><strong>Returns:</strong> Real 1D NumPy array of values <span class="math notranslate nohighlight">\(\sigma_m\)</span>.</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="som.spectral_stats.spectral_corr">
 <span class="sig-prename descclassname"><span class="pre">som.spectral_stats.</span></span><span class="sig-name descname"><span class="pre">spectral_corr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#som.spectral_stats.spectral_corr" title="Link to this definition"></a></dt>
-<dd><p>Compute spectral two-point correlators of a set
+<dd><p>Signature : (som_core cont, int i, triqs::mesh::refreq mesh, vector&lt;double&gt; avg, resolution_function r_func) -&gt; matrix&lt;double&gt;
+Compute spectral two-point correlators of a set
 of accumulated particular solutions</p>
 <div class="math notranslate nohighlight">
 \[\sigma_{mm'} = \frac{1}{J} \sum_{j=1}^J (i_m^{(j)} - i_m)
@@ -490,7 +330,7 @@ of accumulated particular solutions</p>
 to construct <code class="docutils literal notranslate"><span class="pre">cont</span></code>.</p>
 </dd>
 <dt class="field-odd">Mesh<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://triqs.github.io/triqs/3.2.x/documentation/python_api/triqs.gf.meshes.MeshReFreq.html#triqs.gf.meshes.MeshReFreq" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.meshes.MeshReFreq</span></code></a>, Real energy mesh.</p>
+<dd class="field-odd"><p><a class="reference external" href="https://triqs.github.io/triqs/3.3.x/documentation/python_api/triqs.gf.meshes.MeshReFreq.html#triqs.gf.meshes.MeshReFreq" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.meshes.MeshReFreq</span></code></a>, Real energy mesh.</p>
 </dd>
 <dt class="field-even">Avg<span class="colon">:</span></dt>
 <dd class="field-even"><p>Real 1D NumPy array of precomputed averages <span class="math notranslate nohighlight">\(i_m\)</span>.</p>
@@ -500,63 +340,6 @@ to construct <code class="docutils literal notranslate"><span class="pre">cont</
 </dd>
 </dl>
 <p><strong>Returns:</strong> Real 2D NumPy array of values <span class="math notranslate nohighlight">\(\sigma_{mm'}\)</span>.</p>
-<dl>
-<dt>Signature<span class="classifier">(som_core cont, int i, triqs::mesh::refreq mesh, vector&lt;double&gt; avg, resolution_function r_func) -&gt; matrix&lt;double&gt;</span></dt><dd><p>Compute spectral two-point correlators of a set
-of accumulated particular solutions</p>
-<div class="math notranslate nohighlight">
-\[\sigma_{mm'} = \frac{1}{J} \sum_{j=1}^J (i_m^{(j)} - i_m)
-                                        (i_{m'}^{(j)} - i_{m'})\]</div>
-<p>for energy intervals centered around points of a regular energy mesh.</p>
-<p><strong>Parameters:</strong></p>
-<dl class="field-list simple">
-<dt class="field-odd">cont<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code>, Analytic continuation object.</p>
-</dd>
-<dt class="field-even">i<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, Index of the diagonal matrix element of the observable used
-to construct <code class="docutils literal notranslate"><span class="pre">cont</span></code>.</p>
-</dd>
-<dt class="field-odd">mesh<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://triqs.github.io/triqs/3.2.x/documentation/python_api/triqs.gf.meshes.MeshReFreq.html#triqs.gf.meshes.MeshReFreq" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.meshes.MeshReFreq</span></code></a>, Real energy mesh.</p>
-</dd>
-<dt class="field-even">avg<span class="colon">:</span></dt>
-<dd class="field-even"><p>Real 1D NumPy array of precomputed averages <span class="math notranslate nohighlight">\(i_m\)</span>.</p>
-</dd>
-<dt class="field-odd">r_func<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#str" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, Name of the <a class="reference internal" href="../guide/spectral_stats.html#resolution-functions"><span class="std std-ref">resolution function</span></a> <span class="math notranslate nohighlight">\(\bar K(m, z)\)</span>, one of <code class="docutils literal notranslate"><span class="pre">rectangle</span></code>, <code class="docutils literal notranslate"><span class="pre">lorentzian</span></code>, <code class="docutils literal notranslate"><span class="pre">gaussian</span></code>.</p>
-</dd>
-</dl>
-<p><strong>Returns:</strong> Real 2D NumPy array of values <span class="math notranslate nohighlight">\(\sigma_{mm'}\)</span>.</p>
-</dd>
-<dt>Signature<span class="classifier">(som_core cont, int i, list[std::pair&lt;double,double&gt;] intervals, vector&lt;double&gt; avg, resolution_function r_func) -&gt; matrix&lt;double&gt;</span></dt><dd><p>Compute spectral two-point correlators of a set
-of accumulated particular solutions</p>
-<div class="math notranslate nohighlight">
-\[\sigma_{mm'} = \frac{1}{J} \sum_{j=1}^J (i_m^{(j)} - i_m)
-                                        (i_{m'}^{(j)} - i_{m'})\]</div>
-<p>for a list of real energy intervals.</p>
-<p><strong>Parameters:</strong></p>
-<dl class="field-list simple">
-<dt class="field-odd">cont<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code>, Analytic continuation object.</p>
-</dd>
-<dt class="field-even">i<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, Index of the diagonal matrix element of the observable used
-to construct <code class="docutils literal notranslate"><span class="pre">cont</span></code>.</p>
-</dd>
-<dt class="field-odd">intervals<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#list" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> [<a class="reference external" href="https://docs.python.org/3.10/library/functions.html#float" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3.10/library/functions.html#float" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>], List of pairs
-(left interval boundary, right interval boundary).</p>
-</dd>
-<dt class="field-even">avg<span class="colon">:</span></dt>
-<dd class="field-even"><p>Real 1D NumPy array of precomputed averages <span class="math notranslate nohighlight">\(i_m\)</span>.</p>
-</dd>
-<dt class="field-odd">r_func<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#str" rel="noopener noreferrer" target="_blank" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, Name of the <a class="reference internal" href="../guide/spectral_stats.html#resolution-functions"><span class="std std-ref">resolution function</span></a> <span class="math notranslate nohighlight">\(\bar K(m, z)\)</span>, one of <code class="docutils literal notranslate"><span class="pre">rectangle</span></code>, <code class="docutils literal notranslate"><span class="pre">lorentzian</span></code>, <code class="docutils literal notranslate"><span class="pre">gaussian</span></code>.</p>
-</dd>
-</dl>
-<p><strong>Returns:</strong> Real 2D NumPy array of values <span class="math notranslate nohighlight">\(\sigma_{mm'}\)</span>.</p>
-</dd>
-</dl>
 </dd></dl>
 
 </section>

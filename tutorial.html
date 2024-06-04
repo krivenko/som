@@ -243,7 +243,7 @@ script will have the following basic parts.</p>
 </div>
 </li>
 <li><p><em>Optional:</em> Load input data from an
-<a class="reference external" href="https://triqs.github.io/triqs/3.2.x/userguide/python/tutorials/Basics/02-Archiving_your_data.html" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.2.1)"><span class="xref std std-ref">HDF5 archive </span></a>.</p>
+<a class="reference external" href="https://triqs.github.io/triqs/3.3.x/userguide/python/tutorials/Basics/02-Archiving_your_data.html" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.3.0)"><span class="xref std std-ref">HDF5 archive </span></a>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Open an HDF5 file in read-only mode</span>
 <span class="n">arch</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;input.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
 
@@ -275,9 +275,9 @@ physical observable in question.</p>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">inp</span></code> and <code class="docutils literal notranslate"><span class="pre">error_bars</span></code> must be Green’s function containers of
-the same type <a class="reference external" href="https://triqs.github.io/triqs/3.2.x/documentation/python_api/triqs.gf.gf.Gf.html#triqs.gf.gf.Gf" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.gf.Gf</span></code></a>, defined on the same mesh
-(<a class="reference external" href="https://triqs.github.io/triqs/3.2.x/documentation/python_api/triqs.gf.meshes.MeshImTime.html#triqs.gf.meshes.MeshImTime" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.meshes.MeshImTime</span></code></a>, <a class="reference external" href="https://triqs.github.io/triqs/3.2.x/documentation/python_api/triqs.gf.meshes.MeshImFreq.html#triqs.gf.meshes.MeshImFreq" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.meshes.MeshImFreq</span></code></a> or
-<a class="reference external" href="https://triqs.github.io/triqs/3.2.x/documentation/python_api/triqs.gf.meshes.MeshLegendre.html#triqs.gf.meshes.MeshLegendre" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.meshes.MeshLegendre</span></code></a>) and having the same square target
+the same type <a class="reference external" href="https://triqs.github.io/triqs/3.3.x/documentation/python_api/triqs.gf.gf.Gf.html#triqs.gf.gf.Gf" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.gf.Gf</span></code></a>, defined on the same mesh
+(<a class="reference external" href="https://triqs.github.io/triqs/3.3.x/documentation/python_api/triqs.gf.meshes.MeshImTime.html#triqs.gf.meshes.MeshImTime" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.meshes.MeshImTime</span></code></a>, <a class="reference external" href="https://triqs.github.io/triqs/3.3.x/documentation/python_api/triqs.gf.meshes.MeshImFreq.html#triqs.gf.meshes.MeshImFreq" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.meshes.MeshImFreq</span></code></a> or
+<a class="reference external" href="https://triqs.github.io/triqs/3.3.x/documentation/python_api/triqs.gf.meshes.MeshLegendre.html#triqs.gf.meshes.MeshLegendre" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.meshes.MeshLegendre</span></code></a>) and having the same square target
 shape.</p>
 <p>Currently supported observable kinds are</p>
 <ul class="simple">
@@ -394,7 +394,7 @@ the many keyword arguments it accepts.</p>
 </li>
 <li><p>Extract the final solution,
 <a class="reference internal" href="guide/recovery.html#recovery"><span class="std std-ref">recover the real-frequency version</span></a> of <code class="docutils literal notranslate"><span class="pre">inp</span></code>,
-its <a class="reference external" href="https://triqs.github.io/triqs/3.2.x/documentation/manual/triqs/gfs/c%2B%2B/tail.html#gf-tail" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.2.1)"><span class="xref std std-ref">tail expansion coefficients</span></a> and
+its <a class="reference external" href="https://triqs.github.io/triqs/3.3.x/documentation/manual/triqs/gfs/c%2B%2B/tail.html#gf-tail" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.3.0)"><span class="xref std std-ref">tail expansion coefficients</span></a> and
 reconstruct the input.</p>
 <p>SOM internally represents spectral functions (configurations) as sums of
 rectangles. The final solutions are accessible as a list of
