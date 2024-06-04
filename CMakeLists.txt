@@ -22,8 +22,8 @@
 # CMake scripts are based on the 'app4triqs' TRIQS application skeleton.
 # See https://github.com/TRIQS/app4triqs for more details.
 
-cmake_minimum_required(VERSION 3.12.4 FATAL_ERROR)
-cmake_policy(VERSION 3.12.4)
+cmake_minimum_required(VERSION 3.19 FATAL_ERROR)
+cmake_policy(VERSION 3.19)
 if(POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
 endif()
@@ -36,8 +36,11 @@ get_directory_property(IS_SUBPROJECT PARENT_DIRECTORY)
 
 # ############
 # Load TRIQS
-set(REQUIRED_TRIQS_VERSION 3.2)
-find_package(TRIQS ${REQUIRED_TRIQS_VERSION} REQUIRED)
+set(REQUIRED_TRIQS_VERSION_MIN 3.2)
+set(REQUIRED_TRIQS_VERSION_MAX 3.3)
+find_package(TRIQS
+             ${REQUIRED_TRIQS_VERSION_MIN}...${REQUIRED_TRIQS_VERSION_MAX}
+             REQUIRED)
 
 # Get the git hash & print status
 triqs_get_git_hash_of_source_dir(PROJECT_GIT_HASH)
@@ -185,7 +188,7 @@ if(BUILD_DEBIAN_PACKAGE AND NOT IS_SUBPROJECT)
   execute_process(COMMAND dpkg --print-architecture
                   OUTPUT_VARIABLE CMAKE_DEBIAN_PACKAGE_ARCHITECTURE
                   OUTPUT_STRIP_TRAILING_WHITESPACE)
-  set(CPACK_DEBIAN_PACKAGE_DEPENDS "triqs (>= ${REQUIRED_TRIQS_VERSION})")
+  set(CPACK_DEBIAN_PACKAGE_DEPENDS "triqs (>= ${REQUIRED_TRIQS_VERSION_MIN})")
   set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
   set(CPACK_DEBIAN_PACKAGE_GENERATE_SHLIBS ON)
   include(CPack)

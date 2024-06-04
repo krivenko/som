@@ -87,7 +87,7 @@ jobs:
         CC: ${{ matrix.cc }}
         CXX: ${{ matrix.cxx }}
       run: |
-        git clone https://github.com/TRIQS/triqs --branch 3.2.x
+        git clone https://github.com/TRIQS/triqs --branch 3.3.x
         mkdir triqs/build && pushd triqs/build
         cmake ..                                                               \
           -DCMAKE_BUILD_TYPE=Debug                                             \
