@@ -99,11 +99,11 @@ template <typename KernelType> void som_core::accumulate_impl() {
   auto const& m = std::get<typename KernelType::mesh_type>(mesh);
 
   if(params.verbosity > 0) {
-    mpi_cout(comm) << "Constructing integral kernel... " << std::endl;
+    mpi_cout(comm) << "Constructing integral kernel... \n";
   }
   KernelType kernel(m);
   if(params.verbosity > 0) {
-    mpi_cout(comm) << "Constructed kernel: " << kernel << std::endl;
+    mpi_cout(comm) << "Constructed kernel: " << kernel << '\n';
   }
 
   // Find solution for each component of GF
@@ -113,13 +113,13 @@ template <typename KernelType> void som_core::accumulate_impl() {
     if(params.verbosity > 0)
       mpi_cout(comm)
           << "Accumulating particular solutions for observable component [" << n
-          << "," << n << "]" << std::endl;
+          << "," << n << "]\n";
 
     auto of = d.make_objf(kernel);
     if(params.verbosity >= 2 && of.get_U_dagger()) {
       mpi_cout(comm) << "Supplied covariance matrix has " +
                             std::to_string(of.get_sigma2().size())
-                     << " positive eigenvalues" << std::endl;
+                     << " positive eigenvalues\n";
     }
 
     solution_worker<KernelType> worker(
@@ -140,8 +140,7 @@ template <typename KernelType> void som_core::accumulate_impl() {
         if(n_sol_max > params.adjust_l_range.second) {
           if(params.verbosity >= 1)
             mpi_cout(comm)
-                << "WARNING: Upper bound of adjust_l_range has been reached"
-                << std::endl;
+                << "WARNING: Upper bound of adjust_l_range has been reached\n";
           break;
         }
       } else
@@ -153,17 +152,17 @@ template <typename KernelType> void som_core::accumulate_impl() {
         if(params.adjust_l) {
           mpi_cout(comm) << "Increasing the total number of solutions to be "
                             "accumulated to "
-                         << n_sol_max << std::endl;
+                         << n_sol_max << '\n';
         } else {
           mpi_cout(comm) << "Accumulating a total of " << n_sol_max
-                         << " solutions" << std::endl;
+                         << " solutions\n";
         }
       }
 
       for(; (n_sol = comm.rank() + i * comm.size()) < n_sol_max; ++i) {
         if(params.verbosity >= 2) {
           mpi_cout(comm) << "Accumulation of particular solution " << n_sol
-                         << std::endl;
+                         << '\n';
         }
 
         d.particular_solutions.emplace_back(worker(1 + rng(params.max_rects)),
@@ -175,7 +174,7 @@ template <typename KernelType> void som_core::accumulate_impl() {
 
         if(params.verbosity >= 2) {
           mpi_cout(comm) << "Solution " << n_sol << ": χ = " << std::sqrt(chi2)
-                         << std::endl;
+                         << '\n';
         }
       }
       comm.barrier(0);
@@ -197,14 +196,14 @@ template <typename KernelType> void som_core::accumulate_impl() {
       n_verygood_solutions = mpi::all_reduce(n_verygood_solutions, comm);
 
       if(params.verbosity >= 1) {
-        mpi_cout(comm) << "χ_{min} = " << chi_min << std::endl;
+        mpi_cout(comm) << "χ_{min} = " << chi_min << '\n';
         if(params.adjust_l) {
           mpi_cout(comm) << "Number of good solutions (χ / χ_{min} ≤ "
                          << params.adjust_l_good_chi
-                         << ") = " << n_good_solutions << std::endl;
+                         << ") = " << n_good_solutions << '\n';
           mpi_cout(comm) << "Number of very good solutions (χ / χ_{min} ≤ "
                          << params.adjust_l_verygood_chi
-                         << ") = " << n_verygood_solutions << std::endl;
+                         << ") = " << n_verygood_solutions << '\n';
         }
       }
 
@@ -224,17 +223,14 @@ template <typename KernelType> void som_core::accumulate_impl() {
       h = mpi::all_reduce(h, comm);
     }
 
-    if(params.verbosity >= 1) {
-      mpi_cout(comm) << "Accumulation completed" << std::endl;
-    }
+    if(params.verbosity >= 1) { mpi_cout(comm) << "Accumulation completed\n"; }
   }
 
   ci.invalidate_all();
 
   if(params.verbosity >= 1)
     mpi_cout(comm)
-        << "Accumulation for all observable components has been completed"
-        << std::endl;
+        << "Accumulation for all observable components has been completed\n";
 }
 
 void som_core::accumulate(accumulate_parameters_t const& p) {

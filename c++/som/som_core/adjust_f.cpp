@@ -73,11 +73,11 @@ int som_core::adjust_f_impl(adjust_f_parameters_t const& p) {
     auto stop_callback = triqs::utility::clock_callback(p.max_time);
 
     if(p.verbosity > 0) {
-      mpi_cout(comm) << "Constructing integral kernel... " << std::endl;
+      mpi_cout(comm) << "Constructing integral kernel... \n";
     }
     KernelType kernel(m);
     if(p.verbosity > 0) {
-      mpi_cout(comm) << "Constructed kernel: " << kernel << std::endl;
+      mpi_cout(comm) << "Constructed kernel: " << kernel << '\n';
     }
 
     // Find solution for each component of GF
@@ -86,7 +86,7 @@ int som_core::adjust_f_impl(adjust_f_parameters_t const& p) {
 
       if(p.verbosity > 0)
         mpi_cout(comm) << "Running algorithm for observable component [" << n
-                       << "," << n << "]" << std::endl;
+                       << "," << n << "]\n";
 
       auto of = d.make_objf<KernelType>(kernel);
       if(of.get_U_dagger())
@@ -111,7 +111,7 @@ int som_core::adjust_f_impl(adjust_f_parameters_t const& p) {
                 << "WARNING: Upper bound of f_range has been reached,"
                    " will use F = " +
                        std::to_string(F)
-                << std::endl;
+                << '\n';
           break;
         }
 
@@ -123,7 +123,7 @@ int som_core::adjust_f_impl(adjust_f_parameters_t const& p) {
         for(int i = 0; (n_sol = comm.rank() + i * comm.size()) < p.l; ++i) {
           if(p.verbosity >= 2) {
             mpi_cout(comm) << "Accumulation of particular solution " << n_sol
-                           << std::endl;
+                           << '\n';
           }
 
           auto solution = worker(1 + rng(params.max_rects));
@@ -135,7 +135,7 @@ int som_core::adjust_f_impl(adjust_f_parameters_t const& p) {
                            << (kappa > p.kappa ? "" : "not ") << R"(good (κ = )"
                            << kappa
                            << ", χ = " << std::sqrt(worker.get_objf_value())
-                           << ")." << std::endl;
+                           << ").\n";
           }
         }
         comm.barrier(0);
@@ -144,12 +144,11 @@ int som_core::adjust_f_impl(adjust_f_parameters_t const& p) {
         if(p.verbosity >= 1)
           mpi_cout(comm) << "F = " << F << ", " << l_good
                          << R"( solutions with κ > )" << p.kappa << " (out of "
-                         << p.l << ")" << std::endl;
+                         << p.l << ")\n";
 
         // Converged
         if(l_good > p.l / 2) {
-          if(p.verbosity >= 1)
-            mpi_cout(comm) << "F = " << F << " is enough." << std::endl;
+          if(p.verbosity >= 1) mpi_cout(comm) << "F = " << F << " is enough.\n";
           break;
         }
       }
@@ -170,7 +169,7 @@ int som_core::adjust_f(adjust_f_parameters_t const& p) {
 
   if(p.verbosity >= 1) {
     mpi_cout(comm) << "Adjusting the number of global updates F using " << p.l
-                   << " particular solutions ..." << std::endl;
+                   << " particular solutions ...\n";
   }
 
 #define IMPL_CASE(r, okmk)                                                     \

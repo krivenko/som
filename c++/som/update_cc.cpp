@@ -133,8 +133,7 @@ void update_consistent_constraints<KernelType>::operator()() {
     std::cerr
         << "Maximum number of rectangles in non-overlapping configuration "
         << (2 * data.temp_conf.size() + 1)
-        << " would exceed max_rects = " << max_rects << ", rejecting"
-        << std::endl;
+        << " would exceed max_rects = " << max_rects << ", rejecting\n";
 #endif
     return;
   }
@@ -152,8 +151,8 @@ template <typename KernelType>
 double update_consistent_constraints<KernelType>::attempt() {
 
 #ifdef EXT_DEBUG
-  std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>" << std::endl;
-  std::cerr << "* Proposing CC update" << std::endl;
+  std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
+  std::cerr << "* Proposing CC update\n";
 #endif
 
   proposed_conf = make_nonoverlapping(data.temp_conf, energy_window, width_min);
@@ -162,17 +161,15 @@ double update_consistent_constraints<KernelType>::attempt() {
 #ifdef EXT_DEBUG
     std::cerr << proposed_conf.size()
               << " rectangles in the proposed configuration are too few "
-                 "to apply the regularization functional, rejecting"
-              << std::endl;
+                 "to apply the regularization functional, rejecting\n";
 #endif
     return 0;
   }
 
 #ifdef EXT_DEBUG
   std::cerr << "Optimizing heights of rectangles in non-overlapping "
-               "configuration "
-            << std::endl
-            << proposed_conf << std::endl;
+               "configuration \n"
+            << proposed_conf << '\n';
 #endif
 
   auto K = long(proposed_conf.size());
@@ -195,7 +192,7 @@ double update_consistent_constraints<KernelType>::attempt() {
 #ifdef EXT_DEBUG
       std::cerr << "CC optimization procedure produced a rectangle with a "
                    "significantly negative weight, rejecting (rectangle norm = "
-                << rect_norm << ")" << std::endl;
+                << rect_norm << ")\n";
 #endif
       return 0;
     }
@@ -209,7 +206,7 @@ double update_consistent_constraints<KernelType>::attempt() {
 #ifdef EXT_DEBUG
   std::cerr << "Final non-overlapping configuration: size = "
             << proposed_conf.size() << ", norm = " << norm
-            << ", χ = " << std::sqrt(new_objf_value) << std::endl;
+            << ", χ = " << std::sqrt(new_objf_value) << '\n';
 #endif
 
   return new_objf_value < data.temp_objf_value
@@ -227,10 +224,10 @@ double update_consistent_constraints<KernelType>::accept() {
   data.temp_objf_value = new_objf_value;
 
 #ifdef EXT_DEBUG
-  std::cerr << "* CC update accepted" << std::endl;
+  std::cerr << "* CC update accepted\n";
   std::cerr << "Temporary configuration: size = " << data.temp_conf.size()
             << ", norm = " << data.temp_conf.norm()
-            << ", χ = " << std::sqrt(data.temp_objf_value) << std::endl;
+            << ", χ = " << std::sqrt(data.temp_objf_value) << '\n';
 
   for(auto& r : data.temp_conf) {
     if(r.norm() < weight_min)
@@ -249,8 +246,7 @@ double update_consistent_constraints<KernelType>::accept() {
 #ifdef EXT_DEBUG
     std::cerr << "Copying temporary configuration to global configuration "
               << "(χ(temp) = " << std::sqrt(data.temp_objf_value)
-              << ", χ(global) = " << std::sqrt(data.global_objf_value) << ")"
-              << std::endl;
+              << ", χ(global) = " << std::sqrt(data.global_objf_value) << ")\n";
 #endif
     data.global_conf = data.temp_conf;
     kern.cache_copy(data.temp_conf, data.global_conf);
@@ -258,7 +254,7 @@ double update_consistent_constraints<KernelType>::accept() {
   }
 
 #ifdef EXT_DEBUG
-  std::cerr << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << std::endl;
+  std::cerr << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n";
 #endif
 
   // Update internal state of the distribution function
@@ -271,11 +267,11 @@ template <typename KernelType>
 void update_consistent_constraints<KernelType>::reject() {
 
 #ifdef EXT_DEBUG
-  std::cerr << "* CC update rejected" << std::endl;
+  std::cerr << "* CC update rejected\n";
   std::cerr << "Temporary configuration: size = " << data.temp_conf.size()
             << ", norm = " << data.temp_conf.norm()
-            << ", χ = " << std::sqrt(data.temp_objf_value) << std::endl;
-  std::cerr << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << std::endl;
+            << ", χ = " << std::sqrt(data.temp_objf_value) << '\n';
+  std::cerr << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n";
 #endif
 
   // Update internal state of the distribution function
@@ -418,7 +414,7 @@ void update_consistent_constraints<KernelType>::optimize_heights() {
                  heights(r_K));
     } catch(triqs::runtime_error&) {
 #ifdef EXT_DEBUG
-      std::cerr << "Cholesky factorization has failed" << std::endl;
+      std::cerr << "Cholesky factorization has failed\n";
 #endif
       break;
     }
@@ -434,7 +430,7 @@ void update_consistent_constraints<KernelType>::optimize_heights() {
 
     std::cerr << "  Iteration " << (iter + 1) << " out of " << max_iter << ": "
               << "sum(|Δnorm_k|) / norm = " << norm_diff_max
-              << ", χ^2 = " << chi2 << ", O/χ^2 = " << (O / chi2) << std::endl;
+              << ", χ^2 = " << chi2 << ", O/χ^2 = " << (O / chi2) << '\n';
 #endif
 
     if(norm_diff_max < rect_norm_variation_tol) {
@@ -442,7 +438,7 @@ void update_consistent_constraints<KernelType>::optimize_heights() {
       nda::array<double, 1> rectangle_norms =
           make_array_view(heights(r_K)) * widths(r_K);
       std::cerr << "Convergence reached, rectangle norms = " << rectangle_norms
-                << std::endl;
+                << '\n';
 #endif
       break;
     }
@@ -480,7 +476,7 @@ void update_consistent_constraints<KernelType>::optimize_heights() {
 #ifdef EXT_DEBUG
   if(iter == max_iter) {
     std::cerr << "Maximum number of iterations reached, heights = "
-              << heights(r_K) << std::endl;
+              << heights(r_K) << '\n';
   }
 #endif
 }

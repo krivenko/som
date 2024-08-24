@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   if(mpi::has_env) {
     mpi::environment env(argc, argv);
-    std::cout << "MPI environment detected" << std::endl;
+    std::cout << "MPI environment detected\n";
     return RUN_ALL_TESTS();
   } else
     return RUN_ALL_TESTS();

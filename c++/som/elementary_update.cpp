@@ -149,10 +149,10 @@ template <typename KernelType> double elementary_update<KernelType>::accept() {
   update[opt].reset();
 
 #ifdef EXT_DEBUG
-  std::cerr << "* Elementary update accepted" << std::endl;
+  std::cerr << "* Elementary update accepted\n";
   std::cerr << "Temporary configuration: size = " << data.temp_conf.size()
             << ", norm = " << data.temp_conf.norm()
-            << ", χ = " << std::sqrt(data.temp_objf_value) << std::endl;
+            << ", χ = " << std::sqrt(data.temp_objf_value) << '\n';
   using triqs::utility::is_zero;
   if(!is_zero(data.temp_conf.norm() - data.global_conf.norm(), 1e-10))
     TRIQS_RUNTIME_ERROR
@@ -176,8 +176,7 @@ template <typename KernelType> double elementary_update<KernelType>::accept() {
 #ifdef EXT_DEBUG
     std::cerr << "Copying temporary configuration to global configuration "
               << "(χ(temp) = " << std::sqrt(data.temp_objf_value)
-              << ", χ(global) = " << std::sqrt(data.global_objf_value) << ")"
-              << std::endl;
+              << ", χ(global) = " << std::sqrt(data.global_objf_value) << ")\n";
 #endif
     data.global_conf = data.temp_conf;
     kern.cache_copy(data.temp_conf, data.global_conf);
@@ -185,7 +184,7 @@ template <typename KernelType> double elementary_update<KernelType>::accept() {
   }
 
 #ifdef EXT_DEBUG
-  std::cerr << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << std::endl;
+  std::cerr << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n";
 #endif
 
   // Update internal state of the distribution function
@@ -198,11 +197,11 @@ template <typename KernelType> double elementary_update<KernelType>::accept() {
 template <typename KernelType> void elementary_update<KernelType>::reject() {
 
 #ifdef EXT_DEBUG
-  std::cerr << "* Elementary update rejected" << std::endl;
+  std::cerr << "* Elementary update rejected\n";
   std::cerr << "Temporary configuration: size = " << data.temp_conf.size()
             << ", norm = " << data.temp_conf.norm()
-            << ", χ = " << std::sqrt(data.temp_objf_value) << std::endl;
-  std::cerr << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << std::endl;
+            << ", χ = " << std::sqrt(data.temp_objf_value) << '\n';
+  std::cerr << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n";
 #endif
 
   // Reset all considered updates

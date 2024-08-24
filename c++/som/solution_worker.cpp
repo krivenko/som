@@ -200,8 +200,8 @@ solution_worker<KernelType>::operator()(configuration const& init_config) {
 
 #ifdef EXT_DEBUG
   std::cerr << "solution_worker: using initial configuration (size = "
-            << conf.size() << ", norm = " << conf.norm() << "):" << std::endl;
-  std::cerr << conf << std::endl;
+            << conf.size() << ", norm = " << conf.norm() << "):\n";
+  std::cerr << conf << '\n';
 #endif
 
   run(conf);
@@ -220,8 +220,7 @@ configuration solution_worker<KernelType>::operator()(int init_config_size) {
 #ifdef EXT_DEBUG
   std::cerr
       << "solution_worker: using a randomly generated initial configuration "
-      << "(size = " << init_config_size << ", norm = " << norm << ")"
-      << std::endl;
+      << "(size = " << init_config_size << ", norm = " << norm << ")\n";
 #endif
 
   auto& rng = mc.get_rng(); // cppcheck-suppress constVariableReference
@@ -240,8 +239,8 @@ configuration solution_worker<KernelType>::operator()(int init_config_size) {
 
 #ifdef EXT_DEBUG
   std::cerr << "Generated configuration (size = " << conf.size()
-            << ", norm = " << conf.norm() << "):" << std::endl;
-  std::cerr << conf << std::endl;
+            << ", norm = " << conf.norm() << "):\n";
+  std::cerr << conf << '\n';
 
 #ifndef NDEBUG
   for(auto const& r : conf) assert(r.norm() >= weight_min);
@@ -256,7 +255,7 @@ template <typename KernelType>
 void solution_worker<KernelType>::run(configuration& conf) {
 
 #ifdef EXT_DEBUG
-  std::cerr << "solution_worker: starting simulation ..." << std::endl;
+  std::cerr << "solution_worker: starting simulation ...\n";
 #endif
 
   using std::swap;
@@ -280,9 +279,9 @@ void solution_worker<KernelType>::run(configuration& conf) {
     mc.collect_results(MPI_COMM_SELF);
     if(cc_update) {
       std::cout << "Times update_consistent_constraints has been proposed: "
-                << cc_update->get_n_proposed() << std::endl;
+                << cc_update->get_n_proposed() << '\n';
       std::cout << "Acceptance rate for update_consistent_constraints: "
-                << cc_update->get_acceptance_rate() << std::endl;
+                << cc_update->get_acceptance_rate() << '\n';
     }
   }
 
@@ -290,7 +289,7 @@ void solution_worker<KernelType>::run(configuration& conf) {
   if(res_code) throw(stopped(res_code));
 
 #ifdef EXT_DEBUG
-  std::cerr << "solution_worker: simulation ended." << std::endl;
+  std::cerr << "solution_worker: simulation ended.\n";
 #endif
 }
 
@@ -304,8 +303,8 @@ void solution_worker<KernelType>::reset_temp_conf() {
 
 #ifdef EXT_DEBUG
   std::cerr << "Temporary configuration reset to (χ = "
-            << std::sqrt(data.temp_objf_value) << ")" << std::endl;
-  std::cerr << data.temp_conf << std::endl;
+            << std::sqrt(data.temp_objf_value) << ")\n";
+  std::cerr << data.temp_conf << '\n';
 #endif
 
   data.Z.reset();

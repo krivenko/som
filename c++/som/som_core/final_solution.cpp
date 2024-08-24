@@ -97,7 +97,7 @@ std::vector<double> som_core::compute_final_solution(double good_chi_rel,
     if(verbosity > 0) {
       mpi_cout(comm) << "Constructing the final solution "
                         "for observable component ["
-                     << n << "," << n << "]" << std::endl;
+                     << n << "," << n << "]\n";
     }
 
     auto& d = data[n];
@@ -109,7 +109,7 @@ std::vector<double> som_core::compute_final_solution(double good_chi_rel,
     double const chi_min = std::sqrt(d.objf_min);
     double const chi_c = std::min(good_chi_abs, chi_min * good_chi_rel);
     if(verbosity > 0) {
-      mpi_cout(comm) << "Good solution threshold χ_c = " << chi_c << std::endl;
+      mpi_cout(comm) << "Good solution threshold χ_c = " << chi_c << '\n';
     }
 
     for(auto const& s : d.particular_solutions) {
@@ -131,8 +131,8 @@ std::vector<double> som_core::compute_final_solution(double good_chi_rel,
              "values of good_chi_rel/good_chi_abs";
     else {
       if(verbosity > 0) {
-        mpi_cout(comm) << "Selected " << n_good_solutions << " good solutions"
-                       << std::endl;
+        mpi_cout(comm) << "Selected " << n_good_solutions
+                       << " good solutions\n";
       }
     }
 
@@ -257,8 +257,7 @@ void update_O_mat(array<double, 2>& A_j_local_block,
   assert(first_dim(Ap_j_local_block) == J1);
   assert(first_dim(App_j_local_block) == J1);
 
-  if(verbose)
-    mpi_cout(comm) << "    Updating matrix of quadratic form O" << std::endl;
+  if(verbose) mpi_cout(comm) << "    Updating matrix of quadratic form O\n";
 
   // A_j(e_k) block received from other ranks
   array<double, 2> A_j_remote_block;
@@ -292,7 +291,7 @@ void update_O_mat(array<double, 2>& A_j_local_block,
     if(verbose) {
       mpi_cout(comm) << "    Combining " << J1 << " solutions from rank "
                      << j_block1 << " with " << J2 << " solutions from rank "
-                     << j_block2 << std::endl;
+                     << j_block2 << '\n';
     }
 
     for(auto j1_local : range(J1)) {
@@ -407,7 +406,7 @@ std::vector<cc_protocol_iter_result_t> cc_protocol(
   for(; iter < p.max_iter; ++iter) {
     if(p.verbosity >= 1)
       mpi_cout(comm) << "  Iteration " << (iter + 1) << " out of " << p.max_iter
-                     << std::endl;
+                     << '\n';
 
     // Update matrix of the quadratic form
     update_O_mat(A_block,
@@ -468,8 +467,7 @@ std::vector<cc_protocol_iter_result_t> cc_protocol(
           mpi_cout(comm)
               << "  Monitor function returned true, stopping iterations: "
               << sum_c_text << " = " << res.sum_abs << ", " << diff_c_text
-              << " / " << sum_c_text << " = " << res.diff_c_normalized
-              << std::endl;
+              << " / " << sum_c_text << " = " << res.diff_c_normalized << '\n';
         }
         break;
       }
@@ -479,21 +477,20 @@ std::vector<cc_protocol_iter_result_t> cc_protocol(
       mpi_cout(comm) << "  End of iteration " << (iter + 1) << ": "
                      << sum_c_text << " = " << res.sum_abs << ", "
                      << diff_c_text << " / " << sum_c_text << " = "
-                     << res.diff_c_normalized << std::endl;
+                     << res.diff_c_normalized << '\n';
     }
 
     if(res.sum_abs > p.max_sum_abs_c) {
       if(p.verbosity >= 1)
-        mpi_cout(comm)
-            << "Failed to converge, " << sum_c_text << " = " << res.sum_abs
-            << " is too big. "
-            << "Consider decreasing der_penalty_coeff and/or der_penalty_init."
-            << std::endl;
+        mpi_cout(comm) << "Failed to converge, " << sum_c_text << " = "
+                       << res.sum_abs << " is too big. "
+                       << "Consider decreasing der_penalty_coeff and/or "
+                          "der_penalty_init.\n";
       break;
     }
 
     if(iter > 0 && (res.diff_c_normalized < convergence_tol)) {
-      if(p.verbosity >= 1) mpi_cout(comm) << "Convergence reached" << std::endl;
+      if(p.verbosity >= 1) mpi_cout(comm) << "Convergence reached\n";
       break;
     }
 
@@ -527,7 +524,7 @@ std::vector<cc_protocol_iter_result_t> cc_protocol(
   }
 
   if(p.verbosity >= 1 && iter == p.max_iter)
-    mpi_cout(comm) << "Maximum number of iterations reached" << std::endl;
+    mpi_cout(comm) << "Maximum number of iterations reached\n";
 
   return results;
 }
@@ -551,7 +548,7 @@ std::vector<double> som_core::compute_final_solution_cc_impl(
     if(p.verbosity > 0)
       mpi_cout(comm) << "Using CC protocol to construct the final solution "
                         "for observable component ["
-                     << n << "," << n << "]" << std::endl;
+                     << n << "," << n << "]\n";
 
     // Select good solutions
     std::vector<std::size_t> good_solution_indices;
@@ -560,7 +557,7 @@ std::vector<double> som_core::compute_final_solution_cc_impl(
     double const chi_c = std::min(p.good_chi_abs, chi_min * p.good_chi_rel);
 
     if(p.verbosity > 0) {
-      mpi_cout(comm) << "Good solution threshold χ_c = " << chi_c << std::endl;
+      mpi_cout(comm) << "Good solution threshold χ_c = " << chi_c << '\n';
     }
 
     auto is_good = [chi_c](double chi2) { return std::sqrt(chi2) <= chi_c; };
@@ -580,8 +577,7 @@ std::vector<double> som_core::compute_final_solution_cc_impl(
       if(p.verbosity > 0)
         mpi_cout(comm) << "Selected " << good_solution_indices.size()
                        << " good solutions on this rank and "
-                       << index_map.size() << " good solutions in total"
-                       << std::endl;
+                       << index_map.size() << " good solutions in total\n";
     }
 
     using mesh_t = typename KernelType::mesh_type;
@@ -602,8 +598,7 @@ std::vector<double> som_core::compute_final_solution_cc_impl(
     double convergence_tol = min_element(sqrt(of.get_sigma2()) / abs(rhs));
 
     if(p.verbosity > 1)
-      mpi_cout(comm) << "Convergence tolerance is " << convergence_tol
-                     << std::endl;
+      mpi_cout(comm) << "Convergence tolerance is " << convergence_tol << '\n';
 
     // Compute coefficients c_j using CC optimization protocol
     auto results = cc_protocol(d.particular_solutions,
@@ -637,7 +632,7 @@ std::vector<double> som_core::compute_final_solution_cc_impl(
       if(p.verbosity >= 2) {
         mpi_cout(comm)
             << "Linear combination of particular solutions from iteration "
-            << res.iter << ": χ = " << std::sqrt(chi2) << std::endl;
+            << res.iter << ": χ = " << std::sqrt(chi2) << '\n';
       }
       if(is_good(chi2)) {
         selected_iter = res.iter;
@@ -658,11 +653,11 @@ std::vector<double> som_core::compute_final_solution_cc_impl(
       mpi_cout(comm)
           << "Forming the resulting linear combination of particular solutions "
              "using coefficients from iteration "
-          << selected_iter << std::endl;
+          << selected_iter << '\n';
       if(p.verbosity >= 2)
         mpi_cout(comm)
             << "Coefficients of the linear combination from iteration "
-            << selected_iter << ": " << *selected_c << std::endl;
+            << selected_iter << ": " << *selected_c << '\n';
     }
 
     d.final_solution = sol;

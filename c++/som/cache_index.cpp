@@ -32,7 +32,7 @@ void cache_index::extend() {
   std::size_t new_cap = cap + CACHE_SIZE;
 #ifdef EXT_DEBUG
   std::cerr << "Extending LHS cache from " << cap << " to " << new_cap
-            << " entries." << std::endl;
+            << " entries.\n";
 #endif
   entries.reserve(new_cap);
   for(std::size_t id = cap; id < new_cap; ++id) {

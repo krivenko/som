@@ -36,8 +36,8 @@ template <typename KernelType> double update_shift<KernelType>::attempt() {
   eu::attempt_cc_update();
 
 #ifdef EXT_DEBUG
-  std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>" << std::endl;
-  std::cerr << "* Proposing update_shift (A)" << std::endl;
+  std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
+  std::cerr << "* Proposing update_shift (A)\n";
 #endif
 
   auto& data = eu::get_data();
@@ -60,9 +60,9 @@ template <typename KernelType> double update_shift<KernelType>::attempt() {
   auto dc_opt = eu::optimize_parameter_change(dc, dc_min, dc_max);
 
 #ifdef EXT_DEBUG
-  std::cerr << "Selected rectangle: " << rect << " [" << t << "]" << std::endl;
+  std::cerr << "Selected rectangle: " << rect << " [" << t << "]\n";
   std::cerr << "dc_min = " << dc_min << ", dc_max = " << dc_max
-            << ", dc = " << dc << ", dc_opt = " << dc_opt.second << std::endl;
+            << ", dc = " << dc << ", dc_opt = " << dc_opt.second << '\n';
 #endif
 
   if(dc_opt.first) {
@@ -75,7 +75,7 @@ template <typename KernelType> double update_shift<KernelType>::attempt() {
 
 #ifdef EXT_DEBUG
   std::cerr << "selected_parameter_change = "
-            << eu::get_selected_parameter_change() << std::endl;
+            << eu::get_selected_parameter_change() << '\n';
 #endif
 
   return eu::transition_probability();
@@ -91,8 +91,8 @@ double update_change_width<KernelType>::attempt() {
   eu::attempt_cc_update();
 
 #ifdef EXT_DEBUG
-  std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>" << std::endl;
-  std::cerr << "* Proposing update_change_width (B)" << std::endl;
+  std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
+  std::cerr << "* Proposing update_change_width (B)\n";
 #endif
 
   auto& data = eu::get_data();
@@ -125,9 +125,9 @@ double update_change_width<KernelType>::attempt() {
   auto dw_opt = eu::optimize_parameter_change(dw, dw_min, dw_max);
 
 #ifdef EXT_DEBUG
-  std::cerr << "Selected rectangle: " << rect << " [" << t << "]" << std::endl;
+  std::cerr << "Selected rectangle: " << rect << " [" << t << "]\n";
   std::cerr << "dw_min = " << dw_min << ", dw_max = " << dw_max
-            << ", dw = " << dw << ", dw_opt = " << dw_opt.second << std::endl;
+            << ", dw = " << dw << ", dw_opt = " << dw_opt.second << '\n';
 #endif
 
   if(dw_opt.first) {
@@ -144,7 +144,7 @@ double update_change_width<KernelType>::attempt() {
 
 #ifdef EXT_DEBUG
   std::cerr << "selected_parameter_change = "
-            << eu::get_selected_parameter_change() << std::endl;
+            << eu::get_selected_parameter_change() << '\n';
 #endif
 
   return eu::transition_probability();
@@ -159,8 +159,8 @@ double update_change_weight2<KernelType>::attempt() {
   eu::attempt_cc_update();
 
 #ifdef EXT_DEBUG
-  std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>" << std::endl;
-  std::cerr << "* Proposing update_change_weight2 (C)" << std::endl;
+  std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
+  std::cerr << "* Proposing update_change_weight2 (C)\n";
 #endif
 
   auto& data = eu::get_data();
@@ -170,7 +170,7 @@ double update_change_weight2<KernelType>::attempt() {
   int size = data.temp_conf.size();
   if(size < 2) {
 #ifdef EXT_DEBUG
-    std::cerr << "Not enough rectangles to change" << std::endl;
+    std::cerr << "Not enough rectangles to change\n";
 #endif
     return 0;
   }
@@ -209,10 +209,9 @@ double update_change_weight2<KernelType>::attempt() {
 
 #ifdef EXT_DEBUG
   std::cerr << "Selected rectangles: " << rect1 << " [" << t1 << "]"
-            << " and " << rect2 << " [" << t2 << "]" << std::endl;
+            << " and " << rect2 << " [" << t2 << "]\n";
   std::cerr << "dh1_min = " << dh1_min << ", dh1_max = " << dh1_max
-            << ", dh1 = " << dh1 << ", dh1_opt = " << dh1_opt.second
-            << std::endl;
+            << ", dh1 = " << dh1 << ", dh1_opt = " << dh1_opt.second << '\n';
 #endif
 
   if(dh1_opt.first) {
@@ -231,7 +230,7 @@ double update_change_weight2<KernelType>::attempt() {
 
 #ifdef EXT_DEBUG
   std::cerr << "selected_parameter_change = "
-            << eu::get_selected_parameter_change() << std::endl;
+            << eu::get_selected_parameter_change() << '\n';
 #endif
 
   return eu::transition_probability();

@@ -140,8 +140,7 @@ void worker_parameters_t::validate(observable_kind kind) const {
 
     if(cc_update_rect_norm_variation_tol > min_rect_weight)
       std::cout << "WARNING: cc_update_rect_norm_variation_tol should normally "
-                   "be set below min_rect_weight"
-                << std::endl;
+                   "be set below min_rect_weight\n";
   }
 }
 

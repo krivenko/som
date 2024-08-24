@@ -37,8 +37,8 @@ template <typename KernelType> double update_insert<KernelType>::attempt() {
   eu::attempt_cc_update();
 
 #ifdef EXT_DEBUG
-  std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>" << std::endl;
-  std::cerr << "* Proposing update_insert (D)" << std::endl;
+  std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
+  std::cerr << "* Proposing update_insert (D)\n";
 #endif
 
   auto& data = eu::get_data();
@@ -48,8 +48,7 @@ template <typename KernelType> double update_insert<KernelType>::attempt() {
   int size = data.temp_conf.size();
   if(size == max_rects) {
 #ifdef EXT_DEBUG
-    std::cerr << "Too many rectangles in the temporary configuration"
-              << std::endl;
+    std::cerr << "Too many rectangles in the temporary configuration\n";
 #endif
     return 0;
   }
@@ -57,12 +56,12 @@ template <typename KernelType> double update_insert<KernelType>::attempt() {
   int t = rng(size);
   auto const& rect = data.temp_conf[t];
 #ifdef EXT_DEBUG
-  std::cerr << "Selected rectangle: " << rect << " [" << t << "]" << std::endl;
+  std::cerr << "Selected rectangle: " << rect << " [" << t << "]\n";
 #endif
 
   if(rect.norm() <= 2 * weight_min) {
 #ifdef EXT_DEBUG
-    std::cerr << "Selected rectangle is too small" << std::endl;
+    std::cerr << "Selected rectangle is too small\n";
 #endif
     return 0;
   }
@@ -86,7 +85,7 @@ template <typename KernelType> double update_insert<KernelType>::attempt() {
 
 #ifdef EXT_DEBUG
     std::cerr << "snew_min = " << weight_min << ", snew_max = " << snew_max
-              << ", snew = " << snew << std::endl;
+              << ", snew = " << snew << '\n';
 #endif
   } else {
     eu::get_update(eu::half).change_rectangle(
@@ -99,7 +98,7 @@ template <typename KernelType> double update_insert<KernelType>::attempt() {
 #ifdef EXT_DEBUG
     std::cerr << "snew_min = " << weight_min << ", snew_max = " << snew_max
               << ", snew = " << snew << ", snew_opt = " << snew_opt.second
-              << std::endl;
+              << '\n';
 #endif
 
     if(snew_opt.first) {
@@ -115,7 +114,7 @@ template <typename KernelType> double update_insert<KernelType>::attempt() {
 
 #ifdef EXT_DEBUG
   std::cerr << "selected_parameter_change = "
-            << eu::get_selected_parameter_change() << std::endl;
+            << eu::get_selected_parameter_change() << '\n';
 #endif
 
   return eu::transition_probability();
@@ -130,8 +129,8 @@ double update_remove_shift<KernelType>::attempt() {
   eu::attempt_cc_update();
 
 #ifdef EXT_DEBUG
-  std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>" << std::endl;
-  std::cerr << "* Proposing update_remove_shift (E)" << std::endl;
+  std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
+  std::cerr << "* Proposing update_remove_shift (E)\n";
 #endif
 
   auto& data = eu::get_data();
@@ -141,7 +140,7 @@ double update_remove_shift<KernelType>::attempt() {
   int size = data.temp_conf.size();
   if(size < 2) {
 #ifdef EXT_DEBUG
-    std::cerr << "Not enough rectangles to change" << std::endl;
+    std::cerr << "Not enough rectangles to change\n";
 #endif
     return 0;
   }
@@ -176,13 +175,11 @@ double update_remove_shift<KernelType>::attempt() {
   auto dc2_opt = eu::optimize_parameter_change(dc2, dc2_min, dc2_max);
 
 #ifdef EXT_DEBUG
-  std::cerr << "Selected rectangle for removal: " << rect1 << " [" << t1 << "]"
-            << std::endl;
-  std::cerr << "Selected rectangle for shift: " << rect2 << " [" << t2 << "]"
-            << std::endl;
+  std::cerr << "Selected rectangle for removal: " << rect1 << " [" << t1
+            << "]\n";
+  std::cerr << "Selected rectangle for shift: " << rect2 << " [" << t2 << "]\n";
   std::cerr << "dc2_min = " << dc2_min << ", dc2_max = " << dc2_max
-            << ", dc2 = " << dc2 << ", dc2_opt = " << dc2_opt.second
-            << std::endl;
+            << ", dc2 = " << dc2 << ", dc2_opt = " << dc2_opt.second << '\n';
 #endif
 
   if(dc2_opt.first) {
@@ -200,7 +197,7 @@ double update_remove_shift<KernelType>::attempt() {
 
 #ifdef EXT_DEBUG
   std::cerr << "selected_parameter_change = "
-            << eu::get_selected_parameter_change() << std::endl;
+            << eu::get_selected_parameter_change() << '\n';
 #endif
 
   return eu::transition_probability();
@@ -215,8 +212,8 @@ double update_split_shift<KernelType>::attempt() {
   eu::attempt_cc_update();
 
 #ifdef EXT_DEBUG
-  std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>" << std::endl;
-  std::cerr << "* Proposing update_split_shift (F)" << std::endl;
+  std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
+  std::cerr << "* Proposing update_split_shift (F)\n";
 #endif
 
   auto& data = eu::get_data();
@@ -226,8 +223,7 @@ double update_split_shift<KernelType>::attempt() {
   int size = data.temp_conf.size();
   if(size == max_rects) {
 #ifdef EXT_DEBUG
-    std::cerr << "Too many rectangles in the temporary configuration"
-              << std::endl;
+    std::cerr << "Too many rectangles in the temporary configuration\n";
 #endif
     return 0;
   }
@@ -236,17 +232,17 @@ double update_split_shift<KernelType>::attempt() {
   auto const& rect = data.temp_conf[t];
 
 #ifdef EXT_DEBUG
-  std::cerr << "Selected rectangle: " << rect << " [" << t << "]" << std::endl;
+  std::cerr << "Selected rectangle: " << rect << " [" << t << "]\n";
 #endif
   if(rect.width <= 2 * width_min) {
 #ifdef EXT_DEBUG
-    std::cerr << "Selected rectangle is too narrow" << std::endl;
+    std::cerr << "Selected rectangle is too narrow\n";
 #endif
     return 0;
   }
   if(rect.norm() <= 2 * weight_min) {
 #ifdef EXT_DEBUG
-    std::cerr << "Selected rectangle is too small" << std::endl;
+    std::cerr << "Selected rectangle is too small\n";
 #endif
     return 0;
   }
@@ -279,8 +275,7 @@ double update_split_shift<KernelType>::attempt() {
 
 #ifdef EXT_DEBUG
     std::cerr << "dc1_min = " << dc1_min << ", dc1_max = " << dc1_max
-              << ", dc1 = " << dc1 << ", dc1_opt = " << dc1_opt.second
-              << std::endl;
+              << ", dc1 = " << dc1 << ", dc1_opt = " << dc1_opt.second << '\n';
 #endif
 
     if(dc1_opt.first) {
@@ -313,8 +308,7 @@ double update_split_shift<KernelType>::attempt() {
 
 #ifdef EXT_DEBUG
     std::cerr << "dc2_min = " << dc2_min << ", dc2_max = " << dc2_max
-              << ", dc2 = " << dc2 << ", dc2_opt = " << dc2_opt.second
-              << std::endl;
+              << ", dc2 = " << dc2 << ", dc2_opt = " << dc2_opt.second << '\n';
 #endif
 
     if(dc2_opt.first) {
@@ -330,7 +324,7 @@ double update_split_shift<KernelType>::attempt() {
 
 #ifdef EXT_DEBUG
   std::cerr << "selected_parameter_change = "
-            << eu::get_selected_parameter_change() << std::endl;
+            << eu::get_selected_parameter_change() << '\n';
 #endif
 
   return eu::transition_probability();
@@ -344,8 +338,8 @@ template <typename KernelType> double update_glue_shift<KernelType>::attempt() {
   eu::attempt_cc_update();
 
 #ifdef EXT_DEBUG
-  std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>" << std::endl;
-  std::cerr << "* Proposing move_glue_shift (G)" << std::endl;
+  std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
+  std::cerr << "* Proposing move_glue_shift (G)\n";
 #endif
 
   auto& data = eu::get_data();
@@ -355,7 +349,7 @@ template <typename KernelType> double update_glue_shift<KernelType>::attempt() {
   int size = data.temp_conf.size();
   if(size < 2) {
 #ifdef EXT_DEBUG
-    std::cerr << "Not enough rectangles to glue" << std::endl;
+    std::cerr << "Not enough rectangles to glue\n";
 #endif
     return 0;
   }
@@ -383,7 +377,7 @@ template <typename KernelType> double update_glue_shift<KernelType>::attempt() {
 
 #ifdef EXT_DEBUG
   std::cerr << "Selected rectangles: " << rect1 << " [" << t1 << "]"
-            << " and " << rect2 << " [" << t2 << "]" << std::endl;
+            << " and " << rect2 << " [" << t2 << "]\n";
 #endif
 
   if(dc_min * dc_max > 0) { // In this case dc/2 can be outside [dc_min; dc_max]
@@ -391,7 +385,7 @@ template <typename KernelType> double update_glue_shift<KernelType>::attempt() {
 
 #ifdef EXT_DEBUG
     std::cerr << "dc_min = " << dc_min << ", dc_max = " << dc_max
-              << ", dc = " << dc << std::endl;
+              << ", dc = " << dc << '\n';
 #endif
 
 
@@ -403,7 +397,7 @@ template <typename KernelType> double update_glue_shift<KernelType>::attempt() {
 
 #ifdef EXT_DEBUG
     std::cerr << "dc_min = " << dc_min << ", dc_max = " << dc_max
-              << ", dc = " << dc << ", dc_opt = " << dc_opt.second << std::endl;
+              << ", dc = " << dc << ", dc_opt = " << dc_opt.second << '\n';
 #endif
 
     if(dc_opt.first) {
@@ -417,7 +411,7 @@ template <typename KernelType> double update_glue_shift<KernelType>::attempt() {
 
 #ifdef EXT_DEBUG
   std::cerr << "selected_parameter_change = "
-            << eu::get_selected_parameter_change() << std::endl;
+            << eu::get_selected_parameter_change() << '\n';
 #endif
 
   return eu::transition_probability();
