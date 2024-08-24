@@ -45,8 +45,9 @@ namespace som {
 
 // h5_read_mathematica_array(), complex arrays
 template <typename ArrayType>
-std::enable_if_t<is_complex<typename ArrayType::value_type>::value, ArrayType>
-h5_read_mathematica_array(h5::group g, std::string const& name) {
+ArrayType h5_read_mathematica_array(h5::group g, std::string const& name)
+  requires(is_complex<typename ArrayType::value_type>::value)
+{
   array<typename ArrayType::value_type, ArrayType::rank> res_re, res_im;
   h5_read(g, name + "/re", res_re);
   h5_read(g, name + "/im", res_im);
@@ -55,8 +56,9 @@ h5_read_mathematica_array(h5::group g, std::string const& name) {
 
 // h5_read_mathematica_array(), real arrays
 template <typename ArrayType>
-std::enable_if_t<!is_complex<typename ArrayType::value_type>::value, ArrayType>
-h5_read_mathematica_array(h5::group g, std::string const& name) {
+ArrayType h5_read_mathematica_array(h5::group g, std::string const& name)
+  requires(!is_complex<typename ArrayType::value_type>::value)
+{
   ArrayType res;
   h5_read(g, name, res);
   return res;
