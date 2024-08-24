@@ -20,6 +20,7 @@
  ******************************************************************************/
 
 #include <cmath>
+#include <numbers>
 
 #include <boost/math/special_functions/bessel.hpp>
 
@@ -53,7 +54,7 @@ kernel<FermionGfSymm, legendre>::evaluator::evaluator(long l, double x0_start)
   auto integrand = [l](double x) {
     if(x == 0) return (l == 0 ? 1.0 : 0.0);
     double val = boost::math::cyl_bessel_i(double(l) + 0.5, x);
-    return val * std::sqrt(M_PI / (2 * x)) / std::cosh(x);
+    return val * std::sqrt(std::numbers::pi / (2 * x)) / std::cosh(x);
   };
 
   vector<double> tail_coeffs(l + 2);

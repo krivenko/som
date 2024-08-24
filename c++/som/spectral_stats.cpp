@@ -20,6 +20,7 @@
  ******************************************************************************/
 
 #include <cmath>
+#include <numbers>
 #include <numeric>
 
 #include "configuration.hpp"
@@ -63,7 +64,7 @@ double spectral_integral(double z_m,
     case lorentzian:
       return spectral_integral_impl(
           c, [z_m, delta_m](struct rectangle const& r) {
-            return (r.height / M_PI) *
+            return (r.height / std::numbers::pi) *
                    (std::atan((r.right() - z_m) / (delta_m / 2)) -
                     std::atan((r.left() - z_m) / (delta_m / 2)));
           });

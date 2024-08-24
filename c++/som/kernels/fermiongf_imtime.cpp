@@ -19,6 +19,7 @@
  *
  ******************************************************************************/
 #include <cmath>
+#include <numbers>
 
 #include <boost/math/special_functions/digamma.hpp>
 
@@ -43,6 +44,8 @@ kernel<FermionGf, imtime>::evaluator::evaluator(
   using std::expm1;
   using std::log;
   using std::log1p;
+  using std::numbers::ln2;
+  using std::numbers::pi;
 
   // Limit for spline interpolation
   static const double x0 = -2 * std::log(tolerance);
@@ -72,10 +75,10 @@ kernel<FermionGf, imtime>::evaluator::evaluator(
     if(i == 0) {  // \alpha = 0
       alpha_case = zero;
       nda::for_each(spline_m_knots.shape(), [&spline_m_knots, dx](int xi) {
-        spline_m_knots(xi) = log1p(exp(-x0 + dx * xi)) - log(2.0);
+        spline_m_knots(xi) = log1p(exp(-x0 + dx * xi)) - ln2;
       });
       nda::for_each(spline_p_knots.shape(), [&spline_p_knots, dx](int xi) {
-        spline_p_knots(xi) = log1p(exp(-dx * xi)) - log(2.0);
+        spline_p_knots(xi) = log1p(exp(-dx * xi)) - ln2;
       });
       tail_coeff = -1 / beta_;
     } else { // \alpha \in (0;1/2)
@@ -103,10 +106,10 @@ kernel<FermionGf, imtime>::evaluator::evaluator(
     if(i == s - 1) {          // \alpha = 1
       alpha_case = one;
       nda::for_each(spline_m_knots.shape(), [&spline_m_knots, dx](int xi) {
-        spline_m_knots(xi) = -log1p(exp(-x0 + dx * xi)) + log(2.0);
+        spline_m_knots(xi) = -log1p(exp(-x0 + dx * xi)) + ln2;
       });
       nda::for_each(spline_p_knots.shape(), [&spline_p_knots, dx](int xi) {
-        spline_p_knots(xi) = -log1p(exp(-dx * xi)) + log(2.0);
+        spline_p_knots(xi) = -log1p(exp(-dx * xi)) + ln2;
       });
       tail_coeff = -1 / beta_;
     } else { // \alpha \in (1/2;1)
@@ -133,10 +136,10 @@ kernel<FermionGf, imtime>::evaluator::evaluator(
   } else { // \alpha = 1/2
     alpha_case = half;
     nda::for_each(spline_m_knots.shape(), [&spline_m_knots, dx](int xi) {
-      spline_m_knots(xi) = 2 * atan(exp(0.5 * (-x0 + dx * xi))) - M_PI / 2;
+      spline_m_knots(xi) = 2 * atan(exp(0.5 * (-x0 + dx * xi))) - pi / 2;
     });
     nda::for_each(spline_p_knots.shape(), [&spline_p_knots, dx](int xi) {
-      spline_p_knots(xi) = -2 * atan(exp(-0.5 * (dx * xi))) + M_PI / 2;
+      spline_p_knots(xi) = -2 * atan(exp(-0.5 * (dx * xi))) + pi / 2;
     });
   }
 

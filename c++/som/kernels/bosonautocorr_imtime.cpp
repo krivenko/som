@@ -18,7 +18,9 @@
  * SOM. If not, see <http://www.gnu.org/licenses/>.
  *
  ******************************************************************************/
+
 #include <cmath>
+#include <numbers>
 
 #include <boost/math/special_functions/trigamma.hpp>
 
@@ -45,6 +47,7 @@ kernel<BosonAutoCorr, imtime>::evaluator::evaluator(
   using std::log1p;
   using std::real;
   using std::tanh;
+  using std::numbers::pi;
 
   // Limit for spline interpolation
   static const double x0 = -1.1 * std::log(tolerance);
@@ -66,10 +69,10 @@ kernel<BosonAutoCorr, imtime>::evaluator::evaluator(
       }
       double x = dx * xi;
       double expx = exp(-x);
-      spline_knots(xi) = -1 + M_PI * M_PI / 3 + 2 * x * log1p(-expx) -
+      spline_knots(xi) = -1 + pi * pi / 3 + 2 * x * log1p(-expx) -
                          2 * real(dilog(expx)) + expx * (1 + x);
     });
-    tail_coeff1 = 1 / (2 * M_PI * beta_ * beta_);
+    tail_coeff1 = 1 / (2 * pi * beta_ * beta_);
   } else if(s % 2 == 1 && i == s / 2) { // \alpha = 1/2
     alpha_case = half;
     nda::for_each(spline_knots.shape(), [&spline_knots, dx](int xi) {
@@ -79,11 +82,11 @@ kernel<BosonAutoCorr, imtime>::evaluator::evaluator(
       }
       double x = dx * xi;
       double expx2 = exp(-x / 2);
-      spline_knots(xi) = -8 + M_PI * M_PI + 4 * expx2 * (2 + x) +
+      spline_knots(xi) = -8 + pi * pi + 4 * expx2 * (2 + x) +
                          2 * x * log(tanh(x / 4)) - 8 * real(dilog(expx2)) +
                          2 * real(dilog(expx2 * expx2));
     });
-    tail_coeff1 = 2 / (M_PI * beta_ * beta_);
+    tail_coeff1 = 2 / (pi * beta_ * beta_);
   } else { // \alpha \in (0;1/2)\cup(1/2;1)
     // S(x) = \sum_{n=0}^{+\infty} \frac{\exp(d(n) x)[1-xd(n)]}{d^2(n)}
     auto aux_sum = [](auto d, double x) -> double {
@@ -106,11 +109,11 @@ kernel<BosonAutoCorr, imtime>::evaluator::evaluator(
           -aux_sum([this](int n) { return -(n + 1 + alpha); }, x) -
           aux_sum([this](int n) { return -(n + 2 - alpha); }, x) + shift;
     }
-    tail_coeff1 = 1 / ((2 * M_PI * beta_ * beta_) * alpha * alpha);
-    tail_coeff2 = 1 / ((2 * M_PI * beta_ * beta_) * (1 - alpha) * (1 - alpha));
+    tail_coeff1 = 1 / ((2 * pi * beta_ * beta_) * alpha * alpha);
+    tail_coeff2 = 1 / ((2 * pi * beta_ * beta_) * (1 - alpha) * (1 - alpha));
   }
 
-  spline_knots /= (2 * M_PI * beta_ * beta_);
+  spline_knots /= (2 * pi * beta_ * beta_);
   spline_ = regular_spline(.0, x0, spline_knots);
 }
 

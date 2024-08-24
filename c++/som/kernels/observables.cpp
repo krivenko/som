@@ -20,6 +20,7 @@
  ******************************************************************************/
 
 #include <memory>
+#include <numbers>
 
 // clang-format off
 #include <nda/nda.hpp>
@@ -123,7 +124,7 @@ void back_transform(observable_kind kind,
   }
 
   if(symmetrize) data *= 0.5;
-  if(bosoncorr) data *= -1.0 / M_PI;
+  if(bosoncorr) data *= -std::numbers::inv_pi;
 
   // A copy is needed here because mpi::all_reduce() does not work
   // with non-contiguous views
@@ -164,7 +165,7 @@ compute_tail(observable_kind kind,
   }
 
   if(symmetrize) tail *= 0.5;
-  if(bosoncorr) tail *= -1.0 / M_PI;
+  if(bosoncorr) tail *= -std::numbers::inv_pi;
 
   return mpi::all_reduce(tail, comm);
 }

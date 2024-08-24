@@ -20,6 +20,7 @@
  ******************************************************************************/
 
 #include <cmath>
+#include <numbers>
 
 #include <boost/math/special_functions/bessel.hpp>
 
@@ -50,13 +51,13 @@ kernel<BosonAutoCorr, legendre>::evaluator::evaluator(long l,
                                                       double x0_start,
                                                       double beta)
    : log_coeff(-0.5 * double(l * (l + 1)))
-   , pref((2 / (M_PI * beta)) * std::sqrt(2 * l + 1)) {
+   , pref((2 / (std::numbers::pi * beta)) * std::sqrt(2 * l + 1)) {
 
   // Integrand, x i_l(x) / sinh(x)
   auto integrand = [l](double x) {
     if(x == 0) return (l == 0 ? 1.0 : 0.0);
     double val = boost::math::cyl_bessel_i(double(l) + 0.5, x);
-    return val * std::sqrt(M_PI / (2 * x)) * x / std::sinh(x);
+    return val * std::sqrt(std::numbers::pi / (2 * x)) * x / std::sinh(x);
   };
 
   vector<double> tail_coeffs(l + 1);

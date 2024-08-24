@@ -30,6 +30,7 @@
 
 #include <cmath>
 #include <limits>
+#include <numbers>
 
 #include "dilog.hpp"
 
@@ -111,6 +112,7 @@ double dilog_series_2(double x) {
 // Calculates Li_2(x) for real x. Assumes x >= 0.0.
 std::complex<double> dilog_xge0(double x) {
   using std::log;
+  using std::numbers::pi;
   static const double x_threshold_1 = 0.25;
   static const double x_threshold_2 = 0.5;
   static const double x_threshold_3 = 1.0;
@@ -119,23 +121,23 @@ std::complex<double> dilog_xge0(double x) {
   if(x > x_threshold_5) {
     const double ser = dilog_series_2(1.0 / x);
     const double log_x = log(x);
-    const double t1 = M_PI * M_PI / 3.0;
+    const double t1 = pi * pi / 3.0;
     const double t2 = ser;
     const double t3 = 0.5 * log_x * log_x;
-    return t1 - t2 - t3 - std::complex<double>(0, M_PI * log(x));
+    return t1 - t2 - t3 - std::complex<double>(0, pi * log(x));
   } else if(x > x_threshold_4) {
     const double ser = dilog_series_2(1.0 - 1.0 / x);
     const double log_x = log(x);
     const double log_term = log_x * (log(1.0 - 1.0 / x) + 0.5 * log_x);
-    const double t1 = M_PI * M_PI / 6.0;
+    const double t1 = pi * pi / 6.0;
     const double t2 = ser;
     const double t3 = log_term;
-    return t1 + t2 - t3 - std::complex<double>(0, M_PI * log(x));
+    return t1 + t2 - t3 - std::complex<double>(0, pi * log(x));
   } else if(x > x_threshold_3) {
     /* series around x = 1.0 */
     const double eps = x - 1.0;
     const double lne = log(eps);
-    const double c0 = M_PI * M_PI / 6.0;
+    const double c0 = pi * pi / 6.0;
     const double c1 = 1.0 - lne;
     const double c2 = -(1.0 - 2.0 * lne) / 4.0;
     const double c3 = (1.0 - 3.0 * lne) / 9.0;
@@ -153,13 +155,13 @@ std::complex<double> dilog_xge0(double x) {
                                      eps * (c5 +
                                             eps * (c6 +
                                                    eps * (c7 + eps * c8))))))) -
-           std::complex<double>(0, M_PI * log(x));
+           std::complex<double>(0, pi * log(x));
   } else if(x == x_threshold_3) {
-    return M_PI * M_PI / 6.0;
+    return pi * pi / 6.0;
   } else if(x > x_threshold_2) {
     const double ser = dilog_series_2(1.0 - x);
     const double log_x = log(x);
-    const double t1 = M_PI * M_PI / 6.0;
+    const double t1 = pi * pi / 6.0;
     const double t2 = ser;
     const double t3 = log_x * log(1.0 - x);
     return t1 - t2 - t3;

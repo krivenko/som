@@ -18,7 +18,9 @@
  * SOM. If not, see <http://www.gnu.org/licenses/>.
  *
  ******************************************************************************/
+
 #include <cmath>
+#include <numbers>
 
 #include <boost/math/special_functions/trigamma.hpp>
 
@@ -44,10 +46,11 @@ kernel<BosonCorr, imtime>::evaluator::evaluator(
   using std::log1p;
   using std::real;
   using std::tanh;
+  using std::numbers::pi;
 
   // Limit for spline interpolation
   static const double x0 = -2.3 * std::log(tolerance);
-  static const double pi6 = M_PI * M_PI / 6;
+  static const double pi6 = pi * pi / 6;
 
   size_t i = tau.data_index();
   size_t s = mesh.size();
@@ -91,7 +94,7 @@ kernel<BosonCorr, imtime>::evaluator::evaluator(
         double expx = exp(-x);
         spline_p_knots(xi) = pi6 - real(dilog(expx)) + x * log1p(-expx);
       });
-      tail_coeff = 1 / (M_PI * beta_ * beta_);
+      tail_coeff = 1 / (pi * beta_ * beta_);
     } else { // \alpha \in (0;1/2)
       alpha_case = small;
       // Fill spline_m_knots
@@ -110,7 +113,7 @@ kernel<BosonCorr, imtime>::evaluator::evaluator(
         spline_p_knots[xi] =
             -aux_sum([this](int n) { return -(n + 1 + alpha); }, x) + shift;
       }
-      tail_coeff = 1 / ((M_PI * beta_ * beta_) * (alpha * alpha));
+      tail_coeff = 1 / ((pi * beta_ * beta_) * (alpha * alpha));
     }
   } else if(i >= s - s / 2) { // \alpha > 1/2
     if(i == s - 1) {          // \alpha = 1
@@ -133,7 +136,7 @@ kernel<BosonCorr, imtime>::evaluator::evaluator(
         double expx = exp(-x);
         spline_p_knots(xi) = pi6 - real(dilog(expx)) + x * log1p(-expx);
       });
-      tail_coeff = 1 / (M_PI * beta_ * beta_);
+      tail_coeff = 1 / (pi * beta_ * beta_);
     } else { // \alpha \in (1/2;1)
       alpha_case = big;
       // Fill spline_m_knots
@@ -152,11 +155,11 @@ kernel<BosonCorr, imtime>::evaluator::evaluator(
         spline_p_knots[xi] =
             -aux_sum([this](int n) { return -(n + alpha); }, x) + shift;
       }
-      tail_coeff = 1 / ((M_PI * beta_ * beta_) * (1 - alpha) * (1 - alpha));
+      tail_coeff = 1 / ((pi * beta_ * beta_) * (1 - alpha) * (1 - alpha));
     }
   } else { // \alpha = 1/2
     alpha_case = half;
-    static const double pi2 = M_PI * M_PI / 2;
+    static const double pi2 = pi * pi / 2;
     nda::for_each(spline_m_knots.shape(), [&spline_m_knots, dx](int xi) {
       if(xi == n_spline_knots - 1) {
         spline_m_knots(xi) = 0;
@@ -177,8 +180,8 @@ kernel<BosonCorr, imtime>::evaluator::evaluator(
     });
   }
 
-  spline_m_knots /= (M_PI * beta_ * beta_);
-  spline_p_knots /= (M_PI * beta_ * beta_);
+  spline_m_knots /= (pi * beta_ * beta_);
+  spline_p_knots /= (pi * beta_ * beta_);
   spline_m = regular_spline(-x0, .0, spline_m_knots);
   spline_p = regular_spline(.0, x0, spline_p_knots);
 }

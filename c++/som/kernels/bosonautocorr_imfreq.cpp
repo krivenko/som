@@ -20,6 +20,7 @@
  ******************************************************************************/
 
 #include <cmath>
+#include <numbers>
 
 #include "bosonautocorr_imfreq.hpp"
 
@@ -40,12 +41,14 @@ void kernel<BosonAutoCorr, imfreq>::apply(rectangle const& rect,
   double e1 = rect.left();
   double e2 = rect.right();
 
+  using std::numbers::inv_pi;
+
   auto it = std::begin(mesh);
-  res((*it).data_index()) = rect.height * rect.width / M_PI; // \Omega = 0
+  res((*it).data_index()) = rect.height * rect.width * inv_pi; // \Omega = 0
   for(++it; it != std::end(mesh); ++it) {
     auto w = dcomplex(*it).imag();
     res((*it).data_index()) =
-        (rect.height / M_PI) *
+        (rect.height * inv_pi) *
         (rect.width + w * (std::atan(e1 / w) - std::atan(e2 / w)));
   }
 }

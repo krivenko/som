@@ -75,8 +75,11 @@ TEST(ecqp_worker, solution) {
     auto worker = ecqp_worker(4, 2);
     double residue = worker(Q, f, L, d, x);
 
-    nda::vector<double> x_ref = {
-        -0.333333333333, -0.133333333333, 0.433333333333, 0.333333333333};
+    nda::vector<double> x_ref = {-0.333333333333,
+                                 -0.133333333333,
+                                 // NOLINTNEXTLINE(modernize-use-std-numbers)
+                                 0.433333333333,
+                                 0.333333333333};
     EXPECT_ARRAY_NEAR(x, x_ref, 1e-12);
     EXPECT_NEAR(residue, -1.316666666666, 1e-12);
   }

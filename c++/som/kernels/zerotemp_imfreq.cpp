@@ -19,6 +19,8 @@
  *
  ******************************************************************************/
 
+#include <numbers>
+
 #include "zerotemp_imfreq.hpp"
 
 namespace som {
@@ -47,8 +49,8 @@ std::ostream& operator<<(std::ostream& os,
   os << R"(A(ϵ) -> G_{T=0}(iω), )";
   os << "Statistics = "
      << (kern.mesh.statistic() == Fermion ? "Fermion" : "Boson") << ", "
-     << R"(Δω = )" << (2 * M_PI) / kern.mesh.beta() << ", " << kern.mesh.size()
-     << " Matsubara frequencies";
+     << R"(Δω = )" << (2 * std::numbers::pi) / kern.mesh.beta() << ", "
+     << kern.mesh.size() << " Matsubara frequencies";
   return os;
 }
 
