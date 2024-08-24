@@ -40,7 +40,7 @@ template <typename F>
 inline double spectral_integral_impl(configuration const& c, F&& f) {
   return std::accumulate(
       c.begin(), c.end(), .0, [&](double s, struct rectangle const& r) {
-        return s + f(r);
+        return s + std::forward<F>(f)(r);
       });
 }
 
