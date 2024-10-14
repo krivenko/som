@@ -9,8 +9,8 @@ Authors
 -------
 
 This analytic continuation package is written by Igor Krivenko
-(companion paper [KH2019]_,
-`arXiv:1808.00603 <https://arxiv.org/abs/1808.00603>`_).
+(companion papers [KH2019]_,
+`arXiv:1808.00603 <https://arxiv.org/abs/1808.00603>`_ and [KM2022]_).
 
 It is based on a method devised by Andrey S. Mishchenko and coauthors
 [MPSS2000]_. You can find a detailed description of the method in Chapter 14 of
@@ -35,17 +35,22 @@ by Olga Goulko and coauthors in [GMPPS2017]_.
 .. [KH2019] `I. Krivenko, M. Harland,
    Comput. Phys. Commun. 239, 166-183 (2019)
    <https://doi.org/10.1016/j.cpc.2019.01.021>`_
-   (:download:`bibtex file <TRIQSSOM.bib>`)
+   (:download:`BibTeX file <TRIQSSOM.bib>`)
+
+.. [KM2022] `I. Krivenko, A. S. Mishchenko,
+   Comput. Phys. Commun. 280, 108491 (2022)
+   <https://doi.org/10.1016/j.cpc.2022.108491>`_
+   (:download:`BibTeX file <TRIQSSOM2.bib>`)
 
 .. [MPSS2000]
    `A. S. Mishchenko, N. V. Prokof'ev, A. Sakamoto and B. V. Svistunov,
    Phys. Rev. B 62, 6317 (2000) <https://doi.org/10.1103/PhysRevB.62.6317>`_
-   (:download:`bibtex file <SOM.bib>`)
+   (:download:`BibTeX file <SOM.bib>`)
 
 .. [GMPPS2017]
    `O. Goulko, A. S. Mishchenko, L. Pollet, N. Prokof'ev and B. Svistunov,
    Phys. Rev. B 95, 014102 (2017) <https://doi.org/10.1103/PhysRevB.95.014102>`_
-   (:download:`bibtex file <SOCC.bib>`)
+   (:download:`BibTeX file <SOCC.bib>`)
 
 TRIQS
 -----
