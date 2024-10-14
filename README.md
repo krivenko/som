@@ -52,6 +52,23 @@ https://doi.org/10.1016/j.cpc.2019.01.021)
 }
 ```
 
+[Version 2.0 announcement](https://doi.org/10.1016/j.cpc.2022.108491)
+
+```BibTeX
+@article{SOM2,
+  title = {{TRIQS/SOM 2.0: Implementation of the stochastic optimization
+            with consistent constraints for analytic continuation}},
+  author = {Igor Krivenko and Andrey S. Mishchenko},
+  journal = {Computer Physics Communications},
+  volume = {280},
+  pages = {108491},
+  year = {2022},
+  issn = {0010-4655},
+  doi = {https://doi.org/10.1016/j.cpc.2022.108491},
+  url = {https://www.sciencedirect.com/science/article/pii/S0010465522002107}
+}
+```
+
 License
 -------
 
