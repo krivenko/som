@@ -1,5 +1,5 @@
 FROM flatironinstitute/triqs:3.3.0 as base
-LABEL maintainer="Igor Krivenko <igor.s.krivenko@gmail.com>"
+LABEL maintainer="Igor Krivenko"
 LABEL description="Stochastic Optimization Method for Analytic Continuation"
 ARG APPNAME=som
 
