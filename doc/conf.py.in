@@ -45,7 +45,7 @@ autosummary_imported_members = False
 
 project = 'SOM'
 version = '@PROJECT_VERSION@'
-copyright = '2016-2024, Igor Krivenko'
+copyright = '2016-2025, Igor Krivenko'
 
 templates_path = ['@CMAKE_CURRENT_SOURCE_DIR@/_templates']
 
