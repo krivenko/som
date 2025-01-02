@@ -68,7 +68,7 @@ jobs:
     - name: Download Boost (a C++20 compatible version)
       if: ${{ steps.cache-boost.outputs.cache-hit != 'true' }}
       run: |
-           wget -q https://boostorg.jfrog.io/artifactory/main/release/1.82.0/source/boost_1_82_0.tar.bz2
+           wget -q https://archives.boost.io/release/1.82.0/source/boost_1_82_0.tar.bz2
            tar -xf boost_1_82_0.tar.bz2
            mv boost_1_82_0 $HOME/boost
 
