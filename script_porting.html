@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SOM 1.x script porting guide &mdash; SOM  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=3b04a184" />
       <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
 
@@ -231,17 +231,17 @@ provided by TRIQS’ developers.</p>
 <p>Following a convention change for naming of TRIQS applications, the main Python
 module of SOM has been renamed.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 1.x ###</span>
-<span class="kn">from</span> <span class="nn">pytriqs.applications.analytical_continuation.som</span> <span class="kn">import</span> <span class="n">Som</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pytriqs.applications.analytical_continuation.som</span><span class="w"> </span><span class="kn">import</span> <span class="n">Som</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 2.x ###</span>
-<span class="kn">from</span> <span class="nn">som</span> <span class="kn">import</span> <span class="n">Som</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">som</span><span class="w"> </span><span class="kn">import</span> <span class="n">Som</span>
 </pre></div>
 </div>
 <p>Functions implementing the <a class="reference internal" href="guide/spectral_stats.html#spectral-stats"><span class="std std-ref">statistical analysis of ensembles of spectral
 functions</span></a> are collected in a new module,</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 2.x ###</span>
-<span class="kn">from</span> <span class="nn">som.spectral_stats</span> <span class="kn">import</span> <span class="p">(</span><span class="n">spectral_integral</span><span class="p">,</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">som.spectral_stats</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">spectral_integral</span><span class="p">,</span>
                                 <span class="n">spectral_avg</span><span class="p">,</span>
                                 <span class="n">spectral_disp</span><span class="p">,</span>
                                 <span class="n">spectral_corr</span><span class="p">)</span>
@@ -286,7 +286,7 @@ constants by 2 for <code class="docutils literal notranslate"><span class="pre">
 spectra are not known a priori, they can be estimated from the input data
 by calling a new utility function <a class="reference internal" href="reference/som.html#som.estimate_boson_corr_spectrum_norms" title="som.estimate_boson_corr_spectrum_norms"><code class="xref py py-func docutils literal notranslate"><span class="pre">estimate_boson_corr_spectrum_norms()</span></code></a>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 2.x ###</span>
-<span class="kn">from</span> <span class="nn">som</span> <span class="kn">import</span> <span class="n">estimate_boson_corr_spectrum_norms</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">som</span><span class="w"> </span><span class="kn">import</span> <span class="n">estimate_boson_corr_spectrum_norms</span>
 
 <span class="c1"># Given a correlator of boson-like operators $\chi$ defined on any</span>
 <span class="c1"># supported mesh, return a list of spectrum normalization constants</span>
@@ -381,7 +381,7 @@ time/Matsubara frequency/Legendre coefficient data and computing the tail.</p>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">### SOM 2.x ###</span>
 
-<span class="kn">from</span> <span class="nn">som</span> <span class="kn">import</span> <span class="n">fill_refreq</span><span class="p">,</span> <span class="n">compute_tail</span><span class="p">,</span> <span class="n">reconstruct</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">som</span><span class="w"> </span><span class="kn">import</span> <span class="n">fill_refreq</span><span class="p">,</span> <span class="n">compute_tail</span><span class="p">,</span> <span class="n">reconstruct</span>
 
 <span class="c1"># Recover the real-frequency counterpart of &#39;g&#39;.</span>
 <span class="n">g_w</span> <span class="o">=</span> <span class="n">GfReFreq</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="n">energy_window</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="n">n_w</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
