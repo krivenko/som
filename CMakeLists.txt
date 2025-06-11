@@ -30,7 +30,7 @@ endif()
 
 # ############
 # Define Project
-project(som VERSION 2.1.0 LANGUAGES CXX)
+project(som VERSION 2.1.1 LANGUAGES CXX)
 
 get_directory_property(IS_SUBPROJECT PARENT_DIRECTORY)
 
