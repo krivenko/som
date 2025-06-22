@@ -173,6 +173,9 @@ endif()
 # Additional configuration files
 add_subdirectory(share)
 
+# Packaging with automatic versioning
+add_subdirectory(packaging)
+
 # #############
 # Debian Package
 
