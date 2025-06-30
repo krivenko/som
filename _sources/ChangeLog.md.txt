@@ -2,6 +2,16 @@
 
 # Changelog
 
+## [2.1.1](https://github.com/krivenko/som/tree/2.1.1) (2025-06-30)
+[Full Changelog](https://github.com/krivenko/som/compare/2.1.0...2.1.1)
+
+- Accept [TRIQS 3.3](https://github.com/TRIQS/triqs/releases/tag/3.3.0) as
+  compatible version.
+- Add generation of an
+  [easyconfig file](https://docs.easybuild.io/writing-easyconfig-files) as
+  part of build process.
+- Minor coding style improvements and fixes.
+
 ## [2.1.0](https://github.com/krivenko/som/tree/2.1.0) (2023-10-03)
 [Full Changelog](https://github.com/krivenko/som/compare/2.0.0...2.1.0)
 
