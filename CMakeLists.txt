@@ -36,6 +36,9 @@ get_directory_property(IS_SUBPROJECT PARENT_DIRECTORY)
 
 # ############
 # Load TRIQS
+if(POLICY CMP0167)
+  cmake_policy(SET CMP0167 OLD)
+endif()
 set(REQUIRED_TRIQS_VERSION_MIN 3.2)
 set(REQUIRED_TRIQS_VERSION_MAX <3.4)
 find_package(TRIQS
