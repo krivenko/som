@@ -5,12 +5,16 @@ Installation
 
 .. highlight:: bash
 
+.. _install_docker:
+
 Docker
 ------
 
 A Docker image including the latest version of SOM as well as other TRIQS
 applications is available
 `here <https://hub.docker.com/r/ikrivenko/som/tags>`_.
+
+.. _install_source:
 
 Compiling SOM from source
 -------------------------
@@ -96,3 +100,31 @@ The compilation of SOM can be configured using CMake-options:
     * - Compile SOM library with LLVM Undefined Behavior Sanitizer
         (*developers only*)
       - ``-DUBSAN=ON``
+
+.. _install_easybuild:
+
+Compiling SOM from source using EasyBuild
+-----------------------------------------
+
+`EasyBuild <https://docs.easybuild.io/>`_ is a software build and installation
+framework that allows you to manage (scientific) software on High Performance
+Computing (HPC) systems in an efficient way. Please, make sure that the ``eb``
+tool is installed on your system by following
+`EasyBuild's installation guide <https://docs.easybuild.io/installation/>`_.
+
+SOM 2.x is available starting from EasyBuild version 5.1.2. To install SOM and
+its prerequisites (including toolchains, Python, various libraries and the TRIQS
+libraries), type::
+
+    $ eb --robot TRIQS-som-2.1.1-foss-2023a.eb
+
+Corresponding environment modules will also be generated, thus a package can be
+loaded using::
+
+    $ module load TRIQS-som/2.1.1-foss-2023a-Python-3.11.3
+
+or simply::
+
+    $ module load TRIQS-som
+
+for the most recent version.

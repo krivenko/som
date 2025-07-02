@@ -53,6 +53,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#custom-cmake-options">Custom CMake options</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#compiling-som-from-source-using-easybuild">Compiling SOM from source using EasyBuild</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
@@ -217,13 +218,13 @@
   <section id="installation">
 <span id="install"></span><h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
 <section id="docker">
-<h2>Docker<a class="headerlink" href="#docker" title="Link to this heading"></a></h2>
+<span id="install-docker"></span><h2>Docker<a class="headerlink" href="#docker" title="Link to this heading"></a></h2>
 <p>A Docker image including the latest version of SOM as well as other TRIQS
 applications is available
 <a class="reference external" href="https://hub.docker.com/r/ikrivenko/som/tags" rel="noopener noreferrer" target="_blank">here</a>.</p>
 </section>
 <section id="compiling-som-from-source">
-<h2>Compiling SOM from source<a class="headerlink" href="#compiling-som-from-source" title="Link to this heading"></a></h2>
+<span id="install-source"></span><h2>Compiling SOM from source<a class="headerlink" href="#compiling-som-from-source" title="Link to this heading"></a></h2>
 <section id="prerequisites">
 <h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h3>
 <p>The <a class="reference external" href="https://triqs.github.io/triqs/3.3.x/index.html#welcome" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.3.1)"><span class="xref std std-ref">TRIQS</span></a> toolbox version 3.3.x
@@ -325,6 +326,30 @@ compilation process (<em>developers only</em>)</p></td>
 </tbody>
 </table>
 </section>
+</section>
+<section id="compiling-som-from-source-using-easybuild">
+<span id="install-easybuild"></span><h2>Compiling SOM from source using EasyBuild<a class="headerlink" href="#compiling-som-from-source-using-easybuild" title="Link to this heading"></a></h2>
+<p><a class="reference external" href="https://docs.easybuild.io/" rel="noopener noreferrer" target="_blank">EasyBuild</a> is a software build and installation
+framework that allows you to manage (scientific) software on High Performance
+Computing (HPC) systems in an efficient way. Please, make sure that the <code class="docutils literal notranslate"><span class="pre">eb</span></code>
+tool is installed on your system by following
+<a class="reference external" href="https://docs.easybuild.io/installation/" rel="noopener noreferrer" target="_blank">EasyBuild’s installation guide</a>.</p>
+<p>SOM 2.x is available starting from EasyBuild version 5.1.2. To install SOM and
+its prerequisites (including toolchains, Python, various libraries and the TRIQS
+libraries), type:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>eb<span class="w"> </span>--robot<span class="w"> </span>TRIQS-som-2.1.1-foss-2023a.eb
+</pre></div>
+</div>
+<p>Corresponding environment modules will also be generated, thus a package can be
+loaded using:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>module<span class="w"> </span>load<span class="w"> </span>TRIQS-som/2.1.1-foss-2023a-Python-3.11.3
+</pre></div>
+</div>
+<p>or simply:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>module<span class="w"> </span>load<span class="w"> </span>TRIQS-som
+</pre></div>
+</div>
+<p>for the most recent version.</p>
 </section>
 </section>
 
