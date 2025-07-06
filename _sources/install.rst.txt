@@ -112,7 +112,7 @@ Computing (HPC) systems in an efficient way. Please, make sure that the ``eb``
 tool is installed on your system by following
 `EasyBuild's installation guide <https://docs.easybuild.io/installation/>`_.
 
-SOM 2.x is available starting from EasyBuild version 5.1.2. To install SOM and
+SOM 2.x is available starting from EasyBuild version 5.1.1. To install SOM and
 its prerequisites (including toolchains, Python, various libraries and the TRIQS
 libraries), type::
 
