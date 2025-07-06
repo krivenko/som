@@ -1,0 +1,63 @@
+context:
+  name: triqs_som
+  version: 2.1.1
+  number: 0
+  python: ${{ env.get('PYTHON_VERSION') }}
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+about:
+  homepage: https://krivenko.github.io/som/
+  license: GPL-3.0-or-later
+  license_file: COPYING.txt
+  summary: >
+    TRIQS-based implementation of the Stochastic Optimization Method for
+    Analytic Continuation
+  description: >
+    SOM is a TRIQS-based implementation of the Stochastic Optimization Method
+    for Analytic Continuation, which solves a family of Fredholm integral
+    equations of the first kind. Numerical solution of such equations is
+    required to reconstruct a real-frequency spectral representation of physical
+    observables (Green's functions, dynamical susceptibilities) from noisy
+    results of Quantum Monte Carlo simulations.
+  repository: https://github.com/krivenko/som
+  documentation: https://krivenko.github.io/som
+
+source:
+  url: https://github.com/krivenko/som/archive/${{ version }}.tar.gz
+  sha256: 3eb33d8fe0b5849982963ae05384c2461d60f9ae8977070ce89c96570d3e03f5
+
+build:
+  number: ${{ number }}
+  string: py${{ python | replace(".", "") }}h${{ hash }}_${{ number }}
+  script: build.sh
+
+requirements:
+  build:
+    - ${{ compiler('c') }}
+    - ${{ compiler('cxx') }}
+    - ${{ mpi }}
+    - cmake
+    - make
+    - python ${{ python }}.*
+  host:
+    - ${{ mpi }}
+    - python ${{ python }}.*
+    - numpy 2.*
+    - triqs 3.3.*
+    - libboost-headers
+  run:
+    - ${{ mpi }}
+    - python ${{ python }}.*
+    - numpy 2.*
+    - triqs 3.3.*
+
+tests:
+  - script:
+      interpreter: python
+      content: |
+        import som
+        from som.version import version
+        assert version == "${{ version }}"

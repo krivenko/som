@@ -1,0 +1,49 @@
+commit bb75cd9af40203295c3d11478f7905e69f009450
+Author: Henri Menke <henri@henrimenke.de>
+Date:   Fri Jul 19 14:42:23 2024 +0200
+
+    Fix constraints not satisfied in template argument deduction
+    
+    Since C++23 the signature of std::apply has changed [^1] to
+    
+        template< class F, tuple-like Tuple >
+        constexpr decltype(auto) apply( F&& f, Tuple&& t ) noexcept(/* see below */);
+    
+    where tuple-like is required to be a specialization of std::array, std::tuple,
+    std::pair, or std::ranges::subrange [^2].  However, prod_mesh_point_t only derives
+    from std::tuple and therefore does not satisfy the tuple-like concept.
+    
+    This results in compiler errors similar to (here GCC 14)
+    
+        c++/triqs/././mesh/prod.hpp:42:42: error: no matching function for call to ‘apply(triqs::mesh::prod_mesh_point<triqs::mesh::cyclat, triqs::mesh::dlr>::<lambda(auto:163& ...)>, triqs::mesh::prod_mesh_point<triqs::mesh::cyclat, triqs::mesh::dlr>&)’
+           42 |     index_t _index           = std::apply([](auto &...x) { return std::make_tuple(x.index()...); }, *this);
+              |                                ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        /usr/include/c++/14.1.0/tuple:2931:5: note: candidate: ‘template<class _Fn, class _Tuple>  requires  __tuple_like<_Tuple> constexpr decltype(auto) std::apply(_Fn&&, _Tuple&&)’
+         2931 |     apply(_Fn&& __f, _Tuple&& __t)
+              |     ^~~~~
+        /usr/include/c++/14.1.0/tuple:2931:5: note:   template argument deduction/substitution failed:
+        /usr/include/c++/14.1.0/tuple:2931:5: note: constraints not satisfied
+        /usr/include/c++/14.1.0/bits/stl_pair.h: In substitution of ‘template<class _Fn, class _Tuple>  requires  __tuple_like<_Tuple> constexpr decltype(auto) std::apply(_Fn&&, _Tuple&&) [with _Fn = triqs::mesh::prod_mesh_point<triqs::mesh::cyclat, triqs::mesh::dlr>::<lambda(auto:163& ...)>; _Tuple = triqs::mesh::prod_mesh_point<triqs::mesh::cyclat, triqs::mesh::dlr>&]’:
+    
+    Casting back to the base class tuple_t resolves the issue.
+    
+    [^1]: https://en.cppreference.com/w/cpp/utility/apply
+    [^2]: https://en.cppreference.com/w/cpp/utility/tuple/tuple-like
+
+diff --git a/include/triqs/mesh/prod.hpp b/include/triqs/mesh/prod.hpp
+index 39b11563..74f72820 100644
+--- a/include/triqs/mesh/prod.hpp
++++ b/include/triqs/mesh/prod.hpp
+@@ -39,9 +39,9 @@ namespace triqs::mesh {
+     using tuple_t      = std::tuple<typename Ms::mesh_point_t...>;
+ 
+     private:
+-    index_t _index           = std::apply([](auto &...x) { return std::make_tuple(x.index()...); }, *this);
+-    data_index_t _data_index = std::apply([](auto &...x) { return std::make_tuple(x.data_index()...); }, *this);
+-    uint64_t _mesh_hash      = std::apply([](auto &...x) { return (x.mesh_hash() + ...); }, *this);
++    index_t _index           = std::apply([](auto &...x) { return std::make_tuple(x.index()...); }, as_tuple());
++    data_index_t _data_index = std::apply([](auto &...x) { return std::make_tuple(x.data_index()...); }, as_tuple());
++    uint64_t _mesh_hash      = std::apply([](auto &...x) { return (x.mesh_hash() + ...); }, as_tuple());
+ 
+     public:
+     prod_mesh_point() = default;
