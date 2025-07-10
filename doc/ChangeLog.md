@@ -2,7 +2,8 @@
 
 # Changelog
 
-## [2.1.2](https://github.com/krivenko/som/tree/2.1.2) (Unreleased)
+## [2.1.2](https://github.com/krivenko/som/tree/2.1.2) (2025-07-10)
+[Full Changelog](https://github.com/krivenko/som/compare/2.1.1...2.1.2)
 
 - Set up building of Conda packages for released versions.
   The packages are now available in the ['krivenko' channel](
