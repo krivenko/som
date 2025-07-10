@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [2.1.2](https://github.com/krivenko/som/tree/2.1.2) (2025-07-10)
+[Full Changelog](https://github.com/krivenko/som/compare/2.1.1...2.1.2)
+
+- Set up building of Conda packages for released versions.
+  The packages are now available in the ['krivenko' channel](
+  https://anaconda.org/krivenko/triqs_som).
+
 ## [2.1.1](https://github.com/krivenko/som/tree/2.1.1) (2025-06-30)
 [Full Changelog](https://github.com/krivenko/som/compare/2.1.0...2.1.1)
 

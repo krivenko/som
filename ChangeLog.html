@@ -48,6 +48,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#anaconda">Anaconda</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install.html#docker">Docker</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install.html#compiling-som-from-source">Compiling SOM from source</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="install.html#prerequisites">Prerequisites</a></li>
@@ -176,17 +177,18 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#id2">2.1.1 (2025-06-30)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id3">2.1.0 (2023-10-03)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id4">2.0.0 (2022-06-27)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">2.1.2 (2025-07-10)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">2.1.1 (2025-06-30)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">2.1.0 (2023-10-03)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">2.0.0 (2022-06-27)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#major-changes-and-new-features">Major changes and new features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#python-api-changes">Python API changes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#build-system-and-developer-tools">Build system and developer tools</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id5">1.2 (2020-03-15)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id6">1.1 (2017-04-23)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id7">1.0 (2017-03-19)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">1.2 (2020-03-15)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">1.1 (2017-04-23)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id8">1.0 (2017-03-19)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
@@ -220,7 +222,15 @@
   <section class="tex2jax_ignore mathjax_ignore" id="changelog">
 <span id="id1"></span><h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading"></a></h1>
 <section id="id2">
-<h2><a class="reference external" href="https://github.com/krivenko/som/tree/2.1.1" rel="noopener noreferrer" target="_blank">2.1.1</a> (2025-06-30)<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<h2><a class="reference external" href="https://github.com/krivenko/som/tree/2.1.2" rel="noopener noreferrer" target="_blank">2.1.2</a> (2025-07-10)<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<p><a class="reference external" href="https://github.com/krivenko/som/compare/2.1.1...2.1.2" rel="noopener noreferrer" target="_blank">Full Changelog</a></p>
+<ul class="simple">
+<li><p>Set up building of Conda packages for released versions.
+The packages are now available in the <a class="reference external" href="https://anaconda.org/krivenko/triqs_som" rel="noopener noreferrer" target="_blank">‘krivenko’ channel</a>.</p></li>
+</ul>
+</section>
+<section id="id3">
+<h2><a class="reference external" href="https://github.com/krivenko/som/tree/2.1.1" rel="noopener noreferrer" target="_blank">2.1.1</a> (2025-06-30)<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
 <p><a class="reference external" href="https://github.com/krivenko/som/compare/2.1.0...2.1.1" rel="noopener noreferrer" target="_blank">Full Changelog</a></p>
 <ul class="simple">
 <li><p>Accept <a class="reference external" href="https://github.com/TRIQS/triqs/releases/tag/3.3.0" rel="noopener noreferrer" target="_blank">TRIQS 3.3</a> as
@@ -231,15 +241,15 @@ part of build process.</p></li>
 <li><p>Minor coding style improvements and fixes.</p></li>
 </ul>
 </section>
-<section id="id3">
-<h2><a class="reference external" href="https://github.com/krivenko/som/tree/2.1.0" rel="noopener noreferrer" target="_blank">2.1.0</a> (2023-10-03)<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<section id="id4">
+<h2><a class="reference external" href="https://github.com/krivenko/som/tree/2.1.0" rel="noopener noreferrer" target="_blank">2.1.0</a> (2023-10-03)<a class="headerlink" href="#id4" title="Link to this heading"></a></h2>
 <p><a class="reference external" href="https://github.com/krivenko/som/compare/2.0.0...2.1.0" rel="noopener noreferrer" target="_blank">Full Changelog</a></p>
 <ul class="simple">
 <li><p>Port to <a class="reference external" href="https://github.com/TRIQS/triqs/releases/tag/3.2.0" rel="noopener noreferrer" target="_blank">TRIQS 3.2</a>.</p></li>
 </ul>
 </section>
-<section id="id4">
-<h2><a class="reference external" href="https://github.com/krivenko/som/tree/2.0.0" rel="noopener noreferrer" target="_blank">2.0.0</a> (2022-06-27)<a class="headerlink" href="#id4" title="Link to this heading"></a></h2>
+<section id="id5">
+<h2><a class="reference external" href="https://github.com/krivenko/som/tree/2.0.0" rel="noopener noreferrer" target="_blank">2.0.0</a> (2022-06-27)<a class="headerlink" href="#id5" title="Link to this heading"></a></h2>
 <p><a class="reference external" href="https://github.com/krivenko/som/compare/1.2...2.0.0" rel="noopener noreferrer" target="_blank">Full Changelog</a></p>
 <section id="major-changes-and-new-features">
 <h3>Major changes and new features<a class="headerlink" href="#major-changes-and-new-features" title="Link to this heading"></a></h3>
@@ -345,8 +355,8 @@ sanitizers (<code class="docutils literal notranslate"><span class="pre">Address
 </ul>
 </section>
 </section>
-<section id="id5">
-<h2><a class="reference external" href="https://github.com/krivenko/som/tree/1.2" rel="noopener noreferrer" target="_blank">1.2</a> (2020-03-15)<a class="headerlink" href="#id5" title="Link to this heading"></a></h2>
+<section id="id6">
+<h2><a class="reference external" href="https://github.com/krivenko/som/tree/1.2" rel="noopener noreferrer" target="_blank">1.2</a> (2020-03-15)<a class="headerlink" href="#id6" title="Link to this heading"></a></h2>
 <p><a class="reference external" href="https://github.com/krivenko/som/compare/1.1...1.2" rel="noopener noreferrer" target="_blank">Full Changelog</a></p>
 <ul class="simple">
 <li><p>Improvements and small fixes in documentation.</p></li>
@@ -357,8 +367,8 @@ sanitizers (<code class="docutils literal notranslate"><span class="pre">Address
 <li><p>Minor code improvements.</p></li>
 </ul>
 </section>
-<section id="id6">
-<h2><a class="reference external" href="https://github.com/krivenko/som/tree/1.1" rel="noopener noreferrer" target="_blank">1.1</a> (2017-04-23)<a class="headerlink" href="#id6" title="Link to this heading"></a></h2>
+<section id="id7">
+<h2><a class="reference external" href="https://github.com/krivenko/som/tree/1.1" rel="noopener noreferrer" target="_blank">1.1</a> (2017-04-23)<a class="headerlink" href="#id7" title="Link to this heading"></a></h2>
 <p><a class="reference external" href="https://github.com/krivenko/som/compare/1.0...1.1" rel="noopener noreferrer" target="_blank">Full Changelog</a></p>
 <ul class="simple">
 <li><p>Massive extension of documentation.</p></li>
@@ -366,8 +376,8 @@ sanitizers (<code class="docutils literal notranslate"><span class="pre">Address
 <li><p>Fixed a critical bug in <code class="docutils literal notranslate"><span class="pre">back_transform()</span></code>.</p></li>
 </ul>
 </section>
-<section id="id7">
-<h2><a class="reference external" href="https://github.com/krivenko/som/tree/1.0" rel="noopener noreferrer" target="_blank">1.0</a> (2017-03-19)<a class="headerlink" href="#id7" title="Link to this heading"></a></h2>
+<section id="id8">
+<h2><a class="reference external" href="https://github.com/krivenko/som/tree/1.0" rel="noopener noreferrer" target="_blank">1.0</a> (2017-03-19)<a class="headerlink" href="#id8" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>First official release.</p></li>
 <li><p>Supports 12 integral kernels:</p>

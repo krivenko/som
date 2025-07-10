@@ -46,6 +46,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#anaconda">Anaconda</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#docker">Docker</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#compiling-som-from-source">Compiling SOM from source</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
@@ -174,17 +175,18 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ChangeLog.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id2">2.1.1 (2025-06-30)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id3">2.1.0 (2023-10-03)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id4">2.0.0 (2022-06-27)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id2">2.1.2 (2025-07-10)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id3">2.1.1 (2025-06-30)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id4">2.1.0 (2023-10-03)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id5">2.0.0 (2022-06-27)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="ChangeLog.html#major-changes-and-new-features">Major changes and new features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ChangeLog.html#python-api-changes">Python API changes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ChangeLog.html#build-system-and-developer-tools">Build system and developer tools</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id5">1.2 (2020-03-15)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id6">1.1 (2017-04-23)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id7">1.0 (2017-03-19)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id6">1.2 (2020-03-15)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id7">1.1 (2017-04-23)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id8">1.0 (2017-03-19)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
@@ -217,6 +219,18 @@
              
   <section id="installation">
 <span id="install"></span><h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
+<section id="anaconda">
+<span id="install-anaconda"></span><h2>Anaconda<a class="headerlink" href="#anaconda" title="Link to this heading"></a></h2>
+<p>We provide Linux and macOS (both Intel and Apple Silicon) packages for the
+<a class="reference external" href="https://www.anaconda.com/" rel="noopener noreferrer" target="_blank">Anaconda</a> distribution. The packages are provided
+through the <a class="reference external" href="https://anaconda.org/krivenko/triqs_som" rel="noopener noreferrer" target="_blank">‘krivenko’</a> Anaconda.org
+channel.
+After <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html" rel="noopener noreferrer" target="_blank">installing conda</a> you
+can install SOM with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>krivenko<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>triqs_som
+</pre></div>
+</div>
+</section>
 <section id="docker">
 <span id="install-docker"></span><h2>Docker<a class="headerlink" href="#docker" title="Link to this heading"></a></h2>
 <p>A Docker image including the latest version of SOM as well as other TRIQS
@@ -238,7 +252,7 @@ In the following, we will assume that it is installed in the directory
 <li><p>Download the source code of the latest stable version by cloning the
 <code class="docutils literal notranslate"><span class="pre">krivenko/som</span></code> repository from GitHub:</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>-b<span class="w"> </span><span class="m">2</span>.1.1<span class="w"> </span>https://github.com/krivenko/som.git<span class="w"> </span>som.src
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>-b<span class="w"> </span><span class="m">2</span>.1.2<span class="w"> </span>https://github.com/krivenko/som.git<span class="w"> </span>som.src
 </pre></div>
 </div>
 <ol class="arabic">
