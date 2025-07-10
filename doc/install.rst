@@ -5,6 +5,20 @@ Installation
 
 .. highlight:: bash
 
+.. _install_anaconda:
+
+Anaconda
+--------
+
+We provide Linux and macOS (both Intel and Apple Silicon) packages for the
+`Anaconda <https://www.anaconda.com/>`_ distribution. The packages are provided
+through the `'krivenko' <https://anaconda.org/krivenko/triqs_som>`_ Anaconda.org
+channel.
+After `installing conda <https://docs.conda.io/en/latest/miniconda.html>`_ you
+can install SOM with::
+
+     conda install -c krivenko -c conda-forge triqs_som
+
 .. _install_docker:
 
 Docker
