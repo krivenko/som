@@ -27,8 +27,15 @@ was moved to <https://krivenko.github.io/som1>**.
 Installation
 ------------
 
+SOM can be installed using the [`conda`](https://www.anaconda.com/) package
+manager or built from source either manually or by means of the
+[EasyBuild](https://easybuild.io/) HPC software management framework.
+
+We also offer prebuilt [Docker images](https://hub.docker.com/r/ikrivenko/som/).
+
 Please, refer to <http://krivenko.github.io/som/install.html> or
-`doc/install.rst` in the source code tree for installation instructions.
+`doc/install.rst` in the source code tree for the detailed installation
+instructions.
 
 Citing
 ------
