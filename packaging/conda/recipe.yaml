@@ -1,6 +1,6 @@
 context:
   name: triqs_som
-  version: 2.1.1
+  version: 2.1.2
   number: 0
   python: ${{ env.get('PYTHON_VERSION') }}
 
@@ -27,7 +27,7 @@ about:
 
 source:
   url: https://github.com/krivenko/som/archive/${{ version }}.tar.gz
-  sha256: 3eb33d8fe0b5849982963ae05384c2461d60f9ae8977070ce89c96570d3e03f5
+  sha256: e13e8c9bb185489b7ba6734234c91ddd07ac68047246a2c5c034ecb182994f28
 
 build:
   number: ${{ number }}
