@@ -1,4 +1,4 @@
-name: Build and deploy
+name: Build, test and deploy
 
 on:
   push:
@@ -12,33 +12,34 @@ on:
     - cron:  '0 0 * * 6'
 
 jobs:
-  build:
 
+  #
+  # Ubuntu
+  #
+
+  ubuntu:
+    name: Ubuntu
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        include:
-          - {os: ubuntu-22.04, cc: gcc-12, cxx: g++-12}
-          - {os: ubuntu-22.04, cc: clang-15, cxx: clang++-15}
-
-    runs-on: ${{ matrix.os }}
+        compiler:
+          - { name: "gcc", cxx: "g++-14" }
+          - { name: "clang", cxx: "clang++" }
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v6
 
     - name: Update apt-get cache
       run: sudo apt-get update
 
-    - name: Install Ubuntu dependencies
+    - name: Install APT dependencies
       run: >
         sudo apt-get install lsb-release wget software-properties-common &&
         sudo apt-get install
-        g++-12
-        clang-15
-        libc++-15-dev
-        libc++abi-15-dev
-        libomp-15-dev
-        libgfortran5
-        gfortran
+        libboost-dev
+        libeigen3-dev
+        libomp5
+        libomp-dev
         openmpi-bin
         openmpi-common
         openmpi-doc
@@ -50,7 +51,6 @@ jobs:
         hdf5-tools
         libhdf5-dev
         python3-dev
-        python3-clang-15
         python3-numpy
         python3-scipy
         python3-matplotlib
@@ -58,49 +58,29 @@ jobs:
         python3-mpi4py
         python3-mako
 
-    - name: Cache Boost (a C++20 compatible version)
-      id: cache-boost
-      uses: actions/cache@v3
-      with:
-        path: ~/boost
-        key: boost-1.82
-
-    - name: Download Boost (a C++20 compatible version)
-      if: ${{ steps.cache-boost.outputs.cache-hit != 'true' }}
-      run: |
-           wget -q https://archives.boost.io/release/1.82.0/source/boost_1_82_0.tar.bz2
-           tar -xf boost_1_82_0.tar.bz2
-           mv boost_1_82_0 $HOME/boost
-
     - name: Install Sphinx and related packages
-      if: startsWith(matrix.cxx, 'clang')
+      if: matrix.compiler.name == 'clang'
       run: |
-           python -m pip install --upgrade pip
-           pip install sphinx nbsphinx linkify-it-py sphinx-rtd-theme myst-parser
-
-    - name: Force use of libc++
-      if: startsWith(matrix.cxx, 'clang')
-      run: echo "CXXFLAGS=-stdlib=libc++" >> $GITHUB_ENV
+           pip install --upgrade pip
+           pip install \
+               sphinx nbsphinx linkify-it-py sphinx-rtd-theme myst-parser
 
     - name: Build & install TRIQS
       env:
-        CC: ${{ matrix.cc }}
-        CXX: ${{ matrix.cxx }}
+        CXX: ${{ matrix.compiler.cxx }}
       run: |
         git clone https://github.com/TRIQS/triqs --branch 3.3.x
         mkdir triqs/build && pushd triqs/build
         cmake ..                                                               \
           -DCMAKE_BUILD_TYPE=Debug                                             \
           -DCMAKE_INSTALL_PREFIX=$HOME/install                                 \
-          -DBoost_INCLUDE_DIR=$HOME/boost                                      \
           -DBuild_Tests=OFF
         make -j2 install VERBOSE=1
         popd
 
     - name: Build SOM
       env:
-        CC: ${{ matrix.cc }}
-        CXX: ${{ matrix.cxx }}
+        CXX: ${{ matrix.compiler.cxx }}
       run: |
         source $HOME/install/share/triqs/triqsvars.sh
         if [[ "${CXX}" == clang* ]]; then
@@ -112,7 +92,6 @@ jobs:
         cmake ..                                                               \
           -DCMAKE_BUILD_TYPE=Debug                                             \
           -DBUILD_SHARED_LIBS=ON                                               \
-          -DBoost_INCLUDE_DIR=$HOME/boost                                      \
           -DBuild_Documentation=${DOCS}
         make -j2 VERBOSE=1
         popd
@@ -127,7 +106,7 @@ jobs:
         popd
 
     - name: Deploy documentation
-      if: github.ref == 'refs/heads/master' && startsWith(matrix.cxx, 'clang')
+      if: github.ref == 'refs/heads/master' && matrix.compiler.name == 'clang'
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         branch: gh-pages

@@ -1,10 +1,11 @@
 TRIQS/SOM: Stochastic Optimization Method for Analytic Continuation
 ===================================================================
 
-[![CI](https://github.com/krivenko/som/actions/workflows/build-and-deploy.yml/badge.svg)](
-https://github.com/krivenko/som/actions/workflows/build-and-deploy.yml)
 [![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-red)](
 https://krivenko.github.io/som)
+[![Build, test and deploy](
+https://github.com/krivenko/som/actions/workflows/build-test-deploy.yml/badge.svg)](
+https://github.com/krivenko/som/actions/workflows/build-test-deploy.yml)
 
 Copyright (C) 2016-2026 Igor Krivenko <iskrivenko [at] proton [dot] me>
 
