@@ -112,3 +112,94 @@ jobs:
         branch: gh-pages
         token: ${{ secrets.GITHUB_TOKEN }}
         folder: build/doc/html
+
+  #
+  # macOS
+  #
+
+  macos:
+    name: macOS
+    strategy:
+      matrix:
+        os:
+          - "macos-latest"
+          # macos-15-intel is probably the last supported macOS x86-64 runner
+          # https://github.com/actions/runner-images/issues/13074
+          - "macos-15-intel"
+        compiler:
+          - { name: "gcc", cxx: "g++-15" }
+          - { name: "clang", cxx: "clang++" }
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Update Homebrew formulae
+      run: brew update
+
+    - name: Install Homebrew dependencies
+      run: brew install llvm libomp open-mpi boost fftw hdf5 numpy scipy mpi4py
+
+    - name: Install Python dependencies
+      run: |
+           PYTHON_BIN="$(python -c 'import site; print(site.USER_BASE)')/bin"
+           echo "PATH=${PYTHON_BIN}:${PATH}" >> $GITHUB_ENV
+           pip install --user --upgrade pip
+           pip install --user mako
+
+    - name: Set PATH and LDFLAGS for Clang
+      if: matrix.compiler.name == 'clang'
+      run: |
+           PREFIX="$(brew --prefix llvm)"
+           echo "PATH=${PREFIX}/bin:${PATH}" >> $GITHUB_ENV
+           LDFLAGS="-L${PREFIX}/lib/c++ -L${PREFIX}/lib/unwind -lunwind"
+           echo "LDFLAGS=${LDFLAGS}" >> $GITHUB_ENV
+
+    - name: Install Sphinx and related packages
+      if: matrix.compiler.name == 'clang'
+      run: |
+        pip install --user \
+          sphinx matplotlib nbsphinx linkify-it-py sphinx-rtd-theme myst-parser
+
+    - name: Build & install TRIQS
+      env:
+        CXX: ${{ matrix.compiler.cxx }}
+      run: |
+        git clone https://github.com/TRIQS/triqs --branch 3.3.x
+        mkdir triqs/build && pushd triqs/build
+        cmake ..                                                               \
+          -DCMAKE_BUILD_TYPE=Debug                                             \
+          -DCMAKE_INSTALL_PREFIX=$HOME/install                                 \
+          -DBuild_Tests=OFF
+        make -j2 install VERBOSE=1
+        popd
+
+    - name: Build SOM
+      env:
+        CXX: ${{ matrix.compiler.cxx }}
+      run: |
+        source $HOME/install/share/triqs/triqsvars.sh
+        if [[ "${CXX}" == clang* ]]; then
+          DOCS="ON"
+        else
+          DOCS="OFF"
+        fi
+        mkdir build && pushd build
+        cmake ..                                                               \
+          -DCMAKE_BUILD_TYPE=Debug                                             \
+          -DBUILD_SHARED_LIBS=ON                                               \
+          -DBuild_Documentation=${DOCS}
+        make -j2 VERBOSE=1
+        popd
+
+    - name: Test SOM
+      env:
+        TMPDIR: "/tmp"
+      run: |
+        mkdir -p $HOME/.prte
+        echo -e "\nrmaps_default_mapping_policy = :oversubscribe" >> \
+          $HOME/.prte/mca-params.conf
+        pushd build
+        source $HOME/install/share/triqs/triqsvars.sh
+        ctest --output-on-failure
+        popd
