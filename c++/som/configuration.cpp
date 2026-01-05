@@ -192,14 +192,13 @@ void configuration::redistribute_small_rects_weight(double weight_min) {
 
     sweep_direction = -sweep_direction;
     i += sweep_direction;
-
-    // Remove all rectangles with zero height.
-    rects.erase(
-        std::remove_if(rects.begin(),
-                       rects.end(),
-                       [=](rectangle const& r) { return r.height == 0; }),
-        rects.end());
   } while(weight_transfer_occured);
+
+  // Remove all rectangles with zero height.
+  rects.erase(std::remove_if(rects.begin(),
+                             rects.end(),
+                             [=](rectangle const& r) { return r.height == 0; }),
+              rects.end());
 
   cache_ptr.invalidate_entry();
 }
