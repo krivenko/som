@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>som.som &mdash; SOM  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=3b04a184" />
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
 
@@ -219,7 +219,7 @@
 <span class="c1">#</span>
 <span class="c1"># SOM: Stochastic Optimization Method for Analytic Continuation</span>
 <span class="c1">#</span>
-<span class="c1"># Copyright (C) 2016-2025 Igor Krivenko</span>
+<span class="c1"># Copyright (C) 2016-2026 Igor Krivenko</span>
 <span class="c1">#</span>
 <span class="c1"># SOM is free software: you can redistribute it and/or modify it under the</span>
 <span class="c1"># terms of the GNU General Public License as published by the Free Software</span>
@@ -239,30 +239,30 @@
 <span class="sd">Main module of SOM</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">cmath</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">cmath</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">triqs.gf</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">Gf</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">triqs.gf</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Gf</span><span class="p">,</span>
                       <span class="n">GfImFreq</span><span class="p">,</span>
                       <span class="n">MeshImFreq</span><span class="p">,</span>
                       <span class="n">MeshImTime</span><span class="p">,</span>
                       <span class="n">MeshLegendre</span><span class="p">,</span>
                       <span class="n">Fourier</span><span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">triqs.stat</span><span class="w"> </span><span class="kn">import</span> <span class="n">Histogram</span>
+<span class="kn">from</span> <span class="nn">triqs.stat</span> <span class="kn">import</span> <span class="n">Histogram</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">.som_core</span><span class="w"> </span><span class="kn">import</span> <span class="n">SomCore</span>
+<span class="kn">from</span> <span class="nn">.som_core</span> <span class="kn">import</span> <span class="n">SomCore</span>
 
 
 <div class="viewcode-block" id="Som">
 <a class="viewcode-back" href="../../reference/som.html#som.Som">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">Som</span><span class="p">(</span><span class="n">SomCore</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Som</span><span class="p">(</span><span class="n">SomCore</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Implementation of the Stochastic Optimization Method.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Som.__init__">
 <a class="viewcode-back" href="../../reference/som.html#som.Som.__init__">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">rhs</span><span class="p">:</span> <span class="n">Gf</span><span class="p">,</span>
                  <span class="n">errors</span><span class="p">:</span> <span class="n">Gf</span><span class="p">,</span>
                  <span class="n">kind</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;FermionGf&quot;</span><span class="p">,</span>
@@ -372,7 +372,7 @@
 
 <div class="viewcode-block" id="estimate_boson_corr_spectrum_norms">
 <a class="viewcode-back" href="../../reference/som.html#som.estimate_boson_corr_spectrum_norms">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">estimate_boson_corr_spectrum_norms</span><span class="p">(</span><span class="n">chi</span><span class="p">:</span> <span class="n">Gf</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="k">def</span> <span class="nf">estimate_boson_corr_spectrum_norms</span><span class="p">(</span><span class="n">chi</span><span class="p">:</span> <span class="n">Gf</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a correlator :math:`\chi` of bosonic or boson-like</span>
 <span class="sd">    (fermion-number-conserving) operators, estimates the corresponding spectrum</span>
@@ -421,7 +421,7 @@
 
 <div class="viewcode-block" id="count_good_solutions">
 <a class="viewcode-back" href="../../reference/som.html#som.count_good_solutions">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">count_good_solutions</span><span class="p">(</span><span class="n">hist</span><span class="p">:</span> <span class="n">Histogram</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">count_good_solutions</span><span class="p">(</span><span class="n">hist</span><span class="p">:</span> <span class="n">Histogram</span><span class="p">,</span>
                          <span class="n">good_chi_rel</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
                          <span class="n">good_chi_abs</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">cmath</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -453,7 +453,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2016-2025, Igor Krivenko.</p>
+    <p>&#169; Copyright 2016-2026, Igor Krivenko.</p>
   </div>
 
    

@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tutorial &mdash; SOM  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=3b04a184" />
       <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
 
@@ -229,15 +229,15 @@ script will have the following basic parts.</p>
 <ul>
 <li><p>Import TRIQS and SOM Python modules.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Green&#39;s function containers</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">triqs.gf</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">triqs.gf</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="c1"># HDFArchive interface to .h5 files</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">h5</span><span class="w"> </span><span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
 <span class="c1"># HDF5 archives must be modified only by one MPI rank.</span>
 <span class="c1"># is_master_node() checks whether we are on rank 0.</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">triqs.utility.mpi</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_master_node</span>
+<span class="kn">from</span> <span class="nn">triqs.utility.mpi</span> <span class="kn">import</span> <span class="n">is_master_node</span>
 
 <span class="c1"># Main SOM class</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">som</span><span class="w"> </span><span class="kn">import</span> <span class="n">Som</span>
+<span class="kn">from</span> <span class="nn">som</span> <span class="kn">import</span> <span class="n">Som</span>
 </pre></div>
 </div>
 </li>
@@ -440,7 +440,7 @@ to ensure good quality of the final solution.</p>
 </li>
 <li><p><em>Optional</em>: Study <a class="reference internal" href="guide/spectral_stats.html#spectral-stats"><span class="std std-ref">statistical properties</span></a> of the
 accumulated particular solutions.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">som.spectral_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">spectral_avg</span><span class="p">,</span> <span class="n">spectral_disp</span><span class="p">,</span> <span class="n">spectral_corr</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">som.spectral_stats</span> <span class="kn">import</span> <span class="n">spectral_avg</span><span class="p">,</span> <span class="n">spectral_disp</span><span class="p">,</span> <span class="n">spectral_corr</span>
 
 <span class="c1"># Compute statistical characteristics of the accumulated solution ensemble</span>
 <span class="c1"># for the 0-th diagonal matrix element of &#39;inp&#39; on the real-frequency</span>
@@ -471,7 +471,7 @@ various observables and how to use its more advanced features.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2016-2025, Igor Krivenko.</p>
+    <p>&#169; Copyright 2016-2026, Igor Krivenko.</p>
   </div>
 
    
