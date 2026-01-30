@@ -175,7 +175,7 @@ def estimate_boson_corr_spectrum_norms(chi: Gf) -> List[float]:
     N = chi.target_shape[0]
 
     if isinstance(chi.mesh, MeshImFreq):
-        W0 = list(chi.mesh.values()).index(0j)
+        W0 = next(mp.data_index for mp in chi.mesh if mp.index == 0)
         return np.pi * np.array([chi.data[W0, n, n].real for n in range(N)])
 
     elif isinstance(chi.mesh, MeshImTime):
