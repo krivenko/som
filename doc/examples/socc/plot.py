@@ -14,9 +14,9 @@ w_points = np.array([float(w) for w in energy_mesh])
 
 # Plot spectral functions obtained using SOM and SOCC procedures
 oplot(ar["som"]["g_w"], mode='S', lw=0.8,
-      label=r'SOM, $\chi^2=%f$' % ar["som"]["chi2"])
+      label=r'SOM, $\chi^2=%f$' % ar["som"]["chi2"][0])
 oplot(ar["socc"]["g_w"], mode='S', lw=0.8,
-      label=r'SOCC, $\chi^2=%f$' % ar["socc"]["chi2"])
+      label=r'SOCC, $\chi^2=%f$' % ar["socc"]["chi2"][0])
 
 # Plot the default model
 plt.plot(w_points, ar["socc"]["default_model"], lw=0.8,
