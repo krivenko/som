@@ -98,7 +98,7 @@ jobs:
       env:
         CXX: ${{ matrix.compiler.cxx }}
       run: |
-        git clone https://github.com/TRIQS/triqs --branch 4.0.x
+        git clone https://github.com/TRIQS/triqs --branch 4.0.x --depth 1
         mkdir triqs/build && pushd triqs/build
         cmake ..                                                               \
           -DCMAKE_BUILD_TYPE=Debug                                             \
@@ -202,7 +202,7 @@ jobs:
       env:
         CXX: ${{ matrix.compiler.cxx }}
       run: |
-        git clone https://github.com/TRIQS/triqs --branch 4.0.x
+        git clone https://github.com/TRIQS/triqs --branch 4.0.x --depth 1
         mkdir triqs/build && pushd triqs/build
         cmake ..                                                               \
           -DCMAKE_BUILD_TYPE=Debug                                             \
