@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         # macos-15-intel is probably the last supported macOS x86-64 runner
         # https://github.com/actions/runner-images/issues/13074

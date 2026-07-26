@@ -21,6 +21,7 @@ jobs:
     name: Ubuntu
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         compiler:
           - { name: "gcc", cxx: "g++-14", cxxflags: "" }
@@ -132,6 +133,7 @@ jobs:
   macos:
     name: macOS
     strategy:
+      fail-fast: false
       matrix:
         os:
           - "macos-latest"
