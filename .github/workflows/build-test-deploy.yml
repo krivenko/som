@@ -11,6 +11,13 @@ on:
   schedule:
     - cron:  '0 0 * * 6'
 
+# A new push to the same branch makes the running build obsolete: TRIQS is
+# rebuilt from source in every job, so letting superseded runs finish would
+# occupy the runners for hours for nothing.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
 
   #
@@ -20,6 +27,7 @@ jobs:
   ubuntu:
     name: Ubuntu
     runs-on: ubuntu-latest
+    timeout-minutes: 180
     strategy:
       fail-fast: false
       matrix:
@@ -88,7 +96,7 @@ jobs:
           -DCMAKE_BUILD_TYPE=Debug                                             \
           -DCMAKE_INSTALL_PREFIX=$HOME/install                                 \
           -DBuild_Tests=OFF
-        make -j2 install VERBOSE=1
+        make -j$(getconf _NPROCESSORS_ONLN) install VERBOSE=1
         popd
 
     - name: Build SOM
@@ -106,7 +114,7 @@ jobs:
           -DCMAKE_BUILD_TYPE=Debug                                             \
           -DBUILD_SHARED_LIBS=ON                                               \
           -DBuild_Documentation=${DOCS}
-        make -j2 VERBOSE=1
+        make -j$(getconf _NPROCESSORS_ONLN) VERBOSE=1
         popd
 
     - name: Test SOM
@@ -144,6 +152,7 @@ jobs:
           - { name: "gcc", cxx: "g++-15" }
           - { name: "clang", cxx: "clang++" }
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 180
 
     steps:
     - uses: actions/checkout@v6
@@ -185,7 +194,7 @@ jobs:
           -DCMAKE_BUILD_TYPE=Debug                                             \
           -DCMAKE_INSTALL_PREFIX=$HOME/install                                 \
           -DBuild_Tests=OFF
-        make -j2 install VERBOSE=1
+        make -j$(getconf _NPROCESSORS_ONLN) install VERBOSE=1
         popd
 
     - name: Build SOM
@@ -203,7 +212,7 @@ jobs:
           -DCMAKE_BUILD_TYPE=Debug                                             \
           -DBUILD_SHARED_LIBS=ON                                               \
           -DBuild_Documentation=${DOCS}
-        make -j2 VERBOSE=1
+        make -j$(getconf _NPROCESSORS_ONLN) VERBOSE=1
         popd
 
     - name: Test SOM
