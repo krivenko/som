@@ -157,7 +157,7 @@ public:
     configuration res(c.cache_ptr.get_ci());
 
     std::vector<rectangle::pod_t> pod_rects(std::begin(c), std::end(c));
-    pod_rects = mpi_gather(pod_rects, comm, root, all);
+    pod_rects = mpi::gather(pod_rects, comm, root, all);
 
     for(auto const& r : pod_rects)
       res.insert({r.center, r.width, r.height, res.cache_ptr.get_ci()});

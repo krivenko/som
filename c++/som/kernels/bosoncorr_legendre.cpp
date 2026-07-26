@@ -60,7 +60,7 @@ kernel<BosonCorr, legendre>::evaluator::evaluator(long l,
     return val * std::sqrt(std::numbers::pi / (2 * x)) * x / std::sinh(x);
   };
 
-  vector<double> tail_coeffs(l + 1);
+  nda::vector<double> tail_coeffs(l + 1);
   for(int k = 0; k <= l; ++k)
     tail_coeffs[k] = ((k % 2) ? -1 : 1) * make_a(k, l);
   polynomial<> integrand_tail(tail_coeffs);
@@ -78,7 +78,7 @@ kernel<BosonCorr, legendre>::evaluator::evaluator(long l,
   }
 
   // Fill high_energy_pol
-  vector<double> int_tail_coeffs(l);
+  nda::vector<double> int_tail_coeffs(l);
   if(l > 0) {
     int_tail_coeffs[0] = 0;
     for(int k = 1; k <= l - 1; ++k)

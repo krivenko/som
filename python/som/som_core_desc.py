@@ -27,7 +27,7 @@ module = module_(full_name="som_core",
                  app_name="som")
 
 # Imports
-module.add_imports('triqs.gf', 'triqs.stat.histograms')
+module.add_imports('triqs.gfs', 'triqs.mesh', 'triqs.stat.histograms')
 
 module.add_include("som/som_core/som_core.hpp")
 
@@ -921,7 +921,7 @@ module.add_function("void fill_refreq(triqs::gfs::gf_view<refreq> g_w, som_core 
 
 **Parameters:**
 
-:g_w: :class:`triqs.gf.gf.Gf` defined on :class:`triqs.gf.meshes.MeshReFreq`, target Green's function object.
+:g_w: :class:`triqs.gfs.gf.Gf` defined on :class:`triqs.mesh.MeshReFreq`, target Green's function object.
 :cont: :class:`Som`, Analytic continuation object.
 :with_binning: :class:`bool`, Use :ref:`binning <binning>` while projecting onto the real-frequency mesh.
 """)
@@ -931,7 +931,7 @@ module.add_function("void fill_refreq(triqs::gfs::gf_view<refreq> g_w, observabl
 
 **Parameters:**
 
-:g_w: :class:`triqs.gf.gf.Gf` defined on :class:`triqs.gf.meshes.MeshReFreq`, target Green's function object. Its target shape must agree with ``len(solutions)``.
+:g_w: :class:`triqs.gfs.gf.Gf` defined on :class:`triqs.mesh.MeshReFreq`, target Green's function object. Its target shape must agree with ``len(solutions)``.
 :kind: :class:`str`, Kind of the physical observable, one of {', '.join([f"``{ok}``" for ok in observable_kinds])}.
 :solutions: :class:`list` [:class:`Configuration`], List of solutions.
 :with_binning: :class:`bool`, Use :ref:`binning <binning>` while projecting onto the real-frequency mesh.
@@ -974,7 +974,7 @@ module.add_function("void reconstruct(triqs::gfs::gf_view<imtime> g, som_core co
 
 **Parameters:**
 
-:g: :class:`triqs.gf.gf.Gf` defined on :class:`triqs.gf.meshes.MeshImTime`, target Green's function object.
+:g: :class:`triqs.gfs.gf.Gf` defined on :class:`triqs.mesh.MeshImTime`, target Green's function object.
 :cont: :class:`Som`, Analytic continuation object.
 """)
 module.add_function("void reconstruct(triqs::gfs::gf_view<imfreq> g, som_core cont)",
@@ -982,7 +982,7 @@ module.add_function("void reconstruct(triqs::gfs::gf_view<imfreq> g, som_core co
 
 **Parameters:**
 
-:g: :class:`triqs.gf.gf.Gf` defined on :class:`triqs.gf.meshes.MeshImFreq`, target Green's function object.
+:g: :class:`triqs.gfs.gf.Gf` defined on :class:`triqs.mesh.MeshImFreq`, target Green's function object.
 :cont: :class:`Som`, Analytic continuation object.
 """)
 module.add_function("void reconstruct(triqs::gfs::gf_view<legendre> g, som_core cont)",
@@ -990,7 +990,7 @@ module.add_function("void reconstruct(triqs::gfs::gf_view<legendre> g, som_core 
 
 **Parameters:**
 
-:g: :class:`triqs.gf.gf.Gf` defined on :class:`triqs.gf.meshes.MeshLegendre`, target Green's function object.
+:g: :class:`triqs.gfs.gf.Gf` defined on :class:`triqs.mesh.MeshLegendre`, target Green's function object.
 :cont: :class:`Som`, Analytic continuation object.
 """)
 
@@ -1000,7 +1000,7 @@ module.add_function("void reconstruct(triqs::gfs::gf_view<imtime> g, observable_
 
 **Parameters:**
 
-:g: :class:`triqs.gf.gf.Gf` defined on :class:`triqs.gf.meshes.MeshImTime`, target Green's function object. Its target shape must agree with ``len(solutions)``.
+:g: :class:`triqs.gfs.gf.Gf` defined on :class:`triqs.mesh.MeshImTime`, target Green's function object. Its target shape must agree with ``len(solutions)``.
 :kind: :class:`str`, Kind of the physical observable, one of {', '.join([f"``{ok}``" for ok in observable_kinds])}.
 :solutions: :class:`list` [:class:`Configuration`], List of solutions.
 """)
@@ -1010,7 +1010,7 @@ module.add_function("void reconstruct(triqs::gfs::gf_view<imfreq> g, observable_
 
 **Parameters:**
 
-:g: :class:`triqs.gf.gf.Gf` defined on :class:`triqs.gf.meshes.MeshImFreq`, target Green's function object. Its target shape must agree with ``len(solutions)``.
+:g: :class:`triqs.gfs.gf.Gf` defined on :class:`triqs.mesh.MeshImFreq`, target Green's function object. Its target shape must agree with ``len(solutions)``.
 :kind: :class:`str`, Kind of the physical observable, one of {', '.join([f"``{ok}``" for ok in observable_kinds])}.
 :solutions: :class:`list` [:class:`Configuration`], List of solutions.
 """)
@@ -1020,7 +1020,7 @@ module.add_function("void reconstruct(triqs::gfs::gf_view<legendre> g, observabl
 
 **Parameters:**
 
-:g: :class:`triqs.gf.gf.Gf` defined on :class:`triqs.gf.meshes.MeshLegendre`, target Green's function object. Its target shape must agree with ``len(solutions)``.
+:g: :class:`triqs.gfs.gf.Gf` defined on :class:`triqs.mesh.MeshLegendre`, target Green's function object. Its target shape must agree with ``len(solutions)``.
 :kind: :class:`str`, Kind of the physical observable, one of {', '.join([f"``{ok}``" for ok in observable_kinds])}.
 :solutions: :class:`list` [:class:`Configuration`], List of solutions.
 """)

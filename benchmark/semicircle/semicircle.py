@@ -20,8 +20,8 @@
 ##############################################################################
 
 from h5 import HDFArchive
-from triqs.gf import GfImFreq, GfImTime, GfLegendre, GfReFreq
-from triqs.gf.descriptors import SemiCircular, Fourier, MatsubaraToLegendre
+from triqs.gfs import GfImFreq, GfImTime, GfLegendre, GfReFreq
+from triqs.gfs.descriptors import SemiCircular, Fourier, MatsubaraToLegendre
 import triqs.utility.mpi as mpi
 from som import Som, fill_refreq, compute_tail, reconstruct
 import numpy as np

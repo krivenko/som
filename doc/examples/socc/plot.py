@@ -1,5 +1,5 @@
 from h5 import HDFArchive
-from triqs.gf import Gf                                             # noqa: F401
+from triqs.gfs import Gf                                            # noqa: F401
 from matplotlib import pyplot as plt
 from matplotlib.colors import LogNorm
 from triqs.plot.mpl_interface import oplot

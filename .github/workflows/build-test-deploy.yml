@@ -23,8 +23,11 @@ jobs:
     strategy:
       matrix:
         compiler:
-          - { name: "gcc", cxx: "g++-14" }
-          - { name: "clang", cxx: "clang++" }
+          - { name: "gcc", cxx: "g++-14", cxxflags: "" }
+          - { name: "clang", cxx: "clang++-20", cxxflags: "-stdlib=libc++" }
+
+    env:
+      CXXFLAGS: ${{ matrix.compiler.cxxflags }}
 
     steps:
     - uses: actions/checkout@v6
@@ -58,6 +61,15 @@ jobs:
         python3-mpi4py
         python3-mako
 
+    - name: Install Clang 20
+      if: matrix.compiler.name == 'clang'
+      run: >
+        sudo apt-get install -y
+        clang-20
+        libomp-20-dev
+        libc++-20-dev
+        libc++abi-20-dev
+
     - name: Install Sphinx and related packages
       if: matrix.compiler.name == 'clang'
       run: |
@@ -69,7 +81,7 @@ jobs:
       env:
         CXX: ${{ matrix.compiler.cxx }}
       run: |
-        git clone https://github.com/TRIQS/triqs --branch 3.3.x
+        git clone https://github.com/TRIQS/triqs --branch 4.0.x
         mkdir triqs/build && pushd triqs/build
         cmake ..                                                               \
           -DCMAKE_BUILD_TYPE=Debug                                             \
@@ -165,7 +177,7 @@ jobs:
       env:
         CXX: ${{ matrix.compiler.cxx }}
       run: |
-        git clone https://github.com/TRIQS/triqs --branch 3.3.x
+        git clone https://github.com/TRIQS/triqs --branch 4.0.x
         mkdir triqs/build && pushd triqs/build
         cmake ..                                                               \
           -DCMAKE_BUILD_TYPE=Debug                                             \

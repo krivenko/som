@@ -1,4 +1,4 @@
-FROM flatironinstitute/triqs:3.3.0 AS base
+FROM flatironinstitute/triqs:4.0.0 AS base
 LABEL maintainer="Igor Krivenko"
 LABEL description="Stochastic Optimization Method for Analytic Continuation"
 ARG APPNAME=som
@@ -10,7 +10,7 @@ ENV SRC=/src BUILD=/home/build
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-            make g++-12 apt-utils file libblas-dev libopenblas-dev
+            make g++ apt-utils file libblas-dev libopenblas-dev
 RUN sh -c 'echo -e "\nrmaps_base_oversubscribe = 1" >> \
           /etc/openmpi/openmpi-mca-params.conf'
 

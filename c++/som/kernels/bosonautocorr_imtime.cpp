@@ -58,7 +58,7 @@ kernel<BosonAutoCorr, imtime>::evaluator::evaluator(
   alpha = double(tau) / beta_;
   double dx = x0 / (n_spline_knots - 1);
 
-  vector<double> spline_knots(n_spline_knots);
+  nda::vector<double> spline_knots(n_spline_knots);
 
   if(i == 0 || i == s - 1) { // \alpha = 0, 1
     alpha_case = edge;
@@ -103,7 +103,7 @@ kernel<BosonAutoCorr, imtime>::evaluator::evaluator(
     alpha_case = other;
     double shift = trigamma(1 + alpha) + trigamma(2 - alpha);
     spline_knots[0] = 0;
-    for(auto xi : range(1, n_spline_knots)) {
+    for(auto xi : nda::range(1, n_spline_knots)) {
       double x = dx * double(xi);
       spline_knots[xi] =
           -aux_sum([this](int n) { return -(n + 1 + alpha); }, x) -

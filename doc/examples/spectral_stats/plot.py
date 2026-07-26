@@ -1,5 +1,5 @@
 from h5 import HDFArchive
-from triqs.gf import *
+from triqs.gfs import *
 from matplotlib import pyplot as plt
 import numpy as np
 

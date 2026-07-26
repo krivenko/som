@@ -21,7 +21,7 @@
 
 import numpy as np
 from scipy.integrate import quad
-from triqs.gf.descriptors import Function
+from triqs.gfs.descriptors import Function
 
 
 # Integral kernel

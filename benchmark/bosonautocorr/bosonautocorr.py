@@ -25,8 +25,8 @@
 #
 
 from h5 import HDFArchive
-from triqs.gf import GfImTime, GfReFreq
-from triqs.gf.descriptors import Function
+from triqs.gfs import GfImTime, GfReFreq
+from triqs.gfs.descriptors import Function
 import triqs.utility.mpi as mpi
 from som import Som, fill_refreq, reconstruct, compute_tail
 from som.version import som_hash

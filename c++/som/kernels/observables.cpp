@@ -144,7 +144,7 @@ compute_tail(observable_kind kind,
   bool bosoncorr = kind == BosonCorr || kind == BosonAutoCorr;
 
   array<std::complex<double>, 1> tail =
-      zeros<std::complex<double>>(max_order + 1);
+      nda::zeros<std::complex<double>>(max_order + 1);
 
   bool const symmetrize = use_symmetrized_spectrum(kind);
   long rect_index = 0;

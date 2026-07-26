@@ -25,8 +25,9 @@
 
 import time
 from h5 import HDFArchive
-from triqs.gf import Gf, GfImFreq, GfImTime, GfLegendre, GfReFreq, MeshProduct
-from triqs.gf.descriptors import Function
+from triqs.mesh import MeshProduct
+from triqs.gfs import Gf, GfImFreq, GfImTime, GfLegendre, GfReFreq
+from triqs.gfs.descriptors import Function
 import triqs.utility.mpi as mpi
 from som import Som, fill_refreq, compute_tail, reconstruct
 from som.version import som_hash

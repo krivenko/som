@@ -24,8 +24,8 @@ find_package(MPI)
 if(PythonSupport OR Build_Documentation)
   external_dependency(Cpp2Py
     GIT_REPO https://github.com/TRIQS/cpp2py
-    VERSION 2.0
-    GIT_TAG master
+    VERSION 3.3
+    GIT_TAG main
     BUILD_ALWAYS
     EXCLUDE_FROM_ALL
   )

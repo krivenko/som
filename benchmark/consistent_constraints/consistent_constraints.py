@@ -21,8 +21,9 @@
 
 import numpy as np
 from h5 import HDFArchive
-from triqs.gf import GfImFreq, MeshReFreq, GfReFreq
-from triqs.gf.descriptors import SemiCircular
+from triqs.mesh import MeshReFreq
+from triqs.gfs import GfImFreq, GfReFreq
+from triqs.gfs.descriptors import SemiCircular
 import triqs.utility.mpi as mpi
 from som import Som, fill_refreq, compute_tail, reconstruct
 import time

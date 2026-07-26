@@ -43,7 +43,7 @@ objective_function<KernelType>::objective_function(
     cov_matrix_type const& cov_matrix,
     double filtering_level)
    : kern(kern), rhs(rhs), tmp(rhs.size()) {
-  auto [ev, vecs] = nda::linalg::eigenelements(cov_matrix);
+  auto [ev, vecs] = nda::linalg::eigh(cov_matrix);
 
   auto first_positive_sigma2 = std::distance(
       std::begin(ev), std::upper_bound(std::begin(ev), std::end(ev), 0));

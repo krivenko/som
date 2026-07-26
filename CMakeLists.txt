@@ -22,15 +22,15 @@
 # CMake scripts are based on the 'app4triqs' TRIQS application skeleton.
 # See https://github.com/TRIQS/app4triqs for more details.
 
-cmake_minimum_required(VERSION 3.19 FATAL_ERROR)
-cmake_policy(VERSION 3.19)
+cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
+cmake_policy(VERSION 3.20)
 if(POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
 endif()
 
 # ############
 # Define Project
-project(som VERSION 2.1.2 LANGUAGES CXX)
+project(som VERSION 2.2.0 LANGUAGES CXX)
 
 get_directory_property(IS_SUBPROJECT PARENT_DIRECTORY)
 
@@ -39,8 +39,8 @@ get_directory_property(IS_SUBPROJECT PARENT_DIRECTORY)
 if(POLICY CMP0167)
   cmake_policy(SET CMP0167 OLD)
 endif()
-set(REQUIRED_TRIQS_VERSION_MIN 3.2)
-set(REQUIRED_TRIQS_VERSION_MAX <3.4)
+set(REQUIRED_TRIQS_VERSION_MIN 4.0)
+set(REQUIRED_TRIQS_VERSION_MAX <4.1)
 find_package(TRIQS
              ${REQUIRED_TRIQS_VERSION_MIN}...${REQUIRED_TRIQS_VERSION_MAX}
              REQUIRED)

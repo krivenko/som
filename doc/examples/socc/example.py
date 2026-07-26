@@ -1,6 +1,7 @@
 # Import HDFArchive, some TRIQS modules and NumPy
 from h5 import HDFArchive
-from triqs.gf import *
+from triqs.mesh import *
+from triqs.gfs import *
 import triqs.utility.mpi as mpi
 import numpy as np
 

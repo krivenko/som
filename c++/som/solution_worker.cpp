@@ -181,9 +181,6 @@ solution_worker<KernelType>::solution_worker(
                                             weight_min),
               "update_glue_shift",
               1.0);
-
-  // Reset temporary configuration to global_conf after each global update
-  mc.set_after_cycle_duty([this] { reset_temp_conf(); });
 }
 
 template <typename KernelType>
@@ -269,7 +266,18 @@ void solution_worker<KernelType>::run(configuration& conf) {
 
   // Start simulation
   data.Z.reset();
-  int res_code = mc.accumulate(f, t, stop_callback, MPI_COMM_SELF);
+  int res_code = mc.accumulate({
+      .ncycles = f,
+      .cycle_length = t,
+      .stop_callback = stop_callback,
+      .comm = MPI_COMM_SELF,
+      // Reset temporary configuration to global_conf after each global update
+      .after_cycle_duty = [this] { reset_temp_conf(); },
+      // Each solution worker runs its own Markov chain on MPI_COMM_SELF, and
+      // solutions are distributed over ranks by SOM itself. Stop exactly after
+      // 'f' global updates instead of waiting for the other ranks.
+      .continue_after_ncycles_done = false
+  });
 
   swap(data.global_conf, conf);
   kern.cache_swap(data.global_conf, conf);

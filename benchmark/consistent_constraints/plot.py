@@ -20,8 +20,8 @@
 ##############################################################################
 
 from h5 import HDFArchive
-from triqs.gf import Gf                                             # noqa: F401
-from triqs.gf.descriptors import SemiCircular
+from triqs.gfs import Gf                                            # noqa: F401
+from triqs.gfs.descriptors import SemiCircular
 from triqs.plot.mpl_interface import oplot
 from matplotlib import pyplot as plt
 from matplotlib.colors import LogNorm

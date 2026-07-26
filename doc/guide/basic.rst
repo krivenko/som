@@ -24,10 +24,10 @@ function, susceptibility, conductivity). The formal discrete index
 :math:`n = \overline{1, N}` may denote one of the following variables,
 
 - Fermionic of bosonic
-  :class:`Matsubara frequencies <triqs.gf.meshes.MeshImFreq>`;
-- Points of an :class:`imaginary time grid <triqs.gf.meshes.MeshImTime>`;
+  :class:`Matsubara frequencies <triqs.mesh.MeshImFreq>`;
+- Points of an :class:`imaginary time grid <triqs.mesh.MeshImTime>`;
 - Indices of
-  :class:`Legendre orthogonal polynomials <triqs.gf.meshes.MeshLegendre>`.
+  :class:`Legendre orthogonal polynomials <triqs.mesh.MeshLegendre>`.
 
 .. _solution_norm:
 
@@ -182,7 +182,7 @@ function :math:`A(\epsilon)`.
 
 - :ref:`Recover the real-frequency version <recovery>` of the studied
   observable by projecting it onto a :class:`real frequency mesh
-  <triqs.gf.meshes.MeshReFreq>`.
+  <triqs.mesh.MeshReFreq>`.
   For instance, the retarded Green's function :math:`G^\mathcal{ret}(\epsilon)`
   can be recovered from a fermionic Matsubara Green's function :math:`G(\tau)`.
 

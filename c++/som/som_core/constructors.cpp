@@ -235,7 +235,7 @@ som_core::som_core(triqs::gfs::gf_const_view<imtime> g_tau,
 som_core::som_core(gf_const_view<imfreq> g_iw,
                    gf_const_view<imfreq> error_bars_iw,
                    observable_kind kind,
-                   vector<double> const& norms)
+                   nda::vector<double> const& norms)
    : kind(kind), mesh(g_iw.mesh()) {
 
   if(is_stat_relevant(kind)) check_gf_stat(g_iw, observable_statistics(kind));

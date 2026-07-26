@@ -93,17 +93,19 @@ array<dcomplex, 3> compute_tail(int max_order,
 // reconstruct() //
 ///////////////////
 
-void fill_data(gf_view<imtime> g_tau, long i, vector<double> const& data) {
+void fill_data(gf_view<imtime> g_tau, long i, nda::vector<double> const& data) {
   g_tau.data()(range::all, i, i) = data;
 }
 
-void fill_data(gf_view<imfreq> g_iw, long i, vector<dcomplex> const& data) {
+void fill_data(gf_view<imfreq> g_iw,
+               long i,
+               nda::vector<dcomplex> const& data) {
   auto g_positive_freq = positive_freq_view(g_iw);
   g_positive_freq.data()(range::all, i, i) = data;
   g_iw = make_gf_from_real_gf(make_const_view(g_positive_freq));
 }
 
-void fill_data(gf_view<legendre> g_l, long i, vector<double> const& data) {
+void fill_data(gf_view<legendre> g_l, long i, nda::vector<double> const& data) {
   g_l.data()(range::all, i, i) = data;
 }
 

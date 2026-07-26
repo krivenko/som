@@ -56,7 +56,8 @@ kernel<FermionGf, imtime>::evaluator::evaluator(
   alpha = double(tau) / beta_;
   double dx = x0 / (n_spline_knots - 1);
 
-  vector<double> spline_m_knots(n_spline_knots), spline_p_knots(n_spline_knots);
+  nda::vector<double> spline_m_knots(n_spline_knots),
+      spline_p_knots(n_spline_knots);
 
   // S(x) = \sum_{n=0}^{+\infty} \frac{(-1)^n \exp(d(n) x)}{d(n)}
   auto aux_sum = [](auto d, double x) -> double {
@@ -86,7 +87,7 @@ kernel<FermionGf, imtime>::evaluator::evaluator(
       // Fill spline_m_knots
       double shift =
           0.5 * (digamma(1 - 0.5 * alpha) - digamma(0.5 - 0.5 * alpha));
-      for(auto xi : range(0, n_spline_knots - 1)) {
+      for(auto xi : nda::range(0, n_spline_knots - 1)) {
         double x = -x0 + dx * double(xi);
         spline_m_knots[xi] =
             aux_sum([this](int n) { return n + 1 - alpha; }, x) - shift;
@@ -95,7 +96,7 @@ kernel<FermionGf, imtime>::evaluator::evaluator(
       // Fill spline_p_knots
       shift = 0.5 * (digamma(1 + 0.5 * alpha) - digamma(0.5 + 0.5 * alpha));
       spline_p_knots[0] = 0;
-      for(auto xi : range(1, n_spline_knots)) {
+      for(auto xi : nda::range(1, n_spline_knots)) {
         double x = dx * double(xi);
         spline_p_knots[xi] =
             -aux_sum([this](int n) { return -(n + 1 + alpha); }, x) - shift;
@@ -117,7 +118,7 @@ kernel<FermionGf, imtime>::evaluator::evaluator(
       // Fill spline_m_knots
       double shift =
           0.5 * (digamma(1.5 - 0.5 * alpha) - digamma(1 - 0.5 * alpha));
-      for(auto xi : range(0, n_spline_knots - 1)) {
+      for(auto xi : nda::range(0, n_spline_knots - 1)) {
         double x = -x0 + dx * double(xi);
         spline_m_knots[xi] =
             -aux_sum([this](int n) { return n + 2 - alpha; }, x) + shift;
@@ -126,7 +127,7 @@ kernel<FermionGf, imtime>::evaluator::evaluator(
       // Fill spline_p_knots
       shift = 0.5 * (digamma(0.5 + 0.5 * alpha) - digamma(0.5 * alpha));
       spline_p_knots[0] = 0;
-      for(auto xi : range(1, n_spline_knots)) {
+      for(auto xi : nda::range(1, n_spline_knots)) {
         double x = dx * double(xi);
         spline_p_knots[xi] =
             aux_sum([this](int n) { return -(n + alpha); }, x) + shift;

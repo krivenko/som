@@ -24,7 +24,7 @@
 #
 
 from h5 import HDFArchive
-from triqs.gf import Gf                                             # noqa: F401
+from triqs.gfs import Gf                                            # noqa: F401
 from triqs.stat.histograms import Histogram                         # noqa: F401
 from som import Configuration                                       # noqa: F401
 import numpy as np

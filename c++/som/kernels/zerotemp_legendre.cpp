@@ -57,7 +57,7 @@ kernel<ZeroTemp, legendre>::evaluator::evaluator(long l, double x0_start)
     return val * std::sqrt(std::numbers::pi / (2 * x)) * 2 * std::exp(-x);
   };
 
-  vector<double> tail_coeffs(l + 2);
+  nda::vector<double> tail_coeffs(l + 2);
   tail_coeffs[0] = 0;
   for(int k = 0; k <= l; ++k)
     tail_coeffs[k + 1] = ((k % 2) ? -1 : 1) * make_a(k, l);
@@ -76,7 +76,7 @@ kernel<ZeroTemp, legendre>::evaluator::evaluator(long l, double x0_start)
   }
 
   // Fill high_energy_pol
-  vector<double> int_tail_coeffs(l + 1);
+  nda::vector<double> int_tail_coeffs(l + 1);
   int_tail_coeffs[0] = 0;
   for(int k = 1; k <= l; ++k) int_tail_coeffs[k] = -tail_coeffs[k + 1] / k;
   high_energy_pol = polynomial<>(int_tail_coeffs);

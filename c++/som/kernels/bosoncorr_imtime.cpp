@@ -71,7 +71,8 @@ kernel<BosonCorr, imtime>::evaluator::evaluator(
     return val;
   };
 
-  vector<double> spline_m_knots(n_spline_knots), spline_p_knots(n_spline_knots);
+  nda::vector<double> spline_m_knots(n_spline_knots),
+      spline_p_knots(n_spline_knots);
 
   if(i < s / 2) { // \alpha < 1/2
     if(i == 0) {  // \alpha = 0
@@ -99,7 +100,7 @@ kernel<BosonCorr, imtime>::evaluator::evaluator(
       alpha_case = small;
       // Fill spline_m_knots
       double shift = trigamma(1 - alpha);
-      for(auto xi : range(0, n_spline_knots - 1)) {
+      for(auto xi : nda::range(0, n_spline_knots - 1)) {
         double x = -x0 + dx * double(xi);
         spline_m_knots[xi] =
             aux_sum([this](int n) { return n + 1 - alpha; }, x) - shift;
@@ -108,7 +109,7 @@ kernel<BosonCorr, imtime>::evaluator::evaluator(
       // Fill spline_p_knots
       shift = trigamma(1 + alpha);
       spline_p_knots[0] = 0;
-      for(auto xi : range(1, n_spline_knots)) {
+      for(auto xi : nda::range(1, n_spline_knots)) {
         double x = dx * double(xi);
         spline_p_knots[xi] =
             -aux_sum([this](int n) { return -(n + 1 + alpha); }, x) + shift;
@@ -141,7 +142,7 @@ kernel<BosonCorr, imtime>::evaluator::evaluator(
       alpha_case = big;
       // Fill spline_m_knots
       double shift = trigamma(2 - alpha);
-      for(auto xi : range(0, n_spline_knots - 1)) {
+      for(auto xi : nda::range(0, n_spline_knots - 1)) {
         double x = -x0 + dx * double(xi);
         spline_m_knots[xi] =
             aux_sum([this](int n) { return n + 2 - alpha; }, x) - shift;
@@ -150,7 +151,7 @@ kernel<BosonCorr, imtime>::evaluator::evaluator(
       // Fill spline_p_knots
       shift = trigamma(alpha);
       spline_p_knots[0] = 0;
-      for(auto xi : range(1, n_spline_knots)) {
+      for(auto xi : nda::range(1, n_spline_knots)) {
         double x = dx * double(xi);
         spline_p_knots[xi] =
             -aux_sum([this](int n) { return -(n + alpha); }, x) + shift;

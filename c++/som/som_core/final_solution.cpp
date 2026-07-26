@@ -592,7 +592,7 @@ std::vector<double> som_core::compute_final_solution_cc_impl(
     auto const& U_dagger = of.get_U_dagger();
     auto const rhs =
         U_dagger
-            ? rhs_type(matvecmul(
+            ? rhs_type(nda::linalg::matvecmul(
                   *U_dagger, vector_const_view<rhs_scalar_type>(of.get_rhs())))
             : of.get_rhs();
     double convergence_tol = min_element(sqrt(of.get_sigma2()) / abs(rhs));

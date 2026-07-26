@@ -6,7 +6,7 @@ SOM 1.x script porting guide
 .. currentmodule:: som
 
 Porting computational scripts from SOM 1.x to SOM 2.x means switching from
-Python 2.7 to Python 3 and from TRIQS 1.4 to TRIQS 3.x. This guide covers
+Python 2.7 to Python 3 and from TRIQS 1.4 to TRIQS 4.x. This guide covers
 only the SOM-specific portion of changes that need to be made. Please, refer to
 the official Python
 `porting guide <https://docs.python.org/3/howto/pyporting.html>`_ to learn about

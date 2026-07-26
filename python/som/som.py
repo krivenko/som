@@ -27,12 +27,8 @@ from typing import List
 import cmath
 import numpy as np
 
-from triqs.gf import (Gf,
-                      GfImFreq,
-                      MeshImFreq,
-                      MeshImTime,
-                      MeshLegendre,
-                      Fourier)
+from triqs.mesh import MeshImFreq, MeshImTime, MeshLegendre
+from triqs.gfs import Gf, GfImFreq, Fourier
 from triqs.stat import Histogram
 
 from .som_core import SomCore
@@ -52,14 +48,14 @@ class Som(SomCore):
         r"""
         :param rhs: Right hand side of the :ref:`integral equation
                   <integral_equation>` to be solved, defined on
-                  :class:`triqs.gf.meshes.MeshImTime`,
-                  :class:`triqs.gf.meshes.MeshImFreq` or
-                  :class:`triqs.gf.meshes.MeshLegendre`.
+                  :class:`triqs.mesh.MeshImTime`,
+                  :class:`triqs.mesh.MeshImFreq` or
+                  :class:`triqs.mesh.MeshLegendre`.
                   The target shape of ``rhs`` must be :math:`M{\times}M`.
                   If :math:`M>1`, only its diagonal matrix elements will be
                   considered and used as input data for :math:`M` independent
                   continuation problems.
-        :type rhs: :class:`triqs.gf.gf.Gf`
+        :type rhs: :class:`triqs.gfs.gf.Gf`
 
         :param errors: Either :ref:`error bars <error_bars>` :math:`\sigma_n`
                        (GF container of the same type and target shape as
@@ -162,7 +158,7 @@ def estimate_boson_corr_spectrum_norms(chi: Gf) -> List[float]:
       \pi\chi(\ell=0)`.
 
     :param chi: The correlator :math:`\chi`.
-    :type chi: :class:`triqs.gf.gf.Gf`
+    :type chi: :class:`triqs.gfs.gf.Gf`
     :return: A list of estimated spectrum normalization constants,
              one constant per diagonal matrix element of :math:`\chi`.
     :rtype: :class:`list` [:class:`float`]

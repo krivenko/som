@@ -1,6 +1,6 @@
 # Import HDFArchive and some TRIQS modules
 from h5 import HDFArchive
-from triqs.gf import *
+from triqs.gfs import *
 import triqs.utility.mpi as mpi
 
 # Import main SOM class and utility functions

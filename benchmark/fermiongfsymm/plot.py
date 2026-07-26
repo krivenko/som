@@ -20,7 +20,7 @@
 ##############################################################################
 
 from h5 import HDFArchive
-from triqs.gf import Gf                                             # noqa: F401
+from triqs.gfs import Gf                                            # noqa: F401
 from matplotlib import pyplot as plt
 from triqs.plot.mpl_interface import oplot
 from matplotlib.backends.backend_pdf import PdfPages

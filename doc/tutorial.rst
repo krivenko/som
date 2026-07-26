@@ -15,8 +15,10 @@ script will have the following basic parts.
 
   ::
 
+        # Mesh types
+        from triqs.mesh import *
         # Green's function containers
-        from triqs.gf import *
+        from triqs.gfs import *
         # HDFArchive interface to .h5 files
         from h5 import HDFArchive
         # HDF5 archives must be modified only by one MPI rank.
@@ -65,9 +67,9 @@ script will have the following basic parts.
                    filtering_levels = 1e-5)
 
   ``inp`` and ``error_bars`` must be Green's function containers of
-  the same type :class:`triqs.gf.gf.Gf`, defined on the same mesh
-  (:class:`triqs.gf.meshes.MeshImTime`, :class:`triqs.gf.meshes.MeshImFreq` or
-  :class:`triqs.gf.meshes.MeshLegendre`) and having the same square target
+  the same type :class:`triqs.gfs.gf.Gf`, defined on the same mesh
+  (:class:`triqs.mesh.MeshImTime`, :class:`triqs.mesh.MeshImFreq` or
+  :class:`triqs.mesh.MeshLegendre`) and having the same square target
   shape.
 
   Currently supported observable kinds are

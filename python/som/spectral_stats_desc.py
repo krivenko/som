@@ -84,7 +84,7 @@ for energy intervals centered around points of a regular energy mesh.
 
 **Parameters:**
 
-:mesh: :class:`triqs.gf.meshes.MeshReFreq`, Real energy mesh.
+:mesh: :class:`triqs.mesh.MeshReFreq`, Real energy mesh.
 :c: :class:`som.Configuration`, Spectral function :math:`A^{(j)}(z)`.
 :r_func: :class:`str`, Name of the :ref:`resolution function
          <resolution_functions>` :math:`\bar K(m, z)`, one of %s.
@@ -131,7 +131,7 @@ for energy intervals centered around points of a regular energy mesh.
 :cont: :class:`Som`, Analytic continuation object.
 :i: :class:`int`, Index of the diagonal matrix element of the observable used
     to construct ``cont``.
-:mesh: :class:`triqs.gf.meshes.MeshReFreq`, Real energy mesh.
+:mesh: :class:`triqs.mesh.MeshReFreq`, Real energy mesh.
 :r_func: :class:`str`, Name of the :ref:`resolution function
          <resolution_functions>` :math:`\bar K(m, z)`, one of %s.
 
@@ -180,7 +180,7 @@ for energy intervals centered around points of a regular energy mesh.
 :cont: :class:`Som`, Analytic continuation object.
 :i: :class:`int`, Index of the diagonal matrix element of the observable used
     to construct ``cont``.
-:mesh: :class:`triqs.gf.meshes.MeshReFreq`, Real energy mesh.
+:mesh: :class:`triqs.mesh.MeshReFreq`, Real energy mesh.
 :avg: Real 1D NumPy array of precomputed averages :math:`i_m`.
 :r_func: :class:`str`, Name of the :ref:`resolution function
          <resolution_functions>` :math:`\bar K(m, z)`, one of %s.
@@ -232,7 +232,7 @@ for energy intervals centered around points of a regular energy mesh.
 :cont: :class:`Som`, Analytic continuation object.
 :i: :class:`int`, Index of the diagonal matrix element of the observable used
     to construct ``cont``.
-:mesh: :class:`triqs.gf.meshes.MeshReFreq`, Real energy mesh.
+:mesh: :class:`triqs.mesh.MeshReFreq`, Real energy mesh.
 :avg: Real 1D NumPy array of precomputed averages :math:`i_m`.
 :r_func: :class:`str`, Name of the :ref:`resolution function
          <resolution_functions>` :math:`\bar K(m, z)`, one of %s.

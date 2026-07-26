@@ -20,7 +20,7 @@
 ##############################################################################
 
 from h5 import HDFArchive
-from triqs.gf import GfImTime, GfReFreq
+from triqs.gfs import GfImTime, GfReFreq
 import triqs.utility.mpi as mpi
 from som import Som, fill_refreq, compute_tail, reconstruct
 import numpy as np

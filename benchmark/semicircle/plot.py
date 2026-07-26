@@ -23,9 +23,9 @@
 # mharland@physnet.uni-hamburg.de
 
 from h5 import HDFArchive
-from triqs.gf import Gf                                             # noqa: F401
+from triqs.gfs import Gf                                            # noqa: F401
 from triqs.stat.histograms import Histogram                         # noqa: F401
-from triqs.gf.descriptors import SemiCircular
+from triqs.gfs.descriptors import SemiCircular
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 import numpy as np
