@@ -202,7 +202,7 @@ script will have the following basic parts.
 
 * Extract the final solution,
   :ref:`recover the real-frequency version <recovery>` of ``inp``,
-  its :ref:`tail expansion coefficients <triqslibs:gf_tail>` and
+  its tail expansion coefficients and
   reconstruct the input.
 
   SOM internally represents spectral functions (configurations) as sums of

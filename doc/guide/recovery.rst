@@ -74,5 +74,5 @@ The old behavior can be enabled by passing ``with_binning=False`` to
 .. _compute_tail:
 
 :func:`som.compute_tail` is another useful function that extracts information
-about the :ref:`high frequency expansion coefficients <triqslibs:gf_tail>`
+about the high frequency expansion coefficients
 of :math:`G^\mathrm{ret}(\epsilon)` from :math:`A(\epsilon)`.

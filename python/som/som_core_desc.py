@@ -942,7 +942,7 @@ module.add_function("void fill_refreq(triqs::gfs::gf_view<refreq> g_w, observabl
 #
 
 module.add_function("nda::array<dcomplex, 3> compute_tail(int max_order, som_core cont)",
-                    doc=r"""Extract :ref:`high-frequency expansion coefficients <triqslibs:gf_tail>` from a computed SOM solution.
+                    doc=r"""Extract high-frequency expansion coefficients from a computed SOM solution.
 
 **Parameters:**
 
@@ -953,7 +953,7 @@ module.add_function("nda::array<dcomplex, 3> compute_tail(int max_order, som_cor
 """)
 
 module.add_function("nda::array<dcomplex, 3> compute_tail(int max_order, observable_kind kind, std::vector<configuration> solutions)",
-                    doc=f"""Extract :ref:`high-frequency expansion coefficients <triqslibs:gf_tail>` from a list of solutions
+                    doc=f"""Extract high-frequency expansion coefficients from a list of solutions
 (one solution per diagonal element of the observable).
 
 **Parameters:**
