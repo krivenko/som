@@ -127,6 +127,12 @@ jobs:
 
     - name: Test SOM
       run: |
+        # Allow oversubscription, as some tests are run on 4 MPI ranks.
+        # ubuntu-latest (24.04) ships OpenMPI 4, which is configured via this
+        # file. OpenMPI 5 delegates process mapping to PRRTE and silently
+        # ignores the setting below; from Ubuntu 26.04 on, this has to become
+        # 'rmaps_default_mapping_policy = :oversubscribe' in
+        # $HOME/.prte/mca-params.conf, as done in the macOS job.
         sudo sh -c 'echo -e "\nrmaps_base_oversubscribe = 1" >>                \
           /etc/openmpi/openmpi-mca-params.conf'
         pushd build
