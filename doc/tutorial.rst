@@ -213,14 +213,14 @@ script will have the following basic parts.
 
         sol = cont.solutions
         # 'sol' is now a list of spectral functions,
-        # len(sol) == len(inp.indices)
+        # len(sol) == inp.target_shape[0]
 
         # Recover the real-frequency version of 'inp'
         #
         # NB: we can use *any* energy window at this point, not necessarily that
         # from 'acc_params'
         w_mesh = MeshReFreq(window=(-5.0, 5.0), n_w=1000)
-        f_w = Gf(mesh=w_mesh, indices=inp.indices)
+        f_w = Gf(mesh=w_mesh, target_shape=inp.target_shape)
         fill_refreq(f_w, cont)
 
         # High frequency expansion (tail) coefficients up to order 'max_order'
