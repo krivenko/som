@@ -13,7 +13,6 @@ jobs:
         # https://github.com/actions/runner-images/issues/13074
         os: [ubuntu-latest, macos-latest, macos-15-intel]
         python-version:
-          - "3.9"
           - "3.10"
           - "3.11"
           - "3.12"
