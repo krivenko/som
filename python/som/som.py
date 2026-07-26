@@ -28,7 +28,7 @@ import cmath
 import numpy as np
 
 from triqs.mesh import MeshImFreq, MeshImTime, MeshLegendre
-from triqs.gfs import Gf, GfImFreq, Fourier
+from triqs.gfs import Gf, Fourier
 from triqs.stat import Histogram
 
 from .som_core import SomCore
@@ -175,10 +175,11 @@ def estimate_boson_corr_spectrum_norms(chi: Gf) -> List[float]:
         return np.pi * np.array([chi.data[W0, n, n].real for n in range(N)])
 
     elif isinstance(chi.mesh, MeshImTime):
-        chi_iw = GfImFreq(beta=chi.mesh.beta,
-                          statistic="Boson",
-                          n_points=1,  # We need only the zero frequency
-                          target_shape=chi.target_shape)
+        chi_iw = Gf(mesh=MeshImFreq(beta=chi.mesh.beta,
+                                    statistic="Boson",
+                                    # We need only the zero frequency
+                                    n_iw=1),
+                    target_shape=chi.target_shape)
         chi_iw << Fourier(chi)
         return np.pi * np.array([chi_iw.data[0, n, n].real for n in range(N)])
 
