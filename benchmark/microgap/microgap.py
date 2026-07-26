@@ -20,7 +20,8 @@
 ##############################################################################
 
 from h5 import HDFArchive
-from triqs.gfs import GfImTime, GfReFreq
+from triqs.mesh import MeshImTime, MeshReFreq
+from triqs.gfs import Gf
 import triqs.utility.mpi as mpi
 from som import Som, fill_refreq, compute_tail, reconstruct
 import numpy as np
@@ -29,7 +30,7 @@ import time
 from dos import make_g_tau
 
 beta = 100
-indices = [0]
+target_shape = [1, 1]
 
 n_iw = 300
 n_tau = 800
@@ -47,10 +48,10 @@ run_params['f'] = 500
 run_params['l'] = 1100
 run_params['make_histograms'] = True
 
-g_tau = GfImTime(beta=beta, n_points=n_tau, indices=indices)
-g_w = GfReFreq(window=run_params['energy_window'],
-               n_points=n_w,
-               indices=indices)
+g_tau = Gf(mesh=MeshImTime(beta=beta, n_tau=n_tau),
+           target_shape=target_shape)
+g_w = Gf(mesh=MeshReFreq(window=run_params['energy_window'], n_w=n_w),
+         target_shape=target_shape)
 error_bars_tau = g_tau.copy()
 g_tau_rec = g_tau.copy()
 

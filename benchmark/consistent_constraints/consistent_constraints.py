@@ -21,8 +21,8 @@
 
 import numpy as np
 from h5 import HDFArchive
-from triqs.mesh import MeshReFreq
-from triqs.gfs import GfImFreq, GfReFreq
+from triqs.mesh import MeshImFreq, MeshReFreq
+from triqs.gfs import Gf
 from triqs.gfs.descriptors import SemiCircular
 import triqs.utility.mpi as mpi
 from som import Som, fill_refreq, compute_tail, reconstruct
@@ -32,7 +32,7 @@ arch_name = 'consistent_constraints.np%d.h5' % mpi.world.size
 
 # Parameters
 beta = 20
-indices = [0]
+target_shape = [1, 1]
 D = 1.0
 
 n_iw = 200
@@ -107,7 +107,8 @@ def make_output(cont):
     g_iw_rec = g_iw.copy()
     reconstruct(g_iw_rec, cont)
 
-    g_w = GfReFreq(window=energy_window, n_points=n_w, indices=indices)
+    g_w = Gf(mesh=MeshReFreq(window=energy_window, n_w=n_w),
+             target_shape=target_shape)
     fill_refreq(g_w, cont)
 
     g_tail = compute_tail(tail_max_order, cont)
@@ -116,7 +117,8 @@ def make_output(cont):
 
 
 print_master("--- Prepare input ---")
-g_iw = GfImFreq(beta=beta, n_points=n_iw, indices=indices)
+g_iw = Gf(mesh=MeshImFreq(beta=beta, statistic="Fermion", n_iw=n_iw),
+          target_shape=target_shape)
 g_iw << SemiCircular(D)
 
 prng = np.random.RandomState(123456789)

@@ -25,8 +25,9 @@
 
 import time
 from h5 import HDFArchive
-from triqs.mesh import MeshProduct
-from triqs.gfs import Gf, GfImFreq, GfImTime, GfLegendre, GfReFreq
+from triqs.mesh import (MeshImFreq, MeshImTime, MeshLegendre, MeshReFreq,
+                        MeshProduct)
+from triqs.gfs import Gf
 from triqs.gfs.descriptors import Function
 import triqs.utility.mpi as mpi
 from som import Som, fill_refreq, compute_tail, reconstruct
@@ -40,7 +41,8 @@ import numpy as np
 #
 
 beta = 10
-indices = [0, 1]
+n_components = 2
+target_shape = [n_components, n_components]
 
 n_iw = 201
 n_tau = 501
@@ -74,36 +76,36 @@ def make_error_bars_l(g_l):
 
 def make_cov_matrix_iw(g_iw):
     cov_matrix_iw = Gf(mesh=MeshProduct(g_iw.mesh, g_iw.mesh),
-                       target_shape=(len(indices),))
+                       target_shape=(n_components,))
     M = len(g_iw.mesh)
     mat = np.diag(1.0 * np.ones(M)) + \
         np.diag(0.6j * np.ones(M - 1), k=1) + \
         np.diag(-0.6j * np.ones(M - 1), k=-1)
-    for n in range(len(indices)):
+    for n in range(n_components):
         cov_matrix_iw[n].data[:] = mat
     return cov_matrix_iw
 
 
 def make_cov_matrix_tau(g_tau):
     cov_matrix_tau = Gf(mesh=MeshProduct(g_tau.mesh, g_tau.mesh),
-                        target_shape=(len(indices),))
+                        target_shape=(n_components,))
     M = len(g_tau.mesh)
     mat = np.diag(1.0 * np.ones(M)) + \
         np.diag(0.6 * np.ones(M - 1), k=1) + \
         np.diag(0.6 * np.ones(M - 1), k=-1)
-    for n in range(len(indices)):
+    for n in range(n_components):
         cov_matrix_tau[n].data[:] = mat
     return cov_matrix_tau
 
 
 def make_cov_matrix_l(g_l):
     cov_matrix_l = Gf(mesh=MeshProduct(g_l.mesh, g_l.mesh),
-                      target_shape=(len(indices),))
+                      target_shape=(n_components,))
     M = len(g_l.mesh)
     mat = np.diag(1.0 * np.ones(M)) + \
         np.diag(0.6 * np.ones(M - 1), k=1) + \
         np.diag(0.6 * np.ones(M - 1), k=-1)
-    for n in range(len(indices)):
+    for n in range(n_components):
         cov_matrix_l[n].data[:] = mat
     return cov_matrix_l
 
@@ -161,7 +163,8 @@ def run_som_and_save_error_bars(kind,
     cont.compute_final_solution()
     g_rec = g.copy()
     reconstruct(g_rec, cont)
-    g_w = GfReFreq(window=energy_window, n_points=n_w, indices=indices)
+    g_w = Gf(mesh=MeshReFreq(window=energy_window, n_w=n_w),
+             target_shape=target_shape)
     fill_refreq(g_w, cont)
     tail = compute_tail(tail_max_order, cont)
     elapsed_time = time.perf_counter() - start_time
@@ -202,7 +205,8 @@ def run_som_and_save_cov_matrix(kind,
     cont.compute_final_solution()
     g_rec = g.copy()
     reconstruct(g_rec, cont)
-    g_w = GfReFreq(window=energy_window, n_points=n_w, indices=indices)
+    g_w = Gf(mesh=MeshReFreq(window=energy_window, n_w=n_w),
+             target_shape=target_shape)
     fill_refreq(g_w, cont)
     tail = compute_tail(tail_max_order, cont)
     elapsed_time = time.perf_counter() - start_time
@@ -236,7 +240,8 @@ def g_iw_model(iw):
                                            points=[0])
 
 
-g_iw = GfImFreq(beta=beta, statistic="Fermion", n_points=n_iw, indices=indices)
+g_iw = Gf(mesh=MeshImFreq(beta=beta, statistic="Fermion", n_iw=n_iw),
+          target_shape=target_shape)
 g_iw << Function(g_iw_model)
 
 error_bars_iw = make_error_bars_iw(g_iw)
@@ -251,10 +256,8 @@ def g_tau_model(tau):
                                    points=[0])[0].real
 
 
-g_tau = GfImTime(beta=beta,
-                 statistic="Fermion",
-                 n_points=n_tau,
-                 indices=indices)
+g_tau = Gf(mesh=MeshImTime(beta=beta, statistic="Fermion", n_tau=n_tau),
+           target_shape=target_shape)
 g_tau << Function(g_tau_model)
 
 error_bars_tau = make_error_bars_tau(g_tau)
@@ -270,10 +273,8 @@ def g_l_model(ell):
                                    points=[0])[0].real
 
 
-g_l = GfLegendre(beta=beta,
-                 statistic="Fermion",
-                 n_points=n_l,
-                 indices=indices)
+g_l = Gf(mesh=MeshLegendre(beta=beta, statistic="Fermion", max_n=n_l),
+         target_shape=target_shape)
 for ell in g_l.mesh:
     g_l[ell] = g_l_model(ell.index)
 
@@ -319,7 +320,8 @@ def g_iw_model(iw):
                                            points=[0])
 
 
-g_iw = GfImFreq(beta=beta, statistic="Fermion", n_points=n_iw, indices=indices)
+g_iw = Gf(mesh=MeshImFreq(beta=beta, statistic="Fermion", n_iw=n_iw),
+          target_shape=target_shape)
 g_iw << Function(g_iw_model)
 
 error_bars_iw = make_error_bars_iw(g_iw)
@@ -334,10 +336,8 @@ def g_tau_model(tau):
                                    points=[0])[0].real
 
 
-g_tau = GfImTime(beta=beta,
-                 statistic="Fermion",
-                 n_points=n_tau,
-                 indices=indices)
+g_tau = Gf(mesh=MeshImTime(beta=beta, statistic="Fermion", n_tau=n_tau),
+           target_shape=target_shape)
 g_tau << Function(g_tau_model)
 
 error_bars_tau = make_error_bars_tau(g_tau)
@@ -353,7 +353,8 @@ def g_l_model(ell):
                                    points=[0])[0].real
 
 
-g_l = GfLegendre(beta=beta, statistic="Fermion", n_points=n_l, indices=indices)
+g_l = Gf(mesh=MeshLegendre(beta=beta, statistic="Fermion", max_n=n_l),
+         target_shape=target_shape)
 for ell in g_l.mesh:
     g_l[ell] = g_l_model(ell.index)
 
@@ -403,7 +404,8 @@ def chi_iw_model(iw):
                                              points=[0])
 
 
-chi_iw = GfImFreq(beta=beta, statistic="Boson", n_points=n_iw, indices=indices)
+chi_iw = Gf(mesh=MeshImFreq(beta=beta, statistic="Boson", n_iw=n_iw),
+            target_shape=target_shape)
 chi_iw << Function(chi_iw_model)
 
 error_bars_iw = make_error_bars_iw(chi_iw)
@@ -418,10 +420,8 @@ def chi_tau_model(tau):
                                      points=[0])[0].real
 
 
-chi_tau = GfImTime(beta=beta,
-                   statistic="Boson",
-                   n_points=n_tau,
-                   indices=indices)
+chi_tau = Gf(mesh=MeshImTime(beta=beta, statistic="Boson", n_tau=n_tau),
+             target_shape=target_shape)
 chi_tau << Function(chi_tau_model)
 
 error_bars_tau = make_error_bars_tau(chi_tau)
@@ -438,7 +438,8 @@ def chi_l_model(ell):
                                      points=[0])[0].real
 
 
-chi_l = GfLegendre(beta=beta, statistic="Boson", n_points=n_l, indices=indices)
+chi_l = Gf(mesh=MeshLegendre(beta=beta, statistic="Boson", max_n=n_l),
+           target_shape=target_shape)
 for ell in chi_l.mesh:
     chi_l[ell] = chi_l_model(ell.index)
 
@@ -487,10 +488,8 @@ def chi_auto_iw_model(iw):
         quad_complex(lambda e: 2 * dos(e, 0) * kern(e), 0, 2)
 
 
-chi_auto_iw = GfImFreq(beta=beta,
-                       statistic="Boson",
-                       n_points=n_iw,
-                       indices=indices)
+chi_auto_iw = Gf(mesh=MeshImFreq(beta=beta, statistic="Boson", n_iw=n_iw),
+                 target_shape=target_shape)
 chi_auto_iw << Function(chi_auto_iw_model)
 
 error_bars_iw = make_error_bars_iw(chi_auto_iw)
@@ -505,10 +504,8 @@ def chi_auto_tau_model(tau):
                                           0, 2)[0].real
 
 
-chi_auto_tau = GfImTime(beta=beta,
-                        statistic="Boson",
-                        n_points=n_tau,
-                        indices=indices)
+chi_auto_tau = Gf(mesh=MeshImTime(beta=beta, statistic="Boson", n_tau=n_tau),
+                  target_shape=target_shape)
 chi_auto_tau << Function(chi_auto_tau_model)
 
 error_bars_tau = make_error_bars_tau(chi_auto_tau)
@@ -522,10 +519,8 @@ def chi_auto_l_model(ell):
                                           0, 2)[0].real
 
 
-chi_auto_l = GfLegendre(beta=beta,
-                        statistic="Boson",
-                        n_points=n_l,
-                        indices=indices)
+chi_auto_l = Gf(mesh=MeshLegendre(beta=beta, statistic="Boson", max_n=n_l),
+                target_shape=target_shape)
 for ell in chi_auto_l.mesh:
     chi_auto_l[ell] = chi_auto_l_model(ell.index)
 
@@ -570,7 +565,8 @@ def g_zt_iw_model(iw):
                                               0, 2)
 
 
-g_zt_iw = GfImFreq(beta=beta, n_points=n_iw, indices=indices)
+g_zt_iw = Gf(mesh=MeshImFreq(beta=beta, statistic="Fermion", n_iw=n_iw),
+             target_shape=target_shape)
 g_zt_iw << Function(g_zt_iw_model)
 
 error_bars_iw = make_error_bars_tau(g_zt_iw)
@@ -584,7 +580,8 @@ def g_zt_tau_model(tau):
                                       0, 2)[0].real
 
 
-g_zt_tau = GfImTime(beta=beta, n_points=n_tau, indices=indices)
+g_zt_tau = Gf(mesh=MeshImTime(beta=beta, statistic="Fermion", n_tau=n_tau),
+              target_shape=target_shape)
 g_zt_tau << Function(g_zt_tau_model)
 
 error_bars_tau = make_error_bars_tau(g_zt_tau)
@@ -599,7 +596,8 @@ def g_zt_l_model(ell):
                                       0, 2)[0].real
 
 
-g_zt_l = GfLegendre(beta=beta, n_points=n_l, indices=indices)
+g_zt_l = Gf(mesh=MeshLegendre(beta=beta, statistic="Fermion", max_n=n_l),
+            target_shape=target_shape)
 for ell in g_zt_l.mesh:
     g_zt_l[ell] = g_zt_l_model(ell.index)
 

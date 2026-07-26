@@ -25,7 +25,8 @@
 
 import time
 from h5 import HDFArchive
-from triqs.gfs import GfImFreq, GfReFreq
+from triqs.mesh import MeshImFreq, MeshReFreq
+from triqs.gfs import Gf
 from triqs.gfs.descriptors import Function
 import triqs.utility.mpi as mpi
 from som import Som, fill_refreq
@@ -79,10 +80,11 @@ def run_som_and_save(kind, g, error_bars, norms, energy_window):
     cont.accumulate(energy_window=energy_window, **run_params)
     cont.compute_final_solution()
 
-    g_w = GfReFreq(window=energy_window, n_points=n_w, indices=[0])
-    g_w_nobinning = GfReFreq(window=energy_window,
-                             n_points=n_w_nobinning,
-                             indices=[0])
+    g_w = Gf(mesh=MeshReFreq(window=energy_window, n_w=n_w),
+             target_shape=[1, 1])
+    g_w_nobinning = Gf(mesh=MeshReFreq(window=energy_window,
+                                       n_w=n_w_nobinning),
+                       target_shape=[1, 1])
 
     start_time = time.perf_counter()
     fill_refreq(g_w_nobinning, cont, with_binning=False)
@@ -118,7 +120,8 @@ def g_iw_model(iw):
     return quad_complex(lambda e: dos(e, 1) * kern(e), -1, 3, points=[0])
 
 
-g_iw = GfImFreq(beta=beta, n_points=n_iw, indices=[0])
+g_iw = Gf(mesh=MeshImFreq(beta=beta, statistic="Fermion", n_iw=n_iw),
+          target_shape=[1, 1])
 g_iw << Function(g_iw_model)
 error_bars_iw = g_iw.copy()
 error_bars_iw.data[:] = np.abs(error_bars_iw.data[:])
@@ -136,7 +139,8 @@ def g_iw_model(iw):
     return quad_complex(lambda e: dos(e, 0) * kern(e), -2, 2, points=[0])
 
 
-g_iw = GfImFreq(beta=beta, n_points=n_iw, indices=[0])
+g_iw = Gf(mesh=MeshImFreq(beta=beta, statistic="Fermion", n_iw=n_iw),
+          target_shape=[1, 1])
 g_iw << Function(g_iw_model)
 error_bars_iw = g_iw.copy()
 error_bars_iw.data[:] = np.abs(error_bars_iw.data[:])
@@ -162,10 +166,8 @@ def chi_iw_model(iw):
                                     points=[0])
 
 
-chi_iw = GfImFreq(beta=beta,
-                  statistic="Boson",
-                  n_points=n_iw,
-                  indices=[0])
+chi_iw = Gf(mesh=MeshImFreq(beta=beta, statistic="Boson", n_iw=n_iw),
+            target_shape=[1, 1])
 chi_iw << Function(chi_iw_model)
 error_bars_iw = chi_iw.copy()
 error_bars_iw.data[:] = np.abs(error_bars_iw.data[:])
@@ -189,10 +191,8 @@ def chi_iw_model(iw):
     return chi_norms * quad_complex(lambda e: 2*dos(e, 0) * kern(e), 0, 2)
 
 
-chi_iw = GfImFreq(beta=beta,
-                  statistic="Boson",
-                  n_points=n_iw,
-                  indices=[0])
+chi_iw = Gf(mesh=MeshImFreq(beta=beta, statistic="Boson", n_iw=n_iw),
+            target_shape=[1, 1])
 chi_iw << Function(chi_iw_model)
 error_bars_iw = chi_iw.copy()
 error_bars_iw.data[:] = np.abs(error_bars_iw.data[:])
@@ -212,7 +212,8 @@ def g_zt_iw_model(iw):
     return g_zt_norms * quad_complex(lambda e: 2*dos(e, 0) * kern(e), 0, 2)
 
 
-g_zt_iw = GfImFreq(beta=beta, n_points=n_iw, indices=[0])
+g_zt_iw = Gf(mesh=MeshImFreq(beta=beta, statistic="Fermion", n_iw=n_iw),
+             target_shape=[1, 1])
 g_zt_iw << Function(g_zt_iw_model)
 error_bars_zt_iw = g_zt_iw.copy()
 error_bars_zt_iw.data[:] = np.abs(error_bars_zt_iw.data[:])

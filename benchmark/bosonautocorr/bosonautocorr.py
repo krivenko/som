@@ -25,7 +25,8 @@
 #
 
 from h5 import HDFArchive
-from triqs.gfs import GfImTime, GfReFreq
+from triqs.mesh import MeshImTime, MeshReFreq
+from triqs.gfs import Gf
 from triqs.gfs.descriptors import Function
 import triqs.utility.mpi as mpi
 from som import Som, fill_refreq, reconstruct, compute_tail
@@ -89,7 +90,8 @@ def run_som_and_save(kind, chi, error_bars, norms, energy_window):
     cont.accumulate(energy_window=energy_window, **run_params)
     cont.compute_final_solution()
 
-    chi_w = GfReFreq(window=energy_window, n_points=n_w, indices=[0])
+    chi_w = Gf(mesh=MeshReFreq(window=energy_window, n_w=n_w),
+               target_shape=[1, 1])
     fill_refreq(chi_w, cont)
 
     chi_rec = chi.copy()
@@ -107,10 +109,10 @@ def run_som_and_save(kind, chi, error_bars, norms, energy_window):
         gr["solutions"] = cont.solutions
 
 
-chi_symm_tau = GfImTime(beta=beta,
-                        statistic="Boson",
-                        n_points=n_tau,
-                        indices=[0])
+chi_symm_tau = Gf(mesh=MeshImTime(beta=beta,
+                                  statistic="Boson",
+                                  n_tau=n_tau),
+                  target_shape=[1, 1])
 
 chi_symm_tau << Function(chi_tau_model_symm)
 chi_symm_tau.data[:] += abs_error * 2 * (np.random.rand(n_tau, 1, 1) - 0.5)

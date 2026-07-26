@@ -20,7 +20,8 @@
 ##############################################################################
 
 from h5 import HDFArchive
-from triqs.gfs import GfImFreq, GfImTime, GfLegendre, GfReFreq
+from triqs.mesh import MeshImFreq, MeshImTime, MeshLegendre, MeshReFreq
+from triqs.gfs import Gf
 from triqs.gfs.descriptors import SemiCircular, Fourier, MatsubaraToLegendre
 import triqs.utility.mpi as mpi
 from som import Som, fill_refreq, compute_tail, reconstruct
@@ -28,7 +29,7 @@ import numpy as np
 import time
 
 beta = 20
-indices = [0]
+target_shape = [1, 1]
 D = 1.0
 
 n_iw = 200
@@ -47,13 +48,14 @@ run_params['f'] = 1000
 run_params['l'] = 500
 run_params['make_histograms'] = True
 
-g_iw = GfImFreq(beta=beta, n_points=n_iw, indices=indices)
-g_tau = GfImTime(beta=beta, n_points=n_tau, indices=indices)
-g_l = GfLegendre(beta=beta, n_points=n_l, indices=indices)
+g_iw = Gf(mesh=MeshImFreq(beta=beta, statistic="Fermion", n_iw=n_iw),
+          target_shape=target_shape)
+g_tau = Gf(mesh=MeshImTime(beta=beta, n_tau=n_tau), target_shape=target_shape)
+g_l = Gf(mesh=MeshLegendre(beta=beta, statistic="Fermion", max_n=n_l),
+         target_shape=target_shape)
 
-g_w = GfReFreq(window=run_params['energy_window'],
-               n_points=n_w,
-               indices=indices)
+g_w = Gf(mesh=MeshReFreq(window=run_params['energy_window'], n_w=n_w),
+         target_shape=target_shape)
 
 error_bars_iw = g_iw.copy()
 error_bars_tau = g_tau.copy()
