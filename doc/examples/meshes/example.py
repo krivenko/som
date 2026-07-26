@@ -52,7 +52,8 @@ for mesh_name, chi in (("ImFreq", chi_iw),
     cont.compute_final_solution(good_chi_rel=4.0, verbosity=1)
 
     # Recover \chi(\omega) on an energy mesh.
-    chi_w = GfReFreq(window=energy_window, n_points=n_w, indices=chi.indices)
+    chi_w = Gf(mesh=MeshReFreq(window=energy_window, n_w=n_w),
+               target_shape=chi.target_shape)
     fill_refreq(chi_w, cont)
 
     # \chi reconstructed from the solution

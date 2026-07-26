@@ -72,7 +72,8 @@ for name, cont in (("error_bars", cont_eb),
     cont.compute_final_solution(verbosity=1)
 
     # Recover G(\omega) on an energy mesh
-    g_w = GfReFreq(window=energy_window, n_points=n_w, indices=g_tau.indices)
+    g_w = Gf(mesh=MeshReFreq(window=energy_window, n_w=n_w),
+             target_shape=g_tau.target_shape)
     fill_refreq(g_w, cont)
 
     # G(\tau) reconstructed from the solution

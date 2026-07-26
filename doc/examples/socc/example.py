@@ -48,7 +48,7 @@ cont.accumulate(**acc_params)
 chi2 = cont.compute_final_solution(good_chi_rel=4.0, verbosity=1)
 
 # Recover g(\omega) on an energy mesh
-g_w = GfReFreq(window=energy_window, n_points=n_w, indices=[0])
+g_w = Gf(mesh=MeshReFreq(window=energy_window, n_w=n_w), target_shape=[1, 1])
 fill_refreq(g_w, cont)
 
 # g(\tau) reconstructed from the solution
@@ -121,7 +121,7 @@ params['der_penalty_coeff'] = 2.0
 chi2 = cont.compute_final_solution_cc(**params)
 
 # Recover g(\omega) on an energy mesh
-g_w = GfReFreq(window=energy_window, n_points=n_w, indices=[0])
+g_w = Gf(mesh=MeshReFreq(window=energy_window, n_w=n_w), target_shape=[1, 1])
 fill_refreq(g_w, cont)
 
 # g(\tau) reconstructed from the solution

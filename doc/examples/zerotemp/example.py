@@ -50,15 +50,13 @@ cont.compute_final_solution(good_chi_abs=good_chi_abs,
 # Recover G(\omega) on an energy mesh.
 # NB: we can use *any* energy window at this point, not necessarily that
 # from 'acc_params'.
-g_w = GfReFreq(window=(0, 10.0),
-               n_points=n_w,
-               indices=[0])
+g_w = Gf(mesh=MeshReFreq(window=(0, 10.0), n_w=n_w),
+         target_shape=[1, 1])
 fill_refreq(g_w, cont)
 
 # Do the same, but this time without binning.
-g_w_wo_binning = GfReFreq(window=(0, 10.0),
-                          n_points=n_w,
-                          indices=g_tau.indices)
+g_w_wo_binning = Gf(mesh=MeshReFreq(window=(0, 10.0), n_w=n_w),
+                    target_shape=g_tau.target_shape)
 fill_refreq(g_w_wo_binning, cont, with_binning=False)
 
 # Compute tail coefficients of G(\omega)
