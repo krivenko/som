@@ -195,7 +195,8 @@ time/Matsubara frequency/Legendre coefficient data and computing the tail.
   from som import fill_refreq, compute_tail, reconstruct
 
   # Recover the real-frequency counterpart of 'g'.
-  g_w = GfReFreq(window=energy_window, n_points=n_w, indices=g.indices)
+  g_w = Gf(mesh=MeshReFreq(window=energy_window, n_w=n_w),
+           target_shape=g.target_shape)
   fill_refreq(g_w, cont)
 
   # Compute the tail of 'g_w'.
