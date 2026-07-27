@@ -161,7 +161,7 @@ def make_g_l_page(gr, s):
     g_l = gr['g']
     g_l_rec = gr['g_rec']
     # FIXME: TRIQS issue #914
-    l_mesh = [ell.real for ell in g_l.mesh]
+    l_mesh = [ell.index for ell in g_l.mesh]
     ax = fig.add_axes([.1, .1, .54, .35])
     ax.plot(l_mesh,
             g_l.data[:, 0, 0].real,
