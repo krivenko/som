@@ -12,6 +12,8 @@
   `triqs.gfs` (formerly `triqs.gf`) and mesh types from `triqs.mesh`
   (formerly `triqs.gf.meshes`).
 - The Python bindings keep using the `cpp2py` generator.
+- Fixed a TRIQS>=3.2 compatibility issue in
+  `estimate_boson_corr_spectrum_norms()`. Credits to @st3r4g for the fix (#9).
 
 ## [2.1.2](https://github.com/krivenko/som/tree/2.1.2) (2025-07-10)
 [Full Changelog](https://github.com/krivenko/som/compare/2.1.1...2.1.2)
