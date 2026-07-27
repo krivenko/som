@@ -2,7 +2,7 @@
 
 # Changelog
 
-## [2.2.0](https://github.com/krivenko/som/tree/2.2.0) (unreleased)
+## [2.2.0](https://github.com/krivenko/som/tree/2.2.0) (2026-07-27)
 [Full Changelog](https://github.com/krivenko/som/compare/2.1.2...2.2.0)
 
 - Port to [TRIQS 4.0](https://github.com/TRIQS/triqs/releases/tag/4.0.0).
