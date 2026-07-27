@@ -27,7 +27,7 @@ about:
 
 source:
   url: https://github.com/krivenko/som/archive/${{ version }}.tar.gz
-  sha256: e13e8c9bb185489b7ba6734234c91ddd07ac68047246a2c5c034ecb182994f28
+  sha256: e716c11b6915999a51376ef28ec5a75a8164fb2679f103cf57c9941b3bfb4222
 
 build:
   number: ${{ number }}
