@@ -2,6 +2,6 @@ mpi:
   - mpich
   - openmpi
 mpich:
-  - '4'
+  - '5'
 openmpi:
   - '5'
