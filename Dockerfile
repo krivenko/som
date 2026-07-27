@@ -10,9 +10,10 @@ ENV SRC=/src BUILD=/home/build
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-            make g++ apt-utils file libblas-dev libopenblas-dev
-RUN sh -c 'echo -e "\nrmaps_base_oversubscribe = 1" >> \
-          /etc/openmpi/openmpi-mca-params.conf'
+            make g++ apt-utils file libblas-dev libopenblas-dev libopenmpi-dev
+
+RUN printf '\nrmaps_default_mapping_policy = :oversubscribe\n' \
+      >> /etc/openmpi/prte-mca-params.conf
 
 COPY --chown=build . $SRC/$APPNAME
 WORKDIR $BUILD/$APPNAME
