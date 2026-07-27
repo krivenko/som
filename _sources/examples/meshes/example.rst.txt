@@ -6,10 +6,10 @@ Input data defined on various meshes
 In this example we analytically continue the same dynamical susceptibility
 :math:`\chi`, whose values are given on three different meshes:
 
-- Bosonic :class:`Matsubara frequencies <triqs.gf.meshes.MeshImFreq>`;
-- Points of an :class:`imaginary time grid <triqs.gf.meshes.MeshImTime>`;
+- Bosonic :class:`Matsubara frequencies <triqs.mesh.MeshImFreq>`;
+- Points of an :class:`imaginary time grid <triqs.mesh.MeshImTime>`;
 - Indices of
-  :class:`Legendre orthogonal polynomials <triqs.gf.meshes.MeshLegendre>`.
+  :class:`Legendre orthogonal polynomials <triqs.mesh.MeshLegendre>`.
 
 .. literalinclude:: example.py
 

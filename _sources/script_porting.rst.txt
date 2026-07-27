@@ -6,7 +6,7 @@ SOM 1.x script porting guide
 .. currentmodule:: som
 
 Porting computational scripts from SOM 1.x to SOM 2.x means switching from
-Python 2.7 to Python 3 and from TRIQS 1.4 to TRIQS 3.x. This guide covers
+Python 2.7 to Python 3 and from TRIQS 1.4 to TRIQS 4.x. This guide covers
 only the SOM-specific portion of changes that need to be made. Please, refer to
 the official Python
 `porting guide <https://docs.python.org/3/howto/pyporting.html>`_ to learn about
@@ -195,7 +195,8 @@ time/Matsubara frequency/Legendre coefficient data and computing the tail.
   from som import fill_refreq, compute_tail, reconstruct
 
   # Recover the real-frequency counterpart of 'g'.
-  g_w = GfReFreq(window=energy_window, n_points=n_w, indices=g.indices)
+  g_w = Gf(mesh=MeshReFreq(window=energy_window, n_w=n_w),
+           target_shape=g.target_shape)
   fill_refreq(g_w, cont)
 
   # Compute the tail of 'g_w'.

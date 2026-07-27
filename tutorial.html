@@ -177,18 +177,19 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ChangeLog.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id2">2.1.2 (2025-07-10)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id3">2.1.1 (2025-06-30)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id4">2.1.0 (2023-10-03)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id5">2.0.0 (2022-06-27)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id2">2.2.0 (2026-07-27)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id3">2.1.2 (2025-07-10)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id4">2.1.1 (2025-06-30)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id5">2.1.0 (2023-10-03)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id6">2.0.0 (2022-06-27)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="ChangeLog.html#major-changes-and-new-features">Major changes and new features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ChangeLog.html#python-api-changes">Python API changes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ChangeLog.html#build-system-and-developer-tools">Build system and developer tools</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id6">1.2 (2020-03-15)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id7">1.1 (2017-04-23)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id8">1.0 (2017-03-19)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id7">1.2 (2020-03-15)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id8">1.1 (2017-04-23)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ChangeLog.html#id9">1.0 (2017-03-19)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
@@ -228,8 +229,10 @@ frequencies, or a list of Legendre basis coefficients). Nonetheless, a typical
 script will have the following basic parts.</p>
 <ul>
 <li><p>Import TRIQS and SOM Python modules.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Green&#39;s function containers</span>
-<span class="kn">from</span> <span class="nn">triqs.gf</span> <span class="kn">import</span> <span class="o">*</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Mesh types</span>
+<span class="kn">from</span> <span class="nn">triqs.mesh</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="c1"># Green&#39;s function containers</span>
+<span class="kn">from</span> <span class="nn">triqs.gfs</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="c1"># HDFArchive interface to .h5 files</span>
 <span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
 <span class="c1"># HDF5 archives must be modified only by one MPI rank.</span>
@@ -242,7 +245,7 @@ script will have the following basic parts.</p>
 </div>
 </li>
 <li><p><em>Optional:</em> Load input data from an
-<a class="reference external" href="https://triqs.github.io/triqs/3.3.x/userguide/python/tutorials/Basics/02-Archiving_your_data.html" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.3.x)"><span class="xref std std-ref">HDF5 archive </span></a>.</p>
+<a class="reference external" href="https://triqs.github.io/triqs/4.0.x/userguide/python/tutorials/Basics/02-Archiving_your_data.html" rel="noopener noreferrer" target="_blank" title="(in TRIQS v4.0.0)"><span class="xref std std-ref">HDF5 archive </span></a>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Open an HDF5 file in read-only mode</span>
 <span class="n">arch</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;input.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
 
@@ -274,9 +277,9 @@ physical observable in question.</p>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">inp</span></code> and <code class="docutils literal notranslate"><span class="pre">error_bars</span></code> must be Green’s function containers of
-the same type <a class="reference external" href="https://triqs.github.io/triqs/3.3.x/documentation/python_api/triqs.gf.gf.Gf.html#triqs.gf.gf.Gf" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.3.x)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.gf.Gf</span></code></a>, defined on the same mesh
-(<a class="reference external" href="https://triqs.github.io/triqs/3.3.x/documentation/python_api/triqs.gf.meshes.MeshImTime.html#triqs.gf.meshes.MeshImTime" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.3.x)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.meshes.MeshImTime</span></code></a>, <a class="reference external" href="https://triqs.github.io/triqs/3.3.x/documentation/python_api/triqs.gf.meshes.MeshImFreq.html#triqs.gf.meshes.MeshImFreq" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.3.x)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.meshes.MeshImFreq</span></code></a> or
-<a class="reference external" href="https://triqs.github.io/triqs/3.3.x/documentation/python_api/triqs.gf.meshes.MeshLegendre.html#triqs.gf.meshes.MeshLegendre" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.3.x)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gf.meshes.MeshLegendre</span></code></a>) and having the same square target
+the same type <a class="reference external" href="https://triqs.github.io/triqs/4.0.x/documentation/python_api/triqs.gfs.gf.Gf.html#triqs.gfs.gf.Gf" rel="noopener noreferrer" target="_blank" title="(in TRIQS v4.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.gfs.gf.Gf</span></code></a>, defined on the same mesh
+(<code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.mesh.MeshImTime</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.mesh.MeshImFreq</span></code> or
+<code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.mesh.MeshLegendre</span></code>) and having the same square target
 shape.</p>
 <p>Currently supported observable kinds are</p>
 <ul class="simple">
@@ -393,21 +396,21 @@ the many keyword arguments it accepts.</p>
 </li>
 <li><p>Extract the final solution,
 <a class="reference internal" href="guide/recovery.html#recovery"><span class="std std-ref">recover the real-frequency version</span></a> of <code class="docutils literal notranslate"><span class="pre">inp</span></code>,
-its <a class="reference external" href="https://triqs.github.io/triqs/3.3.x/documentation/manual/triqs/gfs/c%2B%2B/tail.html#gf-tail" rel="noopener noreferrer" target="_blank" title="(in TRIQS v3.3.x)"><span class="xref std std-ref">tail expansion coefficients</span></a> and
+its tail expansion coefficients and
 reconstruct the input.</p>
 <p>SOM internally represents spectral functions (configurations) as sums of
 rectangles. The final solutions are accessible as a list of
 <a class="reference internal" href="reference/som.html#som.Configuration" title="som.Configuration"><code class="xref py py-class docutils literal notranslate"><span class="pre">Configuration</span></code></a> objects via an attribute <a class="reference internal" href="reference/som.html#som.Som.solutions" title="som.Som.solutions"><code class="xref py py-data docutils literal notranslate"><span class="pre">Som.solutions</span></code></a>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sol</span> <span class="o">=</span> <span class="n">cont</span><span class="o">.</span><span class="n">solutions</span>
 <span class="c1"># &#39;sol&#39; is now a list of spectral functions,</span>
-<span class="c1"># len(sol) == len(inp.indices)</span>
+<span class="c1"># len(sol) == inp.target_shape[0]</span>
 
 <span class="c1"># Recover the real-frequency version of &#39;inp&#39;</span>
 <span class="c1">#</span>
 <span class="c1"># NB: we can use *any* energy window at this point, not necessarily that</span>
 <span class="c1"># from &#39;acc_params&#39;</span>
 <span class="n">w_mesh</span> <span class="o">=</span> <span class="n">MeshReFreq</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">),</span> <span class="n">n_w</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
-<span class="n">f_w</span> <span class="o">=</span> <span class="n">Gf</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">w_mesh</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">inp</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+<span class="n">f_w</span> <span class="o">=</span> <span class="n">Gf</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">w_mesh</span><span class="p">,</span> <span class="n">target_shape</span><span class="o">=</span><span class="n">inp</span><span class="o">.</span><span class="n">target_shape</span><span class="p">)</span>
 <span class="n">fill_refreq</span><span class="p">(</span><span class="n">f_w</span><span class="p">,</span> <span class="n">cont</span><span class="p">)</span>
 
 <span class="c1"># High frequency expansion (tail) coefficients up to order &#39;max_order&#39;</span>

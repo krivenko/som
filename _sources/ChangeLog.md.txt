@@ -2,6 +2,17 @@
 
 # Changelog
 
+## [2.2.0](https://github.com/krivenko/som/tree/2.2.0) (2026-07-27)
+[Full Changelog](https://github.com/krivenko/som/compare/2.1.2...2.2.0)
+
+- Port to [TRIQS 4.0](https://github.com/TRIQS/triqs/releases/tag/4.0.0).
+  TRIQS 3.x is no longer supported. Building SOM now requires CMake 3.20 and
+  a C++ compiler supported by TRIQS 4.0 (clang >= 19 or gcc >= 14).
+- Python scripts must now import Green's function containers from
+  `triqs.gfs` (formerly `triqs.gf`) and mesh types from `triqs.mesh`
+  (formerly `triqs.gf.meshes`).
+- The Python bindings keep using the `cpp2py` generator.
+
 ## [2.1.2](https://github.com/krivenko/som/tree/2.1.2) (2025-07-10)
 [Full Changelog](https://github.com/krivenko/som/compare/2.1.1...2.1.2)
 

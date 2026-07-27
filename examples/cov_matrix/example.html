@@ -177,18 +177,19 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../ChangeLog.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id2">2.1.2 (2025-07-10)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id3">2.1.1 (2025-06-30)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id4">2.1.0 (2023-10-03)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id5">2.0.0 (2022-06-27)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id2">2.2.0 (2026-07-27)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id3">2.1.2 (2025-07-10)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id4">2.1.1 (2025-06-30)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id5">2.1.0 (2023-10-03)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id6">2.0.0 (2022-06-27)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../ChangeLog.html#major-changes-and-new-features">Major changes and new features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../ChangeLog.html#python-api-changes">Python API changes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../ChangeLog.html#build-system-and-developer-tools">Build system and developer tools</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id6">1.2 (2020-03-15)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id7">1.1 (2017-04-23)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id8">1.0 (2017-03-19)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id7">1.2 (2020-03-15)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id8">1.1 (2017-04-23)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ChangeLog.html#id9">1.0 (2017-03-19)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../genindex.html">Index</a></li>
@@ -236,7 +237,8 @@ eigenvalues shifted up by a constant <span class="math notranslate nohighlight">
 <p class="rubric">Perform analytic continuation</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import HDFArchive, some TRIQS modules and NumPy</span>
 <span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
-<span class="kn">from</span> <span class="nn">triqs.gf</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">triqs.mesh</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">triqs.gfs</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">import</span> <span class="nn">triqs.utility.mpi</span> <span class="k">as</span> <span class="nn">mpi</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -307,7 +309,8 @@ eigenvalues shifted up by a constant <span class="math notranslate nohighlight">
     <span class="n">cont</span><span class="o">.</span><span class="n">compute_final_solution</span><span class="p">(</span><span class="n">verbosity</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="c1"># Recover G(\omega) on an energy mesh</span>
-    <span class="n">g_w</span> <span class="o">=</span> <span class="n">GfReFreq</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="n">energy_window</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="n">n_w</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">g_tau</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+    <span class="n">g_w</span> <span class="o">=</span> <span class="n">Gf</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">MeshReFreq</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="n">energy_window</span><span class="p">,</span> <span class="n">n_w</span><span class="o">=</span><span class="n">n_w</span><span class="p">),</span>
+             <span class="n">target_shape</span><span class="o">=</span><span class="n">g_tau</span><span class="o">.</span><span class="n">target_shape</span><span class="p">)</span>
     <span class="n">fill_refreq</span><span class="p">(</span><span class="n">g_w</span><span class="p">,</span> <span class="n">cont</span><span class="p">)</span>
 
     <span class="c1"># G(\tau) reconstructed from the solution</span>
@@ -327,7 +330,7 @@ eigenvalues shifted up by a constant <span class="math notranslate nohighlight">
 <p>Download input file <a class="reference download internal" download="" href="../../_downloads/3ca352f7037124d0c0ad8d418f656769/input.h5"><code class="xref download docutils literal notranslate"><span class="pre">input.h5</span></code></a>.</p>
 <p class="rubric">Plot input and reconstructed imaginary-time GF’s</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
-<span class="kn">from</span> <span class="nn">triqs.gf</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">triqs.gfs</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 <span class="kn">from</span> <span class="nn">triqs.plot.mpl_interface</span> <span class="kn">import</span> <span class="n">oplot</span>
 
@@ -357,7 +360,7 @@ eigenvalues shifted up by a constant <span class="math notranslate nohighlight">
 </figure>
 <p class="rubric">Plot spectral functions</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
-<span class="kn">from</span> <span class="nn">triqs.gf</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">triqs.gfs</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 <span class="kn">from</span> <span class="nn">triqs.plot.mpl_interface</span> <span class="kn">import</span> <span class="n">oplot</span>
 
