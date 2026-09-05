@@ -157,15 +157,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - "macos-latest"
-          # macos-15-intel is probably the last supported macOS x86-64 runner
-          # https://github.com/actions/runner-images/issues/13074
-          - "macos-15-intel"
         compiler:
           - { name: "gcc", cxx: "g++-15" }
           - { name: "clang", cxx: "clang++" }
-    runs-on: ${{ matrix.os }}
+    runs-on: macos-latest
     timeout-minutes: 180
 
     steps:
