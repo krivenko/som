@@ -174,10 +174,8 @@ jobs:
 
     - name: Install Python dependencies
       run: |
-           PYTHON_BIN="$(python -c 'import site; print(site.USER_BASE)')/bin"
-           echo "PATH=${PYTHON_BIN}:${PATH}" >> $GITHUB_ENV
-           pip install --user --upgrade pip
-           pip install --user mako
+           echo "$(python3 -m site --user-base)/bin" >> $GITHUB_PATH
+           pip3 install --break-system-packages --user mako
 
     - name: Set PATH and LDFLAGS for Clang
       if: matrix.compiler.name == 'clang'
@@ -190,7 +188,7 @@ jobs:
     - name: Install Sphinx and related packages
       if: matrix.compiler.name == 'clang'
       run: |
-        pip install --user \
+        pip3 install --break-system-packages --user \
           sphinx matplotlib nbsphinx linkify-it-py sphinx-rtd-theme myst-parser
 
     - name: Build & install TRIQS
