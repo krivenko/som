@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Input data defined on various meshes &mdash; SOM  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=3b04a184" />
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
 
@@ -232,12 +232,12 @@
 <code class="xref py py-class docutils literal notranslate"><span class="pre">Legendre</span> <span class="pre">orthogonal</span> <span class="pre">polynomials</span></code>.</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import HDFArchive and some TRIQS modules</span>
-<span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
-<span class="kn">from</span> <span class="nn">triqs.gfs</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">import</span> <span class="nn">triqs.utility.mpi</span> <span class="k">as</span> <span class="nn">mpi</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">h5</span><span class="w"> </span><span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">triqs.gfs</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">triqs.utility.mpi</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpi</span>
 
 <span class="c1"># Import main SOM class and utility functions</span>
-<span class="kn">from</span> <span class="nn">som</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Som</span><span class="p">,</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">som</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">Som</span><span class="p">,</span>
                  <span class="n">fill_refreq</span><span class="p">,</span>
                  <span class="n">compute_tail</span><span class="p">,</span>
                  <span class="n">reconstruct</span><span class="p">,</span>
@@ -306,10 +306,10 @@
 </div>
 <p>Download input file <a class="reference download internal" download="" href="../../_downloads/4194acad2d4fd5a0a38a4a71d201c6fa/input.h5"><code class="xref download docutils literal notranslate"><span class="pre">input.h5</span></code></a>.</p>
 <p class="rubric">Plot input and reconstructed susceptibility</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
-<span class="kn">from</span> <span class="nn">triqs.gfs</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-<span class="kn">from</span> <span class="nn">triqs.plot.mpl_interface</span> <span class="kn">import</span> <span class="n">oplot</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">h5</span><span class="w"> </span><span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">triqs.gfs</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">triqs.plot.mpl_interface</span><span class="w"> </span><span class="kn">import</span> <span class="n">oplot</span>
 
 <span class="c1"># Read data from archive</span>
 <span class="n">ar</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;results.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
@@ -324,7 +324,7 @@
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../../build/doc/../../doc/examples/meshes/plot_chi_rec.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/meshes/plot_chi_rec_00_00.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/meshes/plot_chi_rec_00_00.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/meshes/plot_chi_rec_00_00.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
+<p>(<a class="reference download internal" download="" href="../../_downloads/57ebf163caa7846be5e2f2eaeda970f3/plot_chi_rec.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/987e421e359479a0cc078b2365367b67/plot_chi_rec_00_00.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/c022fb7bd163501578fba94c5ba2202c/plot_chi_rec_00_00.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/adc731fc0b4e0f49defdd87211dd2a6a/plot_chi_rec_00_00.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../../_images/plot_chi_rec_00_00.png"><img alt="../../_images/plot_chi_rec_00_00.png" class="plot-directive" height="384" src="../../_images/plot_chi_rec_00_00.png" width="512" />
 </a>
@@ -339,7 +339,7 @@
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../../build/doc/../../doc/examples/meshes/plot_chi_rec_01_00.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/meshes/plot_chi_rec_01_00.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/meshes/plot_chi_rec_01_00.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
+<p>(<a class="reference download internal" download="" href="../../_downloads/15d31989b94e0fe636bcd0cb7db9c6d6/plot_chi_rec_01_00.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/77a0684be26c31f35aa54f32fee2452d/plot_chi_rec_01_00.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/2adb1dec4d8d732c5021f987798df788/plot_chi_rec_01_00.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../../_images/plot_chi_rec_01_00.png"><img alt="../../_images/plot_chi_rec_01_00.png" class="plot-directive" height="384" src="../../_images/plot_chi_rec_01_00.png" width="512" />
 </a>
@@ -354,16 +354,16 @@
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../../build/doc/../../doc/examples/meshes/plot_chi_rec_02_00.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/meshes/plot_chi_rec_02_00.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/meshes/plot_chi_rec_02_00.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
+<p>(<a class="reference download internal" download="" href="../../_downloads/92e34e7fa1aa37cf68eda857913b57be/plot_chi_rec_02_00.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/5f27665bedfc7a75f209d9c441ec082a/plot_chi_rec_02_00.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/c484035f18d6f0496444a279ee3d3f3c/plot_chi_rec_02_00.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../../_images/plot_chi_rec_02_00.png"><img alt="../../_images/plot_chi_rec_02_00.png" class="plot-directive" height="384" src="../../_images/plot_chi_rec_02_00.png" width="512" />
 </a>
 </figure>
 <p class="rubric">Plot spectral functions</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
-<span class="kn">from</span> <span class="nn">triqs.gfs</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-<span class="kn">from</span> <span class="nn">triqs.plot.mpl_interface</span> <span class="kn">import</span> <span class="n">oplot</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">h5</span><span class="w"> </span><span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">triqs.gfs</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">triqs.plot.mpl_interface</span><span class="w"> </span><span class="kn">import</span> <span class="n">oplot</span>
 
 <span class="c1"># Read data from archive</span>
 <span class="n">ar</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;results.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
@@ -401,7 +401,7 @@
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper left&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../../build/doc/../../doc/examples/meshes/plot_chi_w.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/meshes/plot_chi_w.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/meshes/plot_chi_w.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/meshes/plot_chi_w.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
+<p>(<a class="reference download internal" download="" href="../../_downloads/9c1cf9ccfc71978468f68b3089140c66/plot_chi_w.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/b622b8935052322eaa49252d704a2745/plot_chi_w.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/3c875104eb52819a6956324a92969af7/plot_chi_w.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/be969ef5464460ec533eb0e184e2ed42/plot_chi_w.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../../_images/plot_chi_w2.png"><img alt="../../_images/plot_chi_w2.png" class="plot-directive" height="384" src="../../_images/plot_chi_w2.png" width="512" />
 </a>

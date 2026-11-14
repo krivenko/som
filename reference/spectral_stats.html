@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>som.spectral_stats: Statistical analysis of noisy spectral functions &mdash; SOM  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=3b04a184" />
       <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
 
@@ -236,19 +236,19 @@ Evaluate spectral integral</p>
 <p><strong>Parameters:</strong></p>
 <dl class="field-list simple">
 <dt class="field-odd">Z_m<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" rel="noopener noreferrer" target="_blank" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, Center of the energy interval.</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.14/builtins/functions.html#float" rel="noopener noreferrer" target="_blank" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, Center of the energy interval.</p>
 </dd>
 <dt class="field-even">Delta_m<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" rel="noopener noreferrer" target="_blank" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, Length of the energy interval.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.14/builtins/functions.html#float" rel="noopener noreferrer" target="_blank" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, Length of the energy interval.</p>
 </dd>
 <dt class="field-odd">C<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="som.html#som.Configuration" title="som.Configuration"><code class="xref py py-class docutils literal notranslate"><span class="pre">som.Configuration</span></code></a>, Spectral function <span class="math notranslate nohighlight">\(A^{(j)}(z)\)</span>.</p>
 </dd>
 <dt class="field-even">R_func<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" rel="noopener noreferrer" target="_blank" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, Name of the <a class="reference internal" href="../guide/spectral_stats.html#resolution-functions"><span class="std std-ref">resolution function</span></a> <span class="math notranslate nohighlight">\(\bar K(m, z)\)</span>, one of <code class="docutils literal notranslate"><span class="pre">rectangle</span></code>, <code class="docutils literal notranslate"><span class="pre">lorentzian</span></code>, <code class="docutils literal notranslate"><span class="pre">gaussian</span></code>.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.14/builtins/stdtypes.html#str" rel="noopener noreferrer" target="_blank" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, Name of the <a class="reference internal" href="../guide/spectral_stats.html#resolution-functions"><span class="std std-ref">resolution function</span></a> <span class="math notranslate nohighlight">\(\bar K(m, z)\)</span>, one of <code class="docutils literal notranslate"><span class="pre">rectangle</span></code>, <code class="docutils literal notranslate"><span class="pre">lorentzian</span></code>, <code class="docutils literal notranslate"><span class="pre">gaussian</span></code>.</p>
 </dd>
 </dl>
-<p><strong>Returns:</strong> <a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" rel="noopener noreferrer" target="_blank" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, Value of the integral.</p>
+<p><strong>Returns:</strong> <a class="reference external" href="https://docs.python.org/3.14/builtins/functions.html#float" rel="noopener noreferrer" target="_blank" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, Value of the integral.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -266,14 +266,14 @@ particular solutions</p>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code>, Analytic continuation object.</p>
 </dd>
 <dt class="field-even">I<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" rel="noopener noreferrer" target="_blank" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, Index of the diagonal matrix element of the observable used
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.14/builtins/functions.html#int" rel="noopener noreferrer" target="_blank" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, Index of the diagonal matrix element of the observable used
 to construct <code class="docutils literal notranslate"><span class="pre">cont</span></code>.</p>
 </dd>
 <dt class="field-odd">Mesh<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">triqs.mesh.MeshReFreq</span></code>, Real energy mesh.</p>
 </dd>
 <dt class="field-even">R_func<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" rel="noopener noreferrer" target="_blank" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, Name of the <a class="reference internal" href="../guide/spectral_stats.html#resolution-functions"><span class="std std-ref">resolution function</span></a> <span class="math notranslate nohighlight">\(\bar K(m, z)\)</span>, one of <code class="docutils literal notranslate"><span class="pre">rectangle</span></code>, <code class="docutils literal notranslate"><span class="pre">lorentzian</span></code>, <code class="docutils literal notranslate"><span class="pre">gaussian</span></code>.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.14/builtins/stdtypes.html#str" rel="noopener noreferrer" target="_blank" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, Name of the <a class="reference internal" href="../guide/spectral_stats.html#resolution-functions"><span class="std std-ref">resolution function</span></a> <span class="math notranslate nohighlight">\(\bar K(m, z)\)</span>, one of <code class="docutils literal notranslate"><span class="pre">rectangle</span></code>, <code class="docutils literal notranslate"><span class="pre">lorentzian</span></code>, <code class="docutils literal notranslate"><span class="pre">gaussian</span></code>.</p>
 </dd>
 </dl>
 <p><strong>Returns:</strong> Real 1D NumPy array of values <span class="math notranslate nohighlight">\(i_m\)</span>.</p>
@@ -294,7 +294,7 @@ particular solutions</p>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code>, Analytic continuation object.</p>
 </dd>
 <dt class="field-even">I<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" rel="noopener noreferrer" target="_blank" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, Index of the diagonal matrix element of the observable used
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.14/builtins/functions.html#int" rel="noopener noreferrer" target="_blank" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, Index of the diagonal matrix element of the observable used
 to construct <code class="docutils literal notranslate"><span class="pre">cont</span></code>.</p>
 </dd>
 <dt class="field-odd">Mesh<span class="colon">:</span></dt>
@@ -304,7 +304,7 @@ to construct <code class="docutils literal notranslate"><span class="pre">cont</
 <dd class="field-even"><p>Real 1D NumPy array of precomputed averages <span class="math notranslate nohighlight">\(i_m\)</span>.</p>
 </dd>
 <dt class="field-odd">R_func<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" rel="noopener noreferrer" target="_blank" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, Name of the <a class="reference internal" href="../guide/spectral_stats.html#resolution-functions"><span class="std std-ref">resolution function</span></a> <span class="math notranslate nohighlight">\(\bar K(m, z)\)</span>, one of <code class="docutils literal notranslate"><span class="pre">rectangle</span></code>, <code class="docutils literal notranslate"><span class="pre">lorentzian</span></code>, <code class="docutils literal notranslate"><span class="pre">gaussian</span></code>.</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.14/builtins/stdtypes.html#str" rel="noopener noreferrer" target="_blank" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, Name of the <a class="reference internal" href="../guide/spectral_stats.html#resolution-functions"><span class="std std-ref">resolution function</span></a> <span class="math notranslate nohighlight">\(\bar K(m, z)\)</span>, one of <code class="docutils literal notranslate"><span class="pre">rectangle</span></code>, <code class="docutils literal notranslate"><span class="pre">lorentzian</span></code>, <code class="docutils literal notranslate"><span class="pre">gaussian</span></code>.</p>
 </dd>
 </dl>
 <p><strong>Returns:</strong> Real 1D NumPy array of values <span class="math notranslate nohighlight">\(\sigma_m\)</span>.</p>
@@ -326,7 +326,7 @@ of accumulated particular solutions</p>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Som</span></code>, Analytic continuation object.</p>
 </dd>
 <dt class="field-even">I<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" rel="noopener noreferrer" target="_blank" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, Index of the diagonal matrix element of the observable used
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.14/builtins/functions.html#int" rel="noopener noreferrer" target="_blank" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, Index of the diagonal matrix element of the observable used
 to construct <code class="docutils literal notranslate"><span class="pre">cont</span></code>.</p>
 </dd>
 <dt class="field-odd">Mesh<span class="colon">:</span></dt>
@@ -336,7 +336,7 @@ to construct <code class="docutils literal notranslate"><span class="pre">cont</
 <dd class="field-even"><p>Real 1D NumPy array of precomputed averages <span class="math notranslate nohighlight">\(i_m\)</span>.</p>
 </dd>
 <dt class="field-odd">R_func<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" rel="noopener noreferrer" target="_blank" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, Name of the <a class="reference internal" href="../guide/spectral_stats.html#resolution-functions"><span class="std std-ref">resolution function</span></a> <span class="math notranslate nohighlight">\(\bar K(m, z)\)</span>, one of <code class="docutils literal notranslate"><span class="pre">rectangle</span></code>, <code class="docutils literal notranslate"><span class="pre">lorentzian</span></code>, <code class="docutils literal notranslate"><span class="pre">gaussian</span></code>.</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.14/builtins/stdtypes.html#str" rel="noopener noreferrer" target="_blank" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, Name of the <a class="reference internal" href="../guide/spectral_stats.html#resolution-functions"><span class="std std-ref">resolution function</span></a> <span class="math notranslate nohighlight">\(\bar K(m, z)\)</span>, one of <code class="docutils literal notranslate"><span class="pre">rectangle</span></code>, <code class="docutils literal notranslate"><span class="pre">lorentzian</span></code>, <code class="docutils literal notranslate"><span class="pre">gaussian</span></code>.</p>
 </dd>
 </dl>
 <p><strong>Returns:</strong> Real 2D NumPy array of values <span class="math notranslate nohighlight">\(\sigma_{mm'}\)</span>.</p>

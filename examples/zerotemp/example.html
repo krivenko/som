@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dynamical response function at zero temperature &mdash; SOM  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=3b04a184" />
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
 
@@ -237,12 +237,12 @@ since <span class="math notranslate nohighlight">\((1\pm e^{-\beta\epsilon})^{-1
 <p class="rubric">Perform analytic continuation using the
 <a class="reference internal" href="../../guide/observables.html#zerotemp"><span class="std std-ref">ZeroTemp</span></a> kernel</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import HDFArchive and some TRIQS modules</span>
-<span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
-<span class="kn">from</span> <span class="nn">triqs.gfs</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">import</span> <span class="nn">triqs.utility.mpi</span> <span class="k">as</span> <span class="nn">mpi</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">h5</span><span class="w"> </span><span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">triqs.gfs</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">triqs.utility.mpi</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpi</span>
 
 <span class="c1"># Import main SOM class and utility functions</span>
-<span class="kn">from</span> <span class="nn">som</span> <span class="kn">import</span> <span class="n">Som</span><span class="p">,</span> <span class="n">fill_refreq</span><span class="p">,</span> <span class="n">compute_tail</span><span class="p">,</span> <span class="n">reconstruct</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">som</span><span class="w"> </span><span class="kn">import</span> <span class="n">Som</span><span class="p">,</span> <span class="n">fill_refreq</span><span class="p">,</span> <span class="n">compute_tail</span><span class="p">,</span> <span class="n">reconstruct</span>
 
 <span class="n">n_w</span> <span class="o">=</span> <span class="mi">1001</span>                 <span class="c1"># Number of energy slices for the solution</span>
 <span class="n">energy_window</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">)</span>  <span class="c1"># Energy window to search the solution in</span>
@@ -320,10 +320,10 @@ since <span class="math notranslate nohighlight">\((1\pm e^{-\beta\epsilon})^{-1
 </div>
 <p>Download input file <a class="reference download internal" download="" href="../../_downloads/cbb2fd76ce4133991ed9dee22332b380/input.h5"><code class="xref download docutils literal notranslate"><span class="pre">input.h5</span></code></a>.</p>
 <p class="rubric">Plot input and reconstructed imaginary-time correlators</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
-<span class="kn">from</span> <span class="nn">triqs.gfs</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-<span class="kn">from</span> <span class="nn">triqs.plot.mpl_interface</span> <span class="kn">import</span> <span class="n">oplot</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">h5</span><span class="w"> </span><span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">triqs.gfs</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">triqs.plot.mpl_interface</span><span class="w"> </span><span class="kn">import</span> <span class="n">oplot</span>
 
 <span class="c1"># Read data from archive</span>
 <span class="n">ar</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;results.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
@@ -340,18 +340,18 @@ since <span class="math notranslate nohighlight">\((1\pm e^{-\beta\epsilon})^{-1
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower center&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../../build/doc/../../doc/examples/zerotemp/plot_g_tau.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/zerotemp/plot_g_tau.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/zerotemp/plot_g_tau.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/zerotemp/plot_g_tau.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
+<p>(<a class="reference download internal" download="" href="../../_downloads/6060ccc8d19de8339dbad5ba9d42c73c/plot_g_tau.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/49a62f01dcf2f96e72b6f4a8f76da94a/plot_g_tau.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/2fa9d668acba35f2f4dcf4911a7cdb54/plot_g_tau.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/e9d4c2e9af315623a256300ec3ba9fa5/plot_g_tau.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../../_images/plot_g_tau3.png"><img alt="../../_images/plot_g_tau3.png" class="plot-directive" height="384" src="../../_images/plot_g_tau3.png" width="512" />
 </a>
 </figure>
 <p class="rubric">Plot spectral function and tail coefficients</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
-<span class="kn">from</span> <span class="nn">triqs.gfs</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-<span class="kn">from</span> <span class="nn">mpl_toolkits.axes_grid1.inset_locator</span> <span class="kn">import</span> <span class="n">inset_axes</span>
-<span class="kn">from</span> <span class="nn">triqs.plot.mpl_interface</span> <span class="kn">import</span> <span class="n">oplot</span>
-<span class="kn">import</span> <span class="nn">numpy</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">h5</span><span class="w"> </span><span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">triqs.gfs</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mpl_toolkits.axes_grid1.inset_locator</span><span class="w"> </span><span class="kn">import</span> <span class="n">inset_axes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">triqs.plot.mpl_interface</span><span class="w"> </span><span class="kn">import</span> <span class="n">oplot</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
 
 <span class="c1"># Read data from archive</span>
 <span class="n">ar</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;results.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
@@ -377,17 +377,17 @@ since <span class="math notranslate nohighlight">\((1\pm e^{-\beta\epsilon})^{-1
 <span class="n">tail_ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../../build/doc/../../doc/examples/zerotemp/plot_g_w.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/zerotemp/plot_g_w.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/zerotemp/plot_g_w.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/zerotemp/plot_g_w.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
+<p>(<a class="reference download internal" download="" href="../../_downloads/a11bf872abeaa7f394525ca0823355d0/plot_g_w.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/8576245e9e7c092bebbabf22622a7a85/plot_g_w.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/7c3764baf9f98d50057193d399aa7ce9/plot_g_w.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/2820624756c71544c890e4f986053894/plot_g_w.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../../_images/plot_g_w3.png"><img alt="../../_images/plot_g_w3.png" class="plot-directive" height="384" src="../../_images/plot_g_w3.png" width="512" />
 </a>
 </figure>
 <p class="rubric">Plot <span class="math notranslate nohighlight">\(\chi\)</span>-histogram</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
-<span class="kn">from</span> <span class="nn">triqs.stat</span> <span class="kn">import</span> <span class="n">Histogram</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-<span class="kn">from</span> <span class="nn">som</span> <span class="kn">import</span> <span class="n">count_good_solutions</span>
-<span class="kn">import</span> <span class="nn">numpy</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">h5</span><span class="w"> </span><span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">triqs.stat</span><span class="w"> </span><span class="kn">import</span> <span class="n">Histogram</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">som</span><span class="w"> </span><span class="kn">import</span> <span class="n">count_good_solutions</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
 
 <span class="c1"># Read data from archive</span>
 <span class="n">ar</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;results.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
@@ -413,7 +413,7 @@ since <span class="math notranslate nohighlight">\((1\pm e^{-\beta\epsilon})^{-1
 <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.0014</span><span class="p">,</span> <span class="mi">55</span><span class="p">,</span> <span class="s2">&quot;# good solutions in $A(</span><span class="se">\\</span><span class="s2">omega)$: </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">n_good_sol</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../../build/doc/../../doc/examples/zerotemp/plot_hist.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/zerotemp/plot_hist.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/zerotemp/plot_hist.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/zerotemp/plot_hist.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
+<p>(<a class="reference download internal" download="" href="../../_downloads/ac8c3fbbcf8e78621763a61fc7b09145/plot_hist.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/8136995005006d781db9d63f9e63a754/plot_hist.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/6401b2378c2ff83c988c44d88da75b2f/plot_hist.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/2b84128649841f0a98e064f9c331bc97/plot_hist.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../../_images/plot_hist4.png"><img alt="../../_images/plot_hist4.png" class="plot-directive" height="384" src="../../_images/plot_hist4.png" width="512" />
 </a>

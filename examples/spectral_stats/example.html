@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Statistical analysis of ensembles of spectral functions &mdash; SOM  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=3b04a184" />
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
 
@@ -231,15 +231,15 @@ Use of all three <a class="reference internal" href="../../guide/spectral_stats.
 <p class="rubric">Accumulate particular solutions and compute
 statistical characteristics</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import HDFArchive and some TRIQS modules</span>
-<span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
-<span class="kn">from</span> <span class="nn">triqs.mesh</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">triqs.gfs</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">import</span> <span class="nn">triqs.utility.mpi</span> <span class="k">as</span> <span class="nn">mpi</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">h5</span><span class="w"> </span><span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">triqs.mesh</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">triqs.gfs</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">triqs.utility.mpi</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpi</span>
 
 <span class="c1"># Import main SOM class</span>
-<span class="kn">from</span> <span class="nn">som</span> <span class="kn">import</span> <span class="n">Som</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">som</span><span class="w"> </span><span class="kn">import</span> <span class="n">Som</span>
 <span class="c1"># Import statistical analysis functions</span>
-<span class="kn">from</span> <span class="nn">som.spectral_stats</span> <span class="kn">import</span> <span class="n">spectral_avg</span><span class="p">,</span> <span class="n">spectral_disp</span><span class="p">,</span> <span class="n">spectral_corr</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">som.spectral_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">spectral_avg</span><span class="p">,</span> <span class="n">spectral_disp</span><span class="p">,</span> <span class="n">spectral_corr</span>
 
 <span class="n">energy_window</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">)</span>  <span class="c1"># Energy window to search the solution in</span>
 
@@ -306,10 +306,10 @@ statistical characteristics</p>
 </div>
 <p>Download input file <a class="reference download internal" download="" href="../../_downloads/150c9113cfcf81b0cc3a3cefc5ca5b6d/input.h5"><code class="xref download docutils literal notranslate"><span class="pre">input.h5</span></code></a>.</p>
 <p class="rubric">Plot statistical characteristics</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
-<span class="kn">from</span> <span class="nn">triqs.gfs</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">h5</span><span class="w"> </span><span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">triqs.gfs</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="c1"># Read data from archive</span>
 <span class="n">ar</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;results.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
@@ -354,7 +354,7 @@ statistical characteristics</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../../build/doc/../../doc/examples/spectral_stats/plot.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/spectral_stats/plot_00_00.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/spectral_stats/plot_00_00.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/spectral_stats/plot_00_00.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
+<p>(<a class="reference download internal" download="" href="../../_downloads/3515353e1378e22ee821998769eca42c/plot.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/5609e3b31b7f143392a5c686c714e671/plot_00_00.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/7735f2b8d0c41f6df5b0b7e105e888c7/plot_00_00.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/d652aae9eeb7c97d58e454f8b1aea9b7/plot_00_00.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../../_images/plot_00_001.png"><img alt="../../_images/plot_00_001.png" class="plot-directive" height="800" src="../../_images/plot_00_001.png" width="640" />
 </a>
@@ -388,7 +388,7 @@ statistical characteristics</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../../build/doc/../../doc/examples/spectral_stats/plot_01_00.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/spectral_stats/plot_01_00.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/spectral_stats/plot_01_00.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
+<p>(<a class="reference download internal" download="" href="../../_downloads/b7a34d49facf0df0a05d354b49047418/plot_01_00.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/1d271df86b94844c02dfef72f461bec3/plot_01_00.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/3a2f76f8b3a86c9785b70c3be616e01c/plot_01_00.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../../_images/plot_01_001.png"><img alt="../../_images/plot_01_001.png" class="plot-directive" height="800" src="../../_images/plot_01_001.png" width="640" />
 </a>

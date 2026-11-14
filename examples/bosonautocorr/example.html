@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Charge susceptibility, longitudinal magnetic susceptibility and optical conductivity &mdash; SOM  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=3b04a184" />
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
 
@@ -240,12 +240,12 @@ kernels, which are faster and more robust than <a class="reference internal" hre
 <p class="rubric">Perform analytic continuation using the
 <a class="reference internal" href="../../guide/observables.html#bosonautocorr"><span class="std std-ref">BosonAutoCorr</span></a> kernel</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import HDFArchive and some TRIQS modules</span>
-<span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
-<span class="kn">from</span> <span class="nn">triqs.gfs</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">import</span> <span class="nn">triqs.utility.mpi</span> <span class="k">as</span> <span class="nn">mpi</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">h5</span><span class="w"> </span><span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">triqs.gfs</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">triqs.utility.mpi</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpi</span>
 
 <span class="c1"># Import main SOM class and utility functions</span>
-<span class="kn">from</span> <span class="nn">som</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Som</span><span class="p">,</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">som</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">Som</span><span class="p">,</span>
                  <span class="n">fill_refreq</span><span class="p">,</span>
                  <span class="n">compute_tail</span><span class="p">,</span>
                  <span class="n">reconstruct</span><span class="p">,</span>
@@ -331,10 +331,10 @@ kernels, which are faster and more robust than <a class="reference internal" hre
 </div>
 <p>Download input file <a class="reference download internal" download="" href="../../_downloads/33065560bda13d148fb3c02a9cec9ee0/input.h5"><code class="xref download docutils literal notranslate"><span class="pre">input.h5</span></code></a>.</p>
 <p class="rubric">Plot input and reconstructed correlators at Matsubara frequencies</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
-<span class="kn">from</span> <span class="nn">triqs.gfs</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-<span class="kn">from</span> <span class="nn">triqs.plot.mpl_interface</span> <span class="kn">import</span> <span class="n">oplot</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">h5</span><span class="w"> </span><span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">triqs.gfs</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">triqs.plot.mpl_interface</span><span class="w"> </span><span class="kn">import</span> <span class="n">oplot</span>
 
 <span class="c1"># Read data from archive</span>
 <span class="n">ar</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;results.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
@@ -354,17 +354,17 @@ kernels, which are faster and more robust than <a class="reference internal" hre
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../../build/doc/../../doc/examples/bosonautocorr/plot_chi_iw.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/bosonautocorr/plot_chi_iw.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/bosonautocorr/plot_chi_iw.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/bosonautocorr/plot_chi_iw.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
+<p>(<a class="reference download internal" download="" href="../../_downloads/f5c32ec67bd395b640719e6866e7fc29/plot_chi_iw.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/9d8c0fffe03db7c6cda7009ac84ae764/plot_chi_iw.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/de736f3de8169f22933a80d66a16ef79/plot_chi_iw.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/5fc0812e24ad128874b98b868887b3dd/plot_chi_iw.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../../_images/plot_chi_iw.png"><img alt="../../_images/plot_chi_iw.png" class="plot-directive" height="384" src="../../_images/plot_chi_iw.png" width="512" />
 </a>
 </figure>
 <p class="rubric">Plot the correlator on the real frequency axis and
 its tail coefficients</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
-<span class="kn">from</span> <span class="nn">triqs.gfs</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-<span class="kn">from</span> <span class="nn">triqs.plot.mpl_interface</span> <span class="kn">import</span> <span class="n">oplot</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">h5</span><span class="w"> </span><span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">triqs.gfs</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">triqs.plot.mpl_interface</span><span class="w"> </span><span class="kn">import</span> <span class="n">oplot</span>
 
 <span class="c1"># Read data from archive</span>
 <span class="n">ar</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;results.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
@@ -388,17 +388,17 @@ its tail coefficients</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower right&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../../build/doc/../../doc/examples/bosonautocorr/plot_chi_w.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/bosonautocorr/plot_chi_w.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/bosonautocorr/plot_chi_w.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/bosonautocorr/plot_chi_w.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
+<p>(<a class="reference download internal" download="" href="../../_downloads/a8080cda19aef8ee4fc425a59cc7b5b6/plot_chi_w.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/977c8d5e9aefda0cce46029c3c34ff59/plot_chi_w.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/5f084b9811ccd7b9965a0e89fe29218c/plot_chi_w.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/7ef6050431bc6818166fa797e4aef116/plot_chi_w.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../../_images/plot_chi_w.png"><img alt="../../_images/plot_chi_w.png" class="plot-directive" height="384" src="../../_images/plot_chi_w.png" width="512" />
 </a>
 </figure>
 <p class="rubric">Plot <span class="math notranslate nohighlight">\(\chi\)</span>-histograms</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">h5</span> <span class="kn">import</span> <span class="n">HDFArchive</span>
-<span class="kn">from</span> <span class="nn">triqs.stat</span> <span class="kn">import</span> <span class="n">Histogram</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-<span class="kn">from</span> <span class="nn">som</span> <span class="kn">import</span> <span class="n">count_good_solutions</span>
-<span class="kn">import</span> <span class="nn">numpy</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">h5</span><span class="w"> </span><span class="kn">import</span> <span class="n">HDFArchive</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">triqs.stat</span><span class="w"> </span><span class="kn">import</span> <span class="n">Histogram</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">som</span><span class="w"> </span><span class="kn">import</span> <span class="n">count_good_solutions</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
 
 <span class="c1"># Read data from archive</span>
 <span class="n">ar</span> <span class="o">=</span> <span class="n">HDFArchive</span><span class="p">(</span><span class="s1">&#39;results.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
@@ -432,7 +432,7 @@ its tail coefficients</p>
          <span class="p">(</span><span class="n">n_good_sol</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">n_good_sol</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
 </pre></div>
 </div>
-<p>(<a class="reference external" href="../../../build/doc/../../doc/examples/bosonautocorr/plot_hist.py" rel="noopener noreferrer" target="_blank">Source code</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/bosonautocorr/plot_hist.png" rel="noopener noreferrer" target="_blank">png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/bosonautocorr/plot_hist.hires.png" rel="noopener noreferrer" target="_blank">hires.png</a>, <a class="reference external" href="../../../build/doc/../../doc/examples/bosonautocorr/plot_hist.pdf" rel="noopener noreferrer" target="_blank">pdf</a>)</p>
+<p>(<a class="reference download internal" download="" href="../../_downloads/e10c8e7923bff3da907e1730b16137c7/plot_hist.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/aaa251bb42c784dbadfb7f4a397d1ae9/plot_hist.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/38fd50fe7e4adfe066cfc4bc2cc514fd/plot_hist.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../../_downloads/7fbfaa8105af445367a15a61c066c24f/plot_hist.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
 <figure class="align-default">
 <a class="plot-directive reference internal image-reference" href="../../_images/plot_hist.png"><img alt="../../_images/plot_hist.png" class="plot-directive" height="384" src="../../_images/plot_hist.png" width="512" />
 </a>
